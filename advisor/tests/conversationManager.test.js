@@ -2,19 +2,29 @@
 
 Family Wealth AI OS V7.5
 
-Conversation Model Test
+Conversation Manager Test
 
 */
+
+import ConversationManager from "../conversationManager.js";
 
 import Conversation from "../conversation.js";
 
 // =====================
 
-// Create Conversation
+// Reset
 
 // =====================
 
-const conversation = new Conversation({
+ConversationManager.clear();
+
+// =====================
+
+// Add Test
+
+// =====================
+
+const userMessage = new Conversation({
 
     id:1,
 
@@ -22,27 +32,27 @@ const conversation = new Conversation({
 
     message:"我的退休资金够吗？",
 
-    role:"USER",
-
-    timestamp:"2026-08-06"
+    role:"USER"
 
 });
 
-// =====================
+const added =
 
-// ID Test
+ConversationManager.add(
 
-// =====================
+    userMessage
+
+);
 
 if(
 
-    conversation.id !== 1
+    added.message !== "我的退休资金够吗？"
 
 ){
 
     throw new Error(
 
-        "Conversation id failed"
+        "Conversation add failed"
 
     );
 
@@ -50,19 +60,19 @@ if(
 
 // =====================
 
-// User Test
+// List Test
 
 // =====================
 
 if(
 
-    conversation.userId !== "owner"
+    ConversationManager.list().length !==1
 
 ){
 
     throw new Error(
 
-        "Conversation user failed"
+        "Conversation list failed"
 
     );
 
@@ -70,19 +80,27 @@ if(
 
 // =====================
 
-// Message Test
+// Get Test
 
 // =====================
 
+const found =
+
+ConversationManager.get(
+
+    1
+
+);
+
 if(
 
-    conversation.message !== "我的退休资金够吗？"
+    found.userId !== "owner"
 
 ){
 
     throw new Error(
 
-        "Conversation message failed"
+        "Conversation get failed"
 
     );
 
@@ -90,19 +108,27 @@ if(
 
 // =====================
 
-// Role Test
+// Get By User Test
 
 // =====================
 
+const userHistory =
+
+ConversationManager.getByUser(
+
+    "owner"
+
+);
+
 if(
 
-    conversation.role !== "USER"
+    userHistory.length !==1
 
 ){
 
     throw new Error(
 
-        "Conversation role failed"
+        "Conversation user search failed"
 
     );
 
@@ -110,19 +136,85 @@ if(
 
 // =====================
 
-// Timestamp Test
+// Invalid Data Test
 
 // =====================
 
+try{
+
+    ConversationManager.add({});
+
+    throw new Error(
+
+        "Invalid conversation check failed"
+
+    );
+
+}
+
+catch(error){
+
+}
+
+// =====================
+
+// Remove Test
+
+// =====================
+
+ConversationManager.remove(
+
+    1
+
+);
+
 if(
 
-    conversation.timestamp !== "2026-08-06"
+    ConversationManager.list().length !==0
 
 ){
 
     throw new Error(
 
-        "Conversation timestamp failed"
+        "Conversation remove failed"
+
+    );
+
+}
+
+// =====================
+
+// Clear Test
+
+// =====================
+
+ConversationManager.add(
+
+    new Conversation({
+
+        id:2,
+
+        userId:"owner",
+
+        message:"测试",
+
+        role:"USER"
+
+    })
+
+);
+
+ConversationManager.clear();
+
+if(
+
+    ConversationManager.list().length !==0
+
+){
+
+    throw new Error(
+
+        "Conversation clear failed"
 
     );
 
@@ -130,6 +222,6 @@ if(
 
 console.log(
 
-    "Conversation Test Passed"
+    "Conversation Manager Test Passed"
 
 );
