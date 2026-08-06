@@ -8,13 +8,21 @@ Core Helpers
 
 const Helpers = {
 
+    // =====================
+
+    // Generate ID
+
+    // =====================
+
     generateId(){
 
         return (
 
             Date.now()
 
-            .toString(36)
+            +
+
+            "_"
 
             +
 
@@ -22,29 +30,35 @@ const Helpers = {
 
             .toString(36)
 
-            .substring(2)
+            .substring(2,10)
 
         );
 
     },
 
+    // =====================
+
+    // Currency Format
+
+    // =====================
+
     formatCurrency(
 
-        amount,
+        value,
 
         currency="USD"
 
     ){
 
-        return new Intl
-
-        .NumberFormat(
+        return new Intl.NumberFormat(
 
             "en-US",
 
             {
 
-                style:"currency",
+                style:
+
+                "currency",
 
                 currency
 
@@ -54,45 +68,71 @@ const Helpers = {
 
         .format(
 
-            amount
+            Number(value || 0)
 
         );
 
     },
 
-    formatDate(
+    // =====================
 
-        date
+    // Percentage Format
+
+    // =====================
+
+    formatPercent(
+
+        value
 
     ){
 
-        return new Date(
+        return (
 
-            date
+            Number(value || 0)
 
-        )
+            .toFixed(2)
 
-        .toISOString()
+            +
 
-        .split("T")[0];
+            "%"
+
+        );
 
     },
 
-    clone(
+    // =====================
 
-        data
+    // Date
+
+    // =====================
+
+    now(){
+
+        return new Date()
+
+        .toISOString();
+
+    },
+
+    // =====================
+
+    // Number Check
+
+    // =====================
+
+    isNumber(
+
+        value
 
     ){
 
-        return JSON.parse(
+        return typeof value ===
 
-            JSON.stringify(
+        "number"
 
-                data
+        &&
 
-            )
-
-        );
+        !isNaN(value);
 
     }
 
