@@ -2,62 +2,38 @@
 
 Family Wealth AI OS V7.1
 
-Family Manager
+Family Member
 
 */
 
-import Member from "./member.js";
+class Member {
 
-const FamilyManager = {
+    constructor({
 
-    members: [],
+        id,
 
-    add(member){
+        name,
 
-        if(!(member instanceof Member)){
+        role = "OWNER",
 
-            throw new Error("Invalid member");
+        relationship = "SELF",
 
-        }
+        birthday = null
 
-        this.members.push(member);
+    }){
 
-        return member;
+        this.id = id;
 
-    },
+        this.name = name;
 
-    list(){
+        this.role = role;
 
-        return this.members;
+        this.relationship = relationship;
 
-    },
-
-    get(id){
-
-        return this.members.find(
-
-            member => member.id === id
-
-        );
-
-    },
-
-    remove(id){
-
-        this.members = this.members.filter(
-
-            member => member.id !== id
-
-        );
-
-    },
-
-    clear(){
-
-        this.members = [];
+        this.birthday = birthday;
 
     }
 
-};
+}
 
-export default FamilyManager;
+export default Member;
