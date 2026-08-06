@@ -28,13 +28,13 @@ RiskEngine.register(
 
     "STOCK_CONCENTRATION",
 
-    35
+    30
 
 );
 
 console.log(
 
-    "Risk Factor:",
+    "Stock Risk:",
 
     stockRisk
 
@@ -42,7 +42,7 @@ console.log(
 
 if(
 
-    stockRisk !==35
+    stockRisk !==30
 
 ){
 
@@ -90,13 +90,13 @@ console.log(
 
 if(
 
-    score !==80
+    score !==75
 
 ){
 
     throw new Error(
 
-        "Risk score calculation failed"
+        "Risk total score failed"
 
     );
 
@@ -148,13 +148,13 @@ RiskEngine.report();
 
 if(
 
-    report.score !==80
+    report.score !==75
 
 ){
 
     throw new Error(
 
-        "Risk report failed"
+        "Risk report score failed"
 
     );
 
@@ -162,17 +162,31 @@ if(
 
 if(
 
-    report.factors
+    report.level !==
 
-    .STOCK_CONCENTRATION
-
-    !==35
+    "HIGH"
 
 ){
 
     throw new Error(
 
-        "Risk factor report failed"
+        "Risk report level failed"
+
+    );
+
+}
+
+if(
+
+    !report.factors
+
+    .STOCK_CONCENTRATION
+
+){
+
+    throw new Error(
+
+        "Risk report factors failed"
 
     );
 
