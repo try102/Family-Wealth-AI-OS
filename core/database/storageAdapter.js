@@ -8,35 +8,75 @@ Storage Adapter
 
 const StorageAdapter = {
 
-    get(key){
+    save(
 
-        return localStorage.getItem(
+        key,
 
-            key
+        data
 
-        );
-
-    },
-
-    set(key,value){
+    ){
 
         localStorage.setItem(
 
             key,
 
-            value
+            JSON.stringify(data)
+
+        );
+
+        return true;
+
+    },
+
+    load(
+
+        key
+
+    ){
+
+        const data =
+
+        localStorage.getItem(
+
+            key
+
+        );
+
+        if(!data){
+
+            return null;
+
+        }
+
+        return JSON.parse(
+
+            data
 
         );
 
     },
 
-    delete(key){
+    remove(
+
+        key
+
+    ){
 
         localStorage.removeItem(
 
             key
 
         );
+
+        return true;
+
+    },
+
+    clear(){
+
+        localStorage.clear();
+
+        return true;
 
     }
 
