@@ -2,34 +2,52 @@
 
 Family Wealth AI OS
 
-Core Application Entry
+V7 System Entry
 
 */
 
+import SystemManager from "./core/system/systemManager.js";
+
+import Advisor from "./ai/advisor.js";
+
+// =====================
+
+// Start OS
+
+// =====================
+
+const system =
+
+SystemManager.start();
+
 console.log(
 
-"Family Wealth AI OS Started"
+    "Family Wealth AI OS",
+
+    system
 
 );
 
-document.getElementById(
+// =====================
 
-"app"
+// Export Global Access
 
-).innerHTML =
+// =====================
 
-`
+window.WealthOS = {
 
-<h1>
+    system:
 
-Family Wealth AI OS
+    SystemManager,
 
-</h1>
+    advisor:
 
-<p>
+    Advisor
 
-System initialized.
+};
 
-</p>
+console.log(
 
-`;
+    "Wealth OS Ready"
+
+);
