@@ -2,13 +2,15 @@
 
 Family Wealth AI OS
 
-Core Event Bus
+Event Bus V7
 
 */
 
-const listeners = {};
-
 const EventBus = {
+
+    listeners:{},
+
+    history:[],
 
     subscribe(
 
@@ -18,41 +20,21 @@ const EventBus = {
 
     ){
 
-        if(!listeners[event]){
+        if(
 
-            listeners[event]=[];
+            !this.listeners[event]
 
-        }
+        ){
 
-        listeners[event]
-
-        .push(callback);
-
-    },
-
-    publish(
-
-        event,
-
-        data
-
-    ){
-
-        if(!listeners[event]){
-
-            return;
+            this.listeners[event] = [];
 
         }
 
-        listeners[event]
+        this.listeners[event]
 
-        .forEach(
+        .push(
 
-            callback=>{
-
-                callback(data);
-
-            }
+            callback
 
         );
 
@@ -66,21 +48,95 @@ const EventBus = {
 
     ){
 
-        if(!listeners[event]){
+        if(
+
+            !this.listeners[event]
+
+        ){
 
             return;
 
         }
 
-        listeners[event] =
+        this.listeners[event] =
 
-        listeners[event]
+        this.listeners[event]
 
         .filter(
 
-            fn=>fn!==callback
+            item =>
+
+            item !== callback
 
         );
+
+    },
+
+    publish(
+
+        event,
+
+        data
+
+    ){
+
+        const record = {
+
+            event,
+
+            data,
+
+            timestamp:
+
+            new Date()
+
+            .toISOString()
+
+        };
+
+        this.history.push(
+
+            record
+
+        );
+
+        const callbacks =
+
+        this.listeners[event]
+
+        ||
+
+        [];
+
+        callbacks.forEach(
+
+            callback =>{
+
+                callback(
+
+                    data
+
+                );
+
+            }
+
+        );
+
+        return record;
+
+    },
+
+    getHistory(){
+
+        return this.history;
+
+    },
+
+    clear(){
+
+        this.listeners = {};
+
+        this.history = [];
 
     }
 
