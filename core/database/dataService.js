@@ -2,47 +2,81 @@
 
 Family Wealth AI OS
 
-Core Database Service
+Data Service
 
 */
 
+import Database from "./database.js";
+
 const DataService = {
 
-    save(key, data){
+    save(
 
-        localStorage.setItem(
+        key,
+
+        data
+
+    ){
+
+        return Database.save(
 
             key,
 
-            JSON.stringify(data)
+            data
 
         );
 
     },
 
-    load(key){
+    load(
 
-        const data =
+        key
 
-        localStorage.getItem(key);
+    ){
 
-        if(!data){
-
-            return null;
-
-        }
-
-        return JSON.parse(data);
-
-    },
-
-    remove(key){
-
-        localStorage.removeItem(
+        return Database.load(
 
             key
 
         );
+
+    },
+
+    remove(
+
+        key
+
+    ){
+
+        return Database.remove(
+
+            key
+
+        );
+
+    },
+
+    clear(){
+
+        return Database.clear();
+
+    },
+
+    exists(
+
+        key
+
+    ){
+
+        const data =
+
+        this.load(
+
+            key
+
+        );
+
+        return data !== null;
 
     }
 
