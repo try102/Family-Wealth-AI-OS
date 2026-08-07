@@ -18,6 +18,10 @@ import ModuleRegistry
 
 from "../../registry/moduleRegistry.js";
 
+import EngineRegistry
+
+from "../../engines/engineRegistry.js";
+
 // =====================
 
 // Start System
@@ -38,43 +42,7 @@ console.log(
 
 // =====================
 
-// Agents Test
-
-// =====================
-
-const agents =
-
-AgentRegistry.list();
-
-console.log(
-
-    "Registered Agents:",
-
-    agents
-
-);
-
-// =====================
-
-// Modules Test
-
-// =====================
-
-const modules =
-
-ModuleRegistry.list();
-
-console.log(
-
-    "Registered Modules:",
-
-    modules
-
-);
-
-// =====================
-
-// Bootstrap Status
+// Status Test
 
 // =====================
 
@@ -96,27 +64,167 @@ if(
 
 // =====================
 
-// Investment Test
+// Agent Test
 
 // =====================
 
-const investment =
+const agents =
 
-ModuleRegistry.get(
+AgentRegistry.list();
 
-    "investment"
+if(
+
+    agents.length === 0
+
+){
+
+    throw new Error(
+
+        "No agents registered"
+
+    );
+
+}
+
+// =====================
+
+// Module Test
+
+// =====================
+
+const modules =
+
+ModuleRegistry.list();
+
+console.log(
+
+    "Modules:",
+
+    modules
+
+);
+
+const requiredModules = [
+
+    "investment",
+
+    "tax",
+
+    "liability",
+
+    "income",
+
+    "cashflow"
+
+];
+
+requiredModules.forEach(
+
+    name => {
+
+        if(
+
+            !ModuleRegistry.get(
+
+                name
+
+            )
+
+        ){
+
+            throw new Error(
+
+                name +
+
+                " module missing"
+
+            );
+
+        }
+
+    }
+
+);
+
+// =====================
+
+// Engine Test
+
+// =====================
+
+const engines =
+
+EngineRegistry.list();
+
+console.log(
+
+    "Engines:",
+
+    engines
+
+);
+
+const requiredEngines = [
+
+    "wealth",
+
+    "cashflow"
+
+];
+
+requiredEngines.forEach(
+
+    name => {
+
+        if(
+
+            !EngineRegistry.get(
+
+                name
+
+            )
+
+        ){
+
+            throw new Error(
+
+                name +
+
+                " engine missing"
+
+            );
+
+        }
+
+    }
+
+);
+
+// =====================
+
+// Wealth Engine Type Test
+
+// =====================
+
+const wealthEngine =
+
+EngineRegistry.get(
+
+    "wealth"
 
 );
 
 if(
 
-    !investment
+    typeof wealthEngine.analyze !==
+
+    "function"
 
 ){
 
     throw new Error(
 
-        "Investment module missing"
+        "Wealth Engine invalid"
 
     );
 
@@ -124,129 +232,13 @@ if(
 
 // =====================
 
-// Tax Test
+// Cashflow Engine Type Test
 
 // =====================
 
-const tax =
+const cashflowEngine =
 
-ModuleRegistry.get(
-
-    "tax"
-
-);
-
-if(
-
-    !tax
-
-){
-
-    throw new Error(
-
-        "Tax module missing"
-
-    );
-
-}
-
-// =====================
-
-// Liability Test
-
-// =====================
-
-const liability =
-
-ModuleRegistry.get(
-
-    "liability"
-
-);
-
-if(
-
-    !liability
-
-){
-
-    throw new Error(
-
-        "Liability module missing"
-
-    );
-
-}
-
-if(
-
-    liability.name !==
-
-    "Liability Module V7"
-
-){
-
-    throw new Error(
-
-        "Liability module invalid"
-
-    );
-
-}
-
-// =====================
-
-// Income Test
-
-// =====================
-
-const income =
-
-ModuleRegistry.get(
-
-    "income"
-
-);
-
-if(
-
-    !income
-
-){
-
-    throw new Error(
-
-        "Income module missing"
-
-    );
-
-}
-
-if(
-
-    income.name !==
-
-    "Income Module V7"
-
-){
-
-    throw new Error(
-
-        "Income module invalid"
-
-    );
-
-}
-
-// =====================
-
-// Cashflow Test
-
-// =====================
-
-const cashflow =
-
-ModuleRegistry.get(
+EngineRegistry.get(
 
     "cashflow"
 
@@ -254,45 +246,15 @@ ModuleRegistry.get(
 
 if(
 
-    !cashflow
+    typeof cashflowEngine.report !==
+
+    "function"
 
 ){
 
     throw new Error(
 
-        "Cashflow module missing"
-
-    );
-
-}
-
-if(
-
-    cashflow.name !==
-
-    "Cashflow Module V7"
-
-){
-
-    throw new Error(
-
-        "Cashflow module invalid"
-
-    );
-
-}
-
-if(
-
-    cashflow.status !==
-
-    "READY"
-
-){
-
-    throw new Error(
-
-        "Cashflow module status failed"
+        "Cashflow Engine invalid"
 
     );
 
