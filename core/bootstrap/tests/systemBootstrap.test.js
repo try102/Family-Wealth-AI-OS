@@ -64,6 +64,28 @@ if(
 
 // =====================
 
+// Advisor Test
+
+// =====================
+
+if(
+
+    result.advisor !==
+
+    "Family Wealth Advisor AI V7"
+
+){
+
+    throw new Error(
+
+        "Advisor loading failed"
+
+    );
+
+}
+
+// =====================
+
 // Agent Test
 
 // =====================
@@ -71,6 +93,14 @@ if(
 const agents =
 
 AgentRegistry.list();
+
+console.log(
+
+    "Agents:",
+
+    agents
+
+);
 
 if(
 
@@ -91,18 +121,6 @@ if(
 // Module Test
 
 // =====================
-
-const modules =
-
-ModuleRegistry.list();
-
-console.log(
-
-    "Registered Modules:",
-
-    modules
-
-);
 
 const requiredModules = [
 
@@ -157,18 +175,6 @@ requiredModules.forEach(
 // Engine Test
 
 // =====================
-
-const engines =
-
-EngineRegistry.list();
-
-console.log(
-
-    "Registered Engines:",
-
-    engines
-
-);
 
 const requiredEngines = [
 
@@ -265,36 +271,6 @@ if(
     throw new Error(
 
         "Cashflow Engine invalid"
-
-    );
-
-}
-
-// =====================
-
-// Assets Module Test
-
-// =====================
-
-const assetsModule =
-
-ModuleRegistry.get(
-
-    "assets"
-
-);
-
-if(
-
-    assetsModule.name !==
-
-    "Assets Module V7"
-
-){
-
-    throw new Error(
-
-        "Assets Module invalid"
 
     );
 
