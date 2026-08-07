@@ -20,7 +20,7 @@ from "../../core/engines/engineRegistry.js";
 
 // =====================
 
-// Mock Required Modules
+// Mock Modules
 
 // =====================
 
@@ -110,7 +110,7 @@ ModuleRegistry.register(
 
 // =====================
 
-// Mock Engine
+// Mock Engines
 
 // =====================
 
@@ -148,7 +148,7 @@ EngineRegistry.register(
 
 // =====================
 
-// Basic Test
+// Basic Information
 
 // =====================
 
@@ -260,13 +260,13 @@ Advisor.analyze();
 
 if(
 
-    !analysis.profile
+    !analysis.wealthHealth
 
 ){
 
     throw new Error(
 
-        "Advisor analysis profile failed"
+        "Wealth health missing"
 
     );
 
@@ -274,13 +274,49 @@ if(
 
 if(
 
-    !analysis.recommendations
+    !analysis.riskLevel
 
 ){
 
     throw new Error(
 
-        "Advisor recommendations failed"
+        "Risk level missing"
+
+    );
+
+}
+
+if(
+
+    !Array.isArray(
+
+        analysis.recommendations
+
+    )
+
+){
+
+    throw new Error(
+
+        "Recommendations missing"
+
+    );
+
+}
+
+if(
+
+    !Array.isArray(
+
+        analysis.alerts
+
+    )
+
+){
+
+    throw new Error(
+
+        "Alerts missing"
 
     );
 
@@ -298,15 +334,31 @@ Advisor.wealthReport();
 
 if(
 
-    report.engine !==
+    report.wealthEngine !==
 
-    "Wealth Engine Connected"
+    "CONNECTED"
 
 ){
 
     throw new Error(
 
-        "Advisor wealth report failed"
+        "Wealth Engine connection failed"
+
+    );
+
+}
+
+if(
+
+    report.cashflowEngine !==
+
+    "CONNECTED"
+
+){
+
+    throw new Error(
+
+        "Cashflow Engine connection failed"
 
     );
 
