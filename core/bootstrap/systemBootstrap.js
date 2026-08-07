@@ -2,7 +2,7 @@
 
 Family Wealth AI OS
 
-System Bootstrap
+System Bootstrap V7
 
 */
 
@@ -25,6 +25,14 @@ import InvestmentAgent from "../../modules/investment/agent/investmentAgent.js";
 // =====================
 
 import TaxFacade from "../../tax/taxFacade.js";
+
+// =====================
+
+// Liability Module
+
+// =====================
+
+import LiabilityModule from "../modules/liabilityModule.js";
 
 // =====================
 
@@ -95,6 +103,14 @@ const SystemBootstrap = {
             "tax",
 
             taxModule
+
+        );
+
+        ModuleRegistry.register(
+
+            "liability",
+
+            LiabilityModule
 
         );
 
