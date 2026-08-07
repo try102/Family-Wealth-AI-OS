@@ -1,18 +1,12 @@
 /*
 
-========================================
-
-Family Wealth AI OS V7.0
+Family Wealth AI OS V7.7
 
 Tax Manager
 
-管理 Tax Plan 数据
-
-========================================
+负责管理家庭税务规划方案
 
 */
-
-const TaxPlan = require("./taxPlan");
 
 class TaxManager {
 
@@ -22,122 +16,86 @@ class TaxManager {
 
     }
 
-    // 创建 Tax Plan
+    // =====================
 
-    createPlan(data){
+    // Add Tax Plan
 
-        const plan = new TaxPlan(data);
+    // =====================
 
-        this.taxPlans.push(plan);
+    addPlan(taxPlan){
 
-        return plan;
+        this.taxPlans.push(
+
+            taxPlan
+
+        );
+
+        return taxPlan;
 
     }
 
-    // 获取全部计划
+    // =====================
 
-    getAllPlans(){
+    // Get All Tax Plans
+
+    // =====================
+
+    getPlans(){
 
         return this.taxPlans;
 
     }
 
-    // 根据年份查找
+    // =====================
 
-    getPlanByYear(year){
+    // Get Plan By Year
+
+    // =====================
+
+    getPlanByYear(taxYear){
 
         return this.taxPlans.find(
 
-            plan => plan.year === year
+            plan =>
+
+            plan.taxYear === taxYear
 
         );
 
     }
 
-    // 更新计划
+    // =====================
 
-    updatePlan(year, updates){
+    // Remove Plan
 
-        const plan = this.getPlanByYear(year);
+    // =====================
 
-        if(!plan){
+    removePlan(id){
 
-            return null;
+        this.taxPlans =
 
-        }
+            this.taxPlans.filter(
 
-        Object.assign(
+                plan =>
 
-            plan,
+                plan.id !== id
 
-            updates
-
-        );
-
-        return plan;
+            );
 
     }
 
-    // 删除计划
+    // =====================
 
-    deletePlan(year){
+    // Count Plans
 
-        const index = this.taxPlans.findIndex(
+    // =====================
 
-            plan => plan.year === year
+    count(){
 
-        );
-
-        if(index === -1){
-
-            return false;
-
-        }
-
-        this.taxPlans.splice(
-
-            index,
-
-            1
-
-        );
-
-        return true;
-
-    }
-
-    // 税务摘要
-
-    getTaxSummary(year){
-
-        const plan = this.getPlanByYear(year);
-
-        if(!plan){
-
-            return null;
-
-        }
-
-        return {
-
-            year: plan.year,
-
-            income: plan.income || 0,
-
-            deductions: plan.deductions || 0,
-
-            taxableIncome:
-
-                (plan.income || 0)
-
-                -
-
-                (plan.deductions || 0)
-
-        };
+        return this.taxPlans.length;
 
     }
 
 }
 
-module.exports = TaxManager;
+export default TaxManager;
