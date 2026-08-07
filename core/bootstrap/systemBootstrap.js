@@ -10,17 +10,37 @@ import ModuleRegistry from "../registry/moduleRegistry.js";
 
 import AgentRegistry from "../registry/agentRegistry.js";
 
-// Modules
+// =====================
+
+// Agents
+
+// =====================
 
 import InvestmentAgent from "../../modules/investment/agent/investmentAgent.js";
 
-// Future:
+// =====================
 
-// import AssetAgent from "../../modules/asset/agent/assetAgent.js";
+// Tax Module
 
-// import AccountAgent from "../../modules/account/agent/accountAgent.js";
+// =====================
 
-// import TransactionAgent from "../../modules/transaction/agent/transactionAgent.js";
+import TaxFacade from "../../tax/taxFacade.js";
+
+// =====================
+
+// Create Instances
+
+// =====================
+
+const taxModule =
+
+    new TaxFacade();
+
+// =====================
+
+// System Bootstrap
+
+// =====================
 
 const SystemBootstrap = {
 
@@ -32,15 +52,11 @@ const SystemBootstrap = {
 
         );
 
-        /*
+        // =====================
 
-        
+        // Register Agents
 
-        Register Agents
-
-        
-
-        */
+        // =====================
 
         AgentRegistry.register(
 
@@ -50,19 +66,11 @@ const SystemBootstrap = {
 
         );
 
-        /*
+        // =====================
 
-        
+        // Register Modules
 
-        Register Modules
-
-        
-
-        Future expansion
-
-        
-
-        */
+        // =====================
 
         ModuleRegistry.register(
 
@@ -79,6 +87,14 @@ const SystemBootstrap = {
                 "ACTIVE"
 
             }
+
+        );
+
+        ModuleRegistry.register(
+
+            "tax",
+
+            taxModule
 
         );
 
