@@ -4,13 +4,35 @@ Family Wealth AI OS V7
 
 Income Repository Test
 
+测试：
+
+Income Repository
+
+↓
+
+Database
+
+↓
+
+Storage
+
 */
 
 import IncomeRepository from "../incomeRepository.js";
 
+import Database from "../../../../storage/database.js";
+
 // =====================
 
-// Clear Before Test
+// Initialize Database
+
+// =====================
+
+Database.init();
+
+// =====================
+
+// Clear Test Data
 
 // =====================
 
@@ -26,7 +48,7 @@ const income = {
 
     id:
 
-    1,
+    1001,
 
     name:
 
@@ -38,9 +60,15 @@ const income = {
 
     amount:
 
-    10000
+    10000,
+
+    owner:
+
+    "Family"
 
 };
+
+const saved =
 
 IncomeRepository.save(
 
@@ -48,13 +76,9 @@ IncomeRepository.save(
 
 );
 
-const list =
-
-IncomeRepository.findAll();
-
 if(
 
-    list.length !== 1
+    saved.id !== 1001
 
 ){
 
@@ -68,41 +92,51 @@ if(
 
 // =====================
 
-// Find Test
+// Find All Test
 
 // =====================
 
-const result =
+const list =
 
-IncomeRepository.findById(
-
-    1
-
-);
+IncomeRepository.findAll();
 
 if(
 
-    !result
+    list.length !== 1
 
 ){
 
     throw new Error(
 
-        "Find income failed"
+        "Find all income failed"
 
     );
 
 }
 
+// =====================
+
+// Find By Id Test
+
+// =====================
+
+const found =
+
+IncomeRepository.findById(
+
+    1001
+
+);
+
 if(
 
-    result.amount !== 10000
+    found.name !== "Salary"
 
 ){
 
     throw new Error(
 
-        "Income amount incorrect"
+        "Find income by id failed"
 
     );
 
@@ -118,7 +152,7 @@ const updated =
 
 IncomeRepository.update(
 
-    1,
+    1001,
 
     {
 
@@ -154,7 +188,7 @@ const removed =
 
 IncomeRepository.remove(
 
-    1
+    1001
 
 );
 
@@ -182,7 +216,7 @@ if(
 
     throw new Error(
 
-        "Remove income failed"
+        "Delete verify failed"
 
     );
 
@@ -190,6 +224,6 @@ if(
 
 console.log(
 
-    "Income Repository Test Passed"
+    "Income Repository V7 Test Passed"
 
 );
