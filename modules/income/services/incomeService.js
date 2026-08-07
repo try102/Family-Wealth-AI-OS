@@ -16,7 +16,7 @@ const IncomeService = {
 
     // =====================
 
-    // Add Income
+    // Create
 
     // =====================
 
@@ -44,7 +44,7 @@ const IncomeService = {
 
     // =====================
 
-    // Query
+    // Read
 
     // =====================
 
@@ -124,13 +124,13 @@ const IncomeService = {
 
         IncomeRepository.findAll();
 
-        let total = 0;
+        let totalIncome = 0;
 
         list.forEach(
 
             item => {
 
-                total +=
+                totalIncome +=
 
                 Number(
 
@@ -148,9 +148,7 @@ const IncomeService = {
 
             list.length,
 
-            totalIncome:
-
-            total
+            totalIncome
 
         };
 
