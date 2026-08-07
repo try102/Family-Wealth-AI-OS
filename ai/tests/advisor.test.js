@@ -2,69 +2,107 @@
 
 Family Wealth AI OS V7
 
-AI Advisor Test
+Advisor AI Test
 
 */
 
-import AIAdvisor from "../advisor.js";
+import Advisor
 
-import WealthScoreEngine
+from "../advisor.js";
 
-from "../../core/wealthScore/wealthScoreEngine.js";
+import ModuleRegistry
 
-import PortfolioEngine
+from "../../core/registry/moduleRegistry.js";
 
-from "../../core/portfolio/portfolioEngine.js";
+import EngineRegistry
 
-// =====================
-
-// Prepare Data
+from "../../core/engines/engineRegistry.js";
 
 // =====================
 
-WealthScoreEngine.clear();
+// Mock Required Modules
 
-PortfolioEngine.clear();
+// =====================
 
-WealthScoreEngine.set(
+ModuleRegistry.register(
 
-    "NET_WORTH",
-
-    90
-
-);
-
-WealthScoreEngine.set(
-
-    "CASH_FLOW",
-
-    80
-
-);
-
-WealthScoreEngine.set(
-
-    "INVESTMENT",
-
-    70
-
-);
-
-PortfolioEngine.add(
+    "assets",
 
     {
 
         name:
 
-        "VOO",
+        "Assets Module V7"
 
-        type:
+    }
 
-        "STOCK",
+);
 
-        value:
+ModuleRegistry.register(
 
-        100000
+    "income",
+
+    {
+
+        name:
+
+        "Income Module V7"
+
+    }
+
+);
+
+ModuleRegistry.register(
+
+    "liability",
+
+    {
+
+        name:
+
+        "Liability Module V7"
+
+    }
+
+);
+
+ModuleRegistry.register(
+
+    "cashflow",
+
+    {
+
+        name:
+
+        "Cashflow Module V7"
+
+    }
+
+);
+
+ModuleRegistry.register(
+
+    "investment",
+
+    {
+
+        name:
+
+        "Investment Module V7"
+
+    }
+
+);
+
+ModuleRegistry.register(
+
+    "tax",
+
+    {
+
+        name:
+
+        "Tax Module V7"
 
     }
 
@@ -72,158 +110,216 @@ PortfolioEngine.add(
 
 // =====================
 
-// Basic Ask Test
+// Mock Engine
 
 // =====================
 
-const result =
+EngineRegistry.register(
 
-AIAdvisor.ask(
+    "wealth",
 
-    "我的财富情况怎么样？"
+    {
+
+        analyze(){
+
+            return {};
+
+        }
+
+    }
 
 );
+
+EngineRegistry.register(
+
+    "cashflow",
+
+    {
+
+        report(){
+
+            return {};
+
+        }
+
+    }
+
+);
+
+// =====================
+
+// Basic Test
+
+// =====================
+
+if(
+
+    Advisor.name !==
+
+    "Family Wealth Advisor AI V7"
+
+){
+
+    throw new Error(
+
+        "Advisor name failed"
+
+    );
+
+}
+
+if(
+
+    Advisor.version !==
+
+    "7.0"
+
+){
+
+    throw new Error(
+
+        "Advisor version failed"
+
+    );
+
+}
+
+if(
+
+    Advisor.status !==
+
+    "READY"
+
+){
+
+    throw new Error(
+
+        "Advisor status failed"
+
+    );
+
+}
+
+// =====================
+
+// Module Test
+
+// =====================
+
+const modules =
+
+Advisor.modules();
+
+if(
+
+    modules.length === 0
+
+){
+
+    throw new Error(
+
+        "Advisor modules failed"
+
+    );
+
+}
+
+// =====================
+
+// Engine Test
+
+// =====================
+
+const engines =
+
+Advisor.engines();
+
+if(
+
+    engines.length === 0
+
+){
+
+    throw new Error(
+
+        "Advisor engines failed"
+
+    );
+
+}
+
+// =====================
+
+// Analyze Test
+
+// =====================
+
+const analysis =
+
+Advisor.analyze();
+
+if(
+
+    !analysis.profile
+
+){
+
+    throw new Error(
+
+        "Advisor analysis profile failed"
+
+    );
+
+}
+
+if(
+
+    !analysis.recommendations
+
+){
+
+    throw new Error(
+
+        "Advisor recommendations failed"
+
+    );
+
+}
+
+// =====================
+
+// Wealth Report Test
+
+// =====================
+
+const report =
+
+Advisor.wealthReport();
+
+if(
+
+    report.engine !==
+
+    "Wealth Engine Connected"
+
+){
+
+    throw new Error(
+
+        "Advisor wealth report failed"
+
+    );
+
+}
+
+// =====================
+
+// Final
+
+// =====================
 
 console.log(
 
-    "AI Result:",
-
-    result
-
-);
-
-if(
-
-    !result.analysis
-
-){
-
-    throw new Error(
-
-        "AI analysis failed"
-
-    );
-
-}
-
-if(
-
-    !result.answer
-
-){
-
-    throw new Error(
-
-        "AI answer failed"
-
-    );
-
-}
-
-// =====================
-
-// Retirement Question Test
-
-// =====================
-
-const retirement =
-
-AIAdvisor.ask(
-
-    "我的退休准备够吗？"
-
-);
-
-console.log(
-
-    retirement.answer
-
-);
-
-if(
-
-    !retirement.answer.includes(
-
-        "退休分析"
-
-    )
-
-){
-
-    throw new Error(
-
-        "AI retirement routing failed"
-
-    );
-
-}
-
-// =====================
-
-// Investment Question Test
-
-// =====================
-
-const investment =
-
-AIAdvisor.ask(
-
-    "我的投资组合怎么样？"
-
-);
-
-if(
-
-    !investment.answer.includes(
-
-        "投资分析"
-
-    )
-
-){
-
-    throw new Error(
-
-        "AI investment routing failed"
-
-    );
-
-}
-
-// =====================
-
-// Tax Question Test
-
-// =====================
-
-const tax =
-
-AIAdvisor.ask(
-
-    "如何优化税务？"
-
-);
-
-if(
-
-    !tax.answer.includes(
-
-        "税务分析"
-
-    )
-
-){
-
-    throw new Error(
-
-        "AI tax routing failed"
-
-    );
-
-}
-
-console.log(
-
-    "AI Advisor Test Passed"
+    "Advisor AI V7 Test Passed"
 
 );
