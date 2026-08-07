@@ -16,6 +16,10 @@ import EngineRegistry
 
 from "../core/engines/engineRegistry.js";
 
+import AdvisorReport
+
+from "./advisorReport.js";
+
 const Advisor = {
 
     name:
@@ -92,101 +96,27 @@ const Advisor = {
 
         );
 
-        return {
-
-            profile:
+        return AdvisorReport.generate(
 
             {
 
-                modules:
+                assets,
 
-                this.modules(),
+                income,
 
-                engines:
+                liabilities:
 
-                this.engines()
+                liability,
 
-            },
+                cashflow,
 
-            recommendations:
-
-            {
-
-                asset:
-
-                assets
-
-                ?
-
-                "Asset analysis available"
-
-                :
-
-                "Asset module unavailable",
-
-                income:
-
-                income
-
-                ?
-
-                "Income analysis available"
-
-                :
-
-                "Income module unavailable",
-
-                liability:
-
-                liability
-
-                ?
-
-                "Liability analysis available"
-
-                :
-
-                "Liability module unavailable",
-
-                cashflow:
-
-                cashflow
-
-                ?
-
-                "Cashflow analysis available"
-
-                :
-
-                "Cashflow module unavailable",
-
-                investment:
-
-                investment
-
-                ?
-
-                "Investment analysis available"
-
-                :
-
-                "Investment module unavailable",
-
-                tax:
+                investment,
 
                 tax
 
-                ?
-
-                "Tax analysis available"
-
-                :
-
-                "Tax module unavailable"
-
             }
 
-        };
+        );
 
     },
 
@@ -200,23 +130,43 @@ const Advisor = {
 
         );
 
+        const cashflowEngine =
+
+        EngineRegistry.get(
+
+            "cashflow"
+
+        );
+
         return {
 
-            engine:
+            advisor:
+
+            this.name,
+
+            wealthEngine:
 
             wealthEngine
 
             ?
 
-            "Wealth Engine Connected"
+            "CONNECTED"
 
             :
 
-            "Wealth Engine Missing",
+            "MISSING",
 
-            advisor:
+            cashflowEngine:
 
-            this.name
+            cashflowEngine
+
+            ?
+
+            "CONNECTED"
+
+            :
+
+            "MISSING"
 
         };
 
