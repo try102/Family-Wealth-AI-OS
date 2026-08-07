@@ -64,6 +64,10 @@ import CashflowModule
 
 from "../modules/cashflowModule.js";
 
+import AssetsModule
+
+from "../modules/assetsModule.js";
+
 // =====================
 
 // Tax Instance
@@ -157,6 +161,14 @@ const SystemBootstrap = {
             "cashflow",
 
             CashflowModule
+
+        );
+
+        ModuleRegistry.register(
+
+            "assets",
+
+            AssetsModule
 
         );
 
