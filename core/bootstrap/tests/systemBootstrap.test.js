@@ -2,7 +2,7 @@
 
 Family Wealth AI OS
 
-System Bootstrap Test
+System Bootstrap Test V7
 
 */
 
@@ -74,7 +74,9 @@ console.log(
 
 if(
 
-    result.status !== "READY"
+    result.status !==
+
+    "READY"
 
 ){
 
@@ -144,7 +146,9 @@ if(
 
 if(
 
-    tax.constructor.name !== "TaxFacade"
+    tax.constructor.name !==
+
+    "TaxFacade"
 
 ){
 
@@ -156,8 +160,74 @@ if(
 
 }
 
+// =====================
+
+// Liability Module Test
+
+// =====================
+
+const liability =
+
+ModuleRegistry.get(
+
+    "liability"
+
+);
+
+if(
+
+    !liability
+
+){
+
+    throw new Error(
+
+        "Liability module not registered"
+
+    );
+
+}
+
+if(
+
+    liability.name !==
+
+    "Liability Module V7"
+
+){
+
+    throw new Error(
+
+        "Liability module name failed"
+
+    );
+
+}
+
+if(
+
+    liability.status !==
+
+    "READY"
+
+){
+
+    throw new Error(
+
+        "Liability module status failed"
+
+    );
+
+}
+
+// =====================
+
+// Final
+
+// =====================
+
 console.log(
 
-    "System Bootstrap Test Passed"
+    "System Bootstrap V7 Test Passed"
 
 );
