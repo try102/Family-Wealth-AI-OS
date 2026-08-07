@@ -98,13 +98,15 @@ ModuleRegistry.list();
 
 console.log(
 
-    "Modules:",
+    "Registered Modules:",
 
     modules
 
 );
 
 const requiredModules = [
+
+    "assets",
 
     "investment",
 
@@ -122,13 +124,17 @@ requiredModules.forEach(
 
     name => {
 
+        const module =
+
+        ModuleRegistry.get(
+
+            name
+
+        );
+
         if(
 
-            !ModuleRegistry.get(
-
-                name
-
-            )
+            !module
 
         ){
 
@@ -158,7 +164,7 @@ EngineRegistry.list();
 
 console.log(
 
-    "Engines:",
+    "Registered Engines:",
 
     engines
 
@@ -176,13 +182,17 @@ requiredEngines.forEach(
 
     name => {
 
+        const engine =
+
+        EngineRegistry.get(
+
+            name
+
+        );
+
         if(
 
-            !EngineRegistry.get(
-
-                name
-
-            )
+            !engine
 
         ){
 
@@ -202,7 +212,7 @@ requiredEngines.forEach(
 
 // =====================
 
-// Wealth Engine Type Test
+// Wealth Engine Test
 
 // =====================
 
@@ -232,7 +242,7 @@ if(
 
 // =====================
 
-// Cashflow Engine Type Test
+// Cashflow Engine Test
 
 // =====================
 
@@ -255,6 +265,36 @@ if(
     throw new Error(
 
         "Cashflow Engine invalid"
+
+    );
+
+}
+
+// =====================
+
+// Assets Module Test
+
+// =====================
+
+const assetsModule =
+
+ModuleRegistry.get(
+
+    "assets"
+
+);
+
+if(
+
+    assetsModule.name !==
+
+    "Assets Module V7"
+
+){
+
+    throw new Error(
+
+        "Assets Module invalid"
 
     );
 
