@@ -22,6 +22,10 @@ import EngineRegistry
 
 from "../../engines/engineRegistry.js";
 
+import AIRegistry
+
+from "../../ai/aiRegistry.js";
+
 // =====================
 
 // Start System
@@ -42,7 +46,7 @@ console.log(
 
 // =====================
 
-// Status Test
+// Status
 
 // =====================
 
@@ -64,7 +68,7 @@ if(
 
 // =====================
 
-// Advisor Test
+// Advisor
 
 // =====================
 
@@ -78,7 +82,7 @@ if(
 
     throw new Error(
 
-        "Advisor loading failed"
+        "Advisor failed"
 
     );
 
@@ -94,14 +98,6 @@ const agents =
 
 AgentRegistry.list();
 
-console.log(
-
-    "Agents:",
-
-    agents
-
-);
-
 if(
 
     agents.length === 0
@@ -110,7 +106,7 @@ if(
 
     throw new Error(
 
-        "No agents registered"
+        "Agents missing"
 
     );
 
@@ -142,17 +138,13 @@ requiredModules.forEach(
 
     name => {
 
-        const module =
-
-        ModuleRegistry.get(
-
-            name
-
-        );
-
         if(
 
-            !module
+            !ModuleRegistry.get(
+
+                name
+
+            )
 
         ){
 
@@ -188,17 +180,13 @@ requiredEngines.forEach(
 
     name => {
 
-        const engine =
-
-        EngineRegistry.get(
-
-            name
-
-        );
-
         if(
 
-            !engine
+            !EngineRegistry.get(
+
+                name
+
+            )
 
         ){
 
@@ -218,59 +206,43 @@ requiredEngines.forEach(
 
 // =====================
 
-// Wealth Engine Test
+// AI Test
 
 // =====================
 
-const wealthEngine =
+const advisorAI =
 
-EngineRegistry.get(
+AIRegistry.get(
 
-    "wealth"
+    "advisor"
 
 );
 
 if(
 
-    typeof wealthEngine.analyze !==
-
-    "function"
+    !advisorAI
 
 ){
 
     throw new Error(
 
-        "Wealth Engine invalid"
+        "Advisor AI missing"
 
     );
 
 }
 
-// =====================
-
-// Cashflow Engine Test
-
-// =====================
-
-const cashflowEngine =
-
-EngineRegistry.get(
-
-    "cashflow"
-
-);
-
 if(
 
-    typeof cashflowEngine.report !==
+    advisorAI.name !==
 
-    "function"
+    "Family Wealth Advisor AI V7"
 
 ){
 
     throw new Error(
 
-        "Cashflow Engine invalid"
+        "Advisor AI invalid"
 
     );
 
