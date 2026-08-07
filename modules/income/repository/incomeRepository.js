@@ -4,11 +4,27 @@ Family Wealth AI OS V7
 
 Income Repository
 
-收入数据存储层
+收入数据仓库层
+
+连接：
+
+Income Module
+
+↓
+
+Database Manager
+
+↓
+
+Storage Manager
 
 */
 
-const incomeStorage = [];
+import Database from "../../../storage/database.js";
+
+// 初始化数据库
+
+Database.init();
 
 const IncomeRepository = {
 
@@ -24,13 +40,13 @@ const IncomeRepository = {
 
     ){
 
-        incomeStorage.push(
+        return Database.insert(
+
+            "incomes",
 
             income
 
         );
-
-        return income;
 
     },
 
@@ -42,7 +58,11 @@ const IncomeRepository = {
 
     findAll(){
 
-        return incomeStorage;
+        return Database.find(
+
+            "incomes"
+
+        );
 
     },
 
@@ -52,13 +72,25 @@ const IncomeRepository = {
 
     ){
 
-        return incomeStorage.find(
+        const list =
+
+        Database.find(
+
+            "incomes"
+
+        );
+
+        return list.find(
 
             item =>
 
             item.id === id
 
-        );
+        )
+
+        ||
+
+        null;
 
     },
 
@@ -76,9 +108,17 @@ const IncomeRepository = {
 
     ){
 
+        const list =
+
+        Database.find(
+
+            "incomes"
+
+        );
+
         const index =
 
-        incomeStorage.findIndex(
+        list.findIndex(
 
             item =>
 
@@ -96,11 +136,11 @@ const IncomeRepository = {
 
         }
 
-        incomeStorage[index] = {
+        list[index] = {
 
             ...
 
-            incomeStorage[index],
+            list[index],
 
             ...
 
@@ -108,7 +148,9 @@ const IncomeRepository = {
 
         };
 
-        return incomeStorage[index];
+        Database.save();
+
+        return list[index];
 
     },
 
@@ -124,9 +166,17 @@ const IncomeRepository = {
 
     ){
 
+        const list =
+
+        Database.find(
+
+            "incomes"
+
+        );
+
         const index =
 
-        incomeStorage.findIndex(
+        list.findIndex(
 
             item =>
 
@@ -144,13 +194,15 @@ const IncomeRepository = {
 
         }
 
-        incomeStorage.splice(
+        list.splice(
 
             index,
 
             1
 
         );
+
+        Database.save();
 
         return true;
 
@@ -164,7 +216,9 @@ const IncomeRepository = {
 
     clear(){
 
-        incomeStorage.length = 0;
+        Database.tables.incomes = [];
+
+        Database.save();
 
     }
 
