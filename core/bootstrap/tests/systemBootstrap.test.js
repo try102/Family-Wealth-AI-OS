@@ -66,7 +66,11 @@ console.log(
 
 );
 
-// Simple Assertions
+// =====================
+
+// Basic Assertions
+
+// =====================
 
 if(
 
@@ -105,6 +109,48 @@ if(
     throw new Error(
 
         "No modules registered"
+
+    );
+
+}
+
+// =====================
+
+// Tax Module Test
+
+// =====================
+
+const tax =
+
+ModuleRegistry.get(
+
+    "tax"
+
+);
+
+if(
+
+    !tax
+
+){
+
+    throw new Error(
+
+        "Tax module not registered"
+
+    );
+
+}
+
+if(
+
+    tax.constructor.name !== "TaxFacade"
+
+){
+
+    throw new Error(
+
+        "Tax module type failed"
 
     );
 
