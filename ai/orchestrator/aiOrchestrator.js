@@ -8,6 +8,8 @@ AI Orchestrator Layer
 
 import TaxAdvisorAI from "../taxAI/taxAdvisorAI.js";
 
+import InvestmentAI from "../../modules/investment/ai/investmentAI.js";
+
 // =====================
 
 // AI Orchestrator
@@ -26,6 +28,10 @@ class AIOrchestrator {
 
         new TaxAdvisorAI();
 
+        this.investmentAI =
+
+        InvestmentAI;
+
     }
 
     process(
@@ -33,6 +39,12 @@ class AIOrchestrator {
         request
 
     ){
+
+        // =====================
+
+        // Tax Request
+
+        // =====================
 
         if(
 
@@ -49,6 +61,36 @@ class AIOrchestrator {
             );
 
         }
+
+        // =====================
+
+        // Investment Request
+
+        // =====================
+
+        if(
+
+            request.type ===
+
+            "investment"
+
+        ){
+
+            return this.investmentAI
+
+            .generateAdvice(
+
+                request.question
+
+            );
+
+        }
+
+        // =====================
+
+        // Default
+
+        // =====================
 
         return {
 
