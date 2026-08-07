@@ -42,11 +42,11 @@ if(
 
 // =====================
 
-// Tax Request Test
+// Tax Routing Test
 
 // =====================
 
-const result =
+const taxResult =
 
 orchestrator.process({
 
@@ -60,21 +60,29 @@ orchestrator.process({
 
 });
 
-// =====================
-
-// Result Test
-
-// =====================
-
 if(
 
-    !result
+    !taxResult
 
 ){
 
     throw new Error(
 
-        "Orchestrator result failed"
+        "Tax routing failed"
+
+    );
+
+}
+
+if(
+
+    !taxResult.advice
+
+){
+
+    throw new Error(
+
+        "Tax AI response failed"
 
     );
 
@@ -82,41 +90,63 @@ if(
 
 // =====================
 
-// Question Test
+// Investment Routing Test
 
 // =====================
 
+const investmentResult =
+
+orchestrator.process({
+
+    type:
+
+    "investment",
+
+    question:
+
+    "请分析我的投资组合"
+
+});
+
 if(
 
-    result.question !==
-
-    "请分析我的投资税务情况"
+    !investmentResult
 
 ){
 
     throw new Error(
 
-        "Orchestrator question failed"
+        "Investment routing failed"
 
     );
 
 }
 
-// =====================
-
-// Advice Test
-
-// =====================
-
 if(
 
-    !result.advice
+    investmentResult.question !==
+
+    "请分析我的投资组合"
 
 ){
 
     throw new Error(
 
-        "Tax AI routing failed"
+        "Investment question failed"
+
+    );
+
+}
+
+if(
+
+    !investmentResult.recommendation
+
+){
+
+    throw new Error(
+
+        "Investment AI response failed"
 
     );
 
