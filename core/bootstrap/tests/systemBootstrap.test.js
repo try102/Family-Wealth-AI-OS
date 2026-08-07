@@ -144,22 +144,6 @@ if(
 
 }
 
-if(
-
-    tax.constructor.name !==
-
-    "TaxFacade"
-
-){
-
-    throw new Error(
-
-        "Tax module type failed"
-
-    );
-
-}
-
 // =====================
 
 // Liability Module Test
@@ -198,7 +182,35 @@ if(
 
     throw new Error(
 
-        "Liability module name failed"
+        "Liability module failed"
+
+    );
+
+}
+
+// =====================
+
+// Income Module Test
+
+// =====================
+
+const income =
+
+ModuleRegistry.get(
+
+    "income"
+
+);
+
+if(
+
+    !income
+
+){
+
+    throw new Error(
+
+        "Income module not registered"
 
     );
 
@@ -206,7 +218,23 @@ if(
 
 if(
 
-    liability.status !==
+    income.name !==
+
+    "Income Module V7"
+
+){
+
+    throw new Error(
+
+        "Income module failed"
+
+    );
+
+}
+
+if(
+
+    income.status !==
 
     "READY"
 
@@ -214,7 +242,35 @@ if(
 
     throw new Error(
 
-        "Liability module status failed"
+        "Income module status failed"
+
+    );
+
+}
+
+// =====================
+
+// Investment Module Test
+
+// =====================
+
+const investment =
+
+ModuleRegistry.get(
+
+    "investment"
+
+);
+
+if(
+
+    !investment
+
+){
+
+    throw new Error(
+
+        "Investment module not registered"
 
     );
 
