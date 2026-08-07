@@ -1,14 +1,18 @@
 /*
 
-Family Wealth AI OS
+Family Wealth AI OS V7
 
-System Bootstrap V7
+System Bootstrap
 
 */
 
-import ModuleRegistry from "../registry/moduleRegistry.js";
+import ModuleRegistry
 
-import AgentRegistry from "../registry/agentRegistry.js";
+from "../registry/moduleRegistry.js";
+
+import AgentRegistry
+
+from "../registry/agentRegistry.js";
 
 // =====================
 
@@ -16,53 +20,63 @@ import AgentRegistry from "../registry/agentRegistry.js";
 
 // =====================
 
-import InvestmentAgent 
+import InvestmentAgent
 
 from "../../modules/investment/agent/investmentAgent.js";
 
 // =====================
 
-// Tax Module
+// Tax
 
 // =====================
 
-import TaxFacade 
+import TaxFacade
 
 from "../../tax/taxFacade.js";
 
 // =====================
 
-// Liability Module
+// Liability
 
 // =====================
 
-import LiabilityModule 
+import LiabilityModule
 
 from "../modules/liabilityModule.js";
 
 // =====================
 
-// Income Module
+// Income
 
 // =====================
 
-import IncomeModule 
+import IncomeModule
 
 from "../modules/incomeModule.js";
 
 // =====================
 
-// Create Instances
+// Cashflow
+
+// =====================
+
+import CashflowModule
+
+from "../modules/cashflowModule.js";
+
+// =====================
+
+// Tax Instance
 
 // =====================
 
 const taxModule =
 
-    new TaxFacade();
+new TaxFacade();
 
 // =====================
 
-// System Bootstrap
+// Bootstrap
 
 // =====================
 
@@ -135,6 +149,14 @@ const SystemBootstrap = {
             "income",
 
             IncomeModule
+
+        );
+
+        ModuleRegistry.register(
+
+            "cashflow",
+
+            CashflowModule
 
         );
 
