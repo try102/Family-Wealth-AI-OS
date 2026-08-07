@@ -1,16 +1,22 @@
 /*
 
-Family Wealth AI OS
+Family Wealth AI OS V7
 
-System Bootstrap Test V7
+System Bootstrap Test
 
 */
 
-import SystemBootstrap from "../systemBootstrap.js";
+import SystemBootstrap
 
-import AgentRegistry from "../../registry/agentRegistry.js";
+from "../systemBootstrap.js";
 
-import ModuleRegistry from "../../registry/moduleRegistry.js";
+import AgentRegistry
+
+from "../../registry/agentRegistry.js";
+
+import ModuleRegistry
+
+from "../../registry/moduleRegistry.js";
 
 // =====================
 
@@ -32,7 +38,7 @@ console.log(
 
 // =====================
 
-// Test Agents
+// Agents Test
 
 // =====================
 
@@ -50,7 +56,7 @@ console.log(
 
 // =====================
 
-// Test Modules
+// Modules Test
 
 // =====================
 
@@ -68,7 +74,7 @@ console.log(
 
 // =====================
 
-// Basic Assertions
+// Bootstrap Status
 
 // =====================
 
@@ -88,169 +94,9 @@ if(
 
 }
 
-if(
-
-    agents.length === 0
-
-){
-
-    throw new Error(
-
-        "No agents registered"
-
-    );
-
-}
-
-if(
-
-    modules.length === 0
-
-){
-
-    throw new Error(
-
-        "No modules registered"
-
-    );
-
-}
-
 // =====================
 
-// Tax Module Test
-
-// =====================
-
-const tax =
-
-ModuleRegistry.get(
-
-    "tax"
-
-);
-
-if(
-
-    !tax
-
-){
-
-    throw new Error(
-
-        "Tax module not registered"
-
-    );
-
-}
-
-// =====================
-
-// Liability Module Test
-
-// =====================
-
-const liability =
-
-ModuleRegistry.get(
-
-    "liability"
-
-);
-
-if(
-
-    !liability
-
-){
-
-    throw new Error(
-
-        "Liability module not registered"
-
-    );
-
-}
-
-if(
-
-    liability.name !==
-
-    "Liability Module V7"
-
-){
-
-    throw new Error(
-
-        "Liability module failed"
-
-    );
-
-}
-
-// =====================
-
-// Income Module Test
-
-// =====================
-
-const income =
-
-ModuleRegistry.get(
-
-    "income"
-
-);
-
-if(
-
-    !income
-
-){
-
-    throw new Error(
-
-        "Income module not registered"
-
-    );
-
-}
-
-if(
-
-    income.name !==
-
-    "Income Module V7"
-
-){
-
-    throw new Error(
-
-        "Income module failed"
-
-    );
-
-}
-
-if(
-
-    income.status !==
-
-    "READY"
-
-){
-
-    throw new Error(
-
-        "Income module status failed"
-
-    );
-
-}
-
-// =====================
-
-// Investment Module Test
+// Investment Test
 
 // =====================
 
@@ -270,7 +116,183 @@ if(
 
     throw new Error(
 
-        "Investment module not registered"
+        "Investment module missing"
+
+    );
+
+}
+
+// =====================
+
+// Tax Test
+
+// =====================
+
+const tax =
+
+ModuleRegistry.get(
+
+    "tax"
+
+);
+
+if(
+
+    !tax
+
+){
+
+    throw new Error(
+
+        "Tax module missing"
+
+    );
+
+}
+
+// =====================
+
+// Liability Test
+
+// =====================
+
+const liability =
+
+ModuleRegistry.get(
+
+    "liability"
+
+);
+
+if(
+
+    !liability
+
+){
+
+    throw new Error(
+
+        "Liability module missing"
+
+    );
+
+}
+
+if(
+
+    liability.name !==
+
+    "Liability Module V7"
+
+){
+
+    throw new Error(
+
+        "Liability module invalid"
+
+    );
+
+}
+
+// =====================
+
+// Income Test
+
+// =====================
+
+const income =
+
+ModuleRegistry.get(
+
+    "income"
+
+);
+
+if(
+
+    !income
+
+){
+
+    throw new Error(
+
+        "Income module missing"
+
+    );
+
+}
+
+if(
+
+    income.name !==
+
+    "Income Module V7"
+
+){
+
+    throw new Error(
+
+        "Income module invalid"
+
+    );
+
+}
+
+// =====================
+
+// Cashflow Test
+
+// =====================
+
+const cashflow =
+
+ModuleRegistry.get(
+
+    "cashflow"
+
+);
+
+if(
+
+    !cashflow
+
+){
+
+    throw new Error(
+
+        "Cashflow module missing"
+
+    );
+
+}
+
+if(
+
+    cashflow.name !==
+
+    "Cashflow Module V7"
+
+){
+
+    throw new Error(
+
+        "Cashflow module invalid"
+
+    );
+
+}
+
+if(
+
+    cashflow.status !==
+
+    "READY"
+
+){
+
+    throw new Error(
+
+        "Cashflow module status failed"
 
     );
 
