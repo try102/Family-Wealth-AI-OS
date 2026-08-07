@@ -16,6 +16,24 @@ from "../registry/agentRegistry.js";
 
 // =====================
 
+// Engine Registry
+
+// =====================
+
+import EngineRegistry
+
+from "../engines/engineRegistry.js";
+
+import WealthEngine
+
+from "../engines/wealth/wealthEngine.js";
+
+import CashFlowEngine
+
+from "../engines/cashflow/cashFlowEngine.js";
+
+// =====================
+
 // Agents
 
 // =====================
@@ -26,7 +44,7 @@ from "../../modules/investment/agent/investmentAgent.js";
 
 // =====================
 
-// Tax
+// Modules
 
 // =====================
 
@@ -34,31 +52,13 @@ import TaxFacade
 
 from "../../tax/taxFacade.js";
 
-// =====================
-
-// Liability
-
-// =====================
-
 import LiabilityModule
 
 from "../modules/liabilityModule.js";
 
-// =====================
-
-// Income
-
-// =====================
-
 import IncomeModule
 
 from "../modules/incomeModule.js";
-
-// =====================
-
-// Cashflow
-
-// =====================
 
 import CashflowModule
 
@@ -160,6 +160,28 @@ const SystemBootstrap = {
 
         );
 
+        // =====================
+
+        // Register Engines
+
+        // =====================
+
+        EngineRegistry.register(
+
+            "wealth",
+
+            WealthEngine
+
+        );
+
+        EngineRegistry.register(
+
+            "cashflow",
+
+            CashFlowEngine
+
+        );
+
         console.log(
 
             "Registered Agents:",
@@ -173,6 +195,14 @@ const SystemBootstrap = {
             "Registered Modules:",
 
             ModuleRegistry.list()
+
+        );
+
+        console.log(
+
+            "Registered Engines:",
+
+            EngineRegistry.list()
 
         );
 
