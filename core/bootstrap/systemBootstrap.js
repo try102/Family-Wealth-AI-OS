@@ -34,9 +34,13 @@ from "../engines/cashflow/cashFlowEngine.js";
 
 // =====================
 
-// Advisor AI
+// AI Registry
 
 // =====================
+
+import AIRegistry
+
+from "../../ai/aiRegistry.js";
 
 import Advisor
 
@@ -106,7 +110,7 @@ const SystemBootstrap = {
 
         // =====================
 
-        // Register Agents
+        // Agents
 
         // =====================
 
@@ -120,7 +124,7 @@ const SystemBootstrap = {
 
         // =====================
 
-        // Register Modules
+        // Modules
 
         // =====================
 
@@ -184,7 +188,7 @@ const SystemBootstrap = {
 
         // =====================
 
-        // Register Engines
+        // Engines
 
         // =====================
 
@@ -206,7 +210,21 @@ const SystemBootstrap = {
 
         // =====================
 
-        // System Status
+        // AI
+
+        // =====================
+
+        AIRegistry.register(
+
+            "advisor",
+
+            Advisor
+
+        );
+
+        // =====================
+
+        // Logs
 
         // =====================
 
@@ -236,9 +254,9 @@ const SystemBootstrap = {
 
         console.log(
 
-            "Advisor:",
+            "Registered AI:",
 
-            Advisor.name
+            AIRegistry.list()
 
         );
 
