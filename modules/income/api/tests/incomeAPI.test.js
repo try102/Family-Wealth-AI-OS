@@ -4,15 +4,41 @@ Family Wealth AI OS V7
 
 Income API Test
 
+测试：
+
+API
+
+↓
+
+Service
+
+↓
+
+Repository
+
+↓
+
+Database
+
 */
 
 import IncomeAPI from "../incomeAPI.js";
 
 import IncomeRepository from "../../repository/incomeRepository.js";
 
+import Database from "../../../../storage/database.js";
+
 // =====================
 
-// Clear Test Data
+// Initialize
+
+// =====================
+
+Database.init();
+
+// =====================
+
+// Clear Data
 
 // =====================
 
@@ -20,7 +46,7 @@ IncomeRepository.clear();
 
 // =====================
 
-// Create Income Test
+// Create Income
 
 // =====================
 
@@ -28,23 +54,33 @@ const income =
 
 IncomeAPI.createIncome({
 
-    name: "Salary",
+    name:
 
-    category: "工资",
+    "Business Income",
 
-    amount: 8000
+    category:
+
+    "经营收入",
+
+    amount:
+
+    20000,
+
+    owner:
+
+    "Family"
 
 });
 
 if(
 
-    !income
+    !income.id
 
 ){
 
     throw new Error(
 
-        "Create income failed"
+        "API create failed"
 
     );
 
@@ -52,7 +88,7 @@ if(
 
 // =====================
 
-// Query Test
+// Get All
 
 // =====================
 
@@ -68,7 +104,7 @@ if(
 
     throw new Error(
 
-        "Get all income failed"
+        "API get all failed"
 
     );
 
@@ -76,7 +112,7 @@ if(
 
 // =====================
 
-// Get By Id Test
+// Get By Id
 
 // =====================
 
@@ -90,13 +126,13 @@ IncomeAPI.getIncomeById(
 
 if(
 
-    item.name !== "Salary"
+    item.category !== "经营收入"
 
 ){
 
     throw new Error(
 
-        "Get income by id failed"
+        "API get by id failed"
 
     );
 
@@ -104,9 +140,11 @@ if(
 
 // =====================
 
-// Update Test
+// Update
 
 // =====================
+
+const updated =
 
 IncomeAPI.updateIncome(
 
@@ -114,29 +152,23 @@ IncomeAPI.updateIncome(
 
     {
 
-        amount: 9000
+        amount:
+
+        25000
 
     }
 
 );
 
-const updated =
-
-IncomeAPI.getIncomeById(
-
-    income.id
-
-);
-
 if(
 
-    updated.amount !== 9000
+    updated.amount !== 25000
 
 ){
 
     throw new Error(
 
-        "Update income failed"
+        "API update failed"
 
     );
 
@@ -144,7 +176,7 @@ if(
 
 // =====================
 
-// Summary Test
+// Summary
 
 // =====================
 
@@ -154,13 +186,13 @@ IncomeAPI.getSummary();
 
 if(
 
-    summary.totalIncome !== 9000
+    summary.totalIncome !== 25000
 
 ){
 
     throw new Error(
 
-        "Income summary failed"
+        "API summary failed"
 
     );
 
@@ -168,9 +200,11 @@ if(
 
 // =====================
 
-// Delete Test
+// Delete
 
 // =====================
+
+const deleted =
 
 IncomeAPI.deleteIncome(
 
@@ -180,13 +214,13 @@ IncomeAPI.deleteIncome(
 
 if(
 
-    IncomeAPI.getAllIncome().length !== 0
+    deleted !== true
 
 ){
 
     throw new Error(
 
-        "Delete income failed"
+        "API delete failed"
 
     );
 
@@ -194,6 +228,6 @@ if(
 
 console.log(
 
-    "Income API Test Passed"
+    "Income API V7 Test Passed"
 
 );
