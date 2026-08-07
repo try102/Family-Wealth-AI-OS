@@ -34,6 +34,16 @@ from "../engines/cashflow/cashFlowEngine.js";
 
 // =====================
 
+// Advisor AI
+
+// =====================
+
+import Advisor
+
+from "../../ai/advisor.js";
+
+// =====================
+
 // Agents
 
 // =====================
@@ -194,6 +204,12 @@ const SystemBootstrap = {
 
         );
 
+        // =====================
+
+        // System Status
+
+        // =====================
+
         console.log(
 
             "Registered Agents:",
@@ -218,11 +234,23 @@ const SystemBootstrap = {
 
         );
 
+        console.log(
+
+            "Advisor:",
+
+            Advisor.name
+
+        );
+
         return {
 
             status:
 
-            "READY"
+            "READY",
+
+            advisor:
+
+            Advisor.name
 
         };
 
