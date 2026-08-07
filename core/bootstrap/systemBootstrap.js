@@ -16,7 +16,9 @@ import AgentRegistry from "../registry/agentRegistry.js";
 
 // =====================
 
-import InvestmentAgent from "../../modules/investment/agent/investmentAgent.js";
+import InvestmentAgent 
+
+from "../../modules/investment/agent/investmentAgent.js";
 
 // =====================
 
@@ -24,7 +26,9 @@ import InvestmentAgent from "../../modules/investment/agent/investmentAgent.js";
 
 // =====================
 
-import TaxFacade from "../../tax/taxFacade.js";
+import TaxFacade 
+
+from "../../tax/taxFacade.js";
 
 // =====================
 
@@ -32,7 +36,19 @@ import TaxFacade from "../../tax/taxFacade.js";
 
 // =====================
 
-import LiabilityModule from "../modules/liabilityModule.js";
+import LiabilityModule 
+
+from "../modules/liabilityModule.js";
+
+// =====================
+
+// Income Module
+
+// =====================
+
+import IncomeModule 
+
+from "../modules/incomeModule.js";
 
 // =====================
 
@@ -111,6 +127,14 @@ const SystemBootstrap = {
             "liability",
 
             LiabilityModule
+
+        );
+
+        ModuleRegistry.register(
+
+            "income",
+
+            IncomeModule
 
         );
 
