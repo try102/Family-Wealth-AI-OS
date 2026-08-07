@@ -2,142 +2,226 @@
 
 Family Wealth AI OS V7
 
-AI Advisor Orchestration Layer
+Advisor AI
+
+AI Wealth Orchestration Layer
 
 */
 
-import AdvisorAgent 
+import ModuleRegistry
 
-from "../agents/advisor/advisorAgent.js";
+from "../core/registry/moduleRegistry.js";
 
-const AIAdvisor = {
+import EngineRegistry
+
+from "../core/engines/engineRegistry.js";
+
+const Advisor = {
 
     name:
 
-    "Family Wealth AI Advisor V7",
+    "Family Wealth Advisor AI V7",
 
-    ask(
+    version:
 
-        question
+    "7.0",
 
-    ){
+    status:
 
-        const report =
+    "READY",
 
-        AdvisorAgent.analyze();
+    modules(){
+
+        return ModuleRegistry.list();
+
+    },
+
+    engines(){
+
+        return EngineRegistry.list();
+
+    },
+
+    analyze(){
+
+        const assets =
+
+        ModuleRegistry.get(
+
+            "assets"
+
+        );
+
+        const income =
+
+        ModuleRegistry.get(
+
+            "income"
+
+        );
+
+        const liability =
+
+        ModuleRegistry.get(
+
+            "liability"
+
+        );
+
+        const cashflow =
+
+        ModuleRegistry.get(
+
+            "cashflow"
+
+        );
+
+        const investment =
+
+        ModuleRegistry.get(
+
+            "investment"
+
+        );
+
+        const tax =
+
+        ModuleRegistry.get(
+
+            "tax"
+
+        );
 
         return {
 
-            question,
+            profile:
 
-            analysis:
+            {
 
-            report,
+                modules:
 
-            answer:
+                this.modules(),
 
-            this.generateAnswer(
+                engines:
 
-                question,
+                this.engines()
 
-                report
+            },
 
-            )
+            recommendations:
+
+            {
+
+                asset:
+
+                assets
+
+                ?
+
+                "Asset analysis available"
+
+                :
+
+                "Asset module unavailable",
+
+                income:
+
+                income
+
+                ?
+
+                "Income analysis available"
+
+                :
+
+                "Income module unavailable",
+
+                liability:
+
+                liability
+
+                ?
+
+                "Liability analysis available"
+
+                :
+
+                "Liability module unavailable",
+
+                cashflow:
+
+                cashflow
+
+                ?
+
+                "Cashflow analysis available"
+
+                :
+
+                "Cashflow module unavailable",
+
+                investment:
+
+                investment
+
+                ?
+
+                "Investment analysis available"
+
+                :
+
+                "Investment module unavailable",
+
+                tax:
+
+                tax
+
+                ?
+
+                "Tax analysis available"
+
+                :
+
+                "Tax module unavailable"
+
+            }
 
         };
 
     },
 
-    generateAnswer(
+    wealthReport(){
 
-        question,
+        const wealthEngine =
 
-        report
+        EngineRegistry.get(
 
-    ){
-
-        const score =
-
-        report.wealthScore.score;
-
-        if(
-
-            question.includes(
-
-                "退休"
-
-            )
-
-        ){
-
-            return (
-
-                "退休分析：当前财富评分为 "
-
-                +
-
-                score
-
-                +
-
-                "，建议继续关注现金流和退休资产覆盖。"
-
-            );
-
-        }
-
-        if(
-
-            question.includes(
-
-                "投资"
-
-            )
-
-        ){
-
-            return (
-
-                "投资分析：当前组合价值 "
-
-                +
-
-                report.portfolio.value
-
-                +
-
-                "，建议关注风险和资产配置。"
-
-            );
-
-        }
-
-        if(
-
-            question.includes(
-
-                "税"
-
-            )
-
-        ){
-
-            return (
-
-                "税务分析已生成，请结合收入和投资收益进一步优化。"
-
-            );
-
-        }
-
-        return (
-
-            "财富分析完成，请查看综合报告。"
+            "wealth"
 
         );
+
+        return {
+
+            engine:
+
+            wealthEngine
+
+            ?
+
+            "Wealth Engine Connected"
+
+            :
+
+            "Wealth Engine Missing",
+
+            advisor:
+
+            this.name
+
+        };
 
     }
 
 };
 
-export default AIAdvisor;
+export default Advisor;
