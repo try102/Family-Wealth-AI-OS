@@ -4,15 +4,41 @@ Family Wealth AI OS V7
 
 Income Service Test
 
+测试：
+
+Income Service
+
+↓
+
+Income Repository
+
+↓
+
+Database
+
+↓
+
+Storage
+
 */
 
 import IncomeService from "../incomeService.js";
 
 import IncomeRepository from "../../repository/incomeRepository.js";
 
+import Database from "../../../../storage/database.js";
+
 // =====================
 
-// Clear Test Data
+// Initialize
+
+// =====================
+
+Database.init();
+
+// =====================
+
+// Clear
 
 // =====================
 
@@ -20,31 +46,41 @@ IncomeRepository.clear();
 
 // =====================
 
-// Add Income Test
+// Create Test
 
 // =====================
 
-const salary =
+const income =
 
 IncomeService.addIncome({
 
-    name: "Salary",
+    name:
 
-    category: "工资",
+    "Salary",
 
-    amount: 10000
+    category:
+
+    "工资",
+
+    amount:
+
+    10000,
+
+    owner:
+
+    "Family"
 
 });
 
 if(
 
-    !salary
+    !income.id
 
 ){
 
     throw new Error(
 
-        "Add income failed"
+        "Create income failed"
 
     );
 
@@ -68,7 +104,7 @@ if(
 
     throw new Error(
 
-        "Query income failed"
+        "Get income failed"
 
     );
 
@@ -118,23 +154,19 @@ if(
 
 // =====================
 
+const updated =
+
 IncomeService.updateIncome(
 
-    salary.id,
+    income.id,
 
     {
 
-        amount: 12000
+        amount:
+
+        12000
 
     }
-
-);
-
-const updated =
-
-IncomeService.getIncomeById(
-
-    salary.id
 
 );
 
@@ -146,7 +178,7 @@ if(
 
     throw new Error(
 
-        "Update income failed"
+        "Update failed"
 
     );
 
@@ -158,21 +190,39 @@ if(
 
 // =====================
 
+const deleted =
+
 IncomeService.deleteIncome(
 
-    salary.id
+    income.id
 
 );
 
 if(
 
-    IncomeService.getAllIncome().length !== 0
+    deleted !== true
 
 ){
 
     throw new Error(
 
-        "Delete income failed"
+        "Delete failed"
+
+    );
+
+}
+
+if(
+
+    IncomeService.getAllIncome()
+
+    .length !== 0
+
+){
+
+    throw new Error(
+
+        "Delete verify failed"
 
     );
 
@@ -180,6 +230,6 @@ if(
 
 console.log(
 
-    "Income Service Test Passed"
+    "Income Service V7 Test Passed"
 
 );
