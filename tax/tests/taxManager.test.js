@@ -1,151 +1,173 @@
 /*
 
-========================================
-
-Family Wealth AI OS V7.0
+Family Wealth AI OS V7.7
 
 Tax Manager Test
 
-========================================
-
 */
 
-const TaxManager = require("../taxManager");
+import TaxManager from "../taxManager.js";
 
-describe("Tax Manager Test", ()=>{
+import TaxPlan from "../taxPlan.js";
 
-    test("Create Tax Plan", ()=>{
+// =====================
 
-        const manager = new TaxManager();
+// Create Manager
 
-        const plan = manager.createPlan({
+// =====================
 
-            year: 2026,
+const taxManager = new TaxManager();
 
-            income: 200000,
+// =====================
 
-            deductions: 30000
+// Create Tax Plans
 
-        });
+// =====================
 
-        expect(plan.year)
+const plan2026 = new TaxPlan({
 
-            .toBe(2026);
+    id:1,
 
-        expect(
+    name:"2026 Tax Plan",
 
-            manager.getAllPlans().length
+    taxYear:2026,
 
-        )
+    income:200000,
 
-        .toBe(1);
+    deductions:30000,
 
-    });
+    taxableIncome:170000,
 
-    test("Find Tax Plan By Year", ()=>{
-
-        const manager = new TaxManager();
-
-        manager.createPlan({
-
-            year: 2026,
-
-            income: 200000
-
-        });
-
-        const plan =
-
-            manager.getPlanByYear(2026);
-
-        expect(plan.income)
-
-            .toBe(200000);
-
-    });
-
-    test("Update Tax Plan", ()=>{
-
-        const manager = new TaxManager();
-
-        manager.createPlan({
-
-            year: 2026,
-
-            income: 200000
-
-        });
-
-        const updated =
-
-            manager.updatePlan(
-
-                2026,
-
-                {
-
-                    income:250000
-
-                }
-
-            );
-
-        expect(updated.income)
-
-            .toBe(250000);
-
-    });
-
-    test("Delete Tax Plan", ()=>{
-
-        const manager = new TaxManager();
-
-        manager.createPlan({
-
-            year:2026
-
-        });
-
-        const result =
-
-            manager.deletePlan(2026);
-
-        expect(result)
-
-            .toBe(true);
-
-        expect(
-
-            manager.getAllPlans().length
-
-        )
-
-        .toBe(0);
-
-    });
-
-    test("Tax Summary Calculation", ()=>{
-
-        const manager = new TaxManager();
-
-        manager.createPlan({
-
-            year:2026,
-
-            income:200000,
-
-            deductions:30000
-
-        });
-
-        const summary =
-
-            manager.getTaxSummary(2026);
-
-        expect(summary.taxableIncome)
-
-            .toBe(170000);
-
-    });
+    estimatedTax:35000
 
 });
+
+const plan2027 = new TaxPlan({
+
+    id:2,
+
+    name:"2027 Tax Plan",
+
+    taxYear:2027,
+
+    income:220000,
+
+    deductions:35000,
+
+    taxableIncome:185000,
+
+    estimatedTax:38000
+
+});
+
+// =====================
+
+// Add Test
+
+// =====================
+
+taxManager.addPlan(
+
+    plan2026
+
+);
+
+taxManager.addPlan(
+
+    plan2027
+
+);
+
+if(
+
+    taxManager.count() !== 2
+
+){
+
+    throw new Error(
+
+        "Tax Manager add failed"
+
+    );
+
+}
+
+// =====================
+
+// Get Plans Test
+
+// =====================
+
+if(
+
+    taxManager.getPlans().length !== 2
+
+){
+
+    throw new Error(
+
+        "Get plans failed"
+
+    );
+
+}
+
+// =====================
+
+// Find Year Test
+
+// =====================
+
+const result =
+
+    taxManager.getPlanByYear(
+
+        2026
+
+    );
+
+if(
+
+    result.taxYear !== 2026
+
+){
+
+    throw new Error(
+
+        "Find tax plan failed"
+
+    );
+
+}
+
+// =====================
+
+// Remove Test
+
+// =====================
+
+taxManager.removePlan(
+
+    1
+
+);
+
+if(
+
+    taxManager.count() !== 1
+
+){
+
+    throw new Error(
+
+        "Remove tax plan failed"
+
+    );
+
+}
+
+console.log(
+
+    "Tax Manager Test Passed"
+
+);
