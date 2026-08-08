@@ -34,17 +34,89 @@ const Advisor = {
 
     "READY",
 
+    // =====================
+
+    // Modules
+
+    // =====================
+
     modules(){
 
         return ModuleRegistry.list();
 
     },
 
+    // =====================
+
+    // Engines
+
+    // =====================
+
     engines(){
 
         return EngineRegistry.list();
 
     },
+
+    // =====================
+
+    // Wealth Analysis
+
+    // =====================
+
+    wealthAnalysis(
+
+        assets = [],
+
+        liabilities = [],
+
+        cashFlowData = {},
+
+        liquidityMonths = 0
+
+    ){
+
+        const wealthEngine =
+
+        EngineRegistry.get(
+
+            "wealth"
+
+        );
+
+        if(
+
+            !wealthEngine
+
+        ){
+
+            throw new Error(
+
+                "Wealth Engine unavailable"
+
+            );
+
+        }
+
+        return wealthEngine.analyze(
+
+            assets,
+
+            liabilities,
+
+            cashFlowData,
+
+            liquidityMonths
+
+        );
+
+    },
+
+    // =====================
+
+    // Advisor Analysis
+
+    // =====================
 
     analyze(){
 
@@ -119,6 +191,12 @@ const Advisor = {
         );
 
     },
+
+    // =====================
+
+    // Wealth Report
+
+    // =====================
 
     wealthReport(){
 
