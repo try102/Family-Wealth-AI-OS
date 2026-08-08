@@ -12,7 +12,7 @@ from "../advisorReport.js";
 
 // =====================
 
-// Basic Test
+// Basic Information
 
 // =====================
 
@@ -50,15 +50,43 @@ if(
 
 // =====================
 
-// Generate Test
+// Healthy Wealth Test
 
 // =====================
 
-const report =
+const healthyReport =
 
 AdvisorReport.generate(
 
     {
+
+        wealth:
+
+        {
+
+            netWorth:
+
+            800000,
+
+            wealthScore:
+
+            80,
+
+            liquidityMonths:
+
+            6,
+
+            cashFlow:
+
+            {
+
+                netCashFlow:
+
+                50000
+
+            }
+
+        },
 
         assets:
 
@@ -126,19 +154,21 @@ AdvisorReport.generate(
 
 // =====================
 
-// Result Check
+// Healthy Result
 
 // =====================
 
 if(
 
-    !report.wealthHealth
+    healthyReport.wealthHealth !==
+
+    "GOOD"
 
 ){
 
     throw new Error(
 
-        "Wealth health missing"
+        "Healthy wealth assessment failed"
 
     );
 
@@ -146,13 +176,79 @@ if(
 
 if(
 
-    !report.riskLevel
+    healthyReport.riskLevel !==
+
+    "LOW"
 
 ){
 
     throw new Error(
 
-        "Risk level missing"
+        "Healthy risk assessment failed"
+
+    );
+
+}
+
+if(
+
+    healthyReport.metrics.netWorth !==
+
+    800000
+
+){
+
+    throw new Error(
+
+        "Net worth metric failed"
+
+    );
+
+}
+
+if(
+
+    healthyReport.metrics.wealthScore !==
+
+    80
+
+){
+
+    throw new Error(
+
+        "Wealth score metric failed"
+
+    );
+
+}
+
+if(
+
+    healthyReport.metrics.liquidityMonths !==
+
+    6
+
+){
+
+    throw new Error(
+
+        "Liquidity metric failed"
+
+    );
+
+}
+
+if(
+
+    healthyReport.metrics.netCashFlow !==
+
+    50000
+
+){
+
+    throw new Error(
+
+        "Net cash flow metric failed"
 
     );
 
@@ -162,7 +258,7 @@ if(
 
     !Array.isArray(
 
-        report.recommendations
+        healthyReport.recommendations
 
     )
 
@@ -170,7 +266,7 @@ if(
 
     throw new Error(
 
-        "Recommendations missing"
+        "Healthy recommendations failed"
 
     );
 
@@ -180,7 +276,7 @@ if(
 
     !Array.isArray(
 
-        report.alerts
+        healthyReport.alerts
 
     )
 
@@ -188,7 +284,7 @@ if(
 
     throw new Error(
 
-        "Alerts missing"
+        "Healthy alerts failed"
 
     );
 
@@ -196,7 +292,7 @@ if(
 
 // =====================
 
-// Risk Logic Test
+// High Risk Test
 
 // =====================
 
@@ -206,13 +302,41 @@ AdvisorReport.generate(
 
     {
 
+        wealth:
+
+        {
+
+            netWorth:
+
+            300000,
+
+            wealthScore:
+
+            35,
+
+            liquidityMonths:
+
+            1,
+
+            cashFlow:
+
+            {
+
+                netCashFlow:
+
+                -20000
+
+            }
+
+        },
+
         liabilities:
 
         {
 
             debtRatio:
 
-            60
+            65
 
         },
 
@@ -222,7 +346,17 @@ AdvisorReport.generate(
 
             net:
 
-            -1000
+            -20000
+
+        },
+
+        tax:
+
+        {
+
+            status:
+
+            "NORMAL"
 
         }
 
@@ -230,21 +364,11 @@ AdvisorReport.generate(
 
 );
 
-if(
+// =====================
 
-    riskReport.riskLevel !==
+// Risk Result
 
-    "HIGH"
-
-){
-
-    throw new Error(
-
-        "Risk calculation failed"
-
-    );
-
-}
+// =====================
 
 if(
 
@@ -256,7 +380,347 @@ if(
 
     throw new Error(
 
-        "Health calculation failed"
+        "High risk wealth assessment failed"
+
+    );
+
+}
+
+if(
+
+    riskReport.riskLevel !==
+
+    "HIGH"
+
+){
+
+    throw new Error(
+
+        "High risk level failed"
+
+    );
+
+}
+
+if(
+
+    riskReport.recommendations.length < 3
+
+){
+
+    throw new Error(
+
+        "Risk recommendations failed"
+
+    );
+
+}
+
+if(
+
+    riskReport.alerts.length < 3
+
+){
+
+    throw new Error(
+
+        "Risk alerts failed"
+
+    );
+
+}
+
+// =====================
+
+// Negative Cash Flow Test
+
+// =====================
+
+const cashFlowReport =
+
+AdvisorReport.generate(
+
+    {
+
+        wealth:
+
+        {
+
+            netWorth:
+
+            700000,
+
+            wealthScore:
+
+            75,
+
+            liquidityMonths:
+
+            6,
+
+            cashFlow:
+
+            {
+
+                netCashFlow:
+
+                -5000
+
+            }
+
+        },
+
+        liabilities:
+
+        {
+
+            debtRatio:
+
+            20
+
+        },
+
+        cashflow:
+
+        {
+
+            net:
+
+            -5000
+
+        },
+
+        tax:
+
+        {
+
+            status:
+
+            "NORMAL"
+
+        }
+
+    }
+
+);
+
+// =====================
+
+// Cash Flow Result
+
+// =====================
+
+if(
+
+    cashFlowReport.wealthHealth !==
+
+    "WARNING"
+
+){
+
+    throw new Error(
+
+        "Negative cash flow health assessment failed"
+
+    );
+
+}
+
+if(
+
+    !cashFlowReport.recommendations.includes(
+
+        "Increase positive cash flow"
+
+    )
+
+){
+
+    throw new Error(
+
+        "Cash flow recommendation failed"
+
+    );
+
+}
+
+if(
+
+    !cashFlowReport.alerts.includes(
+
+        "Negative net cash flow"
+
+    )
+
+){
+
+    throw new Error(
+
+        "Cash flow alert failed"
+
+    );
+
+}
+
+// =====================
+
+// Low Liquidity Test
+
+// =====================
+
+const liquidityReport =
+
+AdvisorReport.generate(
+
+    {
+
+        wealth:
+
+        {
+
+            netWorth:
+
+            900000,
+
+            wealthScore:
+
+            75,
+
+            liquidityMonths:
+
+            2,
+
+            cashFlow:
+
+            {
+
+                netCashFlow:
+
+                30000
+
+            }
+
+        },
+
+        liabilities:
+
+        {
+
+            debtRatio:
+
+            20
+
+        },
+
+        tax:
+
+        {
+
+            status:
+
+            "NORMAL"
+
+        }
+
+    }
+
+);
+
+// =====================
+
+// Liquidity Result
+
+// =====================
+
+if(
+
+    !liquidityReport.recommendations.includes(
+
+        "Increase emergency liquidity"
+
+    )
+
+){
+
+    throw new Error(
+
+        "Liquidity recommendation failed"
+
+    );
+
+}
+
+if(
+
+    !liquidityReport.alerts.includes(
+
+        "Low liquidity coverage"
+
+    )
+
+){
+
+    throw new Error(
+
+        "Liquidity alert failed"
+
+    );
+
+}
+
+// =====================
+
+// Missing Wealth Data Test
+
+// =====================
+
+const missingWealthReport =
+
+AdvisorReport.generate(
+
+    {
+
+        assets:
+
+        {},
+
+        income:
+
+        {},
+
+        liabilities:
+
+        {},
+
+        cashflow:
+
+        {},
+
+        investment:
+
+        {},
+
+        tax:
+
+        {}
+
+    }
+
+);
+
+if(
+
+    !missingWealthReport.alerts.includes(
+
+        "Wealth Engine data unavailable"
+
+    )
+
+){
+
+    throw new Error(
+
+        "Missing Wealth Engine alert failed"
 
     );
 
