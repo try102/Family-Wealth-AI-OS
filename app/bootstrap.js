@@ -6,13 +6,9 @@ Application Bootstrap
 
 */
 
-import AIAdvisor
+import AIAdvisor from "../ai/advisor.js";
 
-from "../ai/advisor.js";
-
-import AdvisorAgent
-
-from "../agents/advisor/advisorAgent.js";
+import AdvisorAgent from "../agents/advisor/advisorAgent.js";
 
 const AppBootstrap = {
 
