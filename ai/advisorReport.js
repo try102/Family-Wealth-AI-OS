@@ -18,7 +18,23 @@ const AdvisorReport = {
 
     "7.0",
 
+    // =====================
+
+    // Generate Report
+
+    // =====================
+
     generate(data = {}){
+
+        // =====================
+
+        // Wealth Data
+
+        // =====================
+
+        const wealth =
+
+        data.wealth || {};
 
         const assets =
 
@@ -46,21 +62,61 @@ const AdvisorReport = {
 
         // =====================
 
+        // Core Metrics
+
+        // =====================
+
+        const netWorth =
+
+        wealth.netWorth || 0;
+
+        const wealthScore =
+
+        wealth.wealthScore || 0;
+
+        const liquidityMonths =
+
+        wealth.liquidityMonths || 0;
+
+        const debtRatio =
+
+        liabilities.debtRatio || 0;
+
+        const netCashFlow =
+
+        wealth.cashFlow
+
+        &&
+
+        typeof wealth.cashFlow.netCashFlow ===
+
+        "number"
+
+        ?
+
+        wealth.cashFlow.netCashFlow
+
+        :
+
+        cashflow.net || 0;
+
+        // =====================
+
         // Wealth Health
 
         // =====================
 
-        let health =
+        let wealthHealth =
 
         "GOOD";
 
         if(
 
-            cashflow.net < 0
+            wealthScore < 60
 
         ){
 
-            health =
+            wealthHealth =
 
             "WARNING";
 
@@ -68,11 +124,35 @@ const AdvisorReport = {
 
         if(
 
-            liabilities.debtRatio > 50
+            wealthScore < 40
 
         ){
 
-            health =
+            wealthHealth =
+
+            "RISK";
+
+        }
+
+        if(
+
+            netCashFlow < 0
+
+        ){
+
+            wealthHealth =
+
+            "WARNING";
+
+        }
+
+        if(
+
+            debtRatio > 50
+
+        ){
+
+            wealthHealth =
 
             "RISK";
 
@@ -84,17 +164,17 @@ const AdvisorReport = {
 
         // =====================
 
-        let risk =
+        let riskLevel =
 
         "LOW";
 
         if(
 
-            liabilities.debtRatio > 30
+            wealthScore < 70
 
         ){
 
-            risk =
+            riskLevel =
 
             "MEDIUM";
 
@@ -102,11 +182,35 @@ const AdvisorReport = {
 
         if(
 
-            liabilities.debtRatio > 50
+            wealthScore < 50
 
         ){
 
-            risk =
+            riskLevel =
+
+            "HIGH";
+
+        }
+
+        if(
+
+            debtRatio > 30
+
+        ){
+
+            riskLevel =
+
+            "MEDIUM";
+
+        }
+
+        if(
+
+            debtRatio > 50
+
+        ){
+
+            riskLevel =
 
             "HIGH";
 
@@ -122,7 +226,7 @@ const AdvisorReport = {
 
         if(
 
-            cashflow.net < 0
+            netCashFlow < 0
 
         ){
 
@@ -136,13 +240,41 @@ const AdvisorReport = {
 
         if(
 
-            liabilities.debtRatio > 50
+            debtRatio > 50
 
         ){
 
             recommendations.push(
 
                 "Reduce debt exposure"
+
+            );
+
+        }
+
+        if(
+
+            liquidityMonths < 3
+
+        ){
+
+            recommendations.push(
+
+                "Increase emergency liquidity"
+
+            );
+
+        }
+
+        if(
+
+            wealthScore < 60
+
+        ){
+
+            recommendations.push(
+
+                "Improve overall wealth structure"
 
             );
 
@@ -172,13 +304,69 @@ const AdvisorReport = {
 
         if(
 
-            !assets
+            wealthScore < 50
 
         ){
 
             alerts.push(
 
-                "Asset data unavailable"
+                "Wealth score requires attention"
+
+            );
+
+        }
+
+        if(
+
+            netCashFlow < 0
+
+        ){
+
+            alerts.push(
+
+                "Negative net cash flow"
+
+            );
+
+        }
+
+        if(
+
+            debtRatio > 50
+
+        ){
+
+            alerts.push(
+
+                "High debt ratio"
+
+            );
+
+        }
+
+        if(
+
+            liquidityMonths < 3
+
+        ){
+
+            alerts.push(
+
+                "Low liquidity coverage"
+
+            );
+
+        }
+
+        if(
+
+            !data.wealth
+
+        ){
+
+            alerts.push(
+
+                "Wealth Engine data unavailable"
 
             );
 
@@ -198,23 +386,43 @@ const AdvisorReport = {
 
         }
 
+        // =====================
+
+        // Report
+
+        // =====================
+
         return {
 
-            wealthHealth:
+            wealthHealth,
 
-            health,
-
-            riskLevel:
-
-            risk,
+            riskLevel,
 
             recommendations,
 
             alerts,
 
+            metrics:
+
+            {
+
+                netWorth,
+
+                wealthScore,
+
+                liquidityMonths,
+
+                debtRatio,
+
+                netCashFlow
+
+            },
+
             summary:
 
             {
+
+                wealth,
 
                 assets,
 
