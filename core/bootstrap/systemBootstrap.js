@@ -6,13 +6,9 @@ System Bootstrap
 
 */
 
-import ModuleRegistry
+import ModuleRegistry from "../registry/moduleRegistry.js";
 
-from "../registry/moduleRegistry.js";
-
-import AgentRegistry
-
-from "../registry/agentRegistry.js";
+import AgentRegistry from "../registry/agentRegistry.js";
 
 // =====================
 
@@ -20,17 +16,11 @@ from "../registry/agentRegistry.js";
 
 // =====================
 
-import EngineRegistry
+import EngineRegistry from "../engines/engineRegistry.js";
 
-from "../engines/engineRegistry.js";
+import WealthEngine from "../engines/wealth/wealthEngine.js";
 
-import WealthEngine
-
-from "../engines/wealth/wealthEngine.js";
-
-import CashFlowEngine
-
-from "../engines/cashflow/cashFlowEngine.js";
+import CashFlowEngine from "../engines/cashflow/cashFlowEngine.js";
 
 // =====================
 
@@ -38,13 +28,9 @@ from "../engines/cashflow/cashFlowEngine.js";
 
 // =====================
 
-import AIRegistry
+import AIRegistry from "../../ai/aiRegistry.js";
 
-from "../../ai/aiRegistry.js";
-
-import Advisor
-
-from "../../ai/advisor.js";
+import Advisor from "../../ai/advisor.js";
 
 // =====================
 
@@ -52,9 +38,7 @@ from "../../ai/advisor.js";
 
 // =====================
 
-import InvestmentAgent
-
-from "../../modules/investment/agent/investmentAgent.js";
+import InvestmentAgent from "../../modules/investment/agent/investmentAgent.js";
 
 // =====================
 
@@ -62,25 +46,15 @@ from "../../modules/investment/agent/investmentAgent.js";
 
 // =====================
 
-import TaxFacade
+import TaxFacade from "../../tax/taxFacade.js";
 
-from "../../tax/taxFacade.js";
+import LiabilityModule from "../modules/liabilityModule.js";
 
-import LiabilityModule
+import IncomeModule from "../modules/incomeModule.js";
 
-from "../modules/liabilityModule.js";
+import CashflowModule from "../modules/cashflowModule.js";
 
-import IncomeModule
-
-from "../modules/incomeModule.js";
-
-import CashflowModule
-
-from "../modules/cashflowModule.js";
-
-import AssetsModule
-
-from "../modules/assetsModule.js";
+import AssetsModule from "../modules/assetsModule.js";
 
 // =====================
 
@@ -88,9 +62,7 @@ from "../modules/assetsModule.js";
 
 // =====================
 
-const taxModule =
-
-new TaxFacade();
+const taxModule = new TaxFacade();
 
 // =====================
 
