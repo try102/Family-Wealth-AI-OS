@@ -6,11 +6,15 @@ Advisor API
 
 */
 
-import AIAdvisor
-
-from "../ai/advisor.js";
+import AIAdvisor from "../ai/advisor.js";
 
 const AdvisorAPI = {
+
+    // =====================
+
+    // Ask
+
+    // =====================
 
     ask(
 
@@ -26,7 +30,9 @@ const AdvisorAPI = {
 
             return {
 
-                success:false,
+                success:
+
+                false,
 
                 message:
 
@@ -36,25 +42,37 @@ const AdvisorAPI = {
 
         }
 
-        const result =
+        const analysis =
 
-        AIAdvisor.ask(
-
-            question
-
-        );
+        AIAdvisor.analyze();
 
         return {
 
-            success:true,
+            success:
 
-            data:
+            true,
 
-            result
+            data: {
+
+                answer:
+
+                analysis,
+
+                question:
+
+                question
+
+            }
 
         };
 
     },
+
+    // =====================
+
+    // Health
+
+    // =====================
 
     health(){
 
