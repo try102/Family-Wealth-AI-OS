@@ -2,52 +2,50 @@
 
 Family Wealth AI OS V7
 
-Recovery Manager
+Backup Manager
 
 */
 
-import Database
+import Database from "../storage/database.js";
 
-from "../storage/database.js";
+const Backup = {
 
-const Recovery = {
+    // =====================
 
-    restore(
+    // Create Snapshot
 
-        snapshot
+    // =====================
+
+    create(
+
+        name = "Backup"
 
     ){
 
-        if(
+        return {
 
-            !snapshot ||
+            name,
 
-            !snapshot.data
+            timestamp:
 
-        ){
+            new Date().toISOString(),
 
-            return false;
+            data:
 
-        }
+            JSON.parse(
 
-        Database.tables =
+                JSON.stringify(
 
-        JSON.parse(
+                    Database.tables
 
-            JSON.stringify(
-
-                snapshot.data
+                )
 
             )
 
-        );
-
-        Database.save();
-
-        return true;
+        };
 
     }
 
 };
 
-export default Recovery;
+export default Backup;
