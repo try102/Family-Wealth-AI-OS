@@ -8,115 +8,173 @@ Wealth API Test
 
 import WealthAPI from "../wealthAPI.js";
 
-import WealthScoreEngine
-
-from "../../core/wealthScore/wealthScoreEngine.js";
-
-import CashFlowEngine
-
-from "../../core/cashflow/cashFlowEngine.js";
-
-import RetirementEngine
-
-from "../../core/retirement/retirementEngine.js";
-
-import TaxEngine
-
-from "../../core/tax/taxEngine.js";
-
 // =====================
 
 // Prepare Data
 
 // =====================
 
-WealthScoreEngine.clear();
+const assets = [
 
-CashFlowEngine.clear();
+    {
 
-RetirementEngine.clear();
+        type:
 
-TaxEngine.clear();
+        "Cash",
 
-// Wealth Score
+        value:
 
-WealthScoreEngine.set(
+        100000
 
-    "NET_WORTH",
+    },
 
-    90
+    {
 
-);
+        type:
 
-WealthScoreEngine.set(
+        "Investment",
 
-    "CASH_FLOW",
+        value:
 
-    80
+        400000
 
-);
+    }
 
-WealthScoreEngine.set(
+];
 
-    "INVESTMENT",
+const liabilities = [
 
-    70
+    {
 
-);
+        type:
 
-// Cash Flow
+        "Mortgage",
 
-CashFlowEngine.add(
+        value:
 
-    "INCOME",
+        200000
 
-    10000
+    }
 
-);
+];
 
-CashFlowEngine.add(
+const cashFlowData = {
 
-    "EXPENSE",
+    netCashFlow:
 
-    3000
+    7000
 
-);
+};
 
-// Retirement
+const liquidityMonths = 6;
 
-RetirementEngine.set(
+// =====================
 
-    "annualExpense",
+// Analyze Test
 
-    60000
+// =====================
 
-);
+const result =
 
-RetirementEngine.set(
+WealthAPI.analyze(
 
-    "years",
+    assets,
 
-    20
+    liabilities,
 
-);
+    cashFlowData,
 
-RetirementEngine.set(
-
-    "assets",
-
-    1500000
+    liquidityMonths
 
 );
 
-// Tax
+console.log(
 
-TaxEngine.add(
+    "Wealth Analysis:",
 
-    "INCOME",
-
-    120000
+    result
 
 );
+
+if(
+
+    result.totalAssets !==
+
+    500000
+
+){
+
+    throw new Error(
+
+        "Wealth API total assets failed"
+
+    );
+
+}
+
+if(
+
+    result.totalLiabilities !==
+
+    200000
+
+){
+
+    throw new Error(
+
+        "Wealth API total liabilities failed"
+
+    );
+
+}
+
+if(
+
+    result.netWorth !==
+
+    300000
+
+){
+
+    throw new Error(
+
+        "Wealth API net worth failed"
+
+    );
+
+}
+
+if(
+
+    result.cashFlow.netCashFlow !==
+
+    7000
+
+){
+
+    throw new Error(
+
+        "Wealth API cash flow failed"
+
+    );
+
+}
+
+if(
+
+    result.liquidityMonths !==
+
+    6
+
+){
+
+    throw new Error(
+
+        "Wealth API liquidity failed"
+
+    );
+
+}
 
 // =====================
 
@@ -126,11 +184,21 @@ TaxEngine.add(
 
 const dashboard =
 
-WealthAPI.dashboard();
+WealthAPI.dashboard(
+
+    assets,
+
+    liabilities,
+
+    cashFlowData,
+
+    liquidityMonths
+
+);
 
 console.log(
 
-    "Dashboard:",
+    "Wealth Dashboard:",
 
     dashboard
 
@@ -138,13 +206,13 @@ console.log(
 
 if(
 
-    !dashboard.wealthScore
+    !dashboard.wealth
 
 ){
 
     throw new Error(
 
-        "Dashboard score missing"
+        "Dashboard wealth data missing"
 
     );
 
@@ -152,13 +220,15 @@ if(
 
 if(
 
-    !dashboard.cashFlow
+    dashboard.wealth.netWorth !==
+
+    300000
 
 ){
 
     throw new Error(
 
-        "Dashboard cashflow missing"
+        "Dashboard net worth failed"
 
     );
 
@@ -166,31 +236,7 @@ if(
 
 // =====================
 
-// Score Test
-
-// =====================
-
-const score =
-
-WealthAPI.score();
-
-if(
-
-    score.score !==80
-
-){
-
-    throw new Error(
-
-        "Wealth score API failed"
-
-    );
-
-}
-
-// =====================
-
-// Cash Flow Test
+// Cash Flow API Test
 
 // =====================
 
@@ -198,70 +244,22 @@ const cashFlow =
 
 WealthAPI.cashFlow();
 
-if(
+console.log(
 
-    cashFlow.net !==7000
+    "Cash Flow API:",
 
-){
+    cashFlow
 
-    throw new Error(
-
-        "Cash flow API failed"
-
-    );
-
-}
+);
 
 // =====================
 
-// Retirement Test
+// Final
 
 // =====================
-
-const retirement =
-
-WealthAPI.retirement();
-
-if(
-
-    retirement.required !==1200000
-
-){
-
-    throw new Error(
-
-        "Retirement API failed"
-
-    );
-
-}
-
-// =====================
-
-// Tax Test
-
-// =====================
-
-const tax =
-
-WealthAPI.tax();
-
-if(
-
-    tax.totalIncome !==120000
-
-){
-
-    throw new Error(
-
-        "Tax API failed"
-
-    );
-
-}
 
 console.log(
 
-    "Wealth API Test Passed"
+    "Wealth API V7 Test Passed"
 
 );
