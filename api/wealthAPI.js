@@ -6,85 +6,95 @@ Wealth API
 
 */
 
-import WealthScoreEngine
+import WealthEngine from "../core/engines/wealth/wealthEngine.js";
 
-from "../core/wealthScore/wealthScoreEngine.js";
-
-import CashFlowEngine
-
-from "../core/cashflow/cashFlowEngine.js";
-
-import RetirementEngine
-
-from "../core/retirement/retirementEngine.js";
-
-import TaxEngine
-
-from "../core/tax/taxEngine.js";
+import CashFlowEngine from "../core/engines/cashflow/cashFlowEngine.js";
 
 const WealthAPI = {
 
-    dashboard(){
+    // =====================
+
+    // Wealth Dashboard
+
+    // =====================
+
+    dashboard(
+
+        assets = [],
+
+        liabilities = [],
+
+        cashFlowData = {},
+
+        liquidityMonths = 0
+
+    ){
 
         return {
 
-            wealthScore:
+            wealth:
 
-            WealthScoreEngine.report(),
+            WealthEngine.analyze(
+
+                assets,
+
+                liabilities,
+
+                cashFlowData,
+
+                liquidityMonths
+
+            ),
 
             cashFlow:
 
-            CashFlowEngine.report(),
-
-            retirement:
-
-            RetirementEngine.report(),
-
-            tax:
-
-            TaxEngine.report()
+            CashFlowEngine.report()
 
         };
 
     },
 
-    score(){
+    // =====================
 
-        return (
+    // Wealth Analysis
 
-            WealthScoreEngine.report()
+    // =====================
+
+    analyze(
+
+        assets = [],
+
+        liabilities = [],
+
+        cashFlowData = {},
+
+        liquidityMonths = 0
+
+    ){
+
+        return WealthEngine.analyze(
+
+            assets,
+
+            liabilities,
+
+            cashFlowData,
+
+            liquidityMonths
 
         );
 
     },
+
+    // =====================
+
+    // Cash Flow
+
+    // =====================
 
     cashFlow(){
 
-        return (
-
-            CashFlowEngine.report()
-
-        );
-
-    },
-
-    retirement(){
-
-        return (
-
-            RetirementEngine.report()
-
-        );
-
-    },
-
-    tax(){
-
-        return (
-
-            TaxEngine.report()
-
-        );
+        return CashFlowEngine.report();
 
     }
 
