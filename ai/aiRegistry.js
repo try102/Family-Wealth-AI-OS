@@ -4,11 +4,13 @@ Family Wealth AI OS V7
 
 AI Registry
 
+统一 AI 注册中心
+
 */
 
 const AIRegistry = {
 
-    ais:{},
+    ais: {},
 
     register(
 
@@ -16,9 +18,11 @@ const AIRegistry = {
 
         ai
 
-    ){
+    ) {
 
         this.ais[name] = ai;
+
+        return ai;
 
     },
 
@@ -26,13 +30,13 @@ const AIRegistry = {
 
         name
 
-    ){
+    ) {
 
         return this.ais[name];
 
     },
 
-    list(){
+    list() {
 
         return Object.keys(
 
@@ -46,9 +50,15 @@ const AIRegistry = {
 
         name
 
-    ){
+    ) {
 
         delete this.ais[name];
+
+    },
+
+    clear() {
+
+        this.ais = {};
 
     }
 
