@@ -1,53 +1,163 @@
 /*
 
-Family Wealth AI OS
+Family Wealth AI OS V7
 
 V7 System Entry
 
 */
 
-import SystemManager from "./core/system/systemManager.js";
+const app = document.getElementById("app");
 
-import Advisor from "./ai/advisor.js";
+app.innerHTML =
 
-// =====================
+    "Starting Family Wealth AI OS V7...";
 
-// Start OS
+import("./core/system/systemManager.js")
 
-// =====================
+    .then(({ default: SystemManager }) => {
 
-const system =
+        const system =
 
-SystemManager.start();
+            SystemManager.start();
 
-console.log(
+        console.log(
 
-    "Family Wealth AI OS",
+            "Family Wealth AI OS",
 
-    system
+            system
 
-);
+        );
 
-// =====================
+        window.WealthOS = {
 
-// Export Global Access
+            system:
 
-// =====================
+                SystemManager
 
-window.WealthOS = {
+        };
 
-    system:
+        import("./ai/advisor.js")
 
-    SystemManager,
+            .then(({ default: Advisor }) => {
 
-    advisor:
+                window.WealthOS.advisor =
 
-    Advisor
+                    Advisor;
 
-};
+                app.innerHTML = `
 
-console.log(
+                    <h1>
 
-    "Wealth OS Ready"
+                        🏠 Family Wealth AI OS V7
 
-);
+                    </h1>
+
+                    <p>
+
+                        System Status:
+
+                        <strong>
+
+                            ${system.status}
+
+                        </strong>
+
+                    </p>
+
+                    <p>
+
+                        Advisor:
+
+                        <strong>
+
+                            ${Advisor.name}
+
+                        </strong>
+
+                    </p>
+
+                    <p>
+
+                        V7 System Started
+
+                    </p>
+
+                `;
+
+                console.log(
+
+                    "Wealth OS Ready"
+
+                );
+
+            })
+
+            .catch(error => {
+
+                console.error(
+
+                    "Advisor Load Error:",
+
+                    error
+
+                );
+
+                app.innerHTML = `
+
+                    <h1>
+
+                        Family Wealth AI OS V7
+
+                    </h1>
+
+                    <h2>
+
+                        Advisor Load Failed
+
+                    </h2>
+
+                    <pre>
+
+${error.stack || error.message}
+
+                    </pre>
+
+                `;
+
+            });
+
+    })
+
+    .catch(error => {
+
+        console.error(
+
+            "V7 Startup Error:",
+
+            error
+
+        );
+
+        app.innerHTML = `
+
+            <h1>
+
+                Family Wealth AI OS V7
+
+            </h1>
+
+            <h2>
+
+                Startup Error
+
+            </h2>
+
+            <pre>
+
+${error.stack || error.message}
+
+            </pre>
+
+        `;
+
+    });
