@@ -6,9 +6,29 @@ AI Registry Test
 
 */
 
-import AIRegistry
+import AIRegistry from "../aiRegistry.js";
 
-from "../aiRegistry.js";
+// =====================
+
+// Clean State
+
+// =====================
+
+AIRegistry.clear();
+
+// =====================
+
+// Mock AI
+
+// =====================
+
+const mockAI = {
+
+    name: "Mock AI V7",
+
+    version: "7.0"
+
+};
 
 // =====================
 
@@ -16,13 +36,7 @@ from "../aiRegistry.js";
 
 // =====================
 
-const mockAI = {
-
-    name:
-
-    "Mock AI"
-
-};
+const registered =
 
 AIRegistry.register(
 
@@ -32,13 +46,27 @@ AIRegistry.register(
 
 );
 
+if(
+
+    registered !== mockAI
+
+){
+
+    throw new Error(
+
+        "AI Registry register failed"
+
+    );
+
+}
+
 // =====================
 
 // Get Test
 
 // =====================
 
-const ai =
+const result =
 
 AIRegistry.get(
 
@@ -48,7 +76,7 @@ AIRegistry.get(
 
 if(
 
-    ai !== mockAI
+    result !== mockAI
 
 ){
 
@@ -106,13 +134,63 @@ if(
 
         "mock"
 
-    )
+    ) !== undefined
 
 ){
 
     throw new Error(
 
         "AI Registry remove failed"
+
+    );
+
+}
+
+// =====================
+
+// Clear Test
+
+// =====================
+
+AIRegistry.register(
+
+    "ai1",
+
+    {
+
+        name:
+
+        "AI 1"
+
+    }
+
+);
+
+AIRegistry.register(
+
+    "ai2",
+
+    {
+
+        name:
+
+        "AI 2"
+
+    }
+
+);
+
+AIRegistry.clear();
+
+if(
+
+    AIRegistry.list().length !== 0
+
+){
+
+    throw new Error(
+
+        "AI Registry clear failed"
 
     );
 
