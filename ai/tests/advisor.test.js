@@ -110,7 +110,91 @@ ModuleRegistry.register(
 
 // =====================
 
-// Mock Engines
+// Mock Wealth Engine
+
+// =====================
+
+const mockWealthEngine = {
+
+    analyze(
+
+        assets,
+
+        liabilities,
+
+        cashFlowData,
+
+        liquidityMonths
+
+    ){
+
+        return {
+
+            totalAssets:
+
+            1000000,
+
+            totalLiabilities:
+
+            200000,
+
+            netWorth:
+
+            800000,
+
+            allocation:
+
+            {},
+
+            cashFlow:
+
+            cashFlowData,
+
+            liquidityMonths,
+
+            wealthScore:
+
+            80
+
+        };
+
+    }
+
+};
+
+// =====================
+
+// Mock Cashflow Engine
+
+// =====================
+
+const mockCashflowEngine = {
+
+    report(){
+
+        return {
+
+            income:
+
+            100000,
+
+            expense:
+
+            50000,
+
+            net:
+
+            50000
+
+        };
+
+    }
+
+};
+
+// =====================
+
+// Register Mock Engines
 
 // =====================
 
@@ -118,15 +202,7 @@ EngineRegistry.register(
 
     "wealth",
 
-    {
-
-        analyze(){
-
-            return {};
-
-        }
-
-    }
+    mockWealthEngine
 
 );
 
@@ -134,15 +210,7 @@ EngineRegistry.register(
 
     "cashflow",
 
-    {
-
-        report(){
-
-            return {};
-
-        }
-
-    }
+    mockCashflowEngine
 
 );
 
@@ -317,6 +385,158 @@ if(
     throw new Error(
 
         "Alerts missing"
+
+    );
+
+}
+
+// =====================
+
+// Wealth Analysis Test
+
+// =====================
+
+const wealthResult =
+
+Advisor.wealthAnalysis(
+
+    [
+
+        {
+
+            type:
+
+            "Cash",
+
+            value:
+
+            600000
+
+        },
+
+        {
+
+            type:
+
+            "Investment",
+
+            value:
+
+            400000
+
+        }
+
+    ],
+
+    [
+
+        {
+
+            type:
+
+            "Mortgage",
+
+            value:
+
+            200000
+
+        }
+
+    ],
+
+    {
+
+        netCashFlow:
+
+        50000
+
+    },
+
+    6
+
+);
+
+// =====================
+
+// Wealth Result Checks
+
+// =====================
+
+if(
+
+    wealthResult.totalAssets !==
+
+    1000000
+
+){
+
+    throw new Error(
+
+        "Wealth total assets failed"
+
+    );
+
+}
+
+if(
+
+    wealthResult.totalLiabilities !==
+
+    200000
+
+){
+
+    throw new Error(
+
+        "Wealth total liabilities failed"
+
+    );
+
+}
+
+if(
+
+    wealthResult.netWorth !==
+
+    800000
+
+){
+
+    throw new Error(
+
+        "Wealth net worth failed"
+
+    );
+
+}
+
+if(
+
+    wealthResult.liquidityMonths !==
+
+    6
+
+){
+
+    throw new Error(
+
+        "Liquidity months failed"
+
+    );
+
+}
+
+if(
+
+    wealthResult.wealthScore !==
+
+    80
+
+){
+
+    throw new Error(
+
+        "Wealth score failed"
 
     );
 
