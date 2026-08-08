@@ -6,25 +6,15 @@ System Bootstrap Test
 
 */
 
-import SystemBootstrap
+import SystemBootstrap from "../systemBootstrap.js";
 
-from "../systemBootstrap.js";
+import AgentRegistry from "../../registry/agentRegistry.js";
 
-import AgentRegistry
+import ModuleRegistry from "../../registry/moduleRegistry.js";
 
-from "../../registry/agentRegistry.js";
+import EngineRegistry from "../../engines/engineRegistry.js";
 
-import ModuleRegistry
-
-from "../../registry/moduleRegistry.js";
-
-import EngineRegistry
-
-from "../../engines/engineRegistry.js";
-
-import AIRegistry
-
-from "../../ai/aiRegistry.js";
+import AIRegistry from "../../ai/aiRegistry.js";
 
 // =====================
 
