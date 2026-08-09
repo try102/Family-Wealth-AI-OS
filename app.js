@@ -4,13 +4,13 @@ Family Wealth AI OS V7
 
 Application Entry
 
-Dashboard Data Integration
+Dashboard + Module Navigation
 
 */
 
 const app =
 
-document.getElementById("app");
+    document.getElementById("app");
 
 // ==================================================
 
@@ -252,8 +252,6 @@ function renderDashboard(
 
                 >
 
-                    <!-- Total Assets -->
-
                     <div
 
                         class="dashboard-card"
@@ -281,8 +279,6 @@ function renderDashboard(
                         </div>
 
                     </div>
-
-                    <!-- Total Liabilities -->
 
                     <div
 
@@ -312,8 +308,6 @@ function renderDashboard(
 
                     </div>
 
-                    <!-- Net Worth -->
-
                     <div
 
                         class="dashboard-card"
@@ -341,8 +335,6 @@ function renderDashboard(
                         </div>
 
                     </div>
-
-                    <!-- Income -->
 
                     <div
 
@@ -372,8 +364,6 @@ function renderDashboard(
 
                     </div>
 
-                    <!-- Expense -->
-
                     <div
 
                         class="dashboard-card"
@@ -402,8 +392,6 @@ function renderDashboard(
 
                     </div>
 
-                    <!-- Net Cash Flow -->
-
                     <div
 
                         class="dashboard-card"
@@ -431,8 +419,6 @@ function renderDashboard(
                         </div>
 
                     </div>
-
-                    <!-- Wealth Score -->
 
                     <div
 
@@ -464,8 +450,6 @@ function renderDashboard(
 
                     </div>
 
-                    <!-- Asset Count -->
-
                     <div
 
                         class="dashboard-card"
@@ -489,8 +473,6 @@ function renderDashboard(
                         </div>
 
                     </div>
-
-                    <!-- Liability Count -->
 
                     <div
 
@@ -700,37 +682,73 @@ function renderDashboard(
 
                 >
 
-                    <button>
+                    <button
+
+                        id="quick-assets"
+
+                        type="button"
+
+                    >
 
                         💰 Assets
 
                     </button>
 
-                    <button>
+                    <button
+
+                        id="quick-investment"
+
+                        type="button"
+
+                    >
 
                         📈 Investment
 
                     </button>
 
-                    <button>
+                    <button
+
+                        id="quick-income"
+
+                        type="button"
+
+                    >
 
                         💵 Income
 
                     </button>
 
-                    <button>
+                    <button
+
+                        id="quick-liability"
+
+                        type="button"
+
+                    >
 
                         💳 Liability
 
                     </button>
 
-                    <button>
+                    <button
+
+                        id="quick-cashflow"
+
+                        type="button"
+
+                    >
 
                         💸 Cash Flow
 
                     </button>
 
-                    <button>
+                    <button
+
+                        id="quick-tax"
+
+                        type="button"
+
+                    >
 
                         🧾 Tax
 
@@ -740,9 +758,469 @@ function renderDashboard(
 
             </section>
 
+            <!-- Module Container -->
+
+            <section
+
+                id="module-container"
+
+                class="module-container"
+
+            ></section>
+
         </div>
 
     `;
+
+    // ==================================================
+
+    // Quick Access - Assets
+
+    // ==================================================
+
+    document
+
+        .getElementById(
+
+            "quick-assets"
+
+        )
+
+        .addEventListener(
+
+            "click",
+
+            async () => {
+
+                try {
+
+                    const module =
+
+                        await import(
+
+                            "./core/modules/assetsModule.js"
+
+                        );
+
+                    const AssetsModule =
+
+                        module.default;
+
+                    const container =
+
+                        document.getElementById(
+
+                            "module-container"
+
+                        );
+
+                    AssetsModule.view.render(
+
+                        container
+
+                    );
+
+                    container.scrollIntoView({
+
+                        behavior:
+
+                        "smooth"
+
+                    });
+
+                }
+
+                catch(error){
+
+                    renderError(
+
+                        "Assets Module Error",
+
+                        error
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    // ==================================================
+
+    // Quick Access - Investment
+
+    // ==================================================
+
+    document
+
+        .getElementById(
+
+            "quick-investment"
+
+        )
+
+        .addEventListener(
+
+            "click",
+
+            async () => {
+
+                await openModule(
+
+                    "investment"
+
+                );
+
+            }
+
+        );
+
+    // ==================================================
+
+    // Quick Access - Income
+
+    // ==================================================
+
+    document
+
+        .getElementById(
+
+            "quick-income"
+
+        )
+
+        .addEventListener(
+
+            "click",
+
+            async () => {
+
+                await openModule(
+
+                    "income"
+
+                );
+
+            }
+
+        );
+
+    // ==================================================
+
+    // Quick Access - Liability
+
+    // ==================================================
+
+    document
+
+        .getElementById(
+
+            "quick-liability"
+
+        )
+
+        .addEventListener(
+
+            "click",
+
+            async () => {
+
+                await openModule(
+
+                    "liability"
+
+                );
+
+            }
+
+        );
+
+    // ==================================================
+
+    // Quick Access - Cashflow
+
+    // ==================================================
+
+    document
+
+        .getElementById(
+
+            "quick-cashflow"
+
+        )
+
+        .addEventListener(
+
+            "click",
+
+            async () => {
+
+                await openModule(
+
+                    "cashflow"
+
+                );
+
+            }
+
+        );
+
+    // ==================================================
+
+    // Quick Access - Tax
+
+    // ==================================================
+
+    document
+
+        .getElementById(
+
+            "quick-tax"
+
+        )
+
+        .addEventListener(
+
+            "click",
+
+            async () => {
+
+                await openModule(
+
+                    "tax"
+
+                );
+
+            }
+
+        );
+
+}
+
+// ==================================================
+
+// Generic Module Opener
+
+// ==================================================
+
+async function openModule(
+
+    moduleName
+
+){
+
+    const container =
+
+        document.getElementById(
+
+            "module-container"
+
+        );
+
+    if(!container){
+
+        return;
+
+    }
+
+    try {
+
+        let module;
+
+        if(
+
+            moduleName ===
+
+            "investment"
+
+        ){
+
+            module =
+
+                await import(
+
+                    "./core/modules/investmentModule.js"
+
+                );
+
+        }
+
+        else if(
+
+            moduleName ===
+
+            "income"
+
+        ){
+
+            module =
+
+                await import(
+
+                    "./core/modules/incomeModule.js"
+
+                );
+
+        }
+
+        else if(
+
+            moduleName ===
+
+            "liability"
+
+        ){
+
+            module =
+
+                await import(
+
+                    "./core/modules/liabilityModule.js"
+
+                );
+
+        }
+
+        else if(
+
+            moduleName ===
+
+            "cashflow"
+
+        ){
+
+            module =
+
+                await import(
+
+                    "./core/modules/cashflowModule.js"
+
+                );
+
+        }
+
+        else if(
+
+            moduleName ===
+
+            "tax"
+
+        ){
+
+            module =
+
+                await import(
+
+                    "./core/modules/taxModule.js"
+
+                );
+
+        }
+
+        else {
+
+            throw new Error(
+
+                "Unknown module: " +
+
+                moduleName
+
+            );
+
+        }
+
+        const Module =
+
+            module.default;
+
+        if(!Module){
+
+            throw new Error(
+
+                moduleName +
+
+                " module default export not found"
+
+            );
+
+        }
+
+        if(
+
+            Module.view &&
+
+            typeof Module.view.render ===
+
+            "function"
+
+        ){
+
+            Module.view.render(
+
+                container
+
+            );
+
+        }
+
+        else {
+
+            container.innerHTML = `
+
+                <div
+
+                    class="module-card"
+
+                >
+
+                    <h2>
+
+                        ${moduleName}
+
+                    </h2>
+
+                    <p>
+
+                        Module loaded successfully.
+
+                    </p>
+
+                    <p>
+
+                        UI View is not connected yet.
+
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+        container.scrollIntoView({
+
+            behavior:
+
+            "smooth"
+
+        });
+
+    }
+
+    catch(error){
+
+        renderError(
+
+            moduleName +
+
+            " Module Error",
+
+            error
+
+        );
+
+    }
 
 }
 
@@ -774,7 +1252,15 @@ function renderError(
 
             </h1>
 
-            <pre>
+            <pre style="
+
+                white-space:pre-wrap;
+
+                word-break:break-word;
+
+                color:red;
+
+            ">
 
 ${error?.stack ||
 
