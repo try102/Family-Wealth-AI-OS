@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+
+    name="viewport"
+
+    content="width=device-width, initial-scale=1.0"
+
+>
+
+<title>
+
+Income Service Test
+
+</title>
+
+</head>
+
+<body>
+
+<h1>
+
+🏠 Family Wealth AI OS V7
+
+</h1>
+
+<h2>
+
+Income Service Test
+
+</h2>
+
+<div id="result">
+
+Testing...
+
+</div>
+
+<script type="module">
+
+import IncomeService
+
+    from "./incomeService.js";
+
+const result =
+
+    document.getElementById(
+
+        "result"
+
+    );
+
+function assert(
+
+    condition,
+
+    message
+
+){
+
+    if(!condition){
+
+        throw new Error(
+
+            message
+
+        );
+
+    }
+
+}
+
+try {
+
+    // ======================================
+
+    // Read
+
+    // ======================================
+
+    const before =
+
+        IncomeService.getAllIncome();
+
+    assert(
+
+        Array.isArray(before),
+
+        "Get all income"
+
+    );
+
+    // ======================================
+
+    // Create
+
+    // ======================================
+
+    const created =
+
+        IncomeService.addIncome({
+
+            source:
+
+                "V7 Service Test",
+
+            name:
+
+                "V7 Service Test",
+
+            amount:
+
+                1000,
+
+            value:
+
+                1000,
+
+            type:
+
+                "Other"
+
+        });
+
+    assert(
+
+        created &&
+
+        created.id,
+
+        "Create income"
+
+    );
+
+    // ======================================
+
+    // Read
+
+    // ======================================
+
+    const found =
+
+        IncomeService.getIncomeById(
+
+            created.id
+
+        );
+
+    assert(
+
+        found &&
+
+        found.id === created.id,
+
+        "Read income"
+
+    );
+
+    // ======================================
+
+    // Update
+
+    // ======================================
+
+    IncomeService.updateIncome(
+
+        created.id,
+
+        {
+
+            source:
+
+                "V7 Service Test Updated",
+
+            name:
+
+                "V7 Service Test Updated",
+
+            amount:
+
+                2500,
+
+            value:
+
+                2500,
+
+            type:
+
+                "Business"
+
+        }
+
+    );
+
+    const updated =
+
+        IncomeService.getIncomeById(
+
+            created.id
+
+        );
+
+    assert(
+
+        updated &&
+
+        Number(
+
+            updated.amount ??
+
+            updated.value ??
+
+            0
+
+        ) === 2500,
+
+        "Update income"
+
+    );
+
+    // ======================================
+
+    // Summary
+
+    // ======================================
+
+    const summary =
+
+        IncomeService.getSummary();
+
+    assert(
+
+        summary !== null &&
+
+        summary !== undefined,
+
+        "Summary"
+
+    );
+
+    // ======================================
+
+    // Delete
+
+    // ======================================
+
+    IncomeService.deleteIncome(
+
+        created.id
+
+    );
+
+    const deleted =
+
+        IncomeService.getIncomeById(
+
+            created.id
+
+        );
+
+    assert(
+
+        !deleted,
+
+        "Delete income"
+
+    );
+
+    // ======================================
+
+    // Success
+
+    // ======================================
+
+    result.innerHTML = `
+
+        <h2 style="color:green;">
+
+            🎉 INCOME SERVICE TEST PASSED
+
+        </h2>
+
+        <p>
+
+            Read: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Create: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Update: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Summary: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Delete: ✅ PASS
+
+        </p>
+
+    `;
+
+}
+
+catch(error){
+
+    result.innerHTML = `
+
+        <h2 style="color:red;">
+
+            ❌ INCOME SERVICE TEST FAILED
+
+        </h2>
+
+        <pre>
+
+${
+
+    error.stack ||
+
+    error.message ||
+
+    String(error)
+
+}
+
+        </pre>
+
+    `;
+
+}
+
+</script>
+
+</body>
+
+</html>
