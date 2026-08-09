@@ -22,7 +22,7 @@ Family Wealth AI OS V7
 
 <div id="app">
 
-Loading EngineRegistry Test...
+Loading AIRegistry Test...
 
 </div>
 
@@ -38,29 +38,29 @@ try {
 
         await import(
 
-            "./core/engines/engineRegistry.js"
+            "./ai/aiRegistry.js"
 
         );
 
-    const EngineRegistry =
+    const AIRegistry =
 
         module.default;
 
     const list =
 
-        EngineRegistry.list();
+        AIRegistry.list();
 
     app.innerHTML = `
 
         <h1>
 
-        EngineRegistry Test
+        AIRegistry Test
 
         </h1>
 
         <p style="color:green">
 
-        ✅ EngineRegistry Loaded Successfully
+        ✅ AIRegistry Loaded Successfully
 
         </p>
 
@@ -68,7 +68,7 @@ try {
 
         Type:
 
-        ${typeof EngineRegistry}
+        ${typeof AIRegistry}
 
         </p>
 
@@ -76,7 +76,7 @@ try {
 
         register:
 
-        ${typeof EngineRegistry.register}
+        ${typeof AIRegistry.register}
 
         </p>
 
@@ -84,13 +84,13 @@ try {
 
         list:
 
-        ${typeof EngineRegistry.list}
+        ${typeof AIRegistry.list}
 
         </p>
 
         <h3>
 
-        Registered Engines
+        Registered AI
 
         </h3>
 
@@ -114,7 +114,7 @@ catch(error) {
 
         <h1>
 
-        EngineRegistry Import Error
+        AIRegistry Import Error
 
         </h1>
 
