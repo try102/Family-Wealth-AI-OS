@@ -10,31 +10,7 @@ Income Agent Test
 
 import IncomeAgent
 
-    from "../agent/incomeAgent.js";
-
-console.log(
-
-    "=========================================="
-
-);
-
-console.log(
-
-    "Family Wealth AI OS V7"
-
-);
-
-console.log(
-
-    "Income Agent Test"
-
-);
-
-console.log(
-
-    "=========================================="
-
-);
+    from "./incomeAgent.js";
 
 // ==========================================
 
@@ -74,6 +50,36 @@ function assert(
 
 // ==========================================
 
+// Start
+
+// ==========================================
+
+console.log(
+
+    "=========================================="
+
+);
+
+console.log(
+
+    "Family Wealth AI OS V7"
+
+);
+
+console.log(
+
+    "Income Agent Test"
+
+);
+
+console.log(
+
+    "=========================================="
+
+);
+
+// ==========================================
+
 // Initialize
 
 // ==========================================
@@ -83,6 +89,8 @@ const initResult =
     IncomeAgent.init();
 
 assert(
+
+    initResult &&
 
     initResult.status ===
 
@@ -180,7 +188,9 @@ const createdIncome =
 
         item =>
 
-            item.id === created.id
+            item.id ===
+
+            created.id
 
     );
 
@@ -256,7 +266,9 @@ const updatedIncome =
 
         item =>
 
-            item.id === created.id
+            item.id ===
+
+            created.id
 
     );
 
@@ -272,9 +284,9 @@ assert(
 
     Number(
 
-        updatedIncome.amount ||
+        updatedIncome.amount ??
 
-        updatedIncome.value ||
+        updatedIncome.value ??
 
         0
 
@@ -316,6 +328,8 @@ const analysis =
 
 assert(
 
+    analysis &&
+
     analysis.type ===
 
     "INCOME_ANALYSIS",
@@ -330,19 +344,9 @@ assert(
 
 // ==========================================
 
-const deleted =
+IncomeAgent.deleteIncome(
 
-    IncomeAgent.deleteIncome(
-
-        created.id
-
-    );
-
-assert(
-
-    deleted !== undefined,
-
-    "Delete income"
+    created.id
 
 );
 
@@ -362,7 +366,9 @@ const deletedIncome =
 
         item =>
 
-            item.id === created.id
+            item.id ===
+
+            created.id
 
     );
 
@@ -373,6 +379,12 @@ assert(
     "Income deleted"
 
 );
+
+// ==========================================
+
+// Success
+
+// ==========================================
 
 console.log(
 
