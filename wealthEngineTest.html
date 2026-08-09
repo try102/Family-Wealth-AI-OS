@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+
+content="width=device-width, initial-scale=1.0">
+
+<title>
+
+WealthEngine Test
+
+</title>
+
+</head>
+
+<body>
+
+<div id="app">
+
+Loading...
+
+</div>
+
+<script type="module">
+
+const app =
+
+document.getElementById("app");
+
+try {
+
+    // ==========================================
+
+    // Assets Module
+
+    // ==========================================
+
+    const assetsModule =
+
+        await import(
+
+            "./core/modules/assetsModule.js?v=20260809-02"
+
+        );
+
+    const AssetsModule =
+
+        assetsModule.default;
+
+    const assets =
+
+        AssetsModule.api.getAll();
+
+    // ==========================================
+
+    // Wealth Engine
+
+    // ==========================================
+
+    const wealthModule =
+
+        await import(
+
+            "./core/engines/wealth/wealthEngine.js?v=20260809-02"
+
+        );
+
+    const WealthEngine =
+
+        wealthModule.default;
+
+    // ==========================================
+
+    // Run
+
+    // ==========================================
+
+    const result =
+
+        WealthEngine.analyze(
+
+            assets,
+
+            [],
+
+            {
+
+                income:
+
+                0,
+
+                expense:
+
+                0,
+
+                net:
+
+                0,
+
+                netCashFlow:
+
+                0
+
+            },
+
+            0
+
+        );
+
+    // ==========================================
+
+    // Test
+
+    // ==========================================
+
+    const passed =
+
+        result.totalAssets ===
+
+        AssetsModule.api.getTotalValue();
+
+    // ==========================================
+
+    // Output
+
+    // ==========================================
+
+    app.innerHTML = `
+
+        <h1>
+
+            Family Wealth AI OS V7
+
+        </h1>
+
+        <h2>
+
+            WealthEngine Test
+
+        </h2>
+
+        <h2 style="
+
+            color:${passed
+
+                ? "green"
+
+                : "red"};
+
+        ">
+
+            ${
+
+                passed
+
+                ?
+
+                "✅ WealthEngine PASSED"
+
+                :
+
+                "❌ WealthEngine FAILED"
+
+            }
+
+        </h2>
+
+        <h3>
+
+            Assets From AssetAPI
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            assets,
+
+            null,
+
+            2
+
+        )}</pre>
+
+        <h3>
+
+            AssetAPI Total
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            AssetsModule.api.getTotalValue(),
+
+            null,
+
+            2
+
+        )}</pre>
+
+        <h3>
+
+            WealthEngine Result
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            result,
+
+            null,
+
+            2
+
+        )}</pre>
+
+        <h3>
+
+            Comparison
+
+        </h3>
+
+        <p>
+
+            AssetAPI Total:
+
+            ${
+
+                AssetsModule.api.getTotalValue()
+
+            }
+
+        </p>
+
+        <p>
+
+            WealthEngine Total:
+
+            ${
+
+                result.totalAssets
+
+            }
+
+        </p>
+
+        <p>
+
+            Result:
+
+            ${
+
+                passed
+
+                ? "✅ MATCH"
+
+                : "❌ MISMATCH"
+
+            }
+
+        </p>
+
+    `;
+
+}
+
+catch(error){
+
+    app.innerHTML = `
+
+        <h1>
+
+            WealthEngine Test Error
+
+        </h1>
+
+        <pre style="
+
+            white-space:pre-wrap;
+
+            word-break:break-word;
+
+            color:red;
+
+        ">${error.stack ||
+
+           error.message ||
+
+           String(error)}</pre>
+
+    `;
+
+}
+
+</script>
+
+</body>
+
+</html>
