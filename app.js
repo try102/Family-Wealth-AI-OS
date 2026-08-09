@@ -4,25 +4,181 @@ Family Wealth AI OS V7
 
 Application Entry
 
+Dashboard Data Integration
+
 */
 
 const app =
 
 document.getElementById("app");
 
-function renderSystem(
+// ==================================================
 
-    systemResult,
+// Currency Formatter
 
-    systemStatus
+// ==================================================
+
+function formatCurrency(
+
+    value
 
 ){
+
+    return new Intl.NumberFormat(
+
+        "en-US",
+
+        {
+
+            style:
+
+            "currency",
+
+            currency:
+
+            "USD",
+
+            maximumFractionDigits:
+
+            0
+
+        }
+
+    ).format(
+
+        Number(
+
+            value || 0
+
+        )
+
+    );
+
+}
+
+// ==================================================
+
+// Percentage Formatter
+
+// ==================================================
+
+function formatPercent(
+
+    value
+
+){
+
+    return (
+
+        Number(
+
+            value || 0
+
+        ).toFixed(2)
+
+        +
+
+        "%"
+
+    );
+
+}
+
+// ==================================================
+
+// Dashboard
+
+// ==================================================
+
+function renderDashboard(
+
+    result,
+
+    status,
+
+    assets,
+
+    liabilities,
+
+    cashFlow
+
+){
+
+    const allocation =
+
+        result.allocation || {};
+
+    const allocationHTML =
+
+        Object.keys(
+
+            allocation
+
+        )
+
+        .map(
+
+            category => {
+
+                const item =
+
+                    allocation[category];
+
+                return `
+
+                    <div
+
+                        class="module-card"
+
+                    >
+
+                        <h3>
+
+                            ${category}
+
+                        </h3>
+
+                        <p>
+
+                            ${formatCurrency(
+
+                                item.value
+
+                            )}
+
+                        </p>
+
+                        <p>
+
+                            ${formatPercent(
+
+                                item.ratio
+
+                            )}
+
+                        </p>
+
+                    </div>
+
+                `;
+
+            }
+
+        )
+
+        .join("");
 
     app.innerHTML = `
 
         <div class="app-shell">
 
-            <header class="app-header">
+            <!-- Header -->
+
+            <header
+
+                class="app-header"
+
+            >
 
                 <h1>
 
@@ -38,7 +194,13 @@ function renderSystem(
 
             </header>
 
-            <section class="system-status">
+            <!-- System -->
+
+            <section
+
+                class="system-status"
+
+            >
 
                 <h2>
 
@@ -46,7 +208,11 @@ function renderSystem(
 
                 </h2>
 
-                <div class="status-ready">
+                <div
+
+                    class="status-ready"
+
+                >
 
                     ✅ SYSTEM READY
 
@@ -58,7 +224,7 @@ function renderSystem(
 
                     <strong>
 
-                        ${systemResult.advisor}
+                        ${result.advisor}
 
                     </strong>
 
@@ -66,7 +232,13 @@ function renderSystem(
 
             </section>
 
-            <section class="dashboard">
+            <!-- Dashboard -->
+
+            <section
+
+                class="dashboard"
+
+            >
 
                 <h2>
 
@@ -74,25 +246,19 @@ function renderSystem(
 
                 </h2>
 
-                <div class="dashboard-grid">
+                <div
 
-                    <div class="dashboard-card">
+                    class="dashboard-grid"
 
-                        <h3>
+                >
 
-                            净资产
+                    <!-- Total Assets -->
 
-                        </h3>
+                    <div
 
-                        <div class="value">
+                        class="dashboard-card"
 
-                            $0
-
-                        </div>
-
-                    </div>
-
-                    <div class="dashboard-card">
+                    >
 
                         <h3>
 
@@ -100,15 +266,29 @@ function renderSystem(
 
                         </h3>
 
-                        <div class="value">
+                        <div
 
-                            $0
+                            class="value"
+
+                        >
+
+                            ${formatCurrency(
+
+                                result.totalAssets
+
+                            )}
 
                         </div>
 
                     </div>
 
-                    <div class="dashboard-card">
+                    <!-- Total Liabilities -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
 
                         <h3>
 
@@ -116,25 +296,221 @@ function renderSystem(
 
                         </h3>
 
-                        <div class="value">
+                        <div
 
-                            $0
+                            class="value"
+
+                        >
+
+                            ${formatCurrency(
+
+                                result.totalLiabilities
+
+                            )}
 
                         </div>
 
                     </div>
 
-                    <div class="dashboard-card">
+                    <!-- Net Worth -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
 
                         <h3>
 
-                            年度收入
+                            净资产
 
                         </h3>
 
-                        <div class="value">
+                        <div
 
-                            $0
+                            class="value"
+
+                        >
+
+                            ${formatCurrency(
+
+                                result.netWorth
+
+                            )}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Income -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
+
+                        <h3>
+
+                            现金流收入
+
+                        </h3>
+
+                        <div
+
+                            class="value"
+
+                        >
+
+                            ${formatCurrency(
+
+                                cashFlow.income
+
+                            )}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Expense -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
+
+                        <h3>
+
+                            现金流支出
+
+                        </h3>
+
+                        <div
+
+                            class="value"
+
+                        >
+
+                            ${formatCurrency(
+
+                                cashFlow.expense
+
+                            )}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Net Cash Flow -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
+
+                        <h3>
+
+                            净现金流
+
+                        </h3>
+
+                        <div
+
+                            class="value"
+
+                        >
+
+                            ${formatCurrency(
+
+                                cashFlow.net
+
+                            )}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Wealth Score -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
+
+                        <h3>
+
+                            财富评分
+
+                        </h3>
+
+                        <div
+
+                            class="value"
+
+                        >
+
+                            ${Number(
+
+                                result.wealthScore ||
+
+                                0
+
+                            )}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Asset Count -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
+
+                        <h3>
+
+                            资产数量
+
+                        </h3>
+
+                        <div
+
+                            class="value"
+
+                        >
+
+                            ${assets.length}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Liability Count -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
+
+                        <h3>
+
+                            负债数量
+
+                        </h3>
+
+                        <div
+
+                            class="value"
+
+                        >
+
+                            ${liabilities.length}
 
                         </div>
 
@@ -144,7 +520,53 @@ function renderSystem(
 
             </section>
 
-            <section class="modules">
+            <!-- Asset Allocation -->
+
+            <section
+
+                class="modules"
+
+            >
+
+                <h2>
+
+                    📊 资产配置
+
+                </h2>
+
+                <div
+
+                    class="module-grid"
+
+                >
+
+                    ${
+
+                        allocationHTML ||
+
+                        `
+
+                        <p>
+
+                            暂无资产配置数据
+
+                        </p>
+
+                        `
+
+                    }
+
+                </div>
+
+            </section>
+
+            <!-- Wealth Modules -->
+
+            <section
+
+                class="modules"
+
+            >
 
                 <h2>
 
@@ -152,41 +574,59 @@ function renderSystem(
 
                 </h2>
 
-                <div class="module-grid">
+                <div
 
-                    ${systemStatus.modules.map(
+                    class="module-grid"
 
-                        module => `
+                >
 
-                        <div
+                    ${
 
-                            class="module-card"
+                        status.modules
 
-                        >
+                        .map(
 
-                            <h3>
+                            module => `
 
-                                ${module}
+                                <div
 
-                            </h3>
+                                    class="module-card"
 
-                            <p>
+                                >
 
-                                ACTIVE
+                                    <h3>
 
-                            </p>
+                                        ${module}
 
-                        </div>
+                                    </h3>
 
-                    `
+                                    <p>
 
-                    ).join("")}
+                                        ACTIVE
+
+                                    </p>
+
+                                </div>
+
+                            `
+
+                        )
+
+                        .join("")
+
+                    }
 
                 </div>
 
             </section>
 
-            <section class="agents">
+            <!-- AI Agents -->
+
+            <section
+
+                class="agents"
+
+            >
 
                 <h2>
 
@@ -194,41 +634,59 @@ function renderSystem(
 
                 </h2>
 
-                <div class="module-grid">
+                <div
 
-                    ${systemStatus.agents.map(
+                    class="module-grid"
 
-                        agent => `
+                >
 
-                        <div
+                    ${
 
-                            class="module-card"
+                        status.agents
 
-                        >
+                        .map(
 
-                            <h3>
+                            agent => `
 
-                                🤖 ${agent}
+                                <div
 
-                            </h3>
+                                    class="module-card"
 
-                            <p>
+                                >
 
-                                READY
+                                    <h3>
 
-                            </p>
+                                        🤖 ${agent}
 
-                        </div>
+                                    </h3>
 
-                    `
+                                    <p>
 
-                    ).join("")}
+                                        READY
+
+                                    </p>
+
+                                </div>
+
+                            `
+
+                        )
+
+                        .join("")
+
+                    }
 
                 </div>
 
             </section>
 
-            <section class="quick-actions">
+            <!-- Quick Access -->
+
+            <section
+
+                class="quick-actions"
+
+            >
 
                 <h2>
 
@@ -236,7 +694,11 @@ function renderSystem(
 
                 </h2>
 
-                <div class="action-grid">
+                <div
+
+                    class="action-grid"
+
+                >
 
                     <button>
 
@@ -284,6 +746,12 @@ function renderSystem(
 
 }
 
+// ==================================================
+
+// Error
+
+// ==================================================
+
 function renderError(
 
     title,
@@ -294,7 +762,11 @@ function renderError(
 
     app.innerHTML = `
 
-        <div class="error-screen">
+        <div
+
+            class="error-screen"
+
+        >
 
             <h1>
 
@@ -302,11 +774,15 @@ function renderError(
 
             </h1>
 
-            <pre>${error?.stack ||
+            <pre>
 
-                error?.message ||
+${error?.stack ||
 
-                String(error)}</pre>
+ error?.message ||
+
+ String(error)}
+
+            </pre>
 
         </div>
 
@@ -314,13 +790,23 @@ function renderError(
 
 }
 
+// ==================================================
+
+// Application Start
+
+// ==================================================
+
 async function start(){
 
     try {
 
         app.innerHTML = `
 
-            <div class="startup">
+            <div
+
+                class="startup"
+
+            >
 
                 <h1>
 
@@ -330,7 +816,7 @@ async function start(){
 
                 <p>
 
-                    Starting Family Wealth AI OS...
+                    Loading Wealth System...
 
                 </p>
 
@@ -338,7 +824,13 @@ async function start(){
 
         `;
 
-        const module =
+        // ------------------------------------------
+
+        // System Manager
+
+        // ------------------------------------------
+
+        const systemModule =
 
             await import(
 
@@ -348,21 +840,217 @@ async function start(){
 
         const SystemManager =
 
-            module.default;
+            systemModule.default;
 
-        const result =
+        // ------------------------------------------
+
+        // Start System
+
+        // ------------------------------------------
+
+        const startResult =
 
             SystemManager.start();
 
-        const status =
+        const systemStatus =
 
             SystemManager.status();
 
-        renderSystem(
+        // ------------------------------------------
+
+        // Assets
+
+        // ------------------------------------------
+
+        const assetsModule =
+
+            await import(
+
+                "./core/modules/assetsModule.js"
+
+            );
+
+        const AssetsModule =
+
+            assetsModule.default;
+
+        const assets =
+
+            AssetsModule.api.getAll();
+
+        // ------------------------------------------
+
+        // Liabilities
+
+        // ------------------------------------------
+
+        const liabilityModule =
+
+            await import(
+
+                "./core/modules/liabilityModule.js"
+
+            );
+
+        const LiabilityModule =
+
+            liabilityModule.default;
+
+        const liabilities =
+
+            LiabilityModule.api
+
+            .getLiabilities();
+
+        // ------------------------------------------
+
+        // Cashflow
+
+        // ------------------------------------------
+
+        const cashflowModule =
+
+            await import(
+
+                "./core/modules/cashflowModule.js"
+
+            );
+
+        const CashflowModule =
+
+            cashflowModule.default;
+
+        const cashFlowSummary =
+
+            CashflowModule.api
+
+            .getSummary();
+
+        // ------------------------------------------
+
+        // Normalize Cash Flow
+
+        // ------------------------------------------
+
+        const cashFlowData = {
+
+            income:
+
+                Number(
+
+                    cashFlowSummary.income ||
+
+                    0
+
+                ),
+
+            expense:
+
+                Number(
+
+                    cashFlowSummary.expense ||
+
+                    0
+
+                ),
+
+            net:
+
+                Number(
+
+                    cashFlowSummary.net ||
+
+                    0
+
+                ),
+
+            netCashFlow:
+
+                Number(
+
+                    cashFlowSummary.net ||
+
+                    0
+
+                )
+
+        };
+
+        // ------------------------------------------
+
+        // Wealth Engine
+
+        // ------------------------------------------
+
+        const wealthModule =
+
+            await import(
+
+                "./core/engines/wealth/wealthEngine.js"
+
+            );
+
+        const WealthEngine =
+
+            wealthModule.default;
+
+        // ------------------------------------------
+
+        // Analyze Wealth
+
+        // ------------------------------------------
+
+        const wealthResult =
+
+            WealthEngine.analyze(
+
+                assets,
+
+                liabilities,
+
+                cashFlowData,
+
+                0
+
+            );
+
+        // ------------------------------------------
+
+        // Final Result
+
+        // ------------------------------------------
+
+        const result = {
+
+            ...wealthResult,
+
+            status:
+
+                startResult.status,
+
+            advisor:
+
+                startResult.advisor
+
+        };
+
+        // ------------------------------------------
+
+        // Render
+
+        // ------------------------------------------
+
+        renderDashboard(
 
             result,
 
-            status
+            systemStatus,
+
+            assets,
+
+            liabilities,
+
+            cashFlowData
 
         );
 
@@ -381,5 +1069,11 @@ async function start(){
     }
 
 }
+
+// ==================================================
+
+// Start
+
+// ==================================================
 
 start();
