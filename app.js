@@ -2,7 +2,7 @@
 
 Family Wealth AI OS V7
 
-Module Registry Import Test
+Agent Registry Import Test
 
 */
 
@@ -12,21 +12,31 @@ app.innerHTML = `
 
     <h1>Family Wealth AI OS V7</h1>
 
-    <p>Testing ModuleRegistry...</p>
+    <p>Testing AgentRegistry...</p>
 
 `;
 
-import("./core/registry/moduleRegistry.js")
+import("./core/registry/agentRegistry.js")
 
-    .then(({ default: ModuleRegistry }) => {
+    .then(({ default: AgentRegistry }) => {
 
         app.innerHTML = `
 
-            <h1>ModuleRegistry Test</h1>
+            <h1>AgentRegistry Test</h1>
 
-            <p>ModuleRegistry Loaded Successfully</p>
+            <p>
 
-            <p>Functions: ${typeof ModuleRegistry.list}</p>
+                AgentRegistry Loaded Successfully
+
+            </p>
+
+            <p>
+
+                Functions:
+
+                ${typeof AgentRegistry.list}
+
+            </p>
 
         `;
 
@@ -36,7 +46,7 @@ import("./core/registry/moduleRegistry.js")
 
         app.innerHTML = `
 
-            <h1>ModuleRegistry Import Error</h1>
+            <h1>AgentRegistry Import Error</h1>
 
             <pre style="
 
