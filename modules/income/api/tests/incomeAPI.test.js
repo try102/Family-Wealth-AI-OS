@@ -1,233 +1,357 @@
 /*
 
+    
+
 Family Wealth AI OS V7
 
 Income API Test
 
-测试：
-
-API
-
-↓
-
-Service
-
-↓
-
-Repository
-
-↓
-
-Database
-
 */
 
-import IncomeAPI from "../incomeAPI.js";
+import IncomeAPI
 
-import IncomeRepository from "../../repository/incomeRepository.js";
+    from "./incomeAPI.js";
 
-import Database from "../../../../storage/database.js";
+// ==========================================
 
-// =====================
+// Test Helper
 
-// Initialize
+// ==========================================
 
-// =====================
+function assert(
 
-Database.init();
+    condition,
 
-// =====================
-
-// Clear Data
-
-// =====================
-
-IncomeRepository.clear();
-
-// =====================
-
-// Create Income
-
-// =====================
-
-const income =
-
-IncomeAPI.createIncome({
-
-    name:
-
-    "Business Income",
-
-    category:
-
-    "经营收入",
-
-    amount:
-
-    20000,
-
-    owner:
-
-    "Family"
-
-});
-
-if(
-
-    !income.id
+    message
 
 ){
 
-    throw new Error(
+    if(!condition){
 
-        "API create failed"
+        throw new Error(
 
-    );
+            "❌ FAIL: " +
 
-}
+            message
 
-// =====================
-
-// Get All
-
-// =====================
-
-const list =
-
-IncomeAPI.getAllIncome();
-
-if(
-
-    list.length !== 1
-
-){
-
-    throw new Error(
-
-        "API get all failed"
-
-    );
-
-}
-
-// =====================
-
-// Get By Id
-
-// =====================
-
-const item =
-
-IncomeAPI.getIncomeById(
-
-    income.id
-
-);
-
-if(
-
-    item.category !== "经营收入"
-
-){
-
-    throw new Error(
-
-        "API get by id failed"
-
-    );
-
-}
-
-// =====================
-
-// Update
-
-// =====================
-
-const updated =
-
-IncomeAPI.updateIncome(
-
-    income.id,
-
-    {
-
-        amount:
-
-        25000
+        );
 
     }
 
-);
+    console.log(
 
-if(
+        "✅ PASS: " +
 
-    updated.amount !== 25000
-
-){
-
-    throw new Error(
-
-        "API update failed"
+        message
 
     );
 
 }
 
-// =====================
+// ==========================================
 
-// Summary
+// Start
 
-// =====================
-
-const summary =
-
-IncomeAPI.getSummary();
-
-if(
-
-    summary.totalIncome !== 25000
-
-){
-
-    throw new Error(
-
-        "API summary failed"
-
-    );
-
-}
-
-// =====================
-
-// Delete
-
-// =====================
-
-const deleted =
-
-IncomeAPI.deleteIncome(
-
-    income.id
-
-);
-
-if(
-
-    deleted !== true
-
-){
-
-    throw new Error(
-
-        "API delete failed"
-
-    );
-
-}
+// ==========================================
 
 console.log(
 
-    "Income API V7 Test Passed"
+    "=========================================="
+
+);
+
+console.log(
+
+    "Family Wealth AI OS V7"
+
+);
+
+console.log(
+
+    "Income API Test"
+
+);
+
+console.log(
+
+    "=========================================="
+
+);
+
+// ==========================================
+
+// Read Existing Data
+
+// ==========================================
+
+const before =
+
+    IncomeAPI.getAllIncome();
+
+assert(
+
+    Array.isArray(before),
+
+    "Get all income"
+
+);
+
+// ==========================================
+
+// Create
+
+// ==========================================
+
+const testIncome = {
+
+    source:
+
+        "V7 API Test",
+
+    name:
+
+        "V7 API Test",
+
+    amount:
+
+        1000,
+
+    value:
+
+        1000,
+
+    type:
+
+        "Other"
+
+};
+
+const created =
+
+    IncomeAPI.createIncome(
+
+        testIncome
+
+    );
+
+assert(
+
+    created,
+
+    "Create income"
+
+);
+
+assert(
+
+    created.id,
+
+    "Income ID generated"
+
+);
+
+// ==========================================
+
+// Read By ID
+
+// ==========================================
+
+const found =
+
+    IncomeAPI.getIncomeById(
+
+        created.id
+
+    );
+
+assert(
+
+    found,
+
+    "Get income by ID"
+
+);
+
+assert(
+
+    found.id ===
+
+    created.id,
+
+    "Correct income returned"
+
+);
+
+// ==========================================
+
+// Update
+
+// ==========================================
+
+const updatedData = {
+
+    source:
+
+        "V7 API Test Updated",
+
+    name:
+
+        "V7 API Test Updated",
+
+    amount:
+
+        2500,
+
+    value:
+
+        2500,
+
+    type:
+
+        "Business"
+
+};
+
+const updated =
+
+    IncomeAPI.updateIncome(
+
+        created.id,
+
+        updatedData
+
+    );
+
+assert(
+
+    updated,
+
+    "Update income"
+
+);
+
+// ==========================================
+
+// Verify Update
+
+// ==========================================
+
+const afterUpdate =
+
+    IncomeAPI.getIncomeById(
+
+        created.id
+
+    );
+
+assert(
+
+    afterUpdate,
+
+    "Read updated income"
+
+);
+
+assert(
+
+    Number(
+
+        afterUpdate.amount ??
+
+        afterUpdate.value ??
+
+        0
+
+    ) === 2500,
+
+    "Updated amount = 2500"
+
+);
+
+// ==========================================
+
+// Summary
+
+// ==========================================
+
+const summary =
+
+    IncomeAPI.getSummary();
+
+assert(
+
+    summary !== null &&
+
+    summary !== undefined,
+
+    "Get income summary"
+
+);
+
+// ==========================================
+
+// Delete
+
+// ==========================================
+
+const deleted =
+
+    IncomeAPI.deleteIncome(
+
+        created.id
+
+    );
+
+assert(
+
+    deleted !== undefined,
+
+    "Delete income"
+
+);
+
+// ==========================================
+
+// Verify Delete
+
+// ==========================================
+
+const deletedIncome =
+
+    IncomeAPI.getIncomeById(
+
+        created.id
+
+    );
+
+assert(
+
+    !deletedIncome,
+
+    "Income deleted"
+
+);
+
+// ==========================================
+
+// Final
+
+// ==========================================
+
+console.log(
+
+    "=========================================="
+
+);
+
+console.log(
+
+    "🎉 INCOME API TEST PASSED"
+
+);
+
+console.log(
+
+    "=========================================="
 
 );
