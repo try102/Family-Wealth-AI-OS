@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+
+content="width=device-width, initial-scale=1.0">
+
+<title>
+
+WealthCalculator Test
+
+</title>
+
+</head>
+
+<body>
+
+<div id="app">
+
+Loading...
+
+</div>
+
+<script type="module">
+
+const app =
+
+document.getElementById("app");
+
+try {
+
+    const module =
+
+        await import(
+
+            "./core/engines/wealth/wealthCalculator.js?v=20260809-01"
+
+        );
+
+    const WealthCalculator =
+
+        module.default;
+
+    const testAssets = [
+
+        {
+
+            name:
+
+            "Test Cash",
+
+            category:
+
+            "Cash",
+
+            currentValue:
+
+            10000
+
+        }
+
+    ];
+
+    const testLiabilities = [];
+
+    const netWorth =
+
+        WealthCalculator
+
+        .calculateNetWorth(
+
+            testAssets,
+
+            testLiabilities
+
+        );
+
+    const allocation =
+
+        WealthCalculator
+
+        .calculateAssetAllocation(
+
+            testAssets
+
+        );
+
+    const passed =
+
+        netWorth.totalAssets ===
+
+        10000 &&
+
+        netWorth.netWorth ===
+
+        10000 &&
+
+        allocation.Cash?.value ===
+
+        10000;
+
+    app.innerHTML = `
+
+        <h1>
+
+            Family Wealth AI OS V7
+
+        </h1>
+
+        <h2>
+
+            WealthCalculator Test
+
+        </h2>
+
+        <h2 style="
+
+            color:${passed
+
+                ? "green"
+
+                : "red"};
+
+        ">
+
+            ${
+
+                passed
+
+                ?
+
+                "✅ WealthCalculator PASSED"
+
+                :
+
+                "❌ WealthCalculator FAILED"
+
+            }
+
+        </h2>
+
+        <h3>
+
+            Input
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            testAssets,
+
+            null,
+
+            2
+
+        )}</pre>
+
+        <h3>
+
+            Net Worth
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            netWorth,
+
+            null,
+
+            2
+
+        )}</pre>
+
+        <h3>
+
+            Allocation
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            allocation,
+
+            null,
+
+            2
+
+        )}</pre>
+
+        <h3>
+
+            Test
+
+        </h3>
+
+        <p>
+
+            totalAssets:
+
+            ${
+
+                netWorth.totalAssets ===
+
+                10000
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+        <p>
+
+            netWorth:
+
+            ${
+
+                netWorth.netWorth ===
+
+                10000
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+        <p>
+
+            allocation:
+
+            ${
+
+                allocation.Cash?.value ===
+
+                10000
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+    `;
+
+}
+
+catch(error){
+
+    app.innerHTML = `
+
+        <h1>
+
+            WealthCalculator Import Error
+
+        </h1>
+
+        <pre style="
+
+            white-space:pre-wrap;
+
+            word-break:break-word;
+
+            color:red;
+
+        ">${error.stack ||
+
+           error.message ||
+
+           String(error)}</pre>
+
+    `;
+
+}
+
+</script>
+
+</body>
+
+</html>
