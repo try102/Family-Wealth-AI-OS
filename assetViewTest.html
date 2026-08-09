@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+
+content="width=device-width, initial-scale=1.0">
+
+<title>
+
+Family Wealth AI OS V7
+
+AssetView Test
+
+</title>
+
+</head>
+
+<body>
+
+<div id="app">
+
+Loading AssetView Test...
+
+</div>
+
+<script type="module">
+
+const app =
+
+document.getElementById("app");
+
+try {
+
+    // ==========================================
+
+    // Load AssetView
+
+    // ==========================================
+
+    const module =
+
+        await import(
+
+            "./core/modules/assetsModule.js?v=20260809-view01"
+
+        );
+
+    const AssetsModule =
+
+        module.default;
+
+    const AssetView =
+
+        AssetsModule.view;
+
+    // ==========================================
+
+    // Create Test Container
+
+    // ==========================================
+
+    const container =
+
+        document.createElement(
+
+            "div"
+
+        );
+
+    container.id =
+
+    "asset-test-container";
+
+    // ==========================================
+
+    // Render
+
+    // ==========================================
+
+    AssetView.render(
+
+        container
+
+    );
+
+    // ==========================================
+
+    // Verify
+
+    // ==========================================
+
+    const html =
+
+        container.innerHTML;
+
+    const renderPassed =
+
+        html.includes(
+
+            "Asset Center"
+
+        );
+
+    const totalPassed =
+
+        html.includes(
+
+            "Total Assets"
+
+        );
+
+    const listPassed =
+
+        html.includes(
+
+            "<ul>"
+
+        );
+
+    const passed =
+
+        renderPassed &&
+
+        totalPassed &&
+
+        listPassed;
+
+    // ==========================================
+
+    // Output
+
+    // ==========================================
+
+    app.innerHTML = `
+
+        <h1>
+
+            Family Wealth AI OS V7
+
+        </h1>
+
+        <h2>
+
+            AssetView Test
+
+        </h2>
+
+        <h2 style="
+
+            color:${passed
+
+                ? "green"
+
+                : "red"};
+
+        ">
+
+            ${
+
+                passed
+
+                ?
+
+                "✅ ASSET VIEW PASSED"
+
+                :
+
+                "❌ ASSET VIEW FAILED"
+
+            }
+
+        </h2>
+
+        <hr>
+
+        <h3>
+
+            Rendered View
+
+        </h3>
+
+        <div style="
+
+            border:1px solid #ccc;
+
+            padding:20px;
+
+            margin:20px 0;
+
+        ">
+
+            ${html}
+
+        </div>
+
+        <h3>
+
+            Test Details
+
+        </h3>
+
+        <p>
+
+            Asset Center:
+
+            ${
+
+                renderPassed
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+        <p>
+
+            Total Assets:
+
+            ${
+
+                totalPassed
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+        <p>
+
+            Asset List:
+
+            ${
+
+                listPassed
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+        <h3>
+
+            Current Assets
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            AssetsModule.api.getAll(),
+
+            null,
+
+            2
+
+        )}</pre>
+
+    `;
+
+}
+
+catch(error){
+
+    app.innerHTML = `
+
+        <h1>
+
+            AssetView Test Error
+
+        </h1>
+
+        <pre style="
+
+            white-space:pre-wrap;
+
+            word-break:break-word;
+
+            color:red;
+
+        ">${error.stack ||
+
+           error.message ||
+
+           String(error)}</pre>
+
+    `;
+
+}
+
+</script>
+
+</body>
+
+</html>
