@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+
+    name="viewport"
+
+    content="width=device-width, initial-scale=1.0"
+
+>
+
+<title>
+
+Income Module V7 Integration Test
+
+</title>
+
+</head>
+
+<body>
+
+<h1>
+
+🏠 Family Wealth AI OS V7
+
+</h1>
+
+<h2>
+
+Income Module Integration Test
+
+</h2>
+
+<div id="result">
+
+Testing Income Module...
+
+</div>
+
+<script type="module">
+
+import IncomeModule
+
+    from "./incomeModule.js";
+
+const result =
+
+    document.getElementById("result");
+
+function assert(
+
+    condition,
+
+    message
+
+){
+
+    if(!condition){
+
+        throw new Error(
+
+            message
+
+        );
+
+    }
+
+    console.log(
+
+        "✅ PASS:",
+
+        message
+
+    );
+
+}
+
+try {
+
+    // ======================================
+
+    // Module
+
+    // ======================================
+
+    assert(
+
+        IncomeModule,
+
+        "Income Module loaded"
+
+    );
+
+    assert(
+
+        IncomeModule.name ===
+
+            "Income Module V7",
+
+        "Module name"
+
+    );
+
+    assert(
+
+        IncomeModule.status ===
+
+            "READY",
+
+        "Module status"
+
+    );
+
+    // ======================================
+
+    // Agent
+
+    // ======================================
+
+    const agentInit =
+
+        IncomeModule.agent.init();
+
+    assert(
+
+        agentInit,
+
+        "Income Agent"
+
+    );
+
+    // ======================================
+
+    // Read
+
+    // ======================================
+
+    const before =
+
+        IncomeModule.api
+
+        .getAllIncome();
+
+    assert(
+
+        Array.isArray(before),
+
+        "Read income"
+
+    );
+
+    // ======================================
+
+    // Create
+
+    // ======================================
+
+    const testIncome = {
+
+        source:
+
+            "V7 Integration Test",
+
+        name:
+
+            "V7 Integration Test",
+
+        amount:
+
+            3000,
+
+        value:
+
+            3000,
+
+        type:
+
+            "Other"
+
+    };
+
+    const created =
+
+        IncomeModule.api
+
+        .createIncome(
+
+            testIncome
+
+        );
+
+    assert(
+
+        created,
+
+        "Create income"
+
+    );
+
+    assert(
+
+        created.id,
+
+        "Income ID generated"
+
+    );
+
+    // ======================================
+
+    // Read Created
+
+    // ======================================
+
+    const found =
+
+        IncomeModule.api
+
+        .getIncomeById(
+
+            created.id
+
+        );
+
+    assert(
+
+        found,
+
+        "Read created income"
+
+    );
+
+    // ======================================
+
+    // Update
+
+    // ======================================
+
+    const updated =
+
+        IncomeModule.api
+
+        .updateIncome(
+
+            created.id,
+
+            {
+
+                source:
+
+                    "V7 Integration Updated",
+
+                name:
+
+                    "V7 Integration Updated",
+
+                amount:
+
+                    5000,
+
+                value:
+
+                    5000,
+
+                type:
+
+                    "Business"
+
+            }
+
+        );
+
+    assert(
+
+        updated,
+
+        "Update income"
+
+    );
+
+    // ======================================
+
+    // Verify Update
+
+    // ======================================
+
+    const updatedIncome =
+
+        IncomeModule.api
+
+        .getIncomeById(
+
+            created.id
+
+        );
+
+    assert(
+
+        updatedIncome,
+
+        "Read updated income"
+
+    );
+
+    assert(
+
+        Number(
+
+            updatedIncome.amount ??
+
+            updatedIncome.value ??
+
+            0
+
+        ) === 5000,
+
+        "Updated amount = 5000"
+
+    );
+
+    // ======================================
+
+    // Summary
+
+    // ======================================
+
+    const summary =
+
+        IncomeModule.api
+
+        .getSummary();
+
+    assert(
+
+        summary !== null &&
+
+        summary !== undefined,
+
+        "Income summary"
+
+    );
+
+    // ======================================
+
+    // Agent Analysis
+
+    // ======================================
+
+    const analysis =
+
+        IncomeModule.agent
+
+        .analyze();
+
+    assert(
+
+        analysis,
+
+        "Income analysis"
+
+    );
+
+    assert(
+
+        analysis.type ===
+
+            "INCOME_ANALYSIS",
+
+        "Analysis type"
+
+    );
+
+    // ======================================
+
+    // Delete
+
+    // ======================================
+
+    const deleted =
+
+        IncomeModule.api
+
+        .deleteIncome(
+
+            created.id
+
+        );
+
+    assert(
+
+        deleted !== undefined,
+
+        "Delete income"
+
+    );
+
+    // ======================================
+
+    // Verify Delete
+
+    // ======================================
+
+    const deletedIncome =
+
+        IncomeModule.api
+
+        .getIncomeById(
+
+            created.id
+
+        );
+
+    assert(
+
+        !deletedIncome,
+
+        "Income deleted"
+
+    );
+
+    // ======================================
+
+    // Final
+
+    // ======================================
+
+    result.innerHTML = `
+
+        <h2 style="color:green;">
+
+            🎉 INCOME MODULE V7
+
+            INTEGRATION TEST PASSED
+
+        </h2>
+
+        <p>
+
+            Module: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Agent: ✅ PASS
+
+        </p>
+
+        <p>
+
+            API: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Create: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Read: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Update: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Summary: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Analysis: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Delete: ✅ PASS
+
+        </p>
+
+    `;
+
+    console.log(
+
+        "=========================================="
+
+    );
+
+    console.log(
+
+        "🎉 INCOME MODULE V7 INTEGRATION TEST PASSED"
+
+    );
+
+    console.log(
+
+        "=========================================="
+
+    );
+
+}
+
+catch(error){
+
+    result.innerHTML = `
+
+        <h2 style="color:red;">
+
+            ❌ INCOME MODULE TEST FAILED
+
+        </h2>
+
+        <pre>
+
+${
+
+    error.stack ||
+
+    error.message ||
+
+    String(error)
+
+}
+
+        </pre>
+
+    `;
+
+    console.error(error);
+
+}
+
+</script>
+
+</body>
+
+</html>
