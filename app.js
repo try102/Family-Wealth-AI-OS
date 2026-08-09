@@ -1,16 +1,20 @@
 /*
 
+    
+
 Family Wealth AI OS V7
 
 Application Entry
 
-Dashboard + Quick Access
+Dashboard Data Integration
 
-Stable Integration Build
+Investment Integration
 
 */
 
-const app = document.getElementById("app");
+const app =
+
+    document.getElementById("app");
 
 // ==================================================
 
@@ -18,7 +22,11 @@ const app = document.getElementById("app");
 
 // ==================================================
 
-function formatCurrency(value){
+function formatCurrency(
+
+    value
+
+){
 
     return new Intl.NumberFormat(
 
@@ -26,17 +34,27 @@ function formatCurrency(value){
 
         {
 
-            style: "currency",
+            style:
 
-            currency: "USD",
+                "currency",
 
-            maximumFractionDigits: 0
+            currency:
+
+                "USD",
+
+            maximumFractionDigits:
+
+                0
 
         }
 
     ).format(
 
-        Number(value || 0)
+        Number(
+
+            value || 0
+
+        )
 
     );
 
@@ -48,71 +66,25 @@ function formatCurrency(value){
 
 // ==================================================
 
-function formatPercent(value){
+function formatPercent(
+
+    value
+
+){
 
     return (
 
-        Number(value || 0).toFixed(2)
+        Number(
+
+            value || 0
+
+        ).toFixed(2)
 
         +
 
         "%"
 
     );
-
-}
-
-// ==================================================
-
-// Error
-
-// ==================================================
-
-function renderError(title, error){
-
-    app.innerHTML = `
-
-        <div
-
-            class="error-screen"
-
-            style="
-
-                padding:30px;
-
-                font-family:Arial,sans-serif;
-
-            "
-
-        >
-
-            <h1>
-
-                ${title}
-
-            </h1>
-
-            <pre
-
-                style="
-
-                    white-space:pre-wrap;
-
-                    word-break:break-word;
-
-                    color:red;
-
-                "
-
-            >${error?.stack ||
-
-                error?.message ||
-
-                String(error)}</pre>
-
-        </div>
-
-    `;
 
 }
 
@@ -132,7 +104,9 @@ function renderDashboard(
 
     liabilities,
 
-    cashFlow
+    cashFlow,
+
+    investments
 
 ){
 
@@ -142,53 +116,61 @@ function renderDashboard(
 
     const allocationHTML =
 
-        Object.keys(allocation)
+        Object.keys(
 
-        .map(category => {
+            allocation
 
-            const item =
+        )
 
-                allocation[category] || {};
+        .map(
 
-            return `
+            category => {
 
-                <div
+                const item =
 
-                    class="module-card"
+                    allocation[category];
 
-                >
+                return `
 
-                    <h3>
+                    <div
 
-                        ${category}
+                        class="module-card"
 
-                    </h3>
+                    >
 
-                    <p>
+                        <h3>
 
-                        ${formatCurrency(
+                            ${category}
 
-                            item.value
+                        </h3>
 
-                        )}
+                        <p>
 
-                    </p>
+                            ${formatCurrency(
 
-                    <p>
+                                item.value
 
-                        ${formatPercent(
+                            )}
 
-                            item.ratio
+                        </p>
 
-                        )}
+                        <p>
 
-                    </p>
+                            ${formatPercent(
 
-                </div>
+                                item.ratio
 
-            `;
+                            )}
 
-        })
+                        </p>
+
+                    </div>
+
+                `;
+
+            }
+
+        )
 
         .join("");
 
@@ -196,11 +178,7 @@ function renderDashboard(
 
         <div class="app-shell">
 
-            <!-- ================================= -->
-
             <!-- Header -->
-
-            <!-- ================================= -->
 
             <header
 
@@ -222,11 +200,7 @@ function renderDashboard(
 
             </header>
 
-            <!-- ================================= -->
-
-            <!-- System Status -->
-
-            <!-- ================================= -->
+            <!-- System -->
 
             <section
 
@@ -264,11 +238,7 @@ function renderDashboard(
 
             </section>
 
-            <!-- ================================= -->
-
             <!-- Dashboard -->
-
-            <!-- ================================= -->
 
             <section
 
@@ -288,7 +258,13 @@ function renderDashboard(
 
                 >
 
-                    <div class="dashboard-card">
+                    <!-- Total Assets -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
 
                         <h3>
 
@@ -296,7 +272,11 @@ function renderDashboard(
 
                         </h3>
 
-                        <div class="value">
+                        <div
+
+                            class="value"
+
+                        >
 
                             ${formatCurrency(
 
@@ -308,7 +288,13 @@ function renderDashboard(
 
                     </div>
 
-                    <div class="dashboard-card">
+                    <!-- Total Liabilities -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
 
                         <h3>
 
@@ -316,7 +302,11 @@ function renderDashboard(
 
                         </h3>
 
-                        <div class="value">
+                        <div
+
+                            class="value"
+
+                        >
 
                             ${formatCurrency(
 
@@ -328,7 +318,13 @@ function renderDashboard(
 
                     </div>
 
-                    <div class="dashboard-card">
+                    <!-- Net Worth -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
 
                         <h3>
 
@@ -336,7 +332,11 @@ function renderDashboard(
 
                         </h3>
 
-                        <div class="value">
+                        <div
+
+                            class="value"
+
+                        >
 
                             ${formatCurrency(
 
@@ -348,7 +348,13 @@ function renderDashboard(
 
                     </div>
 
-                    <div class="dashboard-card">
+                    <!-- Income -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
 
                         <h3>
 
@@ -356,7 +362,11 @@ function renderDashboard(
 
                         </h3>
 
-                        <div class="value">
+                        <div
+
+                            class="value"
+
+                        >
 
                             ${formatCurrency(
 
@@ -368,7 +378,13 @@ function renderDashboard(
 
                     </div>
 
-                    <div class="dashboard-card">
+                    <!-- Expense -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
 
                         <h3>
 
@@ -376,7 +392,11 @@ function renderDashboard(
 
                         </h3>
 
-                        <div class="value">
+                        <div
+
+                            class="value"
+
+                        >
 
                             ${formatCurrency(
 
@@ -388,7 +408,13 @@ function renderDashboard(
 
                     </div>
 
-                    <div class="dashboard-card">
+                    <!-- Net Cash Flow -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
 
                         <h3>
 
@@ -396,7 +422,11 @@ function renderDashboard(
 
                         </h3>
 
-                        <div class="value">
+                        <div
+
+                            class="value"
+
+                        >
 
                             ${formatCurrency(
 
@@ -408,7 +438,13 @@ function renderDashboard(
 
                     </div>
 
-                    <div class="dashboard-card">
+                    <!-- Wealth Score -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
 
                         <h3>
 
@@ -416,11 +452,17 @@ function renderDashboard(
 
                         </h3>
 
-                        <div class="value">
+                        <div
+
+                            class="value"
+
+                        >
 
                             ${Number(
 
-                                result.wealthScore || 0
+                                result.wealthScore ||
+
+                                0
 
                             )}
 
@@ -428,7 +470,13 @@ function renderDashboard(
 
                     </div>
 
-                    <div class="dashboard-card">
+                    <!-- Asset Count -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
 
                         <h3>
 
@@ -436,7 +484,11 @@ function renderDashboard(
 
                         </h3>
 
-                        <div class="value">
+                        <div
+
+                            class="value"
+
+                        >
 
                             ${assets.length}
 
@@ -444,7 +496,39 @@ function renderDashboard(
 
                     </div>
 
-                    <div class="dashboard-card">
+                    <!-- Investment Count -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
+
+                        <h3>
+
+                            投资数量
+
+                        </h3>
+
+                        <div
+
+                            class="value"
+
+                        >
+
+                            ${investments.length}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Liability Count -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
 
                         <h3>
 
@@ -452,7 +536,11 @@ function renderDashboard(
 
                         </h3>
 
-                        <div class="value">
+                        <div
+
+                            class="value"
+
+                        >
 
                             ${liabilities.length}
 
@@ -464,11 +552,7 @@ function renderDashboard(
 
             </section>
 
-            <!-- ================================= -->
-
             <!-- Asset Allocation -->
-
-            <!-- ================================= -->
 
             <section
 
@@ -494,11 +578,11 @@ function renderDashboard(
 
                         `
 
-                            <p>
+                        <p>
 
-                                暂无资产配置数据
+                            暂无资产配置数据
 
-                            </p>
+                        </p>
 
                         `
 
@@ -508,11 +592,7 @@ function renderDashboard(
 
             </section>
 
-            <!-- ================================= -->
-
             <!-- Wealth Modules -->
-
-            <!-- ================================= -->
 
             <section
 
@@ -534,31 +614,35 @@ function renderDashboard(
 
                     ${
 
-                        (status.modules || [])
+                        status.modules
 
-                        .map(module => `
+                        .map(
 
-                            <div
+                            module => `
 
-                                class="module-card"
+                                <div
 
-                            >
+                                    class="module-card"
 
-                                <h3>
+                                >
 
-                                    ${module}
+                                    <h3>
 
-                                </h3>
+                                        ${module}
 
-                                <p>
+                                    </h3>
 
-                                    ACTIVE
+                                    <p>
 
-                                </p>
+                                        ACTIVE
 
-                            </div>
+                                    </p>
 
-                        `)
+                                </div>
+
+                            `
+
+                        )
 
                         .join("")
 
@@ -568,11 +652,7 @@ function renderDashboard(
 
             </section>
 
-            <!-- ================================= -->
-
             <!-- AI Agents -->
-
-            <!-- ================================= -->
 
             <section
 
@@ -594,31 +674,35 @@ function renderDashboard(
 
                     ${
 
-                        (status.agents || [])
+                        status.agents
 
-                        .map(agent => `
+                        .map(
 
-                            <div
+                            agent => `
 
-                                class="module-card"
+                                <div
 
-                            >
+                                    class="module-card"
 
-                                <h3>
+                                >
 
-                                    🤖 ${agent}
+                                    <h3>
 
-                                </h3>
+                                        🤖 ${agent}
 
-                                <p>
+                                    </h3>
 
-                                    READY
+                                    <p>
 
-                                </p>
+                                        READY
 
-                            </div>
+                                    </p>
 
-                        `)
+                                </div>
+
+                            `
+
+                        )
 
                         .join("")
 
@@ -628,11 +712,7 @@ function renderDashboard(
 
             </section>
 
-            <!-- ================================= -->
-
             <!-- Quick Access -->
-
-            <!-- ================================= -->
 
             <section
 
@@ -652,6 +732,8 @@ function renderDashboard(
 
                 >
 
+                    <!-- Assets -->
+
                     <button
 
                         id="quick-assets-button"
@@ -663,6 +745,8 @@ function renderDashboard(
                         💰 Assets
 
                     </button>
+
+                    <!-- Investment -->
 
                     <button
 
@@ -676,6 +760,8 @@ function renderDashboard(
 
                     </button>
 
+                    <!-- Income -->
+
                     <button
 
                         id="quick-income-button"
@@ -687,6 +773,8 @@ function renderDashboard(
                         💵 Income
 
                     </button>
+
+                    <!-- Liability -->
 
                     <button
 
@@ -700,6 +788,8 @@ function renderDashboard(
 
                     </button>
 
+                    <!-- Cash Flow -->
+
                     <button
 
                         id="quick-cashflow-button"
@@ -711,6 +801,8 @@ function renderDashboard(
                         💸 Cash Flow
 
                     </button>
+
+                    <!-- Tax -->
 
                     <button
 
@@ -746,7 +838,11 @@ function renderDashboard(
 
         );
 
-    if(assetsButton){
+    if(
+
+        assetsButton
+
+    ){
 
         assetsButton.addEventListener(
 
@@ -754,7 +850,7 @@ function renderDashboard(
 
             async () => {
 
-                try{
+                try {
 
                     const module =
 
@@ -820,14 +916,6 @@ function renderDashboard(
 
     // Quick Access - Investment
 
-    //
-
-    // IMPORTANT:
-
-    // Investment is located in ROOT /modules
-
-    // NOT /core/modules
-
     // ==================================================
 
     const investmentButton =
@@ -838,7 +926,11 @@ function renderDashboard(
 
         );
 
-    if(investmentButton){
+    if(
+
+        investmentButton
+
+    ){
 
         investmentButton.addEventListener(
 
@@ -846,7 +938,7 @@ function renderDashboard(
 
             async () => {
 
-                try{
+                try {
 
                     const module =
 
@@ -864,7 +956,9 @@ function renderDashboard(
 
                         !InvestmentView ||
 
-                        !InvestmentView.render
+                        typeof InvestmentView.render !==
+
+                        "function"
 
                     ){
 
@@ -876,11 +970,15 @@ function renderDashboard(
 
                     }
 
-                    app.innerHTML = "";
-
                     InvestmentView.render(
 
-                        app
+                        app,
+
+                        () => {
+
+                            start();
+
+                        }
 
                     );
 
@@ -904,341 +1002,61 @@ function renderDashboard(
 
     }
 
-    // ==================================================
+}
 
-    // Quick Access - Income
+// ==================================================
 
-    // ==================================================
+// Error
 
-    const incomeButton =
+// ==================================================
 
-        document.getElementById(
+function renderError(
 
-            "quick-income-button"
+    title,
 
-        );
+    error
 
-    if(incomeButton){
+){
 
-        incomeButton.addEventListener(
+    app.innerHTML = `
 
-            "click",
+        <div
 
-            async () => {
+            class="error-screen"
 
-                try{
+        >
 
-                    const module =
+            <h1>
 
-                        await import(
+                ${title}
 
-                            "./core/modules/incomeModule.js"
+            </h1>
 
-                        );
+            <pre
 
-                    const IncomeModule =
+                style="
 
-                        module.default;
+                    white-space:pre-wrap;
 
-                    if(
+                    word-break:break-word;
 
-                        !IncomeModule ||
+                    color:red;
 
-                        !IncomeModule.view
+                "
 
-                    ){
+            >
 
-                        throw new Error(
+${error?.stack ||
 
-                            "IncomeModule.view not found"
+ error?.message ||
 
-                        );
+ String(error)}
 
-                    }
+            </pre>
 
-                    IncomeModule.view.render(
+        </div>
 
-                        app,
-
-                        () => {
-
-                            start();
-
-                        }
-
-                    );
-
-                }
-
-                catch(error){
-
-                    renderError(
-
-                        "Income Module Error",
-
-                        error
-
-                    );
-
-                }
-
-            }
-
-        );
-
-    }
-
-    // ==================================================
-
-    // Quick Access - Liability
-
-    // ==================================================
-
-    const liabilityButton =
-
-        document.getElementById(
-
-            "quick-liability-button"
-
-        );
-
-    if(liabilityButton){
-
-        liabilityButton.addEventListener(
-
-            "click",
-
-            async () => {
-
-                try{
-
-                    const module =
-
-                        await import(
-
-                            "./core/modules/liabilityModule.js"
-
-                        );
-
-                    const LiabilityModule =
-
-                        module.default;
-
-                    if(
-
-                        !LiabilityModule ||
-
-                        !LiabilityModule.view
-
-                    ){
-
-                        throw new Error(
-
-                            "LiabilityModule.view not found"
-
-                        );
-
-                    }
-
-                    LiabilityModule.view.render(
-
-                        app,
-
-                        () => {
-
-                            start();
-
-                        }
-
-                    );
-
-                }
-
-                catch(error){
-
-                    renderError(
-
-                        "Liability Module Error",
-
-                        error
-
-                    );
-
-                }
-
-            }
-
-        );
-
-    }
-
-    // ==================================================
-
-    // Quick Access - Cash Flow
-
-    // ==================================================
-
-    const cashflowButton =
-
-        document.getElementById(
-
-            "quick-cashflow-button"
-
-        );
-
-    if(cashflowButton){
-
-        cashflowButton.addEventListener(
-
-            "click",
-
-            async () => {
-
-                try{
-
-                    const module =
-
-                        await import(
-
-                            "./core/modules/cashflowModule.js"
-
-                        );
-
-                    const CashflowModule =
-
-                        module.default;
-
-                    if(
-
-                        !CashflowModule ||
-
-                        !CashflowModule.view
-
-                    ){
-
-                        throw new Error(
-
-                            "CashflowModule.view not found"
-
-                        );
-
-                    }
-
-                    CashflowModule.view.render(
-
-                        app,
-
-                        () => {
-
-                            start();
-
-                        }
-
-                    );
-
-                }
-
-                catch(error){
-
-                    renderError(
-
-                        "Cash Flow Module Error",
-
-                        error
-
-                    );
-
-                }
-
-            }
-
-        );
-
-    }
-
-    // ==================================================
-
-    // Quick Access - Tax
-
-    // ==================================================
-
-    const taxButton =
-
-        document.getElementById(
-
-            "quick-tax-button"
-
-        );
-
-    if(taxButton){
-
-        taxButton.addEventListener(
-
-            "click",
-
-            async () => {
-
-                try{
-
-                    const module =
-
-                        await import(
-
-                            "./core/modules/taxModule.js"
-
-                        );
-
-                    const TaxModule =
-
-                        module.default;
-
-                    if(
-
-                        !TaxModule ||
-
-                        !TaxModule.view
-
-                    ){
-
-                        throw new Error(
-
-                            "TaxModule.view not found"
-
-                        );
-
-                    }
-
-                    TaxModule.view.render(
-
-                        app,
-
-                        () => {
-
-                            start();
-
-                        }
-
-                    );
-
-                }
-
-                catch(error){
-
-                    renderError(
-
-                        "Tax Module Error",
-
-                        error
-
-                    );
-
-                }
-
-            }
-
-        );
-
-    }
+    `;
 
 }
 
@@ -1250,7 +1068,7 @@ function renderDashboard(
 
 async function start(){
 
-    try{
+    try {
 
         app.innerHTML = `
 
@@ -1276,11 +1094,11 @@ async function start(){
 
         `;
 
-        // ==========================================
+        // ==================================================
 
         // System Manager
 
-        // ==========================================
+        // ==================================================
 
         const systemModule =
 
@@ -1294,11 +1112,11 @@ async function start(){
 
             systemModule.default;
 
-        // ==========================================
+        // ==================================================
 
         // Start System
 
-        // ==========================================
+        // ==================================================
 
         const startResult =
 
@@ -1308,11 +1126,11 @@ async function start(){
 
             SystemManager.status();
 
-        // ==========================================
+        // ==================================================
 
         // Assets
 
-        // ==========================================
+        // ==================================================
 
         const assetsModule =
 
@@ -1330,11 +1148,67 @@ async function start(){
 
             AssetsModule.api.getAll();
 
-        // ==========================================
+        // ==================================================
+
+        // Investments
+
+        // ==================================================
+
+        const investmentAPI =
+
+            await import(
+
+                "./modules/investment/api/investmentAPI.js"
+
+            );
+
+        const InvestmentAPI =
+
+            investmentAPI.default;
+
+        const investments =
+
+            InvestmentAPI
+
+            .getInvestments();
+
+        // ==================================================
+
+        // Investment Value
+
+        // ==================================================
+
+        const investmentValue =
+
+            investments.reduce(
+
+                (
+
+                    total,
+
+                    investment
+
+                ) =>
+
+                    total +
+
+                    Number(
+
+                        investment.currentValue ||
+
+                        0
+
+                    ),
+
+                0
+
+            );
+
+        // ==================================================
 
         // Liabilities
 
-        // ==========================================
+        // ==================================================
 
         const liabilityModule =
 
@@ -1354,11 +1228,11 @@ async function start(){
 
             .getLiabilities();
 
-        // ==========================================
+        // ==================================================
 
-        // Cashflow
+        // Cash Flow
 
-        // ==========================================
+        // ==================================================
 
         const cashflowModule =
 
@@ -1378,11 +1252,11 @@ async function start(){
 
             .getSummary();
 
-        // ==========================================
+        // ==================================================
 
         // Normalize Cash Flow
 
-        // ==========================================
+        // ==================================================
 
         const cashFlowData = {
 
@@ -1390,7 +1264,9 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.income || 0
+                    cashFlowSummary.income ||
+
+                    0
 
                 ),
 
@@ -1398,7 +1274,9 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.expense || 0
+                    cashFlowSummary.expense ||
+
+                    0
 
                 ),
 
@@ -1406,7 +1284,9 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.net || 0
+                    cashFlowSummary.net ||
+
+                    0
 
                 ),
 
@@ -1414,17 +1294,19 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.net || 0
+                    cashFlowSummary.net ||
+
+                    0
 
                 )
 
         };
 
-        // ==========================================
+        // ==================================================
 
         // Wealth Engine
 
-        // ==========================================
+        // ==================================================
 
         const wealthModule =
 
@@ -1438,17 +1320,79 @@ async function start(){
 
             wealthModule.default;
 
-        // ==========================================
+        // ==================================================
+
+        // Combine Assets + Investments
+
+        //
+
+        // Investment is treated as an asset
+
+        // for dashboard wealth calculation.
+
+        //
+
+        // This does NOT modify the Investment Module.
+
+        // ==================================================
+
+        const dashboardAssets =
+
+            [
+
+                ...assets,
+
+                ...investments.map(
+
+                    investment => ({
+
+                        id:
+
+                            "investment-" +
+
+                            investment.id,
+
+                        name:
+
+                            investment.name ||
+
+                            "Investment",
+
+                        category:
+
+                            "Investment",
+
+                        value:
+
+                            Number(
+
+                                investment.currentValue ||
+
+                                0
+
+                            ),
+
+                        type:
+
+                            "Investment"
+
+                    })
+
+                )
+
+            ];
+
+        // ==================================================
 
         // Analyze Wealth
 
-        // ==========================================
+        // ==================================================
 
         const wealthResult =
 
             WealthEngine.analyze(
 
-                assets,
+                dashboardAssets,
 
                 liabilities,
 
@@ -1458,11 +1402,11 @@ async function start(){
 
             );
 
-        // ==========================================
+        // ==================================================
 
         // Final Result
 
-        // ==========================================
+        // ==================================================
 
         const result = {
 
@@ -1478,11 +1422,11 @@ async function start(){
 
         };
 
-        // ==========================================
+        // ==================================================
 
         // Render Dashboard
 
-        // ==========================================
+        // ==================================================
 
         renderDashboard(
 
@@ -1490,11 +1434,13 @@ async function start(){
 
             systemStatus,
 
-            assets,
+            dashboardAssets,
 
             liabilities,
 
-            cashFlowData
+            cashFlowData,
+
+            investments
 
         );
 
