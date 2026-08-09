@@ -1,7 +1,5 @@
 /*
 
-    
-
 Family Wealth AI OS V7
 
 Application Entry
@@ -9,6 +7,8 @@ Application Entry
 Dashboard Data Integration
 
 Investment Integration
+
+Income Integration
 
 */
 
@@ -1002,6 +1002,484 @@ function renderDashboard(
 
     }
 
+    // ==================================================
+
+    // Quick Access - Income
+
+    // ==================================================
+
+    const incomeButton =
+
+        document.getElementById(
+
+            "quick-income-button"
+
+        );
+
+    if(
+
+        incomeButton
+
+    ){
+
+        incomeButton.addEventListener(
+
+            "click",
+
+            async () => {
+
+                try {
+
+                    const module =
+
+                        await import(
+
+                            "./modules/income/incomeModule.js"
+
+                        );
+
+                    const IncomeModule =
+
+                        module.default;
+
+                    if(
+
+                        !IncomeModule
+
+                    ){
+
+                        throw new Error(
+
+                            "IncomeModule not found"
+
+                        );
+
+                    }
+
+                    if(
+
+                        !IncomeModule.view
+
+                    ){
+
+                        throw new Error(
+
+                            "IncomeModule.view not found"
+
+                        );
+
+                    }
+
+                    // ==========================================
+
+                    // Get Income Dashboard Data
+
+                    // ==========================================
+
+                    const listResult =
+
+                        IncomeModule.view
+
+                            .renderList();
+
+                    const summaryResult =
+
+                        IncomeModule.view
+
+                            .renderSummary();
+
+                    const dashboardResult =
+
+                        IncomeModule.view
+
+                            .renderDashboard();
+
+                    const incomes =
+
+                        listResult.data || [];
+
+                    const summary =
+
+                        summaryResult.data || {};
+
+                    // ==========================================
+
+                    // Render Income Page
+
+                    // ==========================================
+
+                    app.innerHTML = `
+
+                        <div
+
+                            class="app-shell"
+
+                        >
+
+                            <header
+
+                                class="app-header"
+
+                            >
+
+                                <h1>
+
+                                    💵 Income
+
+                                </h1>
+
+                                <p>
+
+                                    Family Wealth AI OS V7
+
+                                </p>
+
+                            </header>
+
+                            <section
+
+                                class="dashboard"
+
+                            >
+
+                                <h2>
+
+                                    Income Dashboard
+
+                                </h2>
+
+                                <div
+
+                                    class="dashboard-grid"
+
+                                >
+
+                                    <div
+
+                                        class="dashboard-card"
+
+                                    >
+
+                                        <h3>
+
+                                            Income Count
+
+                                        </h3>
+
+                                        <div
+
+                                            class="value"
+
+                                        >
+
+                                            ${
+
+                                                Number(
+
+                                                    summary.count ||
+
+                                                    0
+
+                                                )
+
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                    <div
+
+                                        class="dashboard-card"
+
+                                    >
+
+                                        <h3>
+
+                                            Total Income
+
+                                        </h3>
+
+                                        <div
+
+                                            class="value"
+
+                                        >
+
+                                            ${
+
+                                                formatCurrency(
+
+                                                    summary.totalIncome
+
+                                                )
+
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </section>
+
+                            <section
+
+                                class="modules"
+
+                            >
+
+                                <h2>
+
+                                    Income List
+
+                                </h2>
+
+                                <div
+
+                                    class="module-grid"
+
+                                >
+
+                                    ${
+
+                                        incomes.length === 0
+
+                                        ?
+
+                                        `
+
+                                        <div
+
+                                            class="module-card"
+
+                                        >
+
+                                            <h3>
+
+                                                No Income Data
+
+                                            </h3>
+
+                                            <p>
+
+                                                暂无收入数据
+
+                                            </p>
+
+                                        </div>
+
+                                        `
+
+                                        :
+
+                                        incomes
+
+                                        .map(
+
+                                            income => `
+
+                                                <div
+
+                                                    class="module-card"
+
+                                                >
+
+                                                    <h3>
+
+                                                        ${
+
+                                                            income.name ||
+
+                                                            income.source ||
+
+                                                            "Income"
+
+                                                        }
+
+                                                    </h3>
+
+                                                    <p>
+
+                                                        Source:
+
+                                                        ${
+
+                                                            income.source ||
+
+                                                            "-"
+
+                                                        }
+
+                                                    </p>
+
+                                                    <p>
+
+                                                        Type:
+
+                                                        ${
+
+                                                            income.type ||
+
+                                                            "-"
+
+                                                        }
+
+                                                    </p>
+
+                                                    <p>
+
+                                                        Amount:
+
+                                                        ${
+
+                                                            formatCurrency(
+
+                                                                income.amount ??
+
+                                                                income.value ??
+
+                                                                0
+
+                                                            )
+
+                                                        }
+
+                                                    </p>
+
+                                                </div>
+
+                                            `
+
+                                        )
+
+                                        .join("")
+
+                                    }
+
+                                </div>
+
+                            </section>
+
+                            <section
+
+                                class="modules"
+
+                            >
+
+                                <h2>
+
+                                    Income Analysis
+
+                                </h2>
+
+                                <div
+
+                                    class="module-card"
+
+                                >
+
+                                    <h3>
+
+                                        INCOME ANALYSIS
+
+                                    </h3>
+
+                                    <p>
+
+                                        ${
+
+                                            dashboardResult.analysis?.message ||
+
+                                            "Income analysis generated"
+
+                                        }
+
+                                    </p>
+
+                                </div>
+
+                            </section>
+
+                            <section
+
+                                class="quick-actions"
+
+                            >
+
+                                <button
+
+                                    id="income-back-button"
+
+                                    type="button"
+
+                                >
+
+                                    ← Back to Dashboard
+
+                                </button>
+
+                            </section>
+
+                        </div>
+
+                    `;
+
+                    // ==========================================
+
+                    // Back
+
+                    // ==========================================
+
+                    const backButton =
+
+                        document.getElementById(
+
+                            "income-back-button"
+
+                        );
+
+                    if(
+
+                        backButton
+
+                    ){
+
+                        backButton.addEventListener(
+
+                            "click",
+
+                            () => {
+
+                                start();
+
+                            }
+
+                        );
+
+                    }
+
+                }
+
+                catch(error){
+
+                    renderError(
+
+                        "Income Module Error",
+
+                        error
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
 }
 
 // ==================================================
@@ -1170,7 +1648,7 @@ async function start(){
 
             InvestmentAPI
 
-            .getInvestments();
+                .getInvestments();
 
         // ==================================================
 
@@ -1226,7 +1704,7 @@ async function start(){
 
             LiabilityModule.api
 
-            .getLiabilities();
+                .getLiabilities();
 
         // ==================================================
 
@@ -1250,7 +1728,7 @@ async function start(){
 
             CashflowModule.api
 
-            .getSummary();
+                .getSummary();
 
         // ==================================================
 
