@@ -454,9 +454,7 @@ function renderDashboard(
 
                             ${Number(
 
-                                result.wealthScore ||
-
-                                0
+                                result.wealthScore || 0
 
                             )}
 
@@ -714,6 +712,8 @@ function renderDashboard(
 
                     <button
 
+                        id="quick-investment-button"
+
                         type="button"
 
                     >
@@ -832,7 +832,7 @@ function renderDashboard(
 
                     Pass a callback to AssetView.
 
-                    AssetView can now return
+                    AssetView can return
 
                     to the Dashboard without
 
@@ -859,6 +859,114 @@ function renderDashboard(
                     renderError(
 
                         "Assets Module Error",
+
+                        error
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Quick Access - Investment
+
+    // ==================================================
+
+    const investmentButton =
+
+        document.getElementById(
+
+            "quick-investment-button"
+
+        );
+
+    if(
+
+        investmentButton
+
+    ){
+
+        investmentButton.addEventListener(
+
+            "click",
+
+            async () => {
+
+                try {
+
+                    const module =
+
+                        await import(
+
+                            "./modules/investment/ui/investmentView.js"
+
+                        );
+
+                    const InvestmentView =
+
+                        module.default;
+
+                    if(
+
+                        !InvestmentView ||
+
+                        typeof InvestmentView.render !==
+
+                        "function"
+
+                    ){
+
+                        throw new Error(
+
+                            "InvestmentView.render not found"
+
+                        );
+
+                    }
+
+                    /*
+
+                    IMPORTANT
+
+                    InvestmentView currently
+
+                    supports render(container).
+
+                    We also pass the Dashboard
+
+                    callback as the second argument
+
+                    so the Investment View can later
+
+                    support returning home.
+
+                    */
+
+                    InvestmentView.render(
+
+                        app,
+
+                        () => {
+
+                            start();
+
+                        }
+
+                    );
+
+                }
+
+                catch(error){
+
+                    renderError(
+
+                        "Investment Module Error",
 
                         error
 
@@ -1078,9 +1186,7 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.income ||
-
-                    0
+                    cashFlowSummary.income || 0
 
                 ),
 
@@ -1088,9 +1194,7 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.expense ||
-
-                    0
+                    cashFlowSummary.expense || 0
 
                 ),
 
@@ -1098,9 +1202,7 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.net ||
-
-                    0
+                    cashFlowSummary.net || 0
 
                 ),
 
@@ -1108,9 +1210,7 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.net ||
-
-                    0
+                    cashFlowSummary.net || 0
 
                 )
 
