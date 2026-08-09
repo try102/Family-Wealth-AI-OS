@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+
+    name="viewport"
+
+    content="width=device-width, initial-scale=1.0"
+
+>
+
+<title>
+
+Family Wealth AI OS V7 - Core Overall Test
+
+</title>
+
+</head>
+
+<body>
+
+<div id="app">
+
+Loading Family Wealth AI OS V7...
+
+</div>
+
+<script type="module">
+
+const app =
+
+    document.getElementById("app");
+
+function show(title, content){
+
+    app.innerHTML = `
+
+        <h1>
+
+            Family Wealth AI OS V7
+
+        </h1>
+
+        <h2>
+
+            ${title}
+
+        </h2>
+
+        <pre style="
+
+            white-space:pre-wrap;
+
+            word-break:break-word;
+
+        ">${content}</pre>
+
+    `;
+
+}
+
+try {
+
+    show(
+
+        "Core Overall Test",
+
+        "Starting complete V7 system..."
+
+    );
+
+    // ==========================================
+
+    // 1. SystemManager
+
+    // ==========================================
+
+    const systemModule =
+
+        await import(
+
+            "./core/system/systemManager.js?v=20260809-overall01"
+
+        );
+
+    const SystemManager =
+
+        systemModule.default;
+
+    const startResult =
+
+        SystemManager.start();
+
+    const status =
+
+        SystemManager.status();
+
+    // ==========================================
+
+    // 2. Asset API
+
+    // ==========================================
+
+    const assetModule =
+
+        await import(
+
+            "./modules/asset/api/assetAPI.js?v=20260809-overall01"
+
+        );
+
+    const AssetAPI =
+
+        assetModule.default;
+
+    const assets =
+
+        AssetAPI.getAll();
+
+    const assetTotal =
+
+        AssetAPI.getTotalValue();
+
+    // ==========================================
+
+    // 3. Wealth Engine
+
+    // ==========================================
+
+    const wealthModule =
+
+        await import(
+
+            "./core/engines/wealthEngine.js?v=20260809-overall01"
+
+        );
+
+    const WealthEngine =
+
+        wealthModule.default;
+
+    const wealthResult =
+
+        WealthEngine.analyze(
+
+            assets,
+
+            [],
+
+            {
+
+                income: 0,
+
+                expense: 0,
+
+                net: 0,
+
+                netCashFlow: 0
+
+            },
+
+            0
+
+        );
+
+    // ==========================================
+
+    // 4. AssetView
+
+    // ==========================================
+
+    const assetViewModule =
+
+        await import(
+
+            "./modules/asset/ui/assetView.js?v=20260809-overall01"
+
+        );
+
+    const AssetView =
+
+        assetViewModule.default;
+
+    // ==========================================
+
+    // Final Result
+
+    // ==========================================
+
+    app.innerHTML = `
+
+        <h1>
+
+            Family Wealth AI OS V7
+
+        </h1>
+
+        <h2>
+
+            Core Overall Regression Test
+
+        </h2>
+
+        <p style="
+
+            color:green;
+
+            font-size:20px;
+
+            font-weight:bold;
+
+        ">
+
+            ✅ V7 CORE SYSTEM LOADED SUCCESSFULLY
+
+        </p>
+
+        <h3>
+
+            System Start Result
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            startResult,
+
+            null,
+
+            2
+
+        )}</pre>
+
+        <h3>
+
+            System Status
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            status,
+
+            null,
+
+            2
+
+        )}</pre>
+
+        <h3>
+
+            Assets
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            assets,
+
+            null,
+
+            2
+
+        )}</pre>
+
+        <h3>
+
+            Asset Total
+
+        </h3>
+
+        <pre>${assetTotal}</pre>
+
+        <h3>
+
+            WealthEngine Result
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            wealthResult,
+
+            null,
+
+            2
+
+        )}</pre>
+
+        <h3>
+
+            AssetView
+
+        </h3>
+
+        <pre>${
+
+            AssetView
+
+            ?
+
+            "✅ AssetView Loaded"
+
+            :
+
+            "❌ AssetView Failed"
+
+        }</pre>
+
+        <h2 style="
+
+            color:green;
+
+        ">
+
+            🎉 CORE OVERALL TEST PASSED
+
+        </h2>
+
+    `;
+
+}
+
+catch(error){
+
+    app.innerHTML = `
+
+        <h1>
+
+            Family Wealth AI OS V7
+
+        </h1>
+
+        <h2 style="
+
+            color:red;
+
+        ">
+
+            ❌ CORE OVERALL TEST FAILED
+
+        </h2>
+
+        <pre style="
+
+            white-space:pre-wrap;
+
+            word-break:break-word;
+
+            color:red;
+
+        ">${
+
+            error.stack ||
+
+            error.message ||
+
+            String(error)
+
+        }</pre>
+
+    `;
+
+}
+
+</script>
+
+</body>
+
+</html>
