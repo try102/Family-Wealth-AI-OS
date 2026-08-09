@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+
+    name="viewport"
+
+    content="width=device-width, initial-scale=1.0"
+
+>
+
+<title>
+
+Income API Test
+
+</title>
+
+</head>
+
+<body>
+
+<h1>
+
+🏠 Family Wealth AI OS V7
+
+</h1>
+
+<h2>
+
+Income API Test
+
+</h2>
+
+<div id="result">
+
+Testing...
+
+</div>
+
+<script type="module">
+
+import IncomeAPI
+
+    from "./incomeAPI.js";
+
+const result =
+
+    document.getElementById(
+
+        "result"
+
+    );
+
+function assert(
+
+    condition,
+
+    message
+
+){
+
+    if(!condition){
+
+        throw new Error(
+
+            message
+
+        );
+
+    }
+
+}
+
+try {
+
+    const before =
+
+        IncomeAPI.getAllIncome();
+
+    assert(
+
+        Array.isArray(before),
+
+        "Get all income"
+
+    );
+
+    const created =
+
+        IncomeAPI.createIncome({
+
+            source:
+
+                "V7 API Test",
+
+            name:
+
+                "V7 API Test",
+
+            amount:
+
+                1000,
+
+            value:
+
+                1000,
+
+            type:
+
+                "Other"
+
+        });
+
+    assert(
+
+        created &&
+
+        created.id,
+
+        "Create income"
+
+    );
+
+    const found =
+
+        IncomeAPI.getIncomeById(
+
+            created.id
+
+        );
+
+    assert(
+
+        found &&
+
+        found.id === created.id,
+
+        "Read income"
+
+    );
+
+    IncomeAPI.updateIncome(
+
+        created.id,
+
+        {
+
+            source:
+
+                "V7 API Test Updated",
+
+            name:
+
+                "V7 API Test Updated",
+
+            amount:
+
+                2500,
+
+            value:
+
+                2500,
+
+            type:
+
+                "Business"
+
+        }
+
+    );
+
+    const updated =
+
+        IncomeAPI.getIncomeById(
+
+            created.id
+
+        );
+
+    assert(
+
+        updated &&
+
+        Number(
+
+            updated.amount ??
+
+            updated.value ??
+
+            0
+
+        ) === 2500,
+
+        "Update income"
+
+    );
+
+    const summary =
+
+        IncomeAPI.getSummary();
+
+    assert(
+
+        summary !== null &&
+
+        summary !== undefined,
+
+        "Summary"
+
+    );
+
+    IncomeAPI.deleteIncome(
+
+        created.id
+
+    );
+
+    const deleted =
+
+        IncomeAPI.getIncomeById(
+
+            created.id
+
+        );
+
+    assert(
+
+        !deleted,
+
+        "Delete income"
+
+    );
+
+    result.innerHTML = `
+
+        <h2 style="color:green;">
+
+            🎉 INCOME API TEST PASSED
+
+        </h2>
+
+        <p>
+
+            Create: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Read: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Update: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Delete: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Summary: ✅ PASS
+
+        </p>
+
+    `;
+
+}
+
+catch(error){
+
+    result.innerHTML = `
+
+        <h2 style="color:red;">
+
+            ❌ INCOME API TEST FAILED
+
+        </h2>
+
+        <pre>
+
+${
+
+    error.stack ||
+
+    error.message ||
+
+    String(error)
+
+}
+
+        </pre>
+
+    `;
+
+}
+
+</script>
+
+</body>
+
+</html>
