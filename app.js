@@ -130,11 +130,7 @@ function renderDashboard(
 
                 const item =
 
-                    allocation[
-
-                        category
-
-                    ];
+                    allocation[category];
 
                 return `
 
@@ -1036,27 +1032,39 @@ function renderDashboard(
 
                 try {
 
+                    // ==========================================
+
+                    // Load Income View
+
+                    // ==========================================
+
                     const module =
 
                         await import(
 
-                            "./modules/income/incomeModule.js"
+                            "./modules/income/ui/incomeView.js"
 
                         );
 
-                    const IncomeModule =
+                    const IncomeView =
 
                         module.default;
 
+                    // ==========================================
+
+                    // Verify Income View
+
+                    // ==========================================
+
                     if(
 
-                        !IncomeModule
+                        !IncomeView
 
                     ){
 
                         throw new Error(
 
-                            "IncomeModule not found"
+                            "IncomeView not found"
 
                         );
 
@@ -1064,45 +1072,27 @@ function renderDashboard(
 
                     if(
 
-                        !IncomeModule.view
+                        typeof IncomeView.render !==
+
+                        "function"
 
                     ){
 
                         throw new Error(
 
-                            "IncomeModule.view not found"
+                            "IncomeView.render not found"
 
                         );
 
                     }
 
-                    // ==================================================
+                    // ==========================================
 
-                    // IMPORTANT
+                    // Render Income Center
 
-                    //
+                    // ==========================================
 
-                    // Use IncomeView.render()
-
-                    // instead of manually rendering the Income page.
-
-                    //
-
-                    // IncomeView already contains:
-
-                    //
-
-                    // Add
-
-                    // Edit
-
-                    // Delete
-
-                    //
-
-                    // ==================================================
-
-                    IncomeModule.view.render(
+                    IncomeView.render(
 
                         app,
 
@@ -1300,7 +1290,9 @@ async function start(){
 
         const investments =
 
-            InvestmentAPI.getInvestments();
+            InvestmentAPI
+
+                .getInvestments();
 
         // ==================================================
 
@@ -1356,7 +1348,7 @@ async function start(){
 
             LiabilityModule.api
 
-            .getLiabilities();
+                .getLiabilities();
 
         // ==================================================
 
@@ -1380,7 +1372,7 @@ async function start(){
 
             CashflowModule.api
 
-            .getSummary();
+                .getSummary();
 
         // ==================================================
 
