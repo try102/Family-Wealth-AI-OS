@@ -22,7 +22,7 @@ Family Wealth AI OS V7
 
 <div id="app">
 
-Loading SystemBootstrap Test...
+Loading SystemManager Test...
 
 </div>
 
@@ -42,13 +42,13 @@ Family Wealth AI OS V7
 
 <h2>
 
-SystemBootstrap Test
+SystemManager Test
 
 </h2>
 
 <p>
 
-Testing SystemBootstrap...
+Testing SystemManager...
 
 </p>
 
@@ -60,29 +60,29 @@ try {
 
         await import(
 
-            "./core/bootstrap/systemBootstrap.js"
+            "./core/system/systemManager.js"
 
         );
 
-    const SystemBootstrap =
+    const SystemManager =
 
         module.default;
 
-    const result =
+    const status =
 
-        SystemBootstrap.initialize();
+        SystemManager.status();
 
     app.innerHTML = `
 
         <h1>
 
-        SystemBootstrap Test
+        SystemManager Test
 
         </h1>
 
         <p style="color:green">
 
-        ✅ SystemBootstrap
+        ✅ SystemManager
 
         Loaded Successfully
 
@@ -92,27 +92,51 @@ try {
 
         Type:
 
-        ${typeof SystemBootstrap}
+        ${typeof SystemManager}
 
         </p>
 
         <p>
 
-        initialize:
+        start:
 
-        ${typeof SystemBootstrap.initialize}
+        ${typeof SystemManager.start}
+
+        </p>
+
+        <p>
+
+        status:
+
+        ${typeof SystemManager.status}
+
+        </p>
+
+        <p>
+
+        getModules:
+
+        ${typeof SystemManager.getModules}
+
+        </p>
+
+        <p>
+
+        getAgents:
+
+        ${typeof SystemManager.getAgents}
 
         </p>
 
         <h3>
 
-        Result
+        Status
 
         </h3>
 
         <pre>${JSON.stringify(
 
-            result,
+            status,
 
             null,
 
@@ -130,7 +154,7 @@ catch(error) {
 
         <h1>
 
-        SystemBootstrap Import Error
+        SystemManager Import Error
 
         </h1>
 
