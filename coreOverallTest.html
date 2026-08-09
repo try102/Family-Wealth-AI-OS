@@ -26,7 +26,7 @@ Family Wealth AI OS V7 - Overall Diagnostic
 
 <div id="app">
 
-Loading...
+Loading Family Wealth AI OS V7...
 
 </div>
 
@@ -156,7 +156,7 @@ try {
 
             1,
 
-            "./core/system/systemManager.js?v=overall02"
+            "./core/system/systemManager.js?v=overall03"
 
         );
 
@@ -196,7 +196,7 @@ try {
 
             2,
 
-            "./modules/asset/api/assetAPI.js?v=overall02"
+            "./modules/asset/api/assetAPI.js?v=overall03"
 
         );
 
@@ -236,7 +236,7 @@ try {
 
             3,
 
-            "./core/engines/wealthEngine.js?v=overall02"
+            "./core/engines/wealth/wealthEngine.js?v=overall03"
 
         );
 
@@ -292,7 +292,7 @@ try {
 
             4,
 
-            "./modules/asset/ui/assetView.js?v=overall02"
+            "./modules/asset/ui/assetView.js?v=overall03"
 
         );
 
@@ -312,7 +312,7 @@ try {
 
     // ==========================================
 
-    // SUCCESS
+    // OVERALL SUCCESS
 
     // ==========================================
 
@@ -436,7 +436,11 @@ try {
 
         </h3>
 
-        <pre>${assetTotal}</pre>
+        <pre>
+
+${assetTotal}
+
+        </pre>
 
         <h3>
 
@@ -454,15 +458,25 @@ try {
 
         )}</pre>
 
+        <h3>
+
+            AssetView
+
+        </h3>
+
+        <pre>
+
+AssetView:
+
+✅ LOADED
+
+        </pre>
+
     `;
 
 }
 
 catch(error){
-
-    // Error already displayed
-
-    // by loadStep or validation.
 
     console.error(
 
