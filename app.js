@@ -4,7 +4,7 @@ Family Wealth AI OS V7
 
 Application Entry
 
-Dashboard + Module Navigation
+Dashboard Data Integration
 
 */
 
@@ -32,15 +32,15 @@ function formatCurrency(
 
             style:
 
-            "currency",
+                "currency",
 
             currency:
 
-            "USD",
+                "USD",
 
             maximumFractionDigits:
 
-            0
+                0
 
         }
 
@@ -252,6 +252,8 @@ function renderDashboard(
 
                 >
 
+                    <!-- Total Assets -->
+
                     <div
 
                         class="dashboard-card"
@@ -279,6 +281,8 @@ function renderDashboard(
                         </div>
 
                     </div>
+
+                    <!-- Total Liabilities -->
 
                     <div
 
@@ -308,6 +312,8 @@ function renderDashboard(
 
                     </div>
 
+                    <!-- Net Worth -->
+
                     <div
 
                         class="dashboard-card"
@@ -335,6 +341,8 @@ function renderDashboard(
                         </div>
 
                     </div>
+
+                    <!-- Income -->
 
                     <div
 
@@ -364,6 +372,8 @@ function renderDashboard(
 
                     </div>
 
+                    <!-- Expense -->
+
                     <div
 
                         class="dashboard-card"
@@ -392,6 +402,8 @@ function renderDashboard(
 
                     </div>
 
+                    <!-- Net Cash Flow -->
+
                     <div
 
                         class="dashboard-card"
@@ -419,6 +431,8 @@ function renderDashboard(
                         </div>
 
                     </div>
+
+                    <!-- Wealth Score -->
 
                     <div
 
@@ -450,6 +464,8 @@ function renderDashboard(
 
                     </div>
 
+                    <!-- Asset Count -->
+
                     <div
 
                         class="dashboard-card"
@@ -473,6 +489,8 @@ function renderDashboard(
                         </div>
 
                     </div>
+
+                    <!-- Liability Count -->
 
                     <div
 
@@ -684,7 +702,7 @@ function renderDashboard(
 
                     <button
 
-                        id="quick-assets"
+                        id="quick-assets-button"
 
                         type="button"
 
@@ -696,8 +714,6 @@ function renderDashboard(
 
                     <button
 
-                        id="quick-investment"
-
                         type="button"
 
                     >
@@ -707,8 +723,6 @@ function renderDashboard(
                     </button>
 
                     <button
-
-                        id="quick-income"
 
                         type="button"
 
@@ -720,8 +734,6 @@ function renderDashboard(
 
                     <button
 
-                        id="quick-liability"
-
                         type="button"
 
                     >
@@ -732,8 +744,6 @@ function renderDashboard(
 
                     <button
 
-                        id="quick-cashflow"
-
                         type="button"
 
                     >
@@ -743,8 +753,6 @@ function renderDashboard(
                     </button>
 
                     <button
-
-                        id="quick-tax"
 
                         type="button"
 
@@ -758,16 +766,6 @@ function renderDashboard(
 
             </section>
 
-            <!-- Module Container -->
-
-            <section
-
-                id="module-container"
-
-                class="module-container"
-
-            ></section>
-
         </div>
 
     `;
@@ -778,15 +776,21 @@ function renderDashboard(
 
     // ==================================================
 
-    document
+    const assetsButton =
 
-        .getElementById(
+        document.getElementById(
 
-            "quick-assets"
+            "quick-assets-button"
 
-        )
+        );
 
-        .addEventListener(
+    if(
+
+        assetsButton
+
+    ){
+
+        assetsButton.addEventListener(
 
             "click",
 
@@ -806,27 +810,27 @@ function renderDashboard(
 
                         module.default;
 
-                    const container =
+                    if(
 
-                        document.getElementById(
+                        !AssetsModule ||
 
-                            "module-container"
+                        !AssetsModule.view
+
+                    ){
+
+                        throw new Error(
+
+                            "AssetsModule.view not found"
 
                         );
 
+                    }
+
                     AssetsModule.view.render(
 
-                        container
+                        app
 
                     );
-
-                    container.scrollIntoView({
-
-                        behavior:
-
-                        "smooth"
-
-                    });
 
                 }
 
@@ -843,380 +847,6 @@ function renderDashboard(
                 }
 
             }
-
-        );
-
-    // ==================================================
-
-    // Quick Access - Investment
-
-    // ==================================================
-
-    document
-
-        .getElementById(
-
-            "quick-investment"
-
-        )
-
-        .addEventListener(
-
-            "click",
-
-            async () => {
-
-                await openModule(
-
-                    "investment"
-
-                );
-
-            }
-
-        );
-
-    // ==================================================
-
-    // Quick Access - Income
-
-    // ==================================================
-
-    document
-
-        .getElementById(
-
-            "quick-income"
-
-        )
-
-        .addEventListener(
-
-            "click",
-
-            async () => {
-
-                await openModule(
-
-                    "income"
-
-                );
-
-            }
-
-        );
-
-    // ==================================================
-
-    // Quick Access - Liability
-
-    // ==================================================
-
-    document
-
-        .getElementById(
-
-            "quick-liability"
-
-        )
-
-        .addEventListener(
-
-            "click",
-
-            async () => {
-
-                await openModule(
-
-                    "liability"
-
-                );
-
-            }
-
-        );
-
-    // ==================================================
-
-    // Quick Access - Cashflow
-
-    // ==================================================
-
-    document
-
-        .getElementById(
-
-            "quick-cashflow"
-
-        )
-
-        .addEventListener(
-
-            "click",
-
-            async () => {
-
-                await openModule(
-
-                    "cashflow"
-
-                );
-
-            }
-
-        );
-
-    // ==================================================
-
-    // Quick Access - Tax
-
-    // ==================================================
-
-    document
-
-        .getElementById(
-
-            "quick-tax"
-
-        )
-
-        .addEventListener(
-
-            "click",
-
-            async () => {
-
-                await openModule(
-
-                    "tax"
-
-                );
-
-            }
-
-        );
-
-}
-
-// ==================================================
-
-// Generic Module Opener
-
-// ==================================================
-
-async function openModule(
-
-    moduleName
-
-){
-
-    const container =
-
-        document.getElementById(
-
-            "module-container"
-
-        );
-
-    if(!container){
-
-        return;
-
-    }
-
-    try {
-
-        let module;
-
-        if(
-
-            moduleName ===
-
-            "investment"
-
-        ){
-
-            module =
-
-                await import(
-
-                    "./core/modules/investmentModule.js"
-
-                );
-
-        }
-
-        else if(
-
-            moduleName ===
-
-            "income"
-
-        ){
-
-            module =
-
-                await import(
-
-                    "./core/modules/incomeModule.js"
-
-                );
-
-        }
-
-        else if(
-
-            moduleName ===
-
-            "liability"
-
-        ){
-
-            module =
-
-                await import(
-
-                    "./core/modules/liabilityModule.js"
-
-                );
-
-        }
-
-        else if(
-
-            moduleName ===
-
-            "cashflow"
-
-        ){
-
-            module =
-
-                await import(
-
-                    "./core/modules/cashflowModule.js"
-
-                );
-
-        }
-
-        else if(
-
-            moduleName ===
-
-            "tax"
-
-        ){
-
-            module =
-
-                await import(
-
-                    "./core/modules/taxModule.js"
-
-                );
-
-        }
-
-        else {
-
-            throw new Error(
-
-                "Unknown module: " +
-
-                moduleName
-
-            );
-
-        }
-
-        const Module =
-
-            module.default;
-
-        if(!Module){
-
-            throw new Error(
-
-                moduleName +
-
-                " module default export not found"
-
-            );
-
-        }
-
-        if(
-
-            Module.view &&
-
-            typeof Module.view.render ===
-
-            "function"
-
-        ){
-
-            Module.view.render(
-
-                container
-
-            );
-
-        }
-
-        else {
-
-            container.innerHTML = `
-
-                <div
-
-                    class="module-card"
-
-                >
-
-                    <h2>
-
-                        ${moduleName}
-
-                    </h2>
-
-                    <p>
-
-                        Module loaded successfully.
-
-                    </p>
-
-                    <p>
-
-                        UI View is not connected yet.
-
-                    </p>
-
-                </div>
-
-            `;
-
-        }
-
-        container.scrollIntoView({
-
-            behavior:
-
-            "smooth"
-
-        });
-
-    }
-
-    catch(error){
-
-        renderError(
-
-            moduleName +
-
-            " Module Error",
-
-            error
 
         );
 
@@ -1252,15 +882,19 @@ function renderError(
 
             </h1>
 
-            <pre style="
+            <pre
 
-                white-space:pre-wrap;
+                style="
 
-                word-break:break-word;
+                    white-space:pre-wrap;
 
-                color:red;
+                    word-break:break-word;
 
-            ">
+                    color:red;
+
+                "
+
+            >
 
 ${error?.stack ||
 
