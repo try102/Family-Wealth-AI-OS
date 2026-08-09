@@ -1,5 +1,7 @@
 /*
 
+    
+
 Family Wealth AI OS V7
 
 Application Entry
@@ -128,7 +130,11 @@ function renderDashboard(
 
                 const item =
 
-                    allocation[category];
+                    allocation[
+
+                        category
+
+                    ];
 
                 return `
 
@@ -1070,395 +1076,43 @@ function renderDashboard(
 
                     }
 
-                    // ==========================================
+                    // ==================================================
 
-                    // Get Income Dashboard Data
+                    // IMPORTANT
 
-                    // ==========================================
+                    //
 
-                    const listResult =
+                    // Use IncomeView.render()
 
-                        IncomeModule.view
+                    // instead of manually rendering the Income page.
 
-                            .renderList();
+                    //
 
-                    const summaryResult =
+                    // IncomeView already contains:
 
-                        IncomeModule.view
+                    //
 
-                            .renderSummary();
+                    // Add
 
-                    const dashboardResult =
+                    // Edit
 
-                        IncomeModule.view
+                    // Delete
 
-                            .renderDashboard();
+                    //
 
-                    const incomes =
+                    // ==================================================
 
-                        listResult.data || [];
+                    IncomeModule.view.render(
 
-                    const summary =
+                        app,
 
-                        summaryResult.data || {};
+                        () => {
 
-                    // ==========================================
+                            start();
 
-                    // Render Income Page
+                        }
 
-                    // ==========================================
-
-                    app.innerHTML = `
-
-                        <div
-
-                            class="app-shell"
-
-                        >
-
-                            <header
-
-                                class="app-header"
-
-                            >
-
-                                <h1>
-
-                                    💵 Income
-
-                                </h1>
-
-                                <p>
-
-                                    Family Wealth AI OS V7
-
-                                </p>
-
-                            </header>
-
-                            <section
-
-                                class="dashboard"
-
-                            >
-
-                                <h2>
-
-                                    Income Dashboard
-
-                                </h2>
-
-                                <div
-
-                                    class="dashboard-grid"
-
-                                >
-
-                                    <div
-
-                                        class="dashboard-card"
-
-                                    >
-
-                                        <h3>
-
-                                            Income Count
-
-                                        </h3>
-
-                                        <div
-
-                                            class="value"
-
-                                        >
-
-                                            ${
-
-                                                Number(
-
-                                                    summary.count ||
-
-                                                    0
-
-                                                )
-
-                                            }
-
-                                        </div>
-
-                                    </div>
-
-                                    <div
-
-                                        class="dashboard-card"
-
-                                    >
-
-                                        <h3>
-
-                                            Total Income
-
-                                        </h3>
-
-                                        <div
-
-                                            class="value"
-
-                                        >
-
-                                            ${
-
-                                                formatCurrency(
-
-                                                    summary.totalIncome
-
-                                                )
-
-                                            }
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </section>
-
-                            <section
-
-                                class="modules"
-
-                            >
-
-                                <h2>
-
-                                    Income List
-
-                                </h2>
-
-                                <div
-
-                                    class="module-grid"
-
-                                >
-
-                                    ${
-
-                                        incomes.length === 0
-
-                                        ?
-
-                                        `
-
-                                        <div
-
-                                            class="module-card"
-
-                                        >
-
-                                            <h3>
-
-                                                No Income Data
-
-                                            </h3>
-
-                                            <p>
-
-                                                暂无收入数据
-
-                                            </p>
-
-                                        </div>
-
-                                        `
-
-                                        :
-
-                                        incomes
-
-                                        .map(
-
-                                            income => `
-
-                                                <div
-
-                                                    class="module-card"
-
-                                                >
-
-                                                    <h3>
-
-                                                        ${
-
-                                                            income.name ||
-
-                                                            income.source ||
-
-                                                            "Income"
-
-                                                        }
-
-                                                    </h3>
-
-                                                    <p>
-
-                                                        Source:
-
-                                                        ${
-
-                                                            income.source ||
-
-                                                            "-"
-
-                                                        }
-
-                                                    </p>
-
-                                                    <p>
-
-                                                        Type:
-
-                                                        ${
-
-                                                            income.type ||
-
-                                                            "-"
-
-                                                        }
-
-                                                    </p>
-
-                                                    <p>
-
-                                                        Amount:
-
-                                                        ${
-
-                                                            formatCurrency(
-
-                                                                income.amount ??
-
-                                                                income.value ??
-
-                                                                0
-
-                                                            )
-
-                                                        }
-
-                                                    </p>
-
-                                                </div>
-
-                                            `
-
-                                        )
-
-                                        .join("")
-
-                                    }
-
-                                </div>
-
-                            </section>
-
-                            <section
-
-                                class="modules"
-
-                            >
-
-                                <h2>
-
-                                    Income Analysis
-
-                                </h2>
-
-                                <div
-
-                                    class="module-card"
-
-                                >
-
-                                    <h3>
-
-                                        INCOME ANALYSIS
-
-                                    </h3>
-
-                                    <p>
-
-                                        ${
-
-                                            dashboardResult.analysis?.message ||
-
-                                            "Income analysis generated"
-
-                                        }
-
-                                    </p>
-
-                                </div>
-
-                            </section>
-
-                            <section
-
-                                class="quick-actions"
-
-                            >
-
-                                <button
-
-                                    id="income-back-button"
-
-                                    type="button"
-
-                                >
-
-                                    ← Back to Dashboard
-
-                                </button>
-
-                            </section>
-
-                        </div>
-
-                    `;
-
-                    // ==========================================
-
-                    // Back
-
-                    // ==========================================
-
-                    const backButton =
-
-                        document.getElementById(
-
-                            "income-back-button"
-
-                        );
-
-                    if(
-
-                        backButton
-
-                    ){
-
-                        backButton.addEventListener(
-
-                            "click",
-
-                            () => {
-
-                                start();
-
-                            }
-
-                        );
-
-                    }
+                    );
 
                 }
 
@@ -1646,9 +1300,7 @@ async function start(){
 
         const investments =
 
-            InvestmentAPI
-
-                .getInvestments();
+            InvestmentAPI.getInvestments();
 
         // ==================================================
 
@@ -1704,7 +1356,7 @@ async function start(){
 
             LiabilityModule.api
 
-                .getLiabilities();
+            .getLiabilities();
 
         // ==================================================
 
@@ -1728,7 +1380,7 @@ async function start(){
 
             CashflowModule.api
 
-                .getSummary();
+            .getSummary();
 
         // ==================================================
 
