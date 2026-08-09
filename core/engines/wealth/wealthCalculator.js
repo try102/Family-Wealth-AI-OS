@@ -2,11 +2,19 @@
 
 Family Wealth AI OS
 
-Wealth Calculator
+Wealth Calculator V7
+
+统一资产 / 负债金额字段
 
 */
 
 const WealthCalculator = {
+
+    // ==================================================
+
+    // Net Worth
+
+    // ==================================================
 
     calculateNetWorth(
 
@@ -18,39 +26,55 @@ const WealthCalculator = {
 
         const totalAssets =
 
-        assets.reduce(
+            assets.reduce(
 
-            (sum,a)=>
+                (sum, asset) => {
 
-            sum +
+                    const value =
 
-            Number(
+                        Number(
 
-                a.value || 0
+                            asset.currentValue ??
 
-            ),
+                            asset.value ??
 
-            0
+                            0
 
-        );
+                        );
+
+                    return sum + value;
+
+                },
+
+                0
+
+            );
 
         const totalLiabilities =
 
-        liabilities.reduce(
+            liabilities.reduce(
 
-            (sum,l)=>
+                (sum, liability) => {
 
-            sum +
+                    const value =
 
-            Number(
+                        Number(
 
-                l.value || 0
+                            liability.currentBalance ??
 
-            ),
+                            liability.value ??
 
-            0
+                            0
 
-        );
+                        );
+
+                    return sum + value;
+
+                },
+
+                0
+
+            );
 
         return {
 
@@ -60,13 +84,19 @@ const WealthCalculator = {
 
             netWorth:
 
-            totalAssets -
+                totalAssets -
 
-            totalLiabilities
+                totalLiabilities
 
         };
 
     },
+
+    // ==================================================
+
+    // Asset Allocation
+
+    // ==================================================
 
     calculateAssetAllocation(
 
@@ -76,91 +106,101 @@ const WealthCalculator = {
 
         const total =
 
-        assets.reduce(
+            assets.reduce(
 
-            (sum,a)=>
+                (sum, asset) => {
 
-            sum +
+                    const value =
 
-            Number(
+                        Number(
 
-                a.value || 0
+                            asset.currentValue ??
 
-            ),
+                            asset.value ??
 
-            0
+                            0
 
-        );
+                        );
 
-        if(total===0){
+                    return sum + value;
+
+                },
+
+                0
+
+            );
+
+        if(total === 0){
 
             return {};
 
         }
 
-        const result={};
+        const result = {};
 
         assets.forEach(
 
-            asset=>{
+            asset => {
 
                 const type =
 
-                asset.category ||
+                    asset.category ||
 
-                "OTHER";
+                    "OTHER";
+
+                const value =
+
+                    Number(
+
+                        asset.currentValue ??
+
+                        asset.value ??
+
+                        0
+
+                    );
 
                 if(!result[type]){
 
-                    result[type]=0;
+                    result[type] = 0;
 
                 }
 
-                result[type]+=
-
-                Number(
-
-                    asset.value || 0
-
-                );
+                result[type] += value;
 
             }
 
         );
 
-        Object.keys(result)
+        Object.keys(
 
-        .forEach(
+            result
 
-            key=>{
+        ).forEach(
 
-                result[key]={
+            key => {
+
+                result[key] = {
 
                     value:
 
-                    result[key],
+                        result[key],
 
                     ratio:
 
-                    Number(
+                        Number(
 
-                    (
+                            (
 
-                    result[key]
+                                result[key] /
 
-                    /
+                                total *
 
-                    total
+                                100
 
-                    *
+                            ).toFixed(2)
 
-                    100
-
-                    )
-
-                    .toFixed(2)
-
-                    )
+                        )
 
                 };
 
