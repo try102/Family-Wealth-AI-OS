@@ -1,24 +1,10 @@
 /*
 
-    
-
 Family Wealth AI OS V7
 
 Income View
 
-收入管理 UI
-
-第二阶段：
-
-Add Income
-
-View Income
-
-Edit Income
-
-Delete Income
-
-Back to Dashboard
+收入展示层
 
 */
 
@@ -26,49 +12,29 @@ import IncomeAgent from "../agent/incomeAgent.js";
 
 const IncomeView = {
 
-    name:
+    name: "Income View V7",
 
-        "Income View V7",
-
-    // ==========================================
+    // ==================================================
 
     // Main Render
 
-    // ==========================================
+    // ==================================================
 
-    render(
+    render(container, onBack) {
 
-        container,
+        const incomes = IncomeAgent.getIncome();
 
-        onBack
-
-    ){
-
-        const incomes =
-
-            IncomeAgent
-
-            .getIncome();
-
-        const summary =
-
-            IncomeAgent
-
-            .getIncomeSummary();
+        const summary = IncomeAgent.getIncomeSummary();
 
         container.innerHTML = `
 
-            <div
+            <div class="income-center">
 
-                class="income-center"
+                <h1>
 
-            >
+                    💵 Income Center
 
-                <h2>
-
-                    Income Center
-
-                </h2>
+                </h1>
 
                 <button
 
@@ -84,37 +50,41 @@ const IncomeView = {
 
                 <hr>
 
-                <!-- Summary -->
-
                 <section>
 
-                    <h3>
+                    <h2>
 
                         Income Summary
 
-                    </h3>
+                    </h2>
 
                     <p>
 
-                        Total Income:
+                        <strong>Total Income:</strong>
 
                         $${Number(
 
-                            summary.total ||
-
-                            summary.income ||
-
-                            0
+                            summary.totalIncome || 0
 
                         ).toLocaleString()}
+
+                    </p>
+
+                    <p>
+
+                        <strong>Income Count:</strong>
+
+                        ${Number(
+
+                            summary.count || 0
+
+                        )}
 
                     </p>
 
                 </section>
 
                 <hr>
-
-                <!-- Add -->
 
                 <button
 
@@ -134,121 +104,163 @@ const IncomeView = {
 
                 ></div>
 
-                <!-- List -->
+                <hr>
 
-                <h3>
+                <section>
 
-                    Incomes
+                    <h2>
 
-                </h3>
+                        Income
 
-                <ul>
+                    </h2>
 
-                    ${
+                    <div id="income-list-container">
 
-                        incomes.length === 0
+                        ${
 
-                        ?
+                            incomes.length === 0
 
-                        "<li>No income records</li>"
-
-                        :
-
-                        incomes.map(
-
-                            income => `
-
-                                <li
-
-                                    data-income-id="${
-
-                                        income.id
-
-                                    }"
-
-                                >
-
-                                    <strong>
-
-                                        ${
-
-                                            income.name ||
-
-                                            income.source ||
-
-                                            "Unnamed Income"
-
-                                        }
-
-                                    </strong>
-
-                                    -
-
-                                    $${Number(
-
-                                        income.amount ||
-
-                                        income.value ||
-
-                                        0
-
-                                    ).toLocaleString()}
-
-                                    <button
-
-                                        type="button"
-
-                                        class="edit-income-button"
-
-                                        data-id="${
-
-                                            income.id
-
-                                        }"
-
-                                    >
-
-                                        Edit
-
-                                    </button>
-
-                                    <button
-
-                                        type="button"
-
-                                        class="delete-income-button"
-
-                                        data-id="${
-
-                                            income.id
-
-                                        }"
-
-                                    >
-
-                                        Delete
-
-                                    </button>
-
-                                </li>
+                            ?
 
                             `
 
-                        ).join("")
+                            <p>
 
-                    }
+                                No income records.
 
-                </ul>
+                            </p>
+
+                            `
+
+                            :
+
+                            `
+
+                            <ul>
+
+                                ${
+
+                                    incomes.map(
+
+                                        income => `
+
+                                        <li
+
+                                            data-income-id="${income.id}"
+
+                                            style="margin-bottom:15px;"
+
+                                        >
+
+                                            <strong>
+
+                                                ${
+
+                                                    income.name ||
+
+                                                    income.source ||
+
+                                                    "Unnamed Income"
+
+                                                }
+
+                                            </strong>
+
+                                            <br>
+
+                                            Source:
+
+                                            ${
+
+                                                income.source ||
+
+                                                "N/A"
+
+                                            }
+
+                                            <br>
+
+                                            Type:
+
+                                            ${
+
+                                                income.type ||
+
+                                                "Other"
+
+                                            }
+
+                                            <br>
+
+                                            Amount:
+
+                                            $${Number(
+
+                                                income.amount ??
+
+                                                income.value ??
+
+                                                0
+
+                                            ).toLocaleString()}
+
+                                            <br><br>
+
+                                            <button
+
+                                                type="button"
+
+                                                class="edit-income-button"
+
+                                                data-id="${income.id}"
+
+                                            >
+
+                                                Edit
+
+                                            </button>
+
+                                            <button
+
+                                                type="button"
+
+                                                class="delete-income-button"
+
+                                                data-id="${income.id}"
+
+                                            >
+
+                                                Delete
+
+                                            </button>
+
+                                        </li>
+
+                                        `
+
+                                    ).join("")
+
+                                }
+
+                            </ul>
+
+                            `
+
+                        }
+
+                    </div>
+
+                </section>
 
             </div>
 
         `;
 
-        // ==========================================
+        // ==================================================
 
         // Back
 
-        // ==========================================
+        // ==================================================
 
         const backButton =
 
@@ -258,7 +270,7 @@ const IncomeView = {
 
             );
 
-        if(backButton){
+        if (backButton) {
 
             backButton.addEventListener(
 
@@ -266,13 +278,13 @@ const IncomeView = {
 
                 () => {
 
-                    if(
+                    if (
 
                         typeof onBack ===
 
                         "function"
 
-                    ){
+                    ) {
 
                         onBack();
 
@@ -284,11 +296,11 @@ const IncomeView = {
 
         }
 
-        // ==========================================
+        // ==================================================
 
         // Add
 
-        // ==========================================
+        // ==================================================
 
         const addButton =
 
@@ -298,7 +310,7 @@ const IncomeView = {
 
             );
 
-        if(addButton){
+        if (addButton) {
 
             addButton.addEventListener(
 
@@ -320,11 +332,11 @@ const IncomeView = {
 
         }
 
-        // ==========================================
+        // ==================================================
 
         // Edit
 
-        // ==========================================
+        // ==================================================
 
         const editButtons =
 
@@ -362,11 +374,11 @@ const IncomeView = {
 
         );
 
-        // ==========================================
+        // ==================================================
 
         // Delete
 
-        // ==========================================
+        // ==================================================
 
         const deleteButtons =
 
@@ -406,19 +418,79 @@ const IncomeView = {
 
     },
 
-    // ==========================================
+    // ==================================================
+
+    // List View
+
+    // ==================================================
+
+    renderList() {
+
+        const incomes =
+
+            IncomeAgent.getIncome();
+
+        return {
+
+            title: "Income List",
+
+            data: incomes
+
+        };
+
+    },
+
+    // ==================================================
+
+    // Summary View
+
+    // ==================================================
+
+    renderSummary() {
+
+        const summary =
+
+            IncomeAgent.getIncomeSummary();
+
+        return {
+
+            title: "Income Summary",
+
+            data: summary
+
+        };
+
+    },
+
+    // ==================================================
+
+    // Dashboard
+
+    // ==================================================
+
+    renderDashboard() {
+
+        const analysis =
+
+            IncomeAgent.analyze();
+
+        return {
+
+            module: "income",
+
+            analysis
+
+        };
+
+    },
+
+    // ==================================================
 
     // Create Form
 
-    // ==========================================
+    // ==================================================
 
-    showCreateForm(
-
-        container,
-
-        onBack
-
-    ){
+    showCreateForm(container, onBack) {
 
         const formContainer =
 
@@ -428,11 +500,29 @@ const IncomeView = {
 
             );
 
+        if (!formContainer) {
+
+            return;
+
+        }
+
         formContainer.innerHTML = `
 
             <div
 
                 class="income-form"
+
+                style="
+
+                    margin-top:20px;
+
+                    padding:20px;
+
+                    border:1px solid #ddd;
+
+                    border-radius:10px;
+
+                "
 
             >
 
@@ -448,117 +538,131 @@ const IncomeView = {
 
                 >
 
-                    <div>
+                    <label>
 
-                        <label>
+                        Income Name
 
-                            Income Source
-
-                        </label>
-
-                        <br>
-
-                        <input
-
-                            id="income-source"
-
-                            type="text"
-
-                            required
-
-                        >
-
-                    </div>
+                    </label>
 
                     <br>
 
-                    <div>
+                    <input
 
-                        <label>
+                        id="income-name"
 
-                            Amount
+                        type="text"
 
-                        </label>
+                        required
 
-                        <br>
+                    >
 
-                        <input
+                    <br><br>
 
-                            id="income-amount"
+                    <label>
 
-                            type="number"
+                        Source
 
-                            min="0"
-
-                            step="0.01"
-
-                            required
-
-                        >
-
-                    </div>
+                    </label>
 
                     <br>
 
-                    <div>
+                    <input
 
-                        <label>
+                        id="income-source"
 
-                            Type
+                        type="text"
 
-                        </label>
+                        required
 
-                        <br>
+                    >
 
-                        <select
+                    <br><br>
 
-                            id="income-type"
+                    <label>
 
-                            required
+                        Type
 
-                        >
-
-                            <option value="">
-
-                                Select Type
-
-                            </option>
-
-                            <option value="Salary">
-
-                                Salary
-
-                            </option>
-
-                            <option value="Business">
-
-                                Business
-
-                            </option>
-
-                            <option value="Investment">
-
-                                Investment
-
-                            </option>
-
-                            <option value="Rental">
-
-                                Rental
-
-                            </option>
-
-                            <option value="Other">
-
-                                Other
-
-                            </option>
-
-                        </select>
-
-                    </div>
+                    </label>
 
                     <br>
+
+                    <select
+
+                        id="income-type"
+
+                        required
+
+                    >
+
+                        <option value="">
+
+                            Select Type
+
+                        </option>
+
+                        <option value="Salary">
+
+                            Salary
+
+                        </option>
+
+                        <option value="Business">
+
+                            Business
+
+                        </option>
+
+                        <option value="Investment">
+
+                            Investment
+
+                        </option>
+
+                        <option value="Rental">
+
+                            Rental
+
+                        </option>
+
+                        <option value="Pension">
+
+                            Pension
+
+                        </option>
+
+                        <option value="Other">
+
+                            Other
+
+                        </option>
+
+                    </select>
+
+                    <br><br>
+
+                    <label>
+
+                        Amount
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="income-amount"
+
+                        type="number"
+
+                        min="0"
+
+                        step="0.01"
+
+                        required
+
+                    >
+
+                    <br><br>
 
                     <button
 
@@ -604,6 +708,14 @@ const IncomeView = {
 
                 event.preventDefault();
 
+                const name =
+
+                    form.querySelector(
+
+                        "#income-name"
+
+                    ).value.trim();
+
                 const source =
 
                     form.querySelector(
@@ -611,6 +723,14 @@ const IncomeView = {
                         "#income-source"
 
                     ).value.trim();
+
+                const type =
+
+                    form.querySelector(
+
+                        "#income-type"
+
+                    ).value;
 
                 const amount =
 
@@ -624,45 +744,17 @@ const IncomeView = {
 
                     );
 
-                const type =
-
-                    form.querySelector(
-
-                        "#income-type"
-
-                    ).value;
-
-                if(
-
-                    typeof IncomeAgent.addIncome !==
-
-                    "function"
-
-                ){
-
-                    throw new Error(
-
-                        "IncomeAgent.addIncome not found"
-
-                    );
-
-                }
-
                 IncomeAgent.addIncome({
+
+                    name,
 
                     source,
 
-                    name:
-
-                        source,
+                    type,
 
                     amount,
 
-                    value:
-
-                        amount,
-
-                    type
+                    value: amount
 
                 });
 
@@ -700,11 +792,11 @@ const IncomeView = {
 
     },
 
-    // ==========================================
+    // ==================================================
 
     // Edit Form
 
-    // ==========================================
+    // ==================================================
 
     showEditForm(
 
@@ -714,13 +806,11 @@ const IncomeView = {
 
         onBack
 
-    ){
+    ) {
 
         const incomes =
 
-            IncomeAgent
-
-            .getIncome();
+            IncomeAgent.getIncome();
 
         const income =
 
@@ -728,17 +818,17 @@ const IncomeView = {
 
                 item =>
 
-                    item.id === id
+                    String(item.id) ===
+
+                    String(id)
 
             );
 
-        if(!income){
+        if (!income) {
 
             throw new Error(
 
-                "Income not found: " +
-
-                id
+                "Income not found: " + id
 
             );
 
@@ -752,11 +842,35 @@ const IncomeView = {
 
             );
 
+        const currentAmount =
+
+            Number(
+
+                income.amount ??
+
+                income.value ??
+
+                0
+
+            );
+
         formContainer.innerHTML = `
 
             <div
 
                 class="income-form"
+
+                style="
+
+                    margin-top:20px;
+
+                    padding:20px;
+
+                    border:1px solid #ddd;
+
+                    border-radius:10px;
+
+                "
 
             >
 
@@ -772,135 +886,131 @@ const IncomeView = {
 
                 >
 
-                    <div>
+                    <label>
 
-                        <label>
+                        Income Name
 
-                            Income Source
-
-                        </label>
-
-                        <br>
-
-                        <input
-
-                            id="edit-income-source"
-
-                            type="text"
-
-                            required
-
-                            value="${
-
-                                income.source ||
-
-                                income.name ||
-
-                                ""
-
-                            }"
-
-                        >
-
-                    </div>
+                    </label>
 
                     <br>
 
-                    <div>
+                    <input
 
-                        <label>
+                        id="edit-income-name"
 
-                            Amount
+                        type="text"
 
-                        </label>
+                        required
 
-                        <br>
+                        value="${income.name || ""}"
 
-                        <input
+                    >
 
-                            id="edit-income-amount"
+                    <br><br>
 
-                            type="number"
+                    <label>
 
-                            min="0"
+                        Source
 
-                            step="0.01"
-
-                            required
-
-                            value="${
-
-                                Number(
-
-                                    income.amount ||
-
-                                    income.value ||
-
-                                    0
-
-                                )
-
-                            }"
-
-                        >
-
-                    </div>
+                    </label>
 
                     <br>
 
-                    <div>
+                    <input
 
-                        <label>
+                        id="edit-income-source"
 
-                            Type
+                        type="text"
 
-                        </label>
+                        required
 
-                        <br>
+                        value="${income.source || ""}"
 
-                        <select
+                    >
 
-                            id="edit-income-type"
+                    <br><br>
 
-                            required
+                    <label>
 
-                        >
+                        Type
 
-                            <option value="Salary">
-
-                                Salary
-
-                            </option>
-
-                            <option value="Business">
-
-                                Business
-
-                            </option>
-
-                            <option value="Investment">
-
-                                Investment
-
-                            </option>
-
-                            <option value="Rental">
-
-                                Rental
-
-                            </option>
-
-                            <option value="Other">
-
-                                Other
-
-                            </option>
-
-                        </select>
-
-                    </div>
+                    </label>
 
                     <br>
+
+                    <select
+
+                        id="edit-income-type"
+
+                        required
+
+                    >
+
+                        <option value="Salary">
+
+                            Salary
+
+                        </option>
+
+                        <option value="Business">
+
+                            Business
+
+                        </option>
+
+                        <option value="Investment">
+
+                            Investment
+
+                        </option>
+
+                        <option value="Rental">
+
+                            Rental
+
+                        </option>
+
+                        <option value="Pension">
+
+                            Pension
+
+                        </option>
+
+                        <option value="Other">
+
+                            Other
+
+                        </option>
+
+                    </select>
+
+                    <br><br>
+
+                    <label>
+
+                        Amount
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="edit-income-amount"
+
+                        type="number"
+
+                        min="0"
+
+                        step="0.01"
+
+                        required
+
+                        value="${currentAmount}"
+
+                    >
+
+                    <br><br>
 
                     <button
 
@@ -940,9 +1050,7 @@ const IncomeView = {
 
         typeSelect.value =
 
-            income.type ||
-
-            "Other";
+            income.type || "Other";
 
         const form =
 
@@ -960,95 +1068,57 @@ const IncomeView = {
 
                 event.preventDefault();
 
-                const source =
-
-                    form.querySelector(
-
-                        "#edit-income-source"
-
-                    ).value.trim();
-
-                const amount =
-
-                    Number(
-
-                        form.querySelector(
-
-                            "#edit-income-amount"
-
-                        ).value
-
-                    );
-
-                const type =
-
-                    form.querySelector(
-
-                        "#edit-income-type"
-
-                    ).value;
-
                 const updatedIncome = {
-
-                    ...income,
-
-                    source,
 
                     name:
 
-                        source,
+                        form.querySelector(
 
-                    amount,
+                            "#edit-income-name"
 
-                    value:
+                        ).value.trim(),
 
-                        amount,
+                    source:
 
-                    type
+                        form.querySelector(
+
+                            "#edit-income-source"
+
+                        ).value.trim(),
+
+                    type:
+
+                        form.querySelector(
+
+                            "#edit-income-type"
+
+                        ).value,
+
+                    amount:
+
+                        Number(
+
+                            form.querySelector(
+
+                                "#edit-income-amount"
+
+                            ).value
+
+                        )
 
                 };
 
-                if(
+                updatedIncome.value =
 
-                    typeof IncomeAgent.updateIncome ===
+                    updatedIncome.amount;
 
-                    "function"
+                IncomeAgent.updateIncome(
 
-                ){
+                    id,
 
-                    IncomeAgent.updateIncome(
+                    updatedIncome
 
-                        updatedIncome
-
-                    );
-
-                }
-
-                else if(
-
-                    typeof IncomeAgent.addIncome ===
-
-                    "function"
-
-                ){
-
-                    IncomeAgent.addIncome(
-
-                        updatedIncome
-
-                    );
-
-                }
-
-                else{
-
-                    throw new Error(
-
-                        "IncomeAgent update method not found"
-
-                    );
-
-                }
+                );
 
                 this.render(
 
@@ -1084,11 +1154,11 @@ const IncomeView = {
 
     },
 
-    // ==========================================
+    // ==================================================
 
     // Delete
 
-    // ==========================================
+    // ==================================================
 
     deleteIncome(
 
@@ -1098,13 +1168,11 @@ const IncomeView = {
 
         onBack
 
-    ){
+    ) {
 
         const incomes =
 
-            IncomeAgent
-
-            .getIncome();
+            IncomeAgent.getIncome();
 
         const income =
 
@@ -1112,17 +1180,17 @@ const IncomeView = {
 
                 item =>
 
-                    item.id === id
+                    String(item.id) ===
+
+                    String(id)
 
             );
 
-        if(!income){
+        if (!income) {
 
             throw new Error(
 
-                "Income not found: " +
-
-                id
+                "Income not found: " + id
 
             );
 
@@ -1136,9 +1204,9 @@ const IncomeView = {
 
                 (
 
-                    income.source ||
-
                     income.name ||
+
+                    income.source ||
 
                     "Unnamed Income"
 
@@ -1148,33 +1216,13 @@ const IncomeView = {
 
             );
 
-        if(!confirmed){
+        if (!confirmed) {
 
             return;
 
         }
 
-        if(
-
-            typeof IncomeAgent.deleteIncome !==
-
-            "function"
-
-        ){
-
-            throw new Error(
-
-                "IncomeAgent.deleteIncome not found"
-
-            );
-
-        }
-
-        IncomeAgent.deleteIncome(
-
-            id
-
-        );
+        IncomeAgent.deleteIncome(id);
 
         this.render(
 
@@ -1183,76 +1231,6 @@ const IncomeView = {
             onBack
 
         );
-
-    },
-
-    // ==========================================
-
-    // Existing Data Views
-
-    // ==========================================
-
-    renderList(){
-
-        const incomes =
-
-            IncomeAgent
-
-            .getIncome();
-
-        return {
-
-            title:
-
-                "Income List",
-
-            data:
-
-                incomes
-
-        };
-
-    },
-
-    renderSummary(){
-
-        const summary =
-
-            IncomeAgent
-
-            .getIncomeSummary();
-
-        return {
-
-            title:
-
-                "Income Summary",
-
-            data:
-
-                summary
-
-        };
-
-    },
-
-    renderDashboard(){
-
-        const analysis =
-
-            IncomeAgent
-
-            .analyze();
-
-        return {
-
-            module:
-
-                "income",
-
-            analysis
-
-        };
 
     }
 
