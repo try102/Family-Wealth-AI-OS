@@ -6,15 +6,27 @@ Asset View
 
 资产中心 UI
 
-第一阶段：
+第二阶段：
 
 Add Asset
+
+View Asset
+
+Edit Asset
+
+Delete Asset
 
 */
 
 import AssetAPI from "../api/assetAPI.js";
 
 const AssetView = {
+
+    // ==========================================
+
+    // Render
+
+    // ==========================================
 
     render(
 
@@ -94,7 +106,11 @@ const AssetView = {
 
                             asset => `
 
-                                <li>
+                                <li
+
+                                    data-asset-id="${asset.id}"
+
+                                >
 
                                     <strong>
 
@@ -118,6 +134,44 @@ const AssetView = {
 
                                     </span>
 
+                                    <span>
+
+                                        -
+
+                                        Liquidity:
+
+                                        ${asset.liquidity || "N/A"}
+
+                                    </span>
+
+                                    <button
+
+                                        type="button"
+
+                                        class="edit-asset-button"
+
+                                        data-id="${asset.id}"
+
+                                    >
+
+                                        Edit
+
+                                    </button>
+
+                                    <button
+
+                                        type="button"
+
+                                        class="delete-asset-button"
+
+                                        data-id="${asset.id}"
+
+                                    >
+
+                                        Delete
+
+                                    </button>
+
                                 </li>
 
                             `
@@ -134,7 +188,7 @@ const AssetView = {
 
         // ==========================================
 
-        // Add Asset Button
+        // Add Button
 
         // ==========================================
 
@@ -155,6 +209,86 @@ const AssetView = {
                 this.showCreateForm(
 
                     container
+
+                );
+
+            }
+
+        );
+
+        // ==========================================
+
+        // Edit Buttons
+
+        // ==========================================
+
+        const editButtons =
+
+            container.querySelectorAll(
+
+                ".edit-asset-button"
+
+            );
+
+        editButtons.forEach(
+
+            button => {
+
+                button.addEventListener(
+
+                    "click",
+
+                    () => {
+
+                        this.showEditForm(
+
+                            container,
+
+                            button.dataset.id
+
+                        );
+
+                    }
+
+                );
+
+            }
+
+        );
+
+        // ==========================================
+
+        // Delete Buttons
+
+        // ==========================================
+
+        const deleteButtons =
+
+            container.querySelectorAll(
+
+                ".delete-asset-button"
+
+            );
+
+        deleteButtons.forEach(
+
+            button => {
+
+                button.addEventListener(
+
+                    "click",
+
+                    () => {
+
+                        this.deleteAsset(
+
+                            container,
+
+                            button.dataset.id
+
+                        );
+
+                    }
 
                 );
 
@@ -186,11 +320,7 @@ const AssetView = {
 
         formContainer.innerHTML = `
 
-            <div
-
-                class="asset-form"
-
-            >
+            <div class="asset-form">
 
                 <h3>
 
@@ -396,12 +526,6 @@ const AssetView = {
 
         `;
 
-        // ==========================================
-
-        // Form Submit
-
-        // ==========================================
-
         const form =
 
             formContainer.querySelector(
@@ -474,12 +598,6 @@ const AssetView = {
 
         );
 
-        // ==========================================
-
-        // Cancel
-
-        // ==========================================
-
         const cancelButton =
 
             formContainer.querySelector(
@@ -497,6 +615,434 @@ const AssetView = {
                 formContainer.innerHTML = "";
 
             }
+
+        );
+
+    },
+
+    // ==========================================
+
+    // Edit Asset Form
+
+    // ==========================================
+
+    showEditForm(
+
+        container,
+
+        id
+
+    ){
+
+        const asset =
+
+            AssetAPI.getById(
+
+                id
+
+            );
+
+        if(!asset){
+
+            throw new Error(
+
+                "Asset not found: " + id
+
+            );
+
+        }
+
+        const formContainer =
+
+            container.querySelector(
+
+                "#asset-form-container"
+
+            );
+
+        formContainer.innerHTML = `
+
+            <div class="asset-form">
+
+                <h3>
+
+                    Edit Asset
+
+                </h3>
+
+                <form
+
+                    id="asset-edit-form"
+
+                >
+
+                    <div>
+
+                        <label>
+
+                            Asset Name
+
+                        </label>
+
+                        <br>
+
+                        <input
+
+                            id="edit-asset-name"
+
+                            type="text"
+
+                            required
+
+                            value="${asset.name || ""}"
+
+                        >
+
+                    </div>
+
+                    <br>
+
+                    <div>
+
+                        <label>
+
+                            Category
+
+                        </label>
+
+                        <br>
+
+                        <select
+
+                            id="edit-asset-category"
+
+                            required
+
+                        >
+
+                            <option value="Cash">
+
+                                Cash
+
+                            </option>
+
+                            <option value="Real Estate">
+
+                                Real Estate
+
+                            </option>
+
+                            <option value="Investment">
+
+                                Investment
+
+                            </option>
+
+                            <option value="Business">
+
+                                Business
+
+                            </option>
+
+                            <option value="Insurance">
+
+                                Insurance
+
+                            </option>
+
+                            <option value="Precious Metals">
+
+                                Precious Metals
+
+                            </option>
+
+                            <option value="Other">
+
+                                Other
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <br>
+
+                    <div>
+
+                        <label>
+
+                            Current Value
+
+                        </label>
+
+                        <br>
+
+                        <input
+
+                            id="edit-asset-value"
+
+                            type="number"
+
+                            min="0"
+
+                            step="0.01"
+
+                            required
+
+                            value="${Number(
+
+                                asset.currentValue ||
+
+                                0
+
+                            )}"
+
+                        >
+
+                    </div>
+
+                    <br>
+
+                    <div>
+
+                        <label>
+
+                            Liquidity
+
+                        </label>
+
+                        <br>
+
+                        <select
+
+                            id="edit-asset-liquidity"
+
+                        >
+
+                            <option value="High">
+
+                                High
+
+                            </option>
+
+                            <option value="Medium">
+
+                                Medium
+
+                            </option>
+
+                            <option value="Low">
+
+                                Low
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <br>
+
+                    <button
+
+                        type="submit"
+
+                    >
+
+                        Update Asset
+
+                    </button>
+
+                    <button
+
+                        type="button"
+
+                        id="cancel-edit-asset-button"
+
+                    >
+
+                        Cancel
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        `;
+
+        formContainer.querySelector(
+
+            "#edit-asset-category"
+
+        ).value =
+
+            asset.category || "Other";
+
+        formContainer.querySelector(
+
+            "#edit-asset-liquidity"
+
+        ).value =
+
+            asset.liquidity || "Medium";
+
+        const form =
+
+            formContainer.querySelector(
+
+                "#asset-edit-form"
+
+            );
+
+        form.addEventListener(
+
+            "submit",
+
+            event => {
+
+                event.preventDefault();
+
+                const updatedAsset = {
+
+                    ...asset,
+
+                    name:
+
+                        form.querySelector(
+
+                            "#edit-asset-name"
+
+                        ).value.trim(),
+
+                    category:
+
+                        form.querySelector(
+
+                            "#edit-asset-category"
+
+                        ).value,
+
+                    currentValue:
+
+                        Number(
+
+                            form.querySelector(
+
+                                "#edit-asset-value"
+
+                            ).value
+
+                        ),
+
+                    liquidity:
+
+                        form.querySelector(
+
+                            "#edit-asset-liquidity"
+
+                        ).value
+
+                };
+
+                AssetAPI.update(
+
+                    updatedAsset
+
+                );
+
+                this.render(
+
+                    container
+
+                );
+
+            }
+
+        );
+
+        const cancelButton =
+
+            formContainer.querySelector(
+
+                "#cancel-edit-asset-button"
+
+            );
+
+        cancelButton.addEventListener(
+
+            "click",
+
+            () => {
+
+                formContainer.innerHTML = "";
+
+            }
+
+        );
+
+    },
+
+    // ==========================================
+
+    // Delete Asset
+
+    // ==========================================
+
+    deleteAsset(
+
+        container,
+
+        id
+
+    ){
+
+        const asset =
+
+            AssetAPI.getById(
+
+                id
+
+            );
+
+        if(!asset){
+
+            throw new Error(
+
+                "Asset not found: " + id
+
+            );
+
+        }
+
+        const confirmed =
+
+            window.confirm(
+
+                "Delete asset: " +
+
+                asset.name +
+
+                "?"
+
+            );
+
+        if(!confirmed){
+
+            return;
+
+        }
+
+        AssetAPI.remove(
+
+            id
+
+        );
+
+        this.render(
+
+            container
 
         );
 
