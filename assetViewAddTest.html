@@ -12,6 +12,8 @@ content="width=device-width, initial-scale=1.0">
 
 <title>
 
+Family Wealth AI OS V7
+
 AssetView Add Asset Test
 
 </title>
@@ -20,9 +22,517 @@ AssetView Add Asset Test
 
 <body>
 
+<div id="app">
+
+    <h1>
+
+        Family Wealth AI OS V7
+
+    </h1>
+
+    <p>
+
+        Loading AssetView Add Asset Test...
+
+    </p>
+
+</div>
+
 <script type="module">
 
-import "./modules/asset/tests/assetView.test.js";
+const app =
+
+document.getElementById("app");
+
+window.addEventListener(
+
+    "error",
+
+    event => {
+
+        app.innerHTML = `
+
+            <h1>
+
+                ❌ AssetView Test Error
+
+            </h1>
+
+            <pre style="
+
+                white-space:pre-wrap;
+
+                word-break:break-word;
+
+                color:red;
+
+            ">${event.error?.stack ||
+
+               event.message}</pre>
+
+        `;
+
+    }
+
+);
+
+window.addEventListener(
+
+    "unhandledrejection",
+
+    event => {
+
+        const error =
+
+            event.reason;
+
+        app.innerHTML = `
+
+            <h1>
+
+                ❌ AssetView Test Error
+
+            </h1>
+
+            <pre style="
+
+                white-space:pre-wrap;
+
+                word-break:break-word;
+
+                color:red;
+
+            ">${error?.stack ||
+
+               error?.message ||
+
+               String(error)}</pre>
+
+        `;
+
+    }
+
+);
+
+try {
+
+    // ==========================================
+
+    // Load Assets Module
+
+    // ==========================================
+
+    app.innerHTML = `
+
+        <h1>
+
+            Family Wealth AI OS V7
+
+        </h1>
+
+        <p>
+
+            Loading AssetsModule...
+
+        </p>
+
+    `;
+
+    const module =
+
+        await import(
+
+            "./core/modules/assetsModule.js?v=20260809-add02"
+
+        );
+
+    const AssetsModule =
+
+        module.default;
+
+    const AssetView =
+
+        AssetsModule.view;
+
+    const AssetAPI =
+
+        AssetsModule.api;
+
+    // ==========================================
+
+    // Create Test Container
+
+    // ==========================================
+
+    const container =
+
+        document.createElement(
+
+            "div"
+
+        );
+
+    // ==========================================
+
+    // Render AssetView
+
+    // ==========================================
+
+    AssetView.render(
+
+        container
+
+    );
+
+    // ==========================================
+
+    // Test Add Button
+
+    // ==========================================
+
+    const addButton =
+
+        container.querySelector(
+
+            "#add-asset-button"
+
+        );
+
+    if(!addButton){
+
+        throw new Error(
+
+            "Add Asset button not found."
+
+        );
+
+    }
+
+    // ==========================================
+
+    // Open Form
+
+    // ==========================================
+
+    addButton.click();
+
+    const form =
+
+        container.querySelector(
+
+            "#asset-create-form"
+
+        );
+
+    if(!form){
+
+        throw new Error(
+
+            "Asset create form not found."
+
+        );
+
+    }
+
+    // ==========================================
+
+    // Fill Form
+
+    // ==========================================
+
+    form.querySelector(
+
+        "#asset-name"
+
+    ).value =
+
+        "V7 AssetView Test Cash";
+
+    form.querySelector(
+
+        "#asset-category"
+
+    ).value =
+
+        "Cash";
+
+    form.querySelector(
+
+        "#asset-value"
+
+    ).value =
+
+        "5000";
+
+    form.querySelector(
+
+        "#asset-liquidity"
+
+    ).value =
+
+        "High";
+
+    // ==========================================
+
+    // Submit Form
+
+    // ==========================================
+
+    form.dispatchEvent(
+
+        new Event(
+
+            "submit",
+
+            {
+
+                bubbles:
+
+                true,
+
+                cancelable:
+
+                true
+
+            }
+
+        )
+
+    );
+
+    // ==========================================
+
+    // Read Result
+
+    // ==========================================
+
+    const assets =
+
+        AssetAPI.getAll();
+
+    const createdAsset =
+
+        assets.find(
+
+            asset =>
+
+                asset.name ===
+
+                "V7 AssetView Test Cash"
+
+        );
+
+    const passed =
+
+        !!createdAsset &&
+
+        createdAsset.category ===
+
+        "Cash" &&
+
+        Number(
+
+            createdAsset.currentValue
+
+        ) === 5000;
+
+    // ==========================================
+
+    // Output
+
+    // ==========================================
+
+    app.innerHTML = `
+
+        <h1>
+
+            Family Wealth AI OS V7
+
+        </h1>
+
+        <h2>
+
+            AssetView Add Asset Test
+
+        </h2>
+
+        <h2 style="
+
+            color:${passed
+
+                ? "green"
+
+                : "red"};
+
+        ">
+
+            ${
+
+                passed
+
+                ?
+
+                "✅ ASSETVIEW ADD ASSET PASSED"
+
+                :
+
+                "❌ ASSETVIEW ADD ASSET FAILED"
+
+            }
+
+        </h2>
+
+        <hr>
+
+        <h3>
+
+            Test Details
+
+        </h3>
+
+        <p>
+
+            AssetsModule:
+
+            ${
+
+                AssetsModule
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+        <p>
+
+            AssetView:
+
+            ${
+
+                AssetView
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+        <p>
+
+            Add Button:
+
+            ${
+
+                addButton
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+        <p>
+
+            Add Form:
+
+            ${
+
+                form
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+        <p>
+
+            Created Asset:
+
+            ${
+
+                createdAsset
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+        <h3>
+
+            Created Asset
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            createdAsset,
+
+            null,
+
+            2
+
+        )}</pre>
+
+        <h3>
+
+            All Assets
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            assets,
+
+            null,
+
+            2
+
+        )}</pre>
+
+    `;
+
+}
+
+catch(error){
+
+    app.innerHTML = `
+
+        <h1>
+
+            ❌ AssetView Add Asset Test Error
+
+        </h1>
+
+        <pre style="
+
+            white-space:pre-wrap;
+
+            word-break:break-word;
+
+            color:red;
+
+        ">${error.stack ||
+
+           error.message ||
+
+           String(error)}</pre>
+
+    `;
+
+}
 
 </script>
 
