@@ -122,7 +122,11 @@ function renderDashboard(
 
                 const item =
 
-                    allocation[category];
+                    allocation[
+
+                        category
+
+                    ];
 
                 return `
 
@@ -172,7 +176,11 @@ function renderDashboard(
 
         <div class="app-shell">
 
+            <!-- ================================== -->
+
             <!-- Header -->
+
+            <!-- ================================== -->
 
             <header
 
@@ -194,7 +202,11 @@ function renderDashboard(
 
             </header>
 
-            <!-- System -->
+            <!-- ================================== -->
+
+            <!-- System Status -->
+
+            <!-- ================================== -->
 
             <section
 
@@ -232,7 +244,11 @@ function renderDashboard(
 
             </section>
 
+            <!-- ================================== -->
+
             <!-- Dashboard -->
+
+            <!-- ================================== -->
 
             <section
 
@@ -252,8 +268,6 @@ function renderDashboard(
 
                 >
 
-                    <!-- Total Assets -->
-
                     <div
 
                         class="dashboard-card"
@@ -266,11 +280,7 @@ function renderDashboard(
 
                         </h3>
 
-                        <div
-
-                            class="value"
-
-                        >
+                        <div class="value">
 
                             ${formatCurrency(
 
@@ -281,8 +291,6 @@ function renderDashboard(
                         </div>
 
                     </div>
-
-                    <!-- Total Liabilities -->
 
                     <div
 
@@ -296,11 +304,7 @@ function renderDashboard(
 
                         </h3>
 
-                        <div
-
-                            class="value"
-
-                        >
+                        <div class="value">
 
                             ${formatCurrency(
 
@@ -311,8 +315,6 @@ function renderDashboard(
                         </div>
 
                     </div>
-
-                    <!-- Net Worth -->
 
                     <div
 
@@ -326,11 +328,7 @@ function renderDashboard(
 
                         </h3>
 
-                        <div
-
-                            class="value"
-
-                        >
+                        <div class="value">
 
                             ${formatCurrency(
 
@@ -341,8 +339,6 @@ function renderDashboard(
                         </div>
 
                     </div>
-
-                    <!-- Income -->
 
                     <div
 
@@ -356,11 +352,7 @@ function renderDashboard(
 
                         </h3>
 
-                        <div
-
-                            class="value"
-
-                        >
+                        <div class="value">
 
                             ${formatCurrency(
 
@@ -371,8 +363,6 @@ function renderDashboard(
                         </div>
 
                     </div>
-
-                    <!-- Expense -->
 
                     <div
 
@@ -386,11 +376,7 @@ function renderDashboard(
 
                         </h3>
 
-                        <div
-
-                            class="value"
-
-                        >
+                        <div class="value">
 
                             ${formatCurrency(
 
@@ -401,8 +387,6 @@ function renderDashboard(
                         </div>
 
                     </div>
-
-                    <!-- Net Cash Flow -->
 
                     <div
 
@@ -416,11 +400,7 @@ function renderDashboard(
 
                         </h3>
 
-                        <div
-
-                            class="value"
-
-                        >
+                        <div class="value">
 
                             ${formatCurrency(
 
@@ -431,8 +411,6 @@ function renderDashboard(
                         </div>
 
                     </div>
-
-                    <!-- Wealth Score -->
 
                     <div
 
@@ -446,11 +424,7 @@ function renderDashboard(
 
                         </h3>
 
-                        <div
-
-                            class="value"
-
-                        >
+                        <div class="value">
 
                             ${Number(
 
@@ -461,8 +435,6 @@ function renderDashboard(
                         </div>
 
                     </div>
-
-                    <!-- Asset Count -->
 
                     <div
 
@@ -476,19 +448,13 @@ function renderDashboard(
 
                         </h3>
 
-                        <div
-
-                            class="value"
-
-                        >
+                        <div class="value">
 
                             ${assets.length}
 
                         </div>
 
                     </div>
-
-                    <!-- Liability Count -->
 
                     <div
 
@@ -502,11 +468,7 @@ function renderDashboard(
 
                         </h3>
 
-                        <div
-
-                            class="value"
-
-                        >
+                        <div class="value">
 
                             ${liabilities.length}
 
@@ -518,7 +480,11 @@ function renderDashboard(
 
             </section>
 
+            <!-- ================================== -->
+
             <!-- Asset Allocation -->
+
+            <!-- ================================== -->
 
             <section
 
@@ -558,7 +524,11 @@ function renderDashboard(
 
             </section>
 
+            <!-- ================================== -->
+
             <!-- Wealth Modules -->
+
+            <!-- ================================== -->
 
             <section
 
@@ -618,7 +588,11 @@ function renderDashboard(
 
             </section>
 
+            <!-- ================================== -->
+
             <!-- AI Agents -->
+
+            <!-- ================================== -->
 
             <section
 
@@ -678,7 +652,11 @@ function renderDashboard(
 
             </section>
 
+            <!-- ================================== -->
+
             <!-- Quick Access -->
+
+            <!-- ================================== -->
 
             <section
 
@@ -698,8 +676,6 @@ function renderDashboard(
 
                 >
 
-                    <!-- Assets -->
-
                     <button
 
                         id="quick-assets-button"
@@ -711,8 +687,6 @@ function renderDashboard(
                         💰 Assets
 
                     </button>
-
-                    <!-- Investment -->
 
                     <button
 
@@ -726,9 +700,9 @@ function renderDashboard(
 
                     </button>
 
-                    <!-- Income -->
-
                     <button
+
+                        id="quick-income-button"
 
                         type="button"
 
@@ -738,9 +712,9 @@ function renderDashboard(
 
                     </button>
 
-                    <!-- Liability -->
-
                     <button
+
+                        id="quick-liability-button"
 
                         type="button"
 
@@ -750,9 +724,9 @@ function renderDashboard(
 
                     </button>
 
-                    <!-- Cash Flow -->
-
                     <button
+
+                        id="quick-cashflow-button"
 
                         type="button"
 
@@ -762,9 +736,9 @@ function renderDashboard(
 
                     </button>
 
-                    <!-- Tax -->
-
                     <button
+
+                        id="quick-tax-button"
 
                         type="button"
 
@@ -900,11 +874,9 @@ function renderDashboard(
 
                     /*
 
-                    Investment module
+                    Investment module is located
 
-                    is located in the
-
-                    root modules directory.
+                    directly under the root modules folder.
 
                     */
 
@@ -924,7 +896,9 @@ function renderDashboard(
 
                         !InvestmentView ||
 
-                        typeof InvestmentView.render !== "function"
+                        typeof InvestmentView.render !==
+
+                        "function"
 
                     ){
 
@@ -935,12 +909,6 @@ function renderDashboard(
                         );
 
                     }
-
-                    /*
-
-                    Render Investment Center
-
-                    */
 
                     InvestmentView.render(
 
@@ -955,6 +923,358 @@ function renderDashboard(
                     renderError(
 
                         "Investment Module Error",
+
+                        error
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Quick Access - Income
+
+    // ==================================================
+
+    const incomeButton =
+
+        document.getElementById(
+
+            "quick-income-button"
+
+        );
+
+    if(
+
+        incomeButton
+
+    ){
+
+        incomeButton.addEventListener(
+
+            "click",
+
+            async () => {
+
+                try {
+
+                    const module =
+
+                        await import(
+
+                            "./core/modules/incomeModule.js"
+
+                        );
+
+                    const IncomeModule =
+
+                        module.default;
+
+                    if(
+
+                        !IncomeModule ||
+
+                        !IncomeModule.view
+
+                    ){
+
+                        throw new Error(
+
+                            "IncomeModule.view not found"
+
+                        );
+
+                    }
+
+                    IncomeModule.view.render(
+
+                        app,
+
+                        () => {
+
+                            start();
+
+                        }
+
+                    );
+
+                }
+
+                catch(error){
+
+                    renderError(
+
+                        "Income Module Error",
+
+                        error
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Quick Access - Liability
+
+    // ==================================================
+
+    const liabilityButton =
+
+        document.getElementById(
+
+            "quick-liability-button"
+
+        );
+
+    if(
+
+        liabilityButton
+
+    ){
+
+        liabilityButton.addEventListener(
+
+            "click",
+
+            async () => {
+
+                try {
+
+                    const module =
+
+                        await import(
+
+                            "./core/modules/liabilityModule.js"
+
+                        );
+
+                    const LiabilityModule =
+
+                        module.default;
+
+                    if(
+
+                        !LiabilityModule ||
+
+                        !LiabilityModule.view
+
+                    ){
+
+                        throw new Error(
+
+                            "LiabilityModule.view not found"
+
+                        );
+
+                    }
+
+                    LiabilityModule.view.render(
+
+                        app,
+
+                        () => {
+
+                            start();
+
+                        }
+
+                    );
+
+                }
+
+                catch(error){
+
+                    renderError(
+
+                        "Liability Module Error",
+
+                        error
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Quick Access - Cash Flow
+
+    // ==================================================
+
+    const cashflowButton =
+
+        document.getElementById(
+
+            "quick-cashflow-button"
+
+        );
+
+    if(
+
+        cashflowButton
+
+    ){
+
+        cashflowButton.addEventListener(
+
+            "click",
+
+            async () => {
+
+                try {
+
+                    const module =
+
+                        await import(
+
+                            "./core/modules/cashflowModule.js"
+
+                        );
+
+                    const CashflowModule =
+
+                        module.default;
+
+                    if(
+
+                        !CashflowModule ||
+
+                        !CashflowModule.view
+
+                    ){
+
+                        throw new Error(
+
+                            "CashflowModule.view not found"
+
+                        );
+
+                    }
+
+                    CashflowModule.view.render(
+
+                        app,
+
+                        () => {
+
+                            start();
+
+                        }
+
+                    );
+
+                }
+
+                catch(error){
+
+                    renderError(
+
+                        "Cash Flow Module Error",
+
+                        error
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Quick Access - Tax
+
+    // ==================================================
+
+    const taxButton =
+
+        document.getElementById(
+
+            "quick-tax-button"
+
+        );
+
+    if(
+
+        taxButton
+
+    ){
+
+        taxButton.addEventListener(
+
+            "click",
+
+            async () => {
+
+                try {
+
+                    const module =
+
+                        await import(
+
+                            "./core/modules/taxModule.js"
+
+                        );
+
+                    const TaxModule =
+
+                        module.default;
+
+                    if(
+
+                        !TaxModule ||
+
+                        !TaxModule.view
+
+                    ){
+
+                        throw new Error(
+
+                            "TaxModule.view not found"
+
+                        );
+
+                    }
+
+                    TaxModule.view.render(
+
+                        app,
+
+                        () => {
+
+                            start();
+
+                        }
+
+                    );
+
+                }
+
+                catch(error){
+
+                    renderError(
+
+                        "Tax Module Error",
 
                         error
 
@@ -1060,11 +1380,11 @@ async function start(){
 
         `;
 
-        // ------------------------------------------
+        // ==============================================
 
         // System Manager
 
-        // ------------------------------------------
+        // ==============================================
 
         const systemModule =
 
@@ -1078,11 +1398,11 @@ async function start(){
 
             systemModule.default;
 
-        // ------------------------------------------
+        // ==============================================
 
         // Start System
 
-        // ------------------------------------------
+        // ==============================================
 
         const startResult =
 
@@ -1092,11 +1412,11 @@ async function start(){
 
             SystemManager.status();
 
-        // ------------------------------------------
+        // ==============================================
 
         // Assets
 
-        // ------------------------------------------
+        // ==============================================
 
         const assetsModule =
 
@@ -1114,11 +1434,11 @@ async function start(){
 
             AssetsModule.api.getAll();
 
-        // ------------------------------------------
+        // ==============================================
 
         // Liabilities
 
-        // ------------------------------------------
+        // ==============================================
 
         const liabilityModule =
 
@@ -1138,11 +1458,11 @@ async function start(){
 
             .getLiabilities();
 
-        // ------------------------------------------
+        // ==============================================
 
         // Cashflow
 
-        // ------------------------------------------
+        // ==============================================
 
         const cashflowModule =
 
@@ -1162,11 +1482,11 @@ async function start(){
 
             .getSummary();
 
-        // ------------------------------------------
+        // ==============================================
 
         // Normalize Cash Flow
 
-        // ------------------------------------------
+        // ==============================================
 
         const cashFlowData = {
 
@@ -1174,7 +1494,9 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.income || 0
+                    cashFlowSummary.income ||
+
+                    0
 
                 ),
 
@@ -1182,7 +1504,9 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.expense || 0
+                    cashFlowSummary.expense ||
+
+                    0
 
                 ),
 
@@ -1190,7 +1514,9 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.net || 0
+                    cashFlowSummary.net ||
+
+                    0
 
                 ),
 
@@ -1198,17 +1524,19 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.net || 0
+                    cashFlowSummary.net ||
+
+                    0
 
                 )
 
         };
 
-        // ------------------------------------------
+        // ==============================================
 
         // Wealth Engine
 
-        // ------------------------------------------
+        // ==============================================
 
         const wealthModule =
 
@@ -1222,11 +1550,11 @@ async function start(){
 
             wealthModule.default;
 
-        // ------------------------------------------
+        // ==============================================
 
         // Analyze Wealth
 
-        // ------------------------------------------
+        // ==============================================
 
         const wealthResult =
 
@@ -1242,11 +1570,11 @@ async function start(){
 
             );
 
-        // ------------------------------------------
+        // ==============================================
 
         // Final Result
 
-        // ------------------------------------------
+        // ==============================================
 
         const result = {
 
@@ -1262,11 +1590,11 @@ async function start(){
 
         };
 
-        // ------------------------------------------
+        // ==============================================
 
         // Render Dashboard
 
-        // ------------------------------------------
+        // ==============================================
 
         renderDashboard(
 
