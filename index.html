@@ -22,7 +22,7 @@ Family Wealth AI OS V7
 
 <div id="app">
 
-Loading AIRegistry Test...
+Loading Advisor Test...
 
 </div>
 
@@ -38,29 +38,25 @@ try {
 
         await import(
 
-            "./ai/aiRegistry.js"
+            "./ai/advisor.js"
 
         );
 
-    const AIRegistry =
+    const Advisor =
 
         module.default;
-
-    const list =
-
-        AIRegistry.list();
 
     app.innerHTML = `
 
         <h1>
 
-        AIRegistry Test
+        Advisor Test
 
         </h1>
 
         <p style="color:green">
 
-        ✅ AIRegistry Loaded Successfully
+        ✅ Advisor Loaded Successfully
 
         </p>
 
@@ -68,41 +64,17 @@ try {
 
         Type:
 
-        ${typeof AIRegistry}
+        ${typeof Advisor}
 
         </p>
 
         <p>
 
-        register:
+        Name:
 
-        ${typeof AIRegistry.register}
-
-        </p>
-
-        <p>
-
-        list:
-
-        ${typeof AIRegistry.list}
+        ${Advisor.name}
 
         </p>
-
-        <h3>
-
-        Registered AI
-
-        </h3>
-
-        <pre>${JSON.stringify(
-
-            list,
-
-            null,
-
-            2
-
-        )}</pre>
 
     `;
 
@@ -114,7 +86,7 @@ catch(error) {
 
         <h1>
 
-        AIRegistry Import Error
+        Advisor Import Error
 
         </h1>
 
