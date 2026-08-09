@@ -22,7 +22,7 @@ Family Wealth AI OS V7
 
 <div id="app">
 
-Loading AssetRepository Test...
+Loading DataService Test...
 
 </div>
 
@@ -42,13 +42,13 @@ Family Wealth AI OS V7
 
 <h2>
 
-AssetRepository Test
+DataService Test
 
 </h2>
 
 <p>
 
-Testing AssetRepository...
+Testing DataService...
 
 </p>
 
@@ -60,11 +60,11 @@ try {
 
         await import(
 
-            "./modules/assets/repository/assetRepository.js"
+            "./core/database/dataService.js"
 
         );
 
-    const AssetRepository =
+    const DataService =
 
         module.default;
 
@@ -72,13 +72,13 @@ try {
 
         <h1>
 
-        AssetRepository Test
+        DataService Test
 
         </h1>
 
         <p style="color:green">
 
-        ✅ AssetRepository
+        ✅ DataService
 
         Loaded Successfully
 
@@ -88,23 +88,7 @@ try {
 
         Type:
 
-        ${typeof AssetRepository}
-
-        </p>
-
-        <p>
-
-        findAll:
-
-        ${typeof AssetRepository.findAll}
-
-        </p>
-
-        <p>
-
-        findById:
-
-        ${typeof AssetRepository.findById}
+        ${typeof DataService}
 
         </p>
 
@@ -112,15 +96,31 @@ try {
 
         save:
 
-        ${typeof AssetRepository.save}
+        ${typeof DataService.save}
 
         </p>
 
         <p>
 
-        delete:
+        load:
 
-        ${typeof AssetRepository.delete}
+        ${typeof DataService.load}
+
+        </p>
+
+        <p>
+
+        remove:
+
+        ${typeof DataService.remove}
+
+        </p>
+
+        <p>
+
+        clear:
+
+        ${typeof DataService.clear}
 
         </p>
 
@@ -134,7 +134,7 @@ catch(error) {
 
         <h1>
 
-        AssetRepository Import Error
+        DataService Import Error
 
         </h1>
 
