@@ -22,7 +22,7 @@ Family Wealth AI OS V7
 
 <div id="app">
 
-Loading TaxFacade Test...
+Loading Family Wealth AI OS V7...
 
 </div>
 
@@ -34,61 +34,109 @@ document.getElementById("app");
 
 try {
 
+    app.innerHTML = `
+
+        <h1>
+
+        Family Wealth AI OS V7
+
+        </h1>
+
+        <h2>
+
+        Core System Overall Test
+
+        </h2>
+
+        <p>
+
+        Starting complete system...
+
+        </p>
+
+    `;
+
     const module =
 
         await import(
 
-            "./tax/taxFacade.js"
+            "./core/system/systemManager.js"
 
         );
 
-    const TaxFacade =
+    const SystemManager =
 
         module.default;
 
-    const tax =
+    const startResult =
 
-        new TaxFacade();
+        SystemManager.start();
+
+    const status =
+
+        SystemManager.status();
 
     app.innerHTML = `
 
         <h1>
 
-        TaxFacade Test
+        Family Wealth AI OS V7
 
         </h1>
 
-        <p style="color:green">
+        <h2>
 
-        ✅ TaxFacade
+        Core System Overall Test
 
-        Loaded Successfully
+        </h2>
 
-        </p>
+        <p style="
 
-        <p>
+            color:green;
 
-        Type:
+            font-size:20px;
 
-        ${typeof TaxFacade}
+            font-weight:bold;
 
-        </p>
+        ">
 
-        <p>
+        ✅ FAMILY WEALTH AI OS V7
 
-        Instance:
-
-        ${typeof tax}
+        CORE STARTED SUCCESSFULLY
 
         </p>
 
-        <p>
+        <h3>
 
-        Constructor:
+        Start Result
 
-        ${tax.constructor.name}
+        </h3>
 
-        </p>
+        <pre>${JSON.stringify(
+
+            startResult,
+
+            null,
+
+            2
+
+        )}</pre>
+
+        <h3>
+
+        System Status
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            status,
+
+            null,
+
+            2
+
+        )}</pre>
 
     `;
 
@@ -100,9 +148,15 @@ catch(error) {
 
         <h1>
 
-        TaxFacade Import Error
+        Family Wealth AI OS V7
 
         </h1>
+
+        <h2>
+
+        ❌ CORE SYSTEM START ERROR
+
+        </h2>
 
         <pre style="
 
