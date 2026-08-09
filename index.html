@@ -22,7 +22,7 @@ Family Wealth AI OS V7
 
 <div id="app">
 
-Loading Helpers Test...
+Loading AssetsModule Test...
 
 </div>
 
@@ -42,13 +42,13 @@ Family Wealth AI OS V7
 
 <h2>
 
-Helpers Test
+AssetsModule Test
 
 </h2>
 
 <p>
 
-Testing Helpers...
+Testing AssetsModule...
 
 </p>
 
@@ -60,11 +60,11 @@ try {
 
         await import(
 
-            "./core/utils/helpers.js"
+            "./core/modules/assetsModule.js"
 
         );
 
-    const Helpers =
+    const AssetsModule =
 
         module.default;
 
@@ -72,13 +72,13 @@ try {
 
         <h1>
 
-        Helpers Test
+        AssetsModule Test
 
         </h1>
 
         <p style="color:green">
 
-        ✅ Helpers
+        ✅ AssetsModule
 
         Loaded Successfully
 
@@ -88,47 +88,95 @@ try {
 
         Type:
 
-        ${typeof Helpers}
+        ${typeof AssetsModule}
 
         </p>
 
         <p>
 
-        generateId:
+        Name:
 
-        ${typeof Helpers.generateId}
-
-        </p>
-
-        <p>
-
-        formatCurrency:
-
-        ${typeof Helpers.formatCurrency}
+        ${AssetsModule.name}
 
         </p>
 
         <p>
 
-        formatPercent:
+        Version:
 
-        ${typeof Helpers.formatPercent}
-
-        </p>
-
-        <p>
-
-        now:
-
-        ${typeof Helpers.now}
+        ${AssetsModule.version}
 
         </p>
 
         <p>
 
-        isNumber:
+        Agent:
 
-        ${typeof Helpers.isNumber}
+        ${typeof AssetsModule.agent}
+
+        </p>
+
+        <p>
+
+        AI:
+
+        ${typeof AssetsModule.ai}
+
+        </p>
+
+        <p>
+
+        API:
+
+        ${typeof AssetsModule.api}
+
+        </p>
+
+        <p>
+
+        Analysis:
+
+        ${typeof AssetsModule.analysis}
+
+        </p>
+
+        <p>
+
+        Repository:
+
+        ${typeof AssetsModule.repository}
+
+        </p>
+
+        <p>
+
+        Schema:
+
+        ${typeof AssetsModule.schema}
+
+        </p>
+
+        <p>
+
+        Service:
+
+        ${typeof AssetsModule.service}
+
+        </p>
+
+        <p>
+
+        Events:
+
+        ${typeof AssetsModule.events}
+
+        </p>
+
+        <p>
+
+        View:
+
+        ${typeof AssetsModule.view}
 
         </p>
 
@@ -142,7 +190,7 @@ catch(error) {
 
         <h1>
 
-        Helpers Import Error
+        AssetsModule Import Error
 
         </h1>
 
