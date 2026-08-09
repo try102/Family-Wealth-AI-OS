@@ -22,7 +22,7 @@ Family Wealth AI OS V7
 
 <div id="app">
 
-Loading InvestmentAgent Test...
+Loading TaxFacade Test...
 
 </div>
 
@@ -38,25 +38,29 @@ try {
 
         await import(
 
-            "./modules/investment/agent/investmentAgent.js"
+            "./tax/taxFacade.js"
 
         );
 
-    const InvestmentAgent =
+    const TaxFacade =
 
         module.default;
+
+    const tax =
+
+        new TaxFacade();
 
     app.innerHTML = `
 
         <h1>
 
-        InvestmentAgent Test
+        TaxFacade Test
 
         </h1>
 
         <p style="color:green">
 
-        ✅ InvestmentAgent
+        ✅ TaxFacade
 
         Loaded Successfully
 
@@ -66,15 +70,23 @@ try {
 
         Type:
 
-        ${typeof InvestmentAgent}
+        ${typeof TaxFacade}
 
         </p>
 
         <p>
 
-        Name:
+        Instance:
 
-        ${InvestmentAgent.name || "N/A"}
+        ${typeof tax}
+
+        </p>
+
+        <p>
+
+        Constructor:
+
+        ${tax.constructor.name}
 
         </p>
 
@@ -88,7 +100,7 @@ catch(error) {
 
         <h1>
 
-        InvestmentAgent Import Error
+        TaxFacade Import Error
 
         </h1>
 
