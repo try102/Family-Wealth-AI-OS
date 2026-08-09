@@ -22,7 +22,7 @@ Family Wealth AI OS V7
 
 <div id="app">
 
-Loading SystemManager Start Test...
+Loading AgentRegistry Test...
 
 </div>
 
@@ -32,89 +32,71 @@ const app =
 
 document.getElementById("app");
 
-app.innerHTML = `
-
-<h1>
-
-Family Wealth AI OS V7
-
-</h1>
-
-<h2>
-
-SystemManager Start Test
-
-</h2>
-
-<p>
-
-Starting system...
-
-</p>
-
-`;
-
 try {
 
     const module =
 
         await import(
 
-            "./core/system/systemManager.js"
+            "./core/registry/agentRegistry.js"
 
         );
 
-    const SystemManager =
+    const AgentRegistry =
 
         module.default;
 
-    const result =
+    const list =
 
-        SystemManager.start();
-
-    const status =
-
-        SystemManager.status();
+        AgentRegistry.list();
 
     app.innerHTML = `
 
         <h1>
 
-        SystemManager Start Test
+        AgentRegistry Test
 
         </h1>
 
         <p style="color:green">
 
-        ✅ System Started Successfully
+        ✅ AgentRegistry Loaded Successfully
+
+        </p>
+
+        <p>
+
+        Type:
+
+        ${typeof AgentRegistry}
+
+        </p>
+
+        <p>
+
+        register:
+
+        ${typeof AgentRegistry.register}
+
+        </p>
+
+        <p>
+
+        list:
+
+        ${typeof AgentRegistry.list}
 
         </p>
 
         <h3>
 
-        Start Result
+        Registered Agents
 
         </h3>
 
         <pre>${JSON.stringify(
 
-            result,
-
-            null,
-
-            2
-
-        )}</pre>
-
-        <h3>
-
-        System Status
-
-        </h3>
-
-        <pre>${JSON.stringify(
-
-            status,
+            list,
 
             null,
 
@@ -132,7 +114,7 @@ catch(error) {
 
         <h1>
 
-        SystemManager Start Error
+        AgentRegistry Import Error
 
         </h1>
 
