@@ -698,6 +698,8 @@ function renderDashboard(
 
                 >
 
+                    <!-- Assets -->
+
                     <button
 
                         id="quick-assets-button"
@@ -709,6 +711,8 @@ function renderDashboard(
                         💰 Assets
 
                     </button>
+
+                    <!-- Investment -->
 
                     <button
 
@@ -722,6 +726,8 @@ function renderDashboard(
 
                     </button>
 
+                    <!-- Income -->
+
                     <button
 
                         type="button"
@@ -731,6 +737,8 @@ function renderDashboard(
                         💵 Income
 
                     </button>
+
+                    <!-- Liability -->
 
                     <button
 
@@ -742,6 +750,8 @@ function renderDashboard(
 
                     </button>
 
+                    <!-- Cash Flow -->
+
                     <button
 
                         type="button"
@@ -751,6 +761,8 @@ function renderDashboard(
                         💸 Cash Flow
 
                     </button>
+
+                    <!-- Tax -->
 
                     <button
 
@@ -826,20 +838,6 @@ function renderDashboard(
 
                     }
 
-                    /*
-
-                    IMPORTANT
-
-                    Pass a callback to AssetView.
-
-                    AssetView can return
-
-                    to the Dashboard without
-
-                    reloading the GitHub Pages URL.
-
-                    */
-
                     AssetsModule.view.render(
 
                         app,
@@ -900,6 +898,16 @@ function renderDashboard(
 
                 try {
 
+                    /*
+
+                    Investment module
+
+                    is located in the
+
+                    root modules directory.
+
+                    */
+
                     const module =
 
                         await import(
@@ -916,9 +924,7 @@ function renderDashboard(
 
                         !InvestmentView ||
 
-                        typeof InvestmentView.render !==
-
-                        "function"
+                        typeof InvestmentView.render !== "function"
 
                     ){
 
@@ -932,31 +938,13 @@ function renderDashboard(
 
                     /*
 
-                    IMPORTANT
-
-                    InvestmentView currently
-
-                    supports render(container).
-
-                    We also pass the Dashboard
-
-                    callback as the second argument
-
-                    so the Investment View can later
-
-                    support returning home.
+                    Render Investment Center
 
                     */
 
                     InvestmentView.render(
 
-                        app,
-
-                        () => {
-
-                            start();
-
-                        }
+                        app
 
                     );
 
