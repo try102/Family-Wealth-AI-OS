@@ -176,11 +176,11 @@ function renderDashboard(
 
         <div class="app-shell">
 
-            <!-- ================================== -->
+            <!-- ================================= -->
 
             <!-- Header -->
 
-            <!-- ================================== -->
+            <!-- ================================= -->
 
             <header
 
@@ -202,11 +202,11 @@ function renderDashboard(
 
             </header>
 
-            <!-- ================================== -->
+            <!-- ================================= -->
 
             <!-- System Status -->
 
-            <!-- ================================== -->
+            <!-- ================================= -->
 
             <section
 
@@ -244,11 +244,11 @@ function renderDashboard(
 
             </section>
 
-            <!-- ================================== -->
+            <!-- ================================= -->
 
             <!-- Dashboard -->
 
-            <!-- ================================== -->
+            <!-- ================================= -->
 
             <section
 
@@ -480,11 +480,11 @@ function renderDashboard(
 
             </section>
 
-            <!-- ================================== -->
+            <!-- ================================= -->
 
             <!-- Asset Allocation -->
 
-            <!-- ================================== -->
+            <!-- ================================= -->
 
             <section
 
@@ -524,11 +524,11 @@ function renderDashboard(
 
             </section>
 
-            <!-- ================================== -->
+            <!-- ================================= -->
 
             <!-- Wealth Modules -->
 
-            <!-- ================================== -->
+            <!-- ================================= -->
 
             <section
 
@@ -588,11 +588,11 @@ function renderDashboard(
 
             </section>
 
-            <!-- ================================== -->
+            <!-- ================================= -->
 
             <!-- AI Agents -->
 
-            <!-- ================================== -->
+            <!-- ================================= -->
 
             <section
 
@@ -652,11 +652,11 @@ function renderDashboard(
 
             </section>
 
-            <!-- ================================== -->
+            <!-- ================================= -->
 
             <!-- Quick Access -->
 
-            <!-- ================================== -->
+            <!-- ================================= -->
 
             <section
 
@@ -870,15 +870,17 @@ function renderDashboard(
 
             async () => {
 
+                /*
+
+                Diagnostic marker.
+
+                If this appears, the button
+
+                event is working.
+
+                */
+
                 try {
-
-                    /*
-
-                    Investment module is located
-
-                    directly under the root modules folder.
-
-                    */
 
                     const module =
 
@@ -894,7 +896,19 @@ function renderDashboard(
 
                     if(
 
-                        !InvestmentView ||
+                        !InvestmentView
+
+                    ){
+
+                        throw new Error(
+
+                            "InvestmentView module not found"
+
+                        );
+
+                    }
+
+                    if(
 
                         typeof InvestmentView.render !==
 
@@ -904,7 +918,7 @@ function renderDashboard(
 
                         throw new Error(
 
-                            "InvestmentView.render not found"
+                            "InvestmentView.render is not a function"
 
                         );
 
