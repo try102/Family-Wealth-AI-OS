@@ -10,15 +10,15 @@ Assets Module
 
 import assetAgent
 
-from "../../modules/assets/agent/assetAgent.js";
+from "../../modules/asset/agent/assetAgent.js";
 
 import assetAI
 
-from "../../modules/assets/ai/assetAI.js";
+from "../../modules/asset/ai/assetAI.js";
 
 import assetAPI
 
-from "../../modules/assets/api/assetAPI.js";
+from "../../modules/asset/api/assetAPI.js";
 
 import assetAnalysisEngine
 
@@ -26,23 +26,23 @@ from "../../modules/assets/engines/assetAnalysisEngine.js";
 
 import assetEventHandler
 
-from "../../modules/assets/events/assetEventHandler.js";
+from "../../modules/asset/events/assetEventHandler.js";
 
 import assetRepository
 
-from "../../modules/assets/repository/assetRepository.js";
+from "../../modules/asset/repository/assetRepository.js";
 
 import assetSchema
 
-from "../../modules/assets/schema/assetSchema.js";
+from "../../modules/asset/schema/assetSchema.js";
 
 import assetService
 
-from "../../modules/assets/services/assetService.js";
+from "../../modules/asset/services/assetService.js";
 
 import assetView
 
-from "../../modules/assets/ui/assetView.js";
+from "../../modules/asset/ui/assetView.js";
 
 const AssetsModule = {
 
