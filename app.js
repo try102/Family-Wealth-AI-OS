@@ -2,136 +2,98 @@
 
 Family Wealth AI OS V7
 
-V7 System Entry
-
-Startup Diagnostic
+Minimal Startup Test
 
 */
 
 const app = document.getElementById("app");
 
-function showError(title, error){
+app.innerHTML = `
 
-    app.innerHTML = `
+    <h1>Family Wealth AI OS V7</h1>
 
-        <h1>Family Wealth AI OS V7</h1>
+    <p>Loading System Manager...</p>
 
-        <h2>${title}</h2>
-
-        <pre style="
-
-            white-space: pre-wrap;
-
-            word-break: break-word;
-
-        ">${error?.stack || error?.message || error}</pre>
-
-    `;
-
-    console.error(title, error);
-
-}
-
-app.innerHTML =
-
-    "Loading V7 Core...";
+`;
 
 import("./core/system/systemManager.js")
 
-.then(({ default: SystemManager }) => {
+    .then(({ default: SystemManager }) => {
 
-    app.innerHTML =
+        app.innerHTML = `
 
-        "Starting V7 System...";
+            <h1>Family Wealth AI OS V7</h1>
 
-    try{
+            <p>System Manager Loaded Successfully</p>
 
-        const system =
+            <p>Now starting system...</p>
 
-            SystemManager.start();
+        `;
 
-        window.WealthOS = {
+        try {
 
-            system:
+            const result =
 
-                SystemManager
+                SystemManager.start();
 
-        };
+            app.innerHTML = `
 
-        return import("./ai/advisor.js")
+                <h1>Family Wealth AI OS V7</h1>
 
-            .then(({ default: Advisor }) => {
+                <h2>System Started</h2>
 
-                window.WealthOS.advisor =
+                <p>
 
-                    Advisor;
+                    Status:
 
-                app.innerHTML = `
+                    ${result.status}
 
-                    <h1>
+                </p>
 
-                        🏠 Family Wealth AI OS V7
+                <p>
 
-                    </h1>
+                    Advisor:
 
-                    <h2>
+                    ${result.advisor}
 
-                        System Ready
+                </p>
 
-                    </h2>
+            `;
 
-                    <p>
+        } catch(error) {
 
-                        Status:
+            app.innerHTML = `
 
-                        <strong>
+                <h1>System Start Error</h1>
 
-                            ${system.status}
+                <pre style="
 
-                        </strong>
+                    white-space:pre-wrap;
 
-                    </p>
+                    word-break:break-word;
 
-                    <p>
+                ">${error.stack || error.message}</pre>
 
-                        Advisor:
+            `;
 
-                        <strong>
+        }
 
-                            ${Advisor.name}
+    })
 
-                        </strong>
+    .catch(error => {
 
-                    </p>
+        app.innerHTML = `
 
-                `;
+            <h1>System Manager Import Error</h1>
 
-            });
+            <pre style="
 
-    }
+                white-space:pre-wrap;
 
-    catch(error){
+                word-break:break-word;
 
-        showError(
+            ">${error.stack || error.message}</pre>
 
-            "System Start Error",
+        `;
 
-            error
-
-        );
-
-    }
-
-})
-
-.catch(error => {
-
-    showError(
-
-        "Module Import Error",
-
-        error
-
-    );
-
-});
+    });
