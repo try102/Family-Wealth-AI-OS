@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+
+content="width=device-width, initial-scale=1.0">
+
+<title>
+
+Family Wealth AI OS V7
+
+Asset Test Cleanup
+
+</title>
+
+</head>
+
+<body>
+
+<div id="app">
+
+Cleaning test data...
+
+</div>
+
+<script type="module">
+
+const app =
+
+document.getElementById("app");
+
+try {
+
+    // ==========================================
+
+    // Load Assets Module
+
+    // ==========================================
+
+    const module =
+
+        await import(
+
+            "./core/modules/assetsModule.js?v=20260809-cleanup"
+
+        );
+
+    const AssetsModule =
+
+        module.default;
+
+    // ==========================================
+
+    // Read Existing Assets
+
+    // ==========================================
+
+    const before =
+
+        AssetsModule.api.getAll();
+
+    // ==========================================
+
+    // Find Test Assets
+
+    // ==========================================
+
+    const testAssets =
+
+        before.filter(
+
+            asset =>
+
+                asset.name ===
+
+                "V7 Dashboard Test Cash"
+
+        );
+
+    // ==========================================
+
+    // Delete ONLY Test Assets
+
+    // ==========================================
+
+    testAssets.forEach(
+
+        asset => {
+
+            AssetsModule.api.remove(
+
+                asset.id
+
+            );
+
+        }
+
+    );
+
+    // ==========================================
+
+    // Read After
+
+    // ==========================================
+
+    const after =
+
+        AssetsModule.api.getAll();
+
+    const total =
+
+        AssetsModule.api.getTotalValue();
+
+    // ==========================================
+
+    // Verify
+
+    // ==========================================
+
+    const remainingTestAssets =
+
+        after.filter(
+
+            asset =>
+
+                asset.name ===
+
+                "V7 Dashboard Test Cash"
+
+        );
+
+    const passed =
+
+        remainingTestAssets.length === 0;
+
+    // ==========================================
+
+    // Output
+
+    // ==========================================
+
+    app.innerHTML = `
+
+        <h1>
+
+            Family Wealth AI OS V7
+
+        </h1>
+
+        <h2>
+
+            Asset Test Cleanup
+
+        </h2>
+
+        <h2 style="
+
+            color:${passed
+
+                ? "green"
+
+                : "red"};
+
+        ">
+
+            ${
+
+                passed
+
+                ?
+
+                "✅ TEST DATA CLEANED"
+
+                :
+
+                "❌ CLEANUP FAILED"
+
+            }
+
+        </h2>
+
+        <hr>
+
+        <h3>
+
+            Test Assets Found
+
+        </h3>
+
+        <p>
+
+            ${testAssets.length}
+
+        </p>
+
+        <h3>
+
+            Test Assets Removed
+
+        </h3>
+
+        <p>
+
+            ${
+
+                testAssets.length -
+
+                remainingTestAssets.length
+
+            }
+
+        </p>
+
+        <h3>
+
+            Remaining Assets
+
+        </h3>
+
+        <p>
+
+            ${after.length}
+
+        </p>
+
+        <h3>
+
+            Current Total Assets
+
+        </h3>
+
+        <p>
+
+            ${new Intl.NumberFormat(
+
+                "en-US",
+
+                {
+
+                    style:
+
+                    "currency",
+
+                    currency:
+
+                    "USD",
+
+                    maximumFractionDigits:
+
+                    0
+
+                }
+
+            ).format(total)}
+
+        </p>
+
+        <h3>
+
+            Remaining Data
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            after,
+
+            null,
+
+            2
+
+        )}</pre>
+
+    `;
+
+}
+
+catch(error){
+
+    app.innerHTML = `
+
+        <h1>
+
+            Asset Cleanup Error
+
+        </h1>
+
+        <pre style="
+
+            white-space:pre-wrap;
+
+            word-break:break-word;
+
+            color:red;
+
+        ">${error.stack ||
+
+           error.message ||
+
+           String(error)}</pre>
+
+    `;
+
+}
+
+</script>
+
+</body>
+
+</html>
