@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+
+content="width=device-width, initial-scale=1.0">
+
+<title>
+
+Family Wealth AI OS V7
+
+AssetView CRUD Test
+
+</title>
+
+</head>
+
+<body>
+
+<div id="app">
+
+Loading...
+
+</div>
+
+<script type="module">
+
+const app =
+
+document.getElementById("app");
+
+try {
+
+    const module =
+
+        await import(
+
+            "./core/modules/assetsModule.js?v=20260809-crud01"
+
+        );
+
+    const AssetsModule =
+
+        module.default;
+
+    const AssetView =
+
+        AssetsModule.view;
+
+    const AssetAPI =
+
+        AssetsModule.api;
+
+    const container =
+
+        document.createElement(
+
+            "div"
+
+        );
+
+    // ==========================================
+
+    // CREATE
+
+    // ==========================================
+
+    AssetAPI.create({
+
+        name:
+
+        "V7 CRUD Test Asset",
+
+        category:
+
+        "Cash",
+
+        currentValue:
+
+        10000,
+
+        liquidity:
+
+        "High"
+
+    });
+
+    let assets =
+
+        AssetAPI.getAll();
+
+    let testAsset =
+
+        assets.find(
+
+            asset =>
+
+                asset.name ===
+
+                "V7 CRUD Test Asset"
+
+        );
+
+    if(!testAsset){
+
+        throw new Error(
+
+            "CREATE failed"
+
+        );
+
+    }
+
+    // ==========================================
+
+    // RENDER
+
+    // ==========================================
+
+    AssetView.render(
+
+        container
+
+    );
+
+    // ==========================================
+
+    // EDIT BUTTON
+
+    // ==========================================
+
+    const editButton =
+
+        container.querySelector(
+
+            `.edit-asset-button[data-id="${testAsset.id}"]`
+
+        );
+
+    if(!editButton){
+
+        throw new Error(
+
+            "EDIT button not found"
+
+        );
+
+    }
+
+    editButton.click();
+
+    const editForm =
+
+        container.querySelector(
+
+            "#asset-edit-form"
+
+        );
+
+    if(!editForm){
+
+        throw new Error(
+
+            "EDIT form not found"
+
+        );
+
+    }
+
+    // ==========================================
+
+    // Change Value
+
+    // ==========================================
+
+    editForm.querySelector(
+
+        "#edit-asset-value"
+
+    ).value =
+
+        "25000";
+
+    editForm.querySelector(
+
+        "#edit-asset-name"
+
+    ).value =
+
+        "V7 CRUD Test Asset Updated";
+
+    editForm.dispatchEvent(
+
+        new Event(
+
+            "submit",
+
+            {
+
+                bubbles:
+
+                true,
+
+                cancelable:
+
+                true
+
+            }
+
+        )
+
+    );
+
+    // ==========================================
+
+    // Verify EDIT
+
+    // ==========================================
+
+    assets =
+
+        AssetAPI.getAll();
+
+    const editedAsset =
+
+        assets.find(
+
+            asset =>
+
+                asset.id ===
+
+                testAsset.id
+
+        );
+
+    const editPassed =
+
+        !!editedAsset &&
+
+        editedAsset.name ===
+
+        "V7 CRUD Test Asset Updated" &&
+
+        Number(
+
+            editedAsset.currentValue
+
+        ) === 25000;
+
+    if(!editPassed){
+
+        throw new Error(
+
+            "EDIT verification failed"
+
+        );
+
+    }
+
+    // ==========================================
+
+    // DELETE
+
+    // ==========================================
+
+    const deleteButton =
+
+        container.querySelector(
+
+            `.delete-asset-button[data-id="${testAsset.id}"]`
+
+        );
+
+    if(!deleteButton){
+
+        throw new Error(
+
+            "DELETE button not found"
+
+        );
+
+    }
+
+    // ==========================================
+
+    // Confirm Delete
+
+    // ==========================================
+
+    const originalConfirm =
+
+        window.confirm;
+
+    window.confirm = () => true;
+
+    deleteButton.click();
+
+    window.confirm =
+
+        originalConfirm;
+
+    // ==========================================
+
+    // Verify DELETE
+
+    // ==========================================
+
+    assets =
+
+        AssetAPI.getAll();
+
+    const deletedAsset =
+
+        assets.find(
+
+            asset =>
+
+                asset.id ===
+
+                testAsset.id
+
+        );
+
+    const deletePassed =
+
+        !deletedAsset;
+
+    // ==========================================
+
+    // Final Cleanup
+
+    // ==========================================
+
+    assets
+
+        .filter(
+
+            asset =>
+
+                asset.name ===
+
+                "V7 CRUD Test Asset Updated"
+
+        )
+
+        .forEach(
+
+            asset => {
+
+                AssetAPI.remove(
+
+                    asset.id
+
+                );
+
+            }
+
+        );
+
+    const remainingAssets =
+
+        AssetAPI.getAll();
+
+    // ==========================================
+
+    // Result
+
+    // ==========================================
+
+    const passed =
+
+        editPassed &&
+
+        deletePassed;
+
+    app.innerHTML = `
+
+        <h1>
+
+            Family Wealth AI OS V7
+
+        </h1>
+
+        <h2>
+
+            AssetView CRUD Test
+
+        </h2>
+
+        <h2 style="
+
+            color:${passed
+
+                ? "green"
+
+                : "red"};
+
+        ">
+
+            ${
+
+                passed
+
+                ?
+
+                "✅ ASSETVIEW CRUD PASSED"
+
+                :
+
+                "❌ ASSETVIEW CRUD FAILED"
+
+            }
+
+        </h2>
+
+        <hr>
+
+        <h3>
+
+            Test Details
+
+        </h3>
+
+        <p>
+
+            Create: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Edit Button: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Edit:
+
+            ${
+
+                editPassed
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+        <p>
+
+            Delete Button: ✅ PASS
+
+        </p>
+
+        <p>
+
+            Delete:
+
+            ${
+
+                deletePassed
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+        <h3>
+
+            Edited Asset
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            editedAsset,
+
+            null,
+
+            2
+
+        )}</pre>
+
+        <h3>
+
+            Remaining Assets
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            remainingAssets,
+
+            null,
+
+            2
+
+        )}</pre>
+
+    `;
+
+}
+
+catch(error){
+
+    app.innerHTML = `
+
+        <h1>
+
+            ❌ AssetView CRUD Test Error
+
+        </h1>
+
+        <pre style="
+
+            white-space:pre-wrap;
+
+            word-break:break-word;
+
+            color:red;
+
+        ">${error.stack ||
+
+           error.message ||
+
+           String(error)}</pre>
+
+    `;
+
+}
+
+</script>
+
+</body>
+
+</html>
