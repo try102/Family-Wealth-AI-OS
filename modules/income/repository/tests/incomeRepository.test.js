@@ -1,229 +1,425 @@
 /*
 
+    
+
 Family Wealth AI OS V7
 
 Income Repository Test
 
-测试：
-
-Income Repository
-
-↓
-
-Database
-
-↓
-
-Storage
-
 */
 
-import IncomeRepository from "../incomeRepository.js";
+import IncomeRepository
 
-import Database from "../../../../storage/database.js";
+    from "../incomeRepository.js";
 
-// =====================
+// ==========================================
 
-// Initialize Database
+// Header
 
-// =====================
-
-Database.init();
-
-// =====================
-
-// Clear Test Data
-
-// =====================
-
-IncomeRepository.clear();
-
-// =====================
-
-// Save Test
-
-// =====================
-
-const income = {
-
-    id:
-
-    1001,
-
-    name:
-
-    "Salary",
-
-    category:
-
-    "工资",
-
-    amount:
-
-    10000,
-
-    owner:
-
-    "Family"
-
-};
-
-const saved =
-
-IncomeRepository.save(
-
-    income
-
-);
-
-if(
-
-    saved.id !== 1001
-
-){
-
-    throw new Error(
-
-        "Save income failed"
-
-    );
-
-}
-
-// =====================
-
-// Find All Test
-
-// =====================
-
-const list =
-
-IncomeRepository.findAll();
-
-if(
-
-    list.length !== 1
-
-){
-
-    throw new Error(
-
-        "Find all income failed"
-
-    );
-
-}
-
-// =====================
-
-// Find By Id Test
-
-// =====================
-
-const found =
-
-IncomeRepository.findById(
-
-    1001
-
-);
-
-if(
-
-    found.name !== "Salary"
-
-){
-
-    throw new Error(
-
-        "Find income by id failed"
-
-    );
-
-}
-
-// =====================
-
-// Update Test
-
-// =====================
-
-const updated =
-
-IncomeRepository.update(
-
-    1001,
-
-    {
-
-        amount:
-
-        15000
-
-    }
-
-);
-
-if(
-
-    updated.amount !== 15000
-
-){
-
-    throw new Error(
-
-        "Update income failed"
-
-    );
-
-}
-
-// =====================
-
-// Delete Test
-
-// =====================
-
-const removed =
-
-IncomeRepository.remove(
-
-    1001
-
-);
-
-if(
-
-    removed !== true
-
-){
-
-    throw new Error(
-
-        "Delete income failed"
-
-    );
-
-}
-
-if(
-
-    IncomeRepository.findAll()
-
-    .length !== 0
-
-){
-
-    throw new Error(
-
-        "Delete verify failed"
-
-    );
-
-}
+// ==========================================
 
 console.log(
 
-    "Income Repository V7 Test Passed"
+    "=========================================="
+
+);
+
+console.log(
+
+    "Family Wealth AI OS V7"
+
+);
+
+console.log(
+
+    "Income Repository Test"
+
+);
+
+console.log(
+
+    "=========================================="
+
+);
+
+// ==========================================
+
+// Test Helper
+
+// ==========================================
+
+function assert(
+
+    condition,
+
+    message
+
+){
+
+    if(!condition){
+
+        throw new Error(
+
+            "❌ FAIL: " +
+
+            message
+
+        );
+
+    }
+
+    console.log(
+
+        "✅ PASS: " +
+
+        message
+
+    );
+
+}
+
+// ==========================================
+
+// Clear Test Data
+
+// ==========================================
+
+IncomeRepository.clear();
+
+const before =
+
+    IncomeRepository.findAll();
+
+assert(
+
+    Array.isArray(before),
+
+    "Find all incomes"
+
+);
+
+assert(
+
+    before.length === 0,
+
+    "Repository initially empty"
+
+);
+
+// ==========================================
+
+// Create
+
+// ==========================================
+
+const testIncome = {
+
+    id:
+
+        "repository-test-001",
+
+    source:
+
+        "V7 Repository Test",
+
+    name:
+
+        "V7 Repository Test",
+
+    amount:
+
+        1000,
+
+    value:
+
+        1000,
+
+    type:
+
+        "Other"
+
+};
+
+const created =
+
+    IncomeRepository.save(
+
+        testIncome
+
+    );
+
+assert(
+
+    created,
+
+    "Save income"
+
+);
+
+assert(
+
+    created.id ===
+
+    "repository-test-001",
+
+    "Income ID saved"
+
+);
+
+// ==========================================
+
+// Read All
+
+// ==========================================
+
+const afterCreate =
+
+    IncomeRepository.findAll();
+
+assert(
+
+    Array.isArray(afterCreate),
+
+    "Find all after create"
+
+);
+
+assert(
+
+    afterCreate.length === 1,
+
+    "One income stored"
+
+);
+
+// ==========================================
+
+// Read By ID
+
+// ==========================================
+
+const found =
+
+    IncomeRepository.findById(
+
+        "repository-test-001"
+
+    );
+
+assert(
+
+    found,
+
+    "Find income by ID"
+
+);
+
+assert(
+
+    found.id ===
+
+    "repository-test-001",
+
+    "Correct income returned"
+
+);
+
+// ==========================================
+
+// Update
+
+// ==========================================
+
+const updated =
+
+    IncomeRepository.update(
+
+        "repository-test-001",
+
+        {
+
+            source:
+
+                "V7 Repository Test Updated",
+
+            name:
+
+                "V7 Repository Test Updated",
+
+            amount:
+
+                2500,
+
+            value:
+
+                2500,
+
+            type:
+
+                "Business"
+
+        }
+
+    );
+
+assert(
+
+    updated,
+
+    "Update income"
+
+);
+
+assert(
+
+    Number(
+
+        updated.amount ??
+
+        updated.value ??
+
+        0
+
+    ) === 2500,
+
+    "Updated amount = 2500"
+
+);
+
+// ==========================================
+
+// Verify Update
+
+// ==========================================
+
+const afterUpdate =
+
+    IncomeRepository.findById(
+
+        "repository-test-001"
+
+    );
+
+assert(
+
+    afterUpdate,
+
+    "Read updated income"
+
+);
+
+assert(
+
+    afterUpdate.name ===
+
+    "V7 Repository Test Updated",
+
+    "Updated name"
+
+);
+
+assert(
+
+    afterUpdate.type ===
+
+    "Business",
+
+    "Updated type"
+
+);
+
+// ==========================================
+
+// Delete
+
+// ==========================================
+
+const deleted =
+
+    IncomeRepository.remove(
+
+        "repository-test-001"
+
+    );
+
+assert(
+
+    deleted === true,
+
+    "Remove income"
+
+);
+
+// ==========================================
+
+// Verify Delete
+
+// ==========================================
+
+const afterDelete =
+
+    IncomeRepository.findById(
+
+        "repository-test-001"
+
+    );
+
+assert(
+
+    afterDelete === null,
+
+    "Income deleted"
+
+);
+
+// ==========================================
+
+// Clear
+
+// ==========================================
+
+IncomeRepository.clear();
+
+const finalData =
+
+    IncomeRepository.findAll();
+
+assert(
+
+    Array.isArray(finalData),
+
+    "Clear repository"
+
+);
+
+assert(
+
+    finalData.length === 0,
+
+    "Repository cleared"
+
+);
+
+// ==========================================
+
+// Final
+
+// ==========================================
+
+console.log(
+
+    "=========================================="
+
+);
+
+console.log(
+
+    "🎉 INCOME REPOSITORY TEST PASSED"
+
+);
+
+console.log(
+
+    "=========================================="
 
 );
