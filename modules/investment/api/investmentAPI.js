@@ -1,20 +1,30 @@
 /*
 
-Family Wealth AI OS
+Family Wealth AI OS V7
 
 Investment API
 
 */
 
-import InvestmentService from "../services/investmentService.js";
+import InvestmentService
 
-import PortfolioEngine from "../portfolio/portfolioEngine.js";
+from "../services/investmentService.js";
 
-import InvestmentAnalysisEngine from "../analysis/investmentAnalysisEngine.js";
+import PortfolioEngine
 
-import RiskEngine from "../risk/riskEngine.js";
+from "../portfolio/portfolioEngine.js";
 
-import InvestmentDecisionEngine from "../decision/investmentDecisionEngine.js";
+import InvestmentAnalysisEngine
+
+from "../analysis/investmentAnalysisEngine.js";
+
+import RiskEngine
+
+from "../risk/riskEngine.js";
+
+import InvestmentDecisionEngine
+
+from "../decision/investmentDecisionEngine.js";
 
 const InvestmentAPI = {
 
@@ -45,6 +55,22 @@ const InvestmentAPI = {
         return InvestmentService
 
         .getInvestments();
+
+    },
+
+    deleteInvestment(
+
+        id
+
+    ){
+
+        return InvestmentService
+
+        .deleteInvestment(
+
+            id
+
+        );
 
     },
 
