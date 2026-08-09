@@ -4,7 +4,7 @@ Family Wealth AI OS V7
 
 Investment View
 
-投资中心 UI
+Investment Center UI
 
 第二阶段：
 
@@ -22,11 +22,11 @@ import InvestmentAPI from "../api/investmentAPI.js";
 
 const InvestmentView = {
 
-    // ==================================================
+    // ==========================================
 
     // Render
 
-    // ==================================================
+    // ==========================================
 
     render(
 
@@ -35,6 +35,12 @@ const InvestmentView = {
         onBack
 
     ){
+
+        const investments =
+
+            InvestmentAPI
+
+            .getInvestments();
 
         const portfolio =
 
@@ -54,18 +60,6 @@ const InvestmentView = {
 
             .getRiskReport();
 
-        const investments =
-
-            this.getInvestments();
-
-        const totalValue =
-
-            Number(
-
-                portfolio?.totalValue || 0
-
-            );
-
         container.innerHTML = `
 
             <div
@@ -80,19 +74,11 @@ const InvestmentView = {
 
                 </h2>
 
-                <p>
-
-                    Portfolio Value:
-
-                    $${totalValue.toLocaleString()}
-
-                </p>
-
                 <button
 
-                    type="button"
-
                     id="investment-back-button"
+
+                    type="button"
 
                 >
 
@@ -100,189 +86,33 @@ const InvestmentView = {
 
                 </button>
 
-                <button
-
-                    type="button"
-
-                    id="add-investment-button"
-
-                >
-
-                    + Add Investment
-
-                </button>
-
-                <hr>
-
-                <div
-
-                    id="investment-form-container"
-
-                ></div>
-
-                <h3>
-
-                    Investments
-
-                </h3>
-
-                <div
-
-                    id="investment-list"
-
-                >
-
-                    ${
-
-                        investments.length === 0
-
-                        ?
-
-                        `
-
-                            <p>
-
-                                No investments
-
-                            </p>
-
-                        `
-
-                        :
-
-                        investments.map(
-
-                            investment => `
-
-                                <div
-
-                                    class="investment-card"
-
-                                    data-investment-id="${
-
-                                        investment.id
-
-                                    }"
-
-                                >
-
-                                    <strong>
-
-                                        ${
-
-                                            investment.name ||
-
-                                            "Unnamed Investment"
-
-                                        }
-
-                                    </strong>
-
-                                    <p>
-
-                                        Type:
-
-                                        ${
-
-                                            investment.type ||
-
-                                            "Investment"
-
-                                        }
-
-                                    </p>
-
-                                    <p>
-
-                                        Quantity:
-
-                                        ${
-
-                                            Number(
-
-                                                investment.quantity ||
-
-                                                0
-
-                                            ).toLocaleString()
-
-                                        }
-
-                                    </p>
-
-                                    <p>
-
-                                        Value:
-
-                                        $${
-
-                                            Number(
-
-                                                investment.currentValue ||
-
-                                                investment.value ||
-
-                                                0
-
-                                            ).toLocaleString()
-
-                                        }
-
-                                    </p>
-
-                                    <button
-
-                                        type="button"
-
-                                        class="edit-investment-button"
-
-                                        data-id="${
-
-                                            investment.id
-
-                                        }"
-
-                                    >
-
-                                        Edit
-
-                                    </button>
-
-                                    <button
-
-                                        type="button"
-
-                                        class="delete-investment-button"
-
-                                        data-id="${
-
-                                            investment.id
-
-                                        }"
-
-                                    >
-
-                                        Delete
-
-                                    </button>
-
-                                </div>
-
-                            `
-
-                        ).join("")
-
-                    }
-
-                </div>
-
                 <hr>
 
                 <section>
 
                     <h3>
 
-                        Allocation
+                        Portfolio Value
+
+                    </h3>
+
+                    <p>
+
+                        $${Number(
+
+                            portfolio.totalValue || 0
+
+                        ).toLocaleString()}
+
+                    </p>
+
+                </section>
+
+                <section>
+
+                    <h3>
+
+                        Portfolio Allocation
 
                     </h3>
 
@@ -290,7 +120,7 @@ const InvestmentView = {
 
 ${JSON.stringify(
 
-    portfolio?.allocation || {},
+    portfolio.allocation,
 
     null,
 
@@ -314,7 +144,7 @@ ${JSON.stringify(
 
 ${JSON.stringify(
 
-    performance || {},
+    performance,
 
     null,
 
@@ -338,7 +168,7 @@ ${JSON.stringify(
 
 ${JSON.stringify(
 
-    risk || {},
+    risk,
 
     null,
 
@@ -350,15 +180,119 @@ ${JSON.stringify(
 
                 </section>
 
+                <hr>
+
+                <button
+
+                    id="add-investment-button"
+
+                    type="button"
+
+                >
+
+                    + Add Investment
+
+                </button>
+
+                <div
+
+                    id="investment-form-container"
+
+                ></div>
+
+                <h3>
+
+                    Investments
+
+                </h3>
+
+                <ul>
+
+                    ${
+
+                        investments.length === 0
+
+                        ?
+
+                        "<li>No investments</li>"
+
+                        :
+
+                        investments.map(
+
+                            investment => `
+
+                                <li
+
+                                    data-investment-id="${investment.id}"
+
+                                >
+
+                                    <strong>
+
+                                        ${investment.name || "Unnamed"}
+
+                                    </strong>
+
+                                    -
+
+                                    ${investment.symbol || "N/A"}
+
+                                    -
+
+                                    $${Number(
+
+                                        investment.currentValue || 0
+
+                                    ).toLocaleString()}
+
+                                    <button
+
+                                        type="button"
+
+                                        class="edit-investment-button"
+
+                                        data-id="${investment.id}"
+
+                                    >
+
+                                        Edit
+
+                                    </button>
+
+                                    <button
+
+                                        type="button"
+
+                                        class="delete-investment-button"
+
+                                        data-id="${investment.id}"
+
+                                    >
+
+                                        Delete
+
+                                    </button>
+
+                                </li>
+
+                            `
+
+                        ).join("")
+
+                    }
+
+                </ul>
+
             </div>
 
         `;
 
-        // ==================================================
+        // ==========================================
 
         // Back Button
 
-        // ==================================================
+        // ==========================================
 
         const backButton =
 
@@ -394,11 +328,11 @@ ${JSON.stringify(
 
         }
 
-        // ==================================================
+        // ==========================================
 
-        // Add Investment
+        // Add Button
 
-        // ==================================================
+        // ==========================================
 
         const addButton =
 
@@ -430,11 +364,11 @@ ${JSON.stringify(
 
         }
 
-        // ==================================================
+        // ==========================================
 
         // Edit Buttons
 
-        // ==================================================
+        // ==========================================
 
         const editButtons =
 
@@ -472,11 +406,11 @@ ${JSON.stringify(
 
         );
 
-        // ==================================================
+        // ==========================================
 
         // Delete Buttons
 
-        // ==================================================
+        // ==========================================
 
         const deleteButtons =
 
@@ -516,71 +450,11 @@ ${JSON.stringify(
 
     },
 
-    // ==================================================
+    // ==========================================
 
-    // Get Investments
+    // Create Investment Form
 
-    // ==================================================
-
-    getInvestments(){
-
-        /*
-
-        Try the most common API names.
-
-        We do not change InvestmentAPI.
-
-        We only adapt the UI to the existing API.
-
-        */
-
-        if(
-
-            typeof InvestmentAPI.getAll ===
-
-            "function"
-
-        ){
-
-            return InvestmentAPI.getAll() || [];
-
-        }
-
-        if(
-
-            typeof InvestmentAPI.getInvestments ===
-
-            "function"
-
-        ){
-
-            return InvestmentAPI
-
-                .getInvestments() || [];
-
-        }
-
-        if(
-
-            typeof InvestmentAPI.list ===
-
-            "function"
-
-        ){
-
-            return InvestmentAPI.list() || [];
-
-        }
-
-        return [];
-
-    },
-
-    // ==================================================
-
-    // Create Form
-
-    // ==================================================
+    // ==========================================
 
     showCreateForm(
 
@@ -597,12 +471,6 @@ ${JSON.stringify(
                 "#investment-form-container"
 
             );
-
-        if(!formContainer){
-
-            return;
-
-        }
 
         formContainer.innerHTML = `
 
@@ -641,6 +509,28 @@ ${JSON.stringify(
                             type="text"
 
                             required
+
+                        >
+
+                    </div>
+
+                    <br>
+
+                    <div>
+
+                        <label>
+
+                            Symbol
+
+                        </label>
+
+                        <br>
+
+                        <input
+
+                            id="investment-symbol"
+
+                            type="text"
 
                         >
 
@@ -696,12 +586,6 @@ ${JSON.stringify(
 
                             </option>
 
-                            <option value="Cash">
-
-                                Cash
-
-                            </option>
-
                             <option value="Other">
 
                                 Other
@@ -709,34 +593,6 @@ ${JSON.stringify(
                             </option>
 
                         </select>
-
-                    </div>
-
-                    <br>
-
-                    <div>
-
-                        <label>
-
-                            Quantity
-
-                        </label>
-
-                        <br>
-
-                        <input
-
-                            id="investment-quantity"
-
-                            type="number"
-
-                            min="0"
-
-                            step="0.0001"
-
-                            value="0"
-
-                        >
 
                     </div>
 
@@ -798,12 +654,6 @@ ${JSON.stringify(
 
         `;
 
-        // ==================================================
-
-        // Submit
-
-        // ==================================================
-
         const form =
 
             formContainer.querySelector(
@@ -811,12 +661,6 @@ ${JSON.stringify(
                 "#investment-create-form"
 
             );
-
-        if(!form){
-
-            return;
-
-        }
 
         form.addEventListener(
 
@@ -836,6 +680,14 @@ ${JSON.stringify(
 
                         ).value.trim(),
 
+                    symbol:
+
+                        form.querySelector(
+
+                            "#investment-symbol"
+
+                        ).value.trim(),
+
                     type:
 
                         form.querySelector(
@@ -843,18 +695,6 @@ ${JSON.stringify(
                             "#investment-type"
 
                         ).value,
-
-                    quantity:
-
-                        Number(
-
-                            form.querySelector(
-
-                                "#investment-quantity"
-
-                            ).value || 0
-
-                        ),
 
                     currentValue:
 
@@ -864,37 +704,19 @@ ${JSON.stringify(
 
                                 "#investment-value"
 
-                            ).value || 0
+                            ).value
 
                         )
 
                 };
 
-                if(
+                InvestmentAPI
 
-                    typeof InvestmentAPI.create ===
+                .createInvestment(
 
-                    "function"
+                    investment
 
-                ){
-
-                    InvestmentAPI.create(
-
-                        investment
-
-                    );
-
-                }
-
-                else{
-
-                    throw new Error(
-
-                        "InvestmentAPI.create not found"
-
-                    );
-
-                }
+                );
 
                 this.render(
 
@@ -908,12 +730,6 @@ ${JSON.stringify(
 
         );
 
-        // ==================================================
-
-        // Cancel
-
-        // ==================================================
-
         const cancelButton =
 
             formContainer.querySelector(
@@ -922,29 +738,25 @@ ${JSON.stringify(
 
             );
 
-        if(cancelButton){
+        cancelButton.addEventListener(
 
-            cancelButton.addEventListener(
+            "click",
 
-                "click",
+            () => {
 
-                () => {
+                formContainer.innerHTML = "";
 
-                    formContainer.innerHTML = "";
+            }
 
-                }
-
-            );
-
-        }
+        );
 
     },
 
-    // ==================================================
+    // ==========================================
 
-    // Edit Form
+    // Edit Investment Form
 
-    // ==================================================
+    // ==========================================
 
     showEditForm(
 
@@ -956,15 +768,29 @@ ${JSON.stringify(
 
     ){
 
+        const investments =
+
+            InvestmentAPI
+
+            .getInvestments();
+
         const investment =
 
-            this.getById(id);
+            investments.find(
+
+                item =>
+
+                    item.id === id
+
+            );
 
         if(!investment){
 
             throw new Error(
 
-                "Investment not found: " + id
+                "Investment not found: " +
+
+                id
 
             );
 
@@ -977,12 +803,6 @@ ${JSON.stringify(
                 "#investment-form-container"
 
             );
-
-        if(!formContainer){
-
-            return;
-
-        }
 
         formContainer.innerHTML = `
 
@@ -1022,11 +842,31 @@ ${JSON.stringify(
 
                             required
 
-                            value="${
+                            value="${investment.name || ""}"
 
-                                investment.name || ""
+                        >
 
-                            }"
+                    </div>
+
+                    <br>
+
+                    <div>
+
+                        <label>
+
+                            Symbol
+
+                        </label>
+
+                        <br>
+
+                        <input
+
+                            id="edit-investment-symbol"
+
+                            type="text"
+
+                            value="${investment.symbol || ""}"
 
                         >
 
@@ -1076,12 +916,6 @@ ${JSON.stringify(
 
                             </option>
 
-                            <option value="Cash">
-
-                                Cash
-
-                            </option>
-
                             <option value="Other">
 
                                 Other
@@ -1089,42 +923,6 @@ ${JSON.stringify(
                             </option>
 
                         </select>
-
-                    </div>
-
-                    <br>
-
-                    <div>
-
-                        <label>
-
-                            Quantity
-
-                        </label>
-
-                        <br>
-
-                        <input
-
-                            id="edit-investment-quantity"
-
-                            type="number"
-
-                            min="0"
-
-                            step="0.0001"
-
-                            value="${
-
-                                Number(
-
-                                    investment.quantity || 0
-
-                                )
-
-                            }"
-
-                        >
 
                     </div>
 
@@ -1152,19 +950,11 @@ ${JSON.stringify(
 
                             required
 
-                            value="${
+                            value="${Number(
 
-                                Number(
+                                investment.currentValue || 0
 
-                                    investment.currentValue ||
-
-                                    investment.value ||
-
-                                    0
-
-                                )
-
-                            }"
+                            )}"
 
                         >
 
@@ -1200,15 +990,17 @@ ${JSON.stringify(
 
         `;
 
-        formContainer.querySelector(
+        const typeSelect =
 
-            "#edit-investment-type"
+            formContainer.querySelector(
 
-        ).value =
+                "#edit-investment-type"
 
-            investment.type ||
+            );
 
-            "Other";
+        typeSelect.value =
+
+            investment.type || "Other";
 
         const form =
 
@@ -1238,6 +1030,14 @@ ${JSON.stringify(
 
                         ).value.trim(),
 
+                    symbol:
+
+                        form.querySelector(
+
+                            "#edit-investment-symbol"
+
+                        ).value.trim(),
+
                     type:
 
                         form.querySelector(
@@ -1245,18 +1045,6 @@ ${JSON.stringify(
                             "#edit-investment-type"
 
                         ).value,
-
-                    quantity:
-
-                        Number(
-
-                            form.querySelector(
-
-                                "#edit-investment-quantity"
-
-                            ).value || 0
-
-                        ),
 
                     currentValue:
 
@@ -1266,37 +1054,19 @@ ${JSON.stringify(
 
                                 "#edit-investment-value"
 
-                            ).value || 0
+                            ).value
 
                         )
 
                 };
 
-                if(
+                InvestmentAPI
 
-                    typeof InvestmentAPI.update ===
+                .createInvestment(
 
-                    "function"
+                    updatedInvestment
 
-                ){
-
-                    InvestmentAPI.update(
-
-                        updatedInvestment
-
-                    );
-
-                }
-
-                else{
-
-                    throw new Error(
-
-                        "InvestmentAPI.update not found"
-
-                    );
-
-                }
+                );
 
                 this.render(
 
@@ -1318,65 +1088,25 @@ ${JSON.stringify(
 
             );
 
-        if(cancelButton){
+        cancelButton.addEventListener(
 
-            cancelButton.addEventListener(
+            "click",
 
-                "click",
+            () => {
 
-                () => {
+                formContainer.innerHTML = "";
 
-                    formContainer.innerHTML = "";
-
-                }
-
-            );
-
-        }
-
-    },
-
-    // ==================================================
-
-    // Get By ID
-
-    // ==================================================
-
-    getById(id){
-
-        if(
-
-            typeof InvestmentAPI.getById ===
-
-            "function"
-
-        ){
-
-            return InvestmentAPI.getById(id);
-
-        }
-
-        const investments =
-
-            this.getInvestments();
-
-        return investments.find(
-
-            item =>
-
-                String(item.id) ===
-
-                String(id)
+            }
 
         );
 
     },
 
-    // ==================================================
+    // ==========================================
 
-    // Delete
+    // Delete Investment
 
-    // ==================================================
+    // ==========================================
 
     deleteInvestment(
 
@@ -1388,15 +1118,29 @@ ${JSON.stringify(
 
     ){
 
+        const investments =
+
+            InvestmentAPI
+
+            .getInvestments();
+
         const investment =
 
-            this.getById(id);
+            investments.find(
+
+                item =>
+
+                    item.id === id
+
+            );
 
         if(!investment){
 
             throw new Error(
 
-                "Investment not found: " + id
+                "Investment not found: " +
+
+                id
 
             );
 
@@ -1408,13 +1152,7 @@ ${JSON.stringify(
 
                 "Delete investment: " +
 
-                (
-
-                    investment.name ||
-
-                    "this investment"
-
-                ) +
+                (investment.name || "Unnamed") +
 
                 "?"
 
@@ -1426,39 +1164,13 @@ ${JSON.stringify(
 
         }
 
-        if(
+        InvestmentAPI
 
-            typeof InvestmentAPI.remove ===
+        .deleteInvestment(
 
-            "function"
+            id
 
-        ){
-
-            InvestmentAPI.remove(id);
-
-        }
-
-        else if(
-
-            typeof InvestmentAPI.delete ===
-
-            "function"
-
-        ){
-
-            InvestmentAPI.delete(id);
-
-        }
-
-        else{
-
-            throw new Error(
-
-                "InvestmentAPI.remove/delete not found"
-
-            );
-
-        }
+        );
 
         this.render(
 
