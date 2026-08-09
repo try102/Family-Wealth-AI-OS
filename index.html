@@ -22,7 +22,7 @@ Family Wealth AI OS V7
 
 <div id="app">
 
-Loading Assets Dependencies Test...
+Loading AssetRepository Test...
 
 </div>
 
@@ -31,82 +31,6 @@ Loading Assets Dependencies Test...
 const app =
 
 document.getElementById("app");
-
-const tests = [
-
-    [
-
-        "assetAgent",
-
-        "./modules/assets/agent/assetAgent.js"
-
-    ],
-
-    [
-
-        "assetAI",
-
-        "./modules/assets/ai/assetAI.js"
-
-    ],
-
-    [
-
-        "assetAPI",
-
-        "./modules/assets/api/assetAPI.js"
-
-    ],
-
-    [
-
-        "assetAnalysisEngine",
-
-        "./modules/assets/engines/assetAnalysisEngine.js"
-
-    ],
-
-    [
-
-        "assetEventHandler",
-
-        "./modules/assets/events/assetEventHandler.js"
-
-    ],
-
-    [
-
-        "assetRepository",
-
-        "./modules/assets/repository/assetRepository.js"
-
-    ],
-
-    [
-
-        "assetSchema",
-
-        "./modules/assets/schema/assetSchema.js"
-
-    ],
-
-    [
-
-        "assetService",
-
-        "./modules/assets/services/assetService.js"
-
-    ],
-
-    [
-
-        "assetView",
-
-        "./modules/assets/ui/assetView.js"
-
-    ]
-
-];
 
 app.innerHTML = `
 
@@ -118,69 +42,117 @@ Family Wealth AI OS V7
 
 <h2>
 
-Assets Dependencies Test
+AssetRepository Test
 
 </h2>
 
 <p>
 
-Testing 9 Assets dependencies...
+Testing AssetRepository...
 
 </p>
 
 `;
 
-for(
+try {
 
-    const [name,path]
+    const module =
 
-    of tests
+        await import(
 
-){
+            "./modules/assets/repository/assetRepository.js"
 
-    try{
+        );
 
-        await import(path);
+    const AssetRepository =
 
-        app.innerHTML += `
+        module.default;
+
+    app.innerHTML = `
+
+        <h1>
+
+        AssetRepository Test
+
+        </h1>
 
         <p style="color:green">
 
-        ✅ ${name} — PASS
+        ✅ AssetRepository
+
+        Loaded Successfully
 
         </p>
 
-        `;
+        <p>
 
-    }
+        Type:
 
-    catch(error){
-
-        app.innerHTML += `
-
-        <p style="color:red">
-
-        ❌ ${name} — FAIL
+        ${typeof AssetRepository}
 
         </p>
+
+        <p>
+
+        findAll:
+
+        ${typeof AssetRepository.findAll}
+
+        </p>
+
+        <p>
+
+        findById:
+
+        ${typeof AssetRepository.findById}
+
+        </p>
+
+        <p>
+
+        save:
+
+        ${typeof AssetRepository.save}
+
+        </p>
+
+        <p>
+
+        delete:
+
+        ${typeof AssetRepository.delete}
+
+        </p>
+
+    `;
+
+}
+
+catch(error) {
+
+    app.innerHTML = `
+
+        <h1>
+
+        AssetRepository Import Error
+
+        </h1>
 
         <pre style="
 
-        white-space:pre-wrap;
+            white-space:pre-wrap;
 
-        word-break:break-word;
+            word-break:break-word;
 
-        color:red;
+            color:red;
 
         ">${error.stack ||
 
            error.message ||
 
-           error}</pre>
+           String(error)}</pre>
 
-        `;
-
-    }
+    `;
 
 }
 
