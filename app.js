@@ -4,13 +4,13 @@ Family Wealth AI OS V7
 
 Application Entry
 
-Dashboard Data Integration
+Dashboard + Quick Access
+
+Stable Integration Build
 
 */
 
-const app =
-
-    document.getElementById("app");
+const app = document.getElementById("app");
 
 // ==================================================
 
@@ -18,11 +18,7 @@ const app =
 
 // ==================================================
 
-function formatCurrency(
-
-    value
-
-){
+function formatCurrency(value){
 
     return new Intl.NumberFormat(
 
@@ -30,27 +26,17 @@ function formatCurrency(
 
         {
 
-            style:
+            style: "currency",
 
-                "currency",
+            currency: "USD",
 
-            currency:
-
-                "USD",
-
-            maximumFractionDigits:
-
-                0
+            maximumFractionDigits: 0
 
         }
 
     ).format(
 
-        Number(
-
-            value || 0
-
-        )
+        Number(value || 0)
 
     );
 
@@ -62,25 +48,71 @@ function formatCurrency(
 
 // ==================================================
 
-function formatPercent(
-
-    value
-
-){
+function formatPercent(value){
 
     return (
 
-        Number(
-
-            value || 0
-
-        ).toFixed(2)
+        Number(value || 0).toFixed(2)
 
         +
 
         "%"
 
     );
+
+}
+
+// ==================================================
+
+// Error
+
+// ==================================================
+
+function renderError(title, error){
+
+    app.innerHTML = `
+
+        <div
+
+            class="error-screen"
+
+            style="
+
+                padding:30px;
+
+                font-family:Arial,sans-serif;
+
+            "
+
+        >
+
+            <h1>
+
+                ${title}
+
+            </h1>
+
+            <pre
+
+                style="
+
+                    white-space:pre-wrap;
+
+                    word-break:break-word;
+
+                    color:red;
+
+                "
+
+            >${error?.stack ||
+
+                error?.message ||
+
+                String(error)}</pre>
+
+        </div>
+
+    `;
 
 }
 
@@ -110,65 +142,53 @@ function renderDashboard(
 
     const allocationHTML =
 
-        Object.keys(
+        Object.keys(allocation)
 
-            allocation
+        .map(category => {
 
-        )
+            const item =
 
-        .map(
+                allocation[category] || {};
 
-            category => {
+            return `
 
-                const item =
+                <div
 
-                    allocation[
+                    class="module-card"
 
-                        category
+                >
 
-                    ];
+                    <h3>
 
-                return `
+                        ${category}
 
-                    <div
+                    </h3>
 
-                        class="module-card"
+                    <p>
 
-                    >
+                        ${formatCurrency(
 
-                        <h3>
+                            item.value
 
-                            ${category}
+                        )}
 
-                        </h3>
+                    </p>
 
-                        <p>
+                    <p>
 
-                            ${formatCurrency(
+                        ${formatPercent(
 
-                                item.value
+                            item.ratio
 
-                            )}
+                        )}
 
-                        </p>
+                    </p>
 
-                        <p>
+                </div>
 
-                            ${formatPercent(
+            `;
 
-                                item.ratio
-
-                            )}
-
-                        </p>
-
-                    </div>
-
-                `;
-
-            }
-
-        )
+        })
 
         .join("");
 
@@ -268,11 +288,7 @@ function renderDashboard(
 
                 >
 
-                    <div
-
-                        class="dashboard-card"
-
-                    >
+                    <div class="dashboard-card">
 
                         <h3>
 
@@ -292,11 +308,7 @@ function renderDashboard(
 
                     </div>
 
-                    <div
-
-                        class="dashboard-card"
-
-                    >
+                    <div class="dashboard-card">
 
                         <h3>
 
@@ -316,11 +328,7 @@ function renderDashboard(
 
                     </div>
 
-                    <div
-
-                        class="dashboard-card"
-
-                    >
+                    <div class="dashboard-card">
 
                         <h3>
 
@@ -340,11 +348,7 @@ function renderDashboard(
 
                     </div>
 
-                    <div
-
-                        class="dashboard-card"
-
-                    >
+                    <div class="dashboard-card">
 
                         <h3>
 
@@ -364,11 +368,7 @@ function renderDashboard(
 
                     </div>
 
-                    <div
-
-                        class="dashboard-card"
-
-                    >
+                    <div class="dashboard-card">
 
                         <h3>
 
@@ -388,11 +388,7 @@ function renderDashboard(
 
                     </div>
 
-                    <div
-
-                        class="dashboard-card"
-
-                    >
+                    <div class="dashboard-card">
 
                         <h3>
 
@@ -412,11 +408,7 @@ function renderDashboard(
 
                     </div>
 
-                    <div
-
-                        class="dashboard-card"
-
-                    >
+                    <div class="dashboard-card">
 
                         <h3>
 
@@ -436,11 +428,7 @@ function renderDashboard(
 
                     </div>
 
-                    <div
-
-                        class="dashboard-card"
-
-                    >
+                    <div class="dashboard-card">
 
                         <h3>
 
@@ -456,11 +444,7 @@ function renderDashboard(
 
                     </div>
 
-                    <div
-
-                        class="dashboard-card"
-
-                    >
+                    <div class="dashboard-card">
 
                         <h3>
 
@@ -510,11 +494,11 @@ function renderDashboard(
 
                         `
 
-                        <p>
+                            <p>
 
-                            暂无资产配置数据
+                                暂无资产配置数据
 
-                        </p>
+                            </p>
 
                         `
 
@@ -550,35 +534,31 @@ function renderDashboard(
 
                     ${
 
-                        status.modules
+                        (status.modules || [])
 
-                        .map(
+                        .map(module => `
 
-                            module => `
+                            <div
 
-                                <div
+                                class="module-card"
 
-                                    class="module-card"
+                            >
 
-                                >
+                                <h3>
 
-                                    <h3>
+                                    ${module}
 
-                                        ${module}
+                                </h3>
 
-                                    </h3>
+                                <p>
 
-                                    <p>
+                                    ACTIVE
 
-                                        ACTIVE
+                                </p>
 
-                                    </p>
+                            </div>
 
-                                </div>
-
-                            `
-
-                        )
+                        `)
 
                         .join("")
 
@@ -614,35 +594,31 @@ function renderDashboard(
 
                     ${
 
-                        status.agents
+                        (status.agents || [])
 
-                        .map(
+                        .map(agent => `
 
-                            agent => `
+                            <div
 
-                                <div
+                                class="module-card"
 
-                                    class="module-card"
+                            >
 
-                                >
+                                <h3>
 
-                                    <h3>
+                                    🤖 ${agent}
 
-                                        🤖 ${agent}
+                                </h3>
 
-                                    </h3>
+                                <p>
 
-                                    <p>
+                                    READY
 
-                                        READY
+                                </p>
 
-                                    </p>
+                            </div>
 
-                                </div>
-
-                            `
-
-                        )
+                        `)
 
                         .join("")
 
@@ -770,11 +746,7 @@ function renderDashboard(
 
         );
 
-    if(
-
-        assetsButton
-
-    ){
+    if(assetsButton){
 
         assetsButton.addEventListener(
 
@@ -782,7 +754,7 @@ function renderDashboard(
 
             async () => {
 
-                try {
+                try{
 
                     const module =
 
@@ -848,6 +820,14 @@ function renderDashboard(
 
     // Quick Access - Investment
 
+    //
+
+    // IMPORTANT:
+
+    // Investment is located in ROOT /modules
+
+    // NOT /core/modules
+
     // ==================================================
 
     const investmentButton =
@@ -858,11 +838,7 @@ function renderDashboard(
 
         );
 
-    if(
-
-        investmentButton
-
-    ){
+    if(investmentButton){
 
         investmentButton.addEventListener(
 
@@ -870,17 +846,7 @@ function renderDashboard(
 
             async () => {
 
-                /*
-
-                Diagnostic marker.
-
-                If this appears, the button
-
-                event is working.
-
-                */
-
-                try {
+                try{
 
                     const module =
 
@@ -896,33 +862,21 @@ function renderDashboard(
 
                     if(
 
-                        !InvestmentView
+                        !InvestmentView ||
+
+                        !InvestmentView.render
 
                     ){
 
                         throw new Error(
 
-                            "InvestmentView module not found"
+                            "InvestmentView.render not found"
 
                         );
 
                     }
 
-                    if(
-
-                        typeof InvestmentView.render !==
-
-                        "function"
-
-                    ){
-
-                        throw new Error(
-
-                            "InvestmentView.render is not a function"
-
-                        );
-
-                    }
+                    app.innerHTML = "";
 
                     InvestmentView.render(
 
@@ -964,11 +918,7 @@ function renderDashboard(
 
         );
 
-    if(
-
-        incomeButton
-
-    ){
+    if(incomeButton){
 
         incomeButton.addEventListener(
 
@@ -976,7 +926,7 @@ function renderDashboard(
 
             async () => {
 
-                try {
+                try{
 
                     const module =
 
@@ -1052,11 +1002,7 @@ function renderDashboard(
 
         );
 
-    if(
-
-        liabilityButton
-
-    ){
+    if(liabilityButton){
 
         liabilityButton.addEventListener(
 
@@ -1064,7 +1010,7 @@ function renderDashboard(
 
             async () => {
 
-                try {
+                try{
 
                     const module =
 
@@ -1140,11 +1086,7 @@ function renderDashboard(
 
         );
 
-    if(
-
-        cashflowButton
-
-    ){
+    if(cashflowButton){
 
         cashflowButton.addEventListener(
 
@@ -1152,7 +1094,7 @@ function renderDashboard(
 
             async () => {
 
-                try {
+                try{
 
                     const module =
 
@@ -1228,11 +1170,7 @@ function renderDashboard(
 
         );
 
-    if(
-
-        taxButton
-
-    ){
+    if(taxButton){
 
         taxButton.addEventListener(
 
@@ -1240,7 +1178,7 @@ function renderDashboard(
 
             async () => {
 
-                try {
+                try{
 
                     const module =
 
@@ -1306,69 +1244,13 @@ function renderDashboard(
 
 // ==================================================
 
-// Error
-
-// ==================================================
-
-function renderError(
-
-    title,
-
-    error
-
-){
-
-    app.innerHTML = `
-
-        <div
-
-            class="error-screen"
-
-        >
-
-            <h1>
-
-                ${title}
-
-            </h1>
-
-            <pre
-
-                style="
-
-                    white-space:pre-wrap;
-
-                    word-break:break-word;
-
-                    color:red;
-
-                "
-
-            >
-
-${error?.stack ||
-
- error?.message ||
-
- String(error)}
-
-            </pre>
-
-        </div>
-
-    `;
-
-}
-
-// ==================================================
-
 // Application Start
 
 // ==================================================
 
 async function start(){
 
-    try {
+    try{
 
         app.innerHTML = `
 
@@ -1394,11 +1276,11 @@ async function start(){
 
         `;
 
-        // ==============================================
+        // ==========================================
 
         // System Manager
 
-        // ==============================================
+        // ==========================================
 
         const systemModule =
 
@@ -1412,11 +1294,11 @@ async function start(){
 
             systemModule.default;
 
-        // ==============================================
+        // ==========================================
 
         // Start System
 
-        // ==============================================
+        // ==========================================
 
         const startResult =
 
@@ -1426,11 +1308,11 @@ async function start(){
 
             SystemManager.status();
 
-        // ==============================================
+        // ==========================================
 
         // Assets
 
-        // ==============================================
+        // ==========================================
 
         const assetsModule =
 
@@ -1448,11 +1330,11 @@ async function start(){
 
             AssetsModule.api.getAll();
 
-        // ==============================================
+        // ==========================================
 
         // Liabilities
 
-        // ==============================================
+        // ==========================================
 
         const liabilityModule =
 
@@ -1472,11 +1354,11 @@ async function start(){
 
             .getLiabilities();
 
-        // ==============================================
+        // ==========================================
 
         // Cashflow
 
-        // ==============================================
+        // ==========================================
 
         const cashflowModule =
 
@@ -1496,11 +1378,11 @@ async function start(){
 
             .getSummary();
 
-        // ==============================================
+        // ==========================================
 
         // Normalize Cash Flow
 
-        // ==============================================
+        // ==========================================
 
         const cashFlowData = {
 
@@ -1508,9 +1390,7 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.income ||
-
-                    0
+                    cashFlowSummary.income || 0
 
                 ),
 
@@ -1518,9 +1398,7 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.expense ||
-
-                    0
+                    cashFlowSummary.expense || 0
 
                 ),
 
@@ -1528,9 +1406,7 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.net ||
-
-                    0
+                    cashFlowSummary.net || 0
 
                 ),
 
@@ -1538,19 +1414,17 @@ async function start(){
 
                 Number(
 
-                    cashFlowSummary.net ||
-
-                    0
+                    cashFlowSummary.net || 0
 
                 )
 
         };
 
-        // ==============================================
+        // ==========================================
 
         // Wealth Engine
 
-        // ==============================================
+        // ==========================================
 
         const wealthModule =
 
@@ -1564,11 +1438,11 @@ async function start(){
 
             wealthModule.default;
 
-        // ==============================================
+        // ==========================================
 
         // Analyze Wealth
 
-        // ==============================================
+        // ==========================================
 
         const wealthResult =
 
@@ -1584,11 +1458,11 @@ async function start(){
 
             );
 
-        // ==============================================
+        // ==========================================
 
         // Final Result
 
-        // ==============================================
+        // ==========================================
 
         const result = {
 
@@ -1604,11 +1478,11 @@ async function start(){
 
         };
 
-        // ==============================================
+        // ==========================================
 
         // Render Dashboard
 
-        // ==============================================
+        // ==========================================
 
         renderDashboard(
 
