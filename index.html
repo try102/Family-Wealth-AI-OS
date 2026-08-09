@@ -22,7 +22,7 @@ Family Wealth AI OS V7
 
 <div id="app">
 
-Loading DataService Test...
+Loading Helpers Test...
 
 </div>
 
@@ -42,13 +42,13 @@ Family Wealth AI OS V7
 
 <h2>
 
-DataService Test
+Helpers Test
 
 </h2>
 
 <p>
 
-Testing DataService...
+Testing Helpers...
 
 </p>
 
@@ -60,11 +60,11 @@ try {
 
         await import(
 
-            "./core/database/dataService.js"
+            "./core/utils/helpers.js"
 
         );
 
-    const DataService =
+    const Helpers =
 
         module.default;
 
@@ -72,13 +72,13 @@ try {
 
         <h1>
 
-        DataService Test
+        Helpers Test
 
         </h1>
 
         <p style="color:green">
 
-        ✅ DataService
+        ✅ Helpers
 
         Loaded Successfully
 
@@ -88,39 +88,47 @@ try {
 
         Type:
 
-        ${typeof DataService}
+        ${typeof Helpers}
 
         </p>
 
         <p>
 
-        save:
+        generateId:
 
-        ${typeof DataService.save}
-
-        </p>
-
-        <p>
-
-        load:
-
-        ${typeof DataService.load}
+        ${typeof Helpers.generateId}
 
         </p>
 
         <p>
 
-        remove:
+        formatCurrency:
 
-        ${typeof DataService.remove}
+        ${typeof Helpers.formatCurrency}
 
         </p>
 
         <p>
 
-        clear:
+        formatPercent:
 
-        ${typeof DataService.clear}
+        ${typeof Helpers.formatPercent}
+
+        </p>
+
+        <p>
+
+        now:
+
+        ${typeof Helpers.now}
+
+        </p>
+
+        <p>
+
+        isNumber:
+
+        ${typeof Helpers.isNumber}
 
         </p>
 
@@ -134,7 +142,7 @@ catch(error) {
 
         <h1>
 
-        DataService Import Error
+        Helpers Import Error
 
         </h1>
 
