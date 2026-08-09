@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+
+    name="viewport"
+
+    content="width=device-width, initial-scale=1.0"
+
+>
+
+<title>
+
+Income Agent Test
+
+</title>
+
+</head>
+
+<body>
+
+<h1>
+
+🏠 Family Wealth AI OS V7
+
+</h1>
+
+<h2>
+
+Income Agent Test
+
+</h2>
+
+<div id="result">
+
+Testing...
+
+</div>
+
+<script type="module">
+
+import IncomeAgent
+
+    from "./incomeAgent.js";
+
+const result =
+
+    document.getElementById(
+
+        "result"
+
+    );
+
+function assert(
+
+    condition,
+
+    message
+
+){
+
+    if(!condition){
+
+        throw new Error(
+
+            message
+
+        );
+
+    }
+
+}
+
+try {
+
+    // Initialize
+
+    const init =
+
+        IncomeAgent.init();
+
+    assert(
+
+        init.status ===
+
+        "Income Agent Ready",
+
+        "Initialize failed"
+
+    );
+
+    // Read
+
+    const before =
+
+        IncomeAgent.getIncome();
+
+    assert(
+
+        Array.isArray(before),
+
+        "Get income failed"
+
+    );
+
+    // Create
+
+    const created =
+
+        IncomeAgent.addIncome({
+
+            source:
+
+                "V7 Agent Test",
+
+            name:
+
+                "V7 Agent Test",
+
+            amount:
+
+                1000,
+
+            value:
+
+                1000,
+
+            type:
+
+                "Other"
+
+        });
+
+    assert(
+
+        created &&
+
+        created.id,
+
+        "Create income failed"
+
+    );
+
+    // Read created
+
+    const afterCreate =
+
+        IncomeAgent.getIncome();
+
+    assert(
+
+        afterCreate.some(
+
+            item =>
+
+                item.id ===
+
+                created.id
+
+        ),
+
+        "Read created income failed"
+
+    );
+
+    // Update
+
+    const updated =
+
+        IncomeAgent.updateIncome(
+
+            created.id,
+
+            {
+
+                source:
+
+                    "V7 Agent Test Updated",
+
+                name:
+
+                    "V7 Agent Test Updated",
+
+                amount:
+
+                    2500,
+
+                value:
+
+                    2500,
+
+                type:
+
+                    "Business"
+
+            }
+
+        );
+
+    assert(
+
+        updated,
+
+        "Update failed"
+
+    );
+
+    // Verify update
+
+    const afterUpdate =
+
+        IncomeAgent.getIncome();
+
+    const updatedIncome =
+
+        afterUpdate.find(
+
+            item =>
+
+                item.id ===
+
+                created.id
+
+        );
+
+    assert(
+
+        Number(
+
+            updatedIncome.amount ??
+
+            updatedIncome.value ??
+
+            0
+
+        ) === 2500,
+
+        "Update amount failed"
+
+    );
+
+    // Summary
+
+    const summary =
+
+        IncomeAgent.getIncomeSummary();
+
+    assert(
+
+        summary !== undefined &&
+
+        summary !== null,
+
+        "Summary failed"
+
+    );
+
+    // Analysis
+
+    const analysis =
+
+        IncomeAgent.analyze();
+
+    assert(
+
+        analysis.type ===
+
+        "INCOME_ANALYSIS",
+
+        "Analysis failed"
+
+    );
+
+    // Delete
+
+    IncomeAgent.deleteIncome(
+
+        created.id
+
+    );
+
+    // Verify delete
+
+    const afterDelete =
+
+        IncomeAgent.getIncome();
+
+    assert(
+
+        !afterDelete.some(
+
+            item =>
+
+                item.id ===
+
+                created.id
+
+        ),
+
+        "Delete failed"
+
+    );
+
+    result.innerHTML = `
+
+        <h2 style="color:green;">
+
+            🎉 INCOME AGENT TEST PASSED
+
+        </h2>
+
+        <p>Initialize: ✅ PASS</p>
+
+        <p>Create: ✅ PASS</p>
+
+        <p>Read: ✅ PASS</p>
+
+        <p>Update: ✅ PASS</p>
+
+        <p>Summary: ✅ PASS</p>
+
+        <p>Analysis: ✅ PASS</p>
+
+        <p>Delete: ✅ PASS</p>
+
+    `;
+
+}
+
+catch(error){
+
+    result.innerHTML = `
+
+        <h2 style="color:red;">
+
+            ❌ INCOME AGENT TEST FAILED
+
+        </h2>
+
+        <pre>
+
+${
+
+    error.stack ||
+
+    error.message ||
+
+    String(error)
+
+}
+
+        </pre>
+
+    `;
+
+}
+
+</script>
+
+</body>
+
+</html>
