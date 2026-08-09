@@ -1,61 +1,53 @@
 /*
 
-Family Wealth AI OS V7
+Family Wealth AI OS
 
-System Bootstrap Import Test
+V7 System Entry
 
 */
 
-const app = document.getElementById("app");
+import SystemManager from "./core/system/systemManager.js";
 
-app.innerHTML = `
+import Advisor from "./ai/advisor.js";
 
-    <h1>Family Wealth AI OS V7</h1>
+// =====================
 
-    <p>Testing SystemBootstrap...</p>
+// Start OS
 
-`;
+// =====================
 
-import("./core/bootstrap/systemBootstrap.js")
+const system =
 
-    .then(({ default: SystemBootstrap }) => {
+SystemManager.start();
 
-        app.innerHTML = `
+console.log(
 
-            <h1>SystemBootstrap Test</h1>
+    "Family Wealth AI OS",
 
-            <p>
+    system
 
-                SystemBootstrap Loaded Successfully
+);
 
-            </p>
+// =====================
 
-            <p>
+// Export Global Access
 
-                Initialize:
+// =====================
 
-                ${typeof SystemBootstrap.initialize}
+window.WealthOS = {
 
-            </p>
+    system:
 
-        `;
+    SystemManager,
 
-    })
+    advisor:
 
-    .catch(error => {
+    Advisor
 
-        app.innerHTML = `
+};
 
-            <h1>SystemBootstrap Import Error</h1>
+console.log(
 
-            <pre style="
+    "Wealth OS Ready"
 
-                white-space:pre-wrap;
-
-                word-break:break-word;
-
-            ">${error.stack || error.message}</pre>
-
-        `;
-
-    });
+);
