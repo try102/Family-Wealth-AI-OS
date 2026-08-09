@@ -1,53 +1,169 @@
 /*
 
-Family Wealth AI OS
+Family Wealth AI OS V7
 
-V7 System Entry
+Startup Diagnostic
 
 */
 
-import SystemManager from "./core/system/systemManager.js";
+const app = document.getElementById("app");
 
-import Advisor from "./ai/advisor.js";
+app.innerHTML = `
 
-// =====================
+    <h1>Family Wealth AI OS V7</h1>
 
-// Start OS
+    <p>Starting...</p>
 
-// =====================
+`;
 
-const system =
+window.addEventListener(
 
-SystemManager.start();
+    "error",
 
-console.log(
+    (event) => {
 
-    "Family Wealth AI OS",
+        app.innerHTML = `
 
-    system
+            <h1>Startup Error</h1>
+
+            <pre style="
+
+                white-space:pre-wrap;
+
+                word-break:break-word;
+
+            ">${event.error?.stack || event.message}</pre>
+
+        `;
+
+    }
+
+);
+
+window.addEventListener(
+
+    "unhandledrejection",
+
+    (event) => {
+
+        const error =
+
+            event.reason;
+
+        app.innerHTML = `
+
+            <h1>Startup Error</h1>
+
+            <pre style="
+
+                white-space:pre-wrap;
+
+                word-break:break-word;
+
+            ">${error?.stack || error?.message || error}</pre>
+
+        `;
+
+    }
 
 );
 
-// =====================
+import("./core/system/systemManager.js")
 
-// Export Global Access
+    .then(
 
-// =====================
+        ({ default: SystemManager }) => {
 
-window.WealthOS = {
+            app.innerHTML = `
 
-    system:
+                <h1>SystemManager Loaded</h1>
 
-    SystemManager,
+                <p>
 
-    advisor:
+                    Testing SystemManager.start()
 
-    Advisor
+                </p>
 
-};
+            `;
 
-console.log(
+            try {
 
-    "Wealth OS Ready"
+                const result =
 
-);
+                    SystemManager.start();
+
+                app.innerHTML = `
+
+                    <h1>
+
+                        Family Wealth AI OS V7
+
+                    </h1>
+
+                    <p>
+
+                        SystemManager Started
+
+                    </p>
+
+                    <pre>${JSON.stringify(
+
+                        result,
+
+                        null,
+
+                        2
+
+                    )}</pre>
+
+                `;
+
+            }
+
+            catch(error){
+
+                app.innerHTML = `
+
+                    <h1>
+
+                        SystemManager Start Error
+
+                    </h1>
+
+                    <pre style="
+
+                        white-space:pre-wrap;
+
+                        word-break:break-word;
+
+                    ">${error.stack || error.message}</pre>
+
+                `;
+
+            }
+
+        }
+
+    )
+
+    .catch(error => {
+
+        app.innerHTML = `
+
+            <h1>
+
+                SystemManager Import Error
+
+            </h1>
+
+            <pre style="
+
+                white-space:pre-wrap;
+
+                word-break:break-word;
+
+            ">${error.stack || error.message}</pre>
+
+        `;
+
+    });
