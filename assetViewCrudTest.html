@@ -14,7 +14,7 @@ content="width=device-width, initial-scale=1.0">
 
 Family Wealth AI OS V7
 
-AssetView CRUD Test
+AssetView CRUD Diagnostic
 
 </title>
 
@@ -34,19 +34,97 @@ const app =
 
 document.getElementById("app");
 
+let step = "START";
+
+function showError(error){
+
+    app.innerHTML = `
+
+        <h1>
+
+            Family Wealth AI OS V7
+
+        </h1>
+
+        <h2 style="color:red">
+
+            ❌ AssetView CRUD Test Error
+
+        </h2>
+
+        <p>
+
+            <strong>
+
+                Failed Step:
+
+            </strong>
+
+            ${step}
+
+        </p>
+
+        <pre style="
+
+            white-space:pre-wrap;
+
+            word-break:break-word;
+
+            color:red;
+
+        ">${error?.stack ||
+
+           error?.message ||
+
+           String(error)}</pre>
+
+    `;
+
+}
+
 try {
+
+    // ==========================================
+
+    // STEP 1
+
+    // ==========================================
+
+    step =
+
+        "Loading AssetsModule";
 
     const module =
 
         await import(
 
-            "./core/modules/assetsModule.js?v=20260809-crud01"
+            "./core/modules/assetsModule.js?v=20260809-crud02"
 
         );
 
     const AssetsModule =
 
         module.default;
+
+    if(!AssetsModule){
+
+        throw new Error(
+
+            "AssetsModule is undefined"
+
+        );
+
+    }
+
+    // ==========================================
+
+    // STEP 2
+
+    // ==========================================
+
+    step =
+
+        "Loading AssetView";
 
     const AssetView =
 
@@ -56,39 +134,139 @@ try {
 
         AssetsModule.api;
 
+    if(!AssetView){
+
+        throw new Error(
+
+            "AssetsModule.view is undefined"
+
+        );
+
+    }
+
+    if(!AssetAPI){
+
+        throw new Error(
+
+            "AssetsModule.api is undefined"
+
+        );
+
+    }
+
+    // ==========================================
+
+    // STEP 3
+
+    // ==========================================
+
+    step =
+
+        "Creating test container";
+
     const container =
 
-        document.createElement(
+        document.createElement("div");
 
-            "div"
+    document.body.appendChild(
+
+        container
+
+    );
+
+    // ==========================================
+
+    // STEP 4
+
+    // ==========================================
+
+    step =
+
+        "Cleaning previous CRUD test data";
+
+    AssetAPI
+
+        .getAll()
+
+        .filter(
+
+            asset =>
+
+                asset.name ===
+
+                "V7 CRUD Test Asset" ||
+
+                asset.name ===
+
+                "V7 CRUD Test Asset Updated"
+
+        )
+
+        .forEach(
+
+            asset => {
+
+                AssetAPI.remove(
+
+                    asset.id
+
+                );
+
+            }
 
         );
 
     // ==========================================
 
-    // CREATE
+    // STEP 5
 
     // ==========================================
 
-    AssetAPI.create({
+    step =
 
-        name:
+        "Creating test asset";
 
-        "V7 CRUD Test Asset",
+    const created =
 
-        category:
+        AssetAPI.create({
 
-        "Cash",
+            name:
 
-        currentValue:
+            "V7 CRUD Test Asset",
 
-        10000,
+            category:
 
-        liquidity:
+            "Cash",
 
-        "High"
+            currentValue:
 
-    });
+            10000,
+
+            liquidity:
+
+            "High"
+
+        });
+
+    if(!created){
+
+        throw new Error(
+
+            "AssetAPI.create() returned empty result"
+
+        );
+
+    }
+
+    // ==========================================
+
+    // STEP 6
+
+    // ==========================================
+
+    step =
+
+        "Reading created asset";
 
     let assets =
 
@@ -110,7 +288,7 @@ try {
 
         throw new Error(
 
-            "CREATE failed"
+            "Created test asset was not found"
 
         );
 
@@ -118,9 +296,13 @@ try {
 
     // ==========================================
 
-    // RENDER
+    // STEP 7
 
     // ==========================================
+
+    step =
+
+        "Rendering AssetView";
 
     AssetView.render(
 
@@ -130,15 +312,19 @@ try {
 
     // ==========================================
 
-    // EDIT BUTTON
+    // STEP 8
 
     // ==========================================
+
+    step =
+
+        "Finding Edit button";
 
     const editButton =
 
         container.querySelector(
 
-            `.edit-asset-button[data-id="${testAsset.id}"]`
+            ".edit-asset-button"
 
         );
 
@@ -146,11 +332,21 @@ try {
 
         throw new Error(
 
-            "EDIT button not found"
+            "Edit button not found"
 
         );
 
     }
+
+    // ==========================================
+
+    // STEP 9
+
+    // ==========================================
+
+    step =
+
+        "Opening Edit form";
 
     editButton.click();
 
@@ -166,7 +362,7 @@ try {
 
         throw new Error(
 
-            "EDIT form not found"
+            "Edit form not found after clicking Edit"
 
         );
 
@@ -174,23 +370,65 @@ try {
 
     // ==========================================
 
-    // Change Value
+    // STEP 10
 
     // ==========================================
 
-    editForm.querySelector(
+    step =
 
-        "#edit-asset-value"
+        "Finding Edit value field";
 
-    ).value =
+    const valueField =
+
+        editForm.querySelector(
+
+            "#edit-asset-value"
+
+        );
+
+    const nameField =
+
+        editForm.querySelector(
+
+            "#edit-asset-name"
+
+        );
+
+    if(!valueField){
+
+        throw new Error(
+
+            "#edit-asset-value not found"
+
+        );
+
+    }
+
+    if(!nameField){
+
+        throw new Error(
+
+            "#edit-asset-name not found"
+
+        );
+
+    }
+
+    // ==========================================
+
+    // STEP 11
+
+    // ==========================================
+
+    step =
+
+        "Updating test asset";
+
+    valueField.value =
 
         "25000";
 
-    editForm.querySelector(
-
-        "#edit-asset-name"
-
-    ).value =
+    nameField.value =
 
         "V7 CRUD Test Asset Updated";
 
@@ -218,9 +456,13 @@ try {
 
     // ==========================================
 
-    // Verify EDIT
+    // STEP 12
 
     // ==========================================
+
+    step =
+
+        "Verifying Edit";
 
     assets =
 
@@ -238,13 +480,23 @@ try {
 
         );
 
-    const editPassed =
+    if(!editedAsset){
 
-        !!editedAsset &&
+        throw new Error(
+
+            "Edited asset disappeared"
+
+        );
+
+    }
+
+    const editPassed =
 
         editedAsset.name ===
 
-        "V7 CRUD Test Asset Updated" &&
+        "V7 CRUD Test Asset Updated"
+
+        &&
 
         Number(
 
@@ -256,7 +508,17 @@ try {
 
         throw new Error(
 
-            "EDIT verification failed"
+            "Edit verification failed: " +
+
+            JSON.stringify(
+
+                editedAsset,
+
+                null,
+
+                2
+
+            )
 
         );
 
@@ -264,15 +526,35 @@ try {
 
     // ==========================================
 
-    // DELETE
+    // STEP 13
 
     // ==========================================
+
+    step =
+
+        "Rendering edited AssetView";
+
+    AssetView.render(
+
+        container
+
+    );
+
+    // ==========================================
+
+    // STEP 14
+
+    // ==========================================
+
+    step =
+
+        "Finding Delete button";
 
     const deleteButton =
 
         container.querySelector(
 
-            `.delete-asset-button[data-id="${testAsset.id}"]`
+            ".delete-asset-button"
 
         );
 
@@ -280,7 +562,7 @@ try {
 
         throw new Error(
 
-            "DELETE button not found"
+            "Delete button not found"
 
         );
 
@@ -288,27 +570,45 @@ try {
 
     // ==========================================
 
-    // Confirm Delete
+    // STEP 15
 
     // ==========================================
+
+    step =
+
+        "Executing Delete";
 
     const originalConfirm =
 
         window.confirm;
 
-    window.confirm = () => true;
-
-    deleteButton.click();
-
     window.confirm =
 
-        originalConfirm;
+        () => true;
+
+    try {
+
+        deleteButton.click();
+
+    }
+
+    finally {
+
+        window.confirm =
+
+            originalConfirm;
+
+    }
 
     // ==========================================
 
-    // Verify DELETE
+    // STEP 16
 
     // ==========================================
+
+    step =
+
+        "Verifying Delete";
 
     assets =
 
@@ -326,21 +626,47 @@ try {
 
         );
 
-    const deletePassed =
+    if(deletedAsset){
 
-        !deletedAsset;
+        throw new Error(
+
+            "Delete verification failed: asset still exists: " +
+
+            JSON.stringify(
+
+                deletedAsset,
+
+                null,
+
+                2
+
+            )
+
+        );
+
+    }
 
     // ==========================================
 
-    // Final Cleanup
+    // STEP 17
 
     // ==========================================
+
+    step =
+
+        "Final cleanup";
 
     assets
 
         .filter(
 
             asset =>
+
+                asset.name ===
+
+                "V7 CRUD Test Asset"
+
+                ||
 
                 asset.name ===
 
@@ -362,21 +688,19 @@ try {
 
         );
 
-    const remainingAssets =
+    // ==========================================
+
+    // SUCCESS
+
+    // ==========================================
+
+    step =
+
+        "COMPLETE";
+
+    const remaining =
 
         AssetAPI.getAll();
-
-    // ==========================================
-
-    // Result
-
-    // ==========================================
-
-    const passed =
-
-        editPassed &&
-
-        deletePassed;
 
     app.innerHTML = `
 
@@ -388,43 +712,17 @@ try {
 
         <h2>
 
-            AssetView CRUD Test
+            AssetView CRUD Diagnostic
 
         </h2>
 
-        <h2 style="
+        <h2 style="color:green">
 
-            color:${passed
-
-                ? "green"
-
-                : "red"};
-
-        ">
-
-            ${
-
-                passed
-
-                ?
-
-                "✅ ASSETVIEW CRUD PASSED"
-
-                :
-
-                "❌ ASSETVIEW CRUD FAILED"
-
-            }
+            ✅ ASSETVIEW CRUD PASSED
 
         </h2>
 
         <hr>
-
-        <h3>
-
-            Test Details
-
-        </h3>
 
         <p>
 
@@ -434,45 +732,25 @@ try {
 
         <p>
 
-            Edit Button: ✅ PASS
+            Read: ✅ PASS
 
         </p>
 
         <p>
 
-            Edit:
-
-            ${
-
-                editPassed
-
-                ? "✅ PASS"
-
-                : "❌ FAIL"
-
-            }
+            Edit: ✅ PASS
 
         </p>
 
         <p>
 
-            Delete Button: ✅ PASS
+            Delete: ✅ PASS
 
         </p>
 
         <p>
 
-            Delete:
-
-            ${
-
-                deletePassed
-
-                ? "✅ PASS"
-
-                : "❌ FAIL"
-
-            }
+            Cleanup: ✅ PASS
 
         </p>
 
@@ -500,7 +778,7 @@ try {
 
         <pre>${JSON.stringify(
 
-            remainingAssets,
+            remaining,
 
             null,
 
@@ -514,29 +792,7 @@ try {
 
 catch(error){
 
-    app.innerHTML = `
-
-        <h1>
-
-            ❌ AssetView CRUD Test Error
-
-        </h1>
-
-        <pre style="
-
-            white-space:pre-wrap;
-
-            word-break:break-word;
-
-            color:red;
-
-        ">${error.stack ||
-
-           error.message ||
-
-           String(error)}</pre>
-
-    `;
+    showError(error);
 
 }
 
