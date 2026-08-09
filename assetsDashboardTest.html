@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+
+content="width=device-width, initial-scale=1.0">
+
+<title>
+
+Family Wealth AI OS V7
+
+Assets Dashboard Test
+
+</title>
+
+</head>
+
+<body>
+
+<div id="app">
+
+Loading Assets Dashboard Test...
+
+</div>
+
+<script type="module">
+
+const app =
+
+document.getElementById("app");
+
+function money(value){
+
+    return new Intl.NumberFormat(
+
+        "en-US",
+
+        {
+
+            style:
+
+            "currency",
+
+            currency:
+
+            "USD",
+
+            maximumFractionDigits:
+
+            0
+
+        }
+
+    ).format(
+
+        Number(value || 0)
+
+    );
+
+}
+
+try {
+
+    // ==========================================
+
+    // Load Assets Module
+
+    // ==========================================
+
+    const module =
+
+        await import(
+
+            "./core/modules/assetsModule.js"
+
+        );
+
+    const AssetsModule =
+
+        module.default;
+
+    // ==========================================
+
+    // Before
+
+    // ==========================================
+
+    const beforeAssets =
+
+        AssetsModule.api.getAll();
+
+    const beforeTotal =
+
+        AssetsModule.api.getTotalValue();
+
+    // ==========================================
+
+    // Create Test Asset
+
+    // ==========================================
+
+    const testAsset = {
+
+        name:
+
+        "V7 Dashboard Test Cash",
+
+        category:
+
+        "Cash",
+
+        currentValue:
+
+        10000,
+
+        liquidity:
+
+        "High"
+
+    };
+
+    const created =
+
+        AssetsModule.api.create(
+
+            testAsset
+
+        );
+
+    // ==========================================
+
+    // After
+
+    // ==========================================
+
+    const afterAssets =
+
+        AssetsModule.api.getAll();
+
+    const afterTotal =
+
+        AssetsModule.api.getTotalValue();
+
+    // ==========================================
+
+    // Load Wealth Engine
+
+    // ==========================================
+
+    const wealthModule =
+
+        await import(
+
+            "./core/engines/wealth/wealthEngine.js"
+
+        );
+
+    const WealthEngine =
+
+        wealthModule.default;
+
+    const wealthResult =
+
+        WealthEngine.analyze(
+
+            afterAssets,
+
+            [],
+
+            {
+
+                income:
+
+                0,
+
+                expense:
+
+                0,
+
+                net:
+
+                0,
+
+                netCashFlow:
+
+                0
+
+            },
+
+            0
+
+        );
+
+    // ==========================================
+
+    // Test
+
+    // ==========================================
+
+    const createPassed =
+
+        !!created;
+
+    const countPassed =
+
+        afterAssets.length ===
+
+        beforeAssets.length + 1;
+
+    const valuePassed =
+
+        afterTotal >=
+
+        beforeTotal + 10000;
+
+    const wealthPassed =
+
+        wealthResult.totalAssets >=
+
+        beforeTotal + 10000;
+
+    const passed =
+
+        createPassed &&
+
+        countPassed &&
+
+        valuePassed &&
+
+        wealthPassed;
+
+    // ==========================================
+
+    // Output
+
+    // ==========================================
+
+    app.innerHTML = `
+
+        <h1>
+
+            Family Wealth AI OS V7
+
+        </h1>
+
+        <h2>
+
+            Assets → Dashboard
+
+            End-to-End Test
+
+        </h2>
+
+        <h3 style="
+
+            color:${passed
+
+                ? "green"
+
+                : "red"};
+
+        ">
+
+            ${
+
+                passed
+
+                ?
+
+                "✅ ASSET BUSINESS FLOW PASSED"
+
+                :
+
+                "❌ ASSET BUSINESS FLOW FAILED"
+
+            }
+
+        </h3>
+
+        <hr>
+
+        <h3>
+
+            Before
+
+        </h3>
+
+        <p>
+
+            Asset Count:
+
+            ${beforeAssets.length}
+
+        </p>
+
+        <p>
+
+            Total Assets:
+
+            ${money(beforeTotal)}
+
+        </p>
+
+        <h3>
+
+            Created Asset
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            created,
+
+            null,
+
+            2
+
+        )}</pre>
+
+        <h3>
+
+            After
+
+        </h3>
+
+        <p>
+
+            Asset Count:
+
+            ${afterAssets.length}
+
+        </p>
+
+        <p>
+
+            Total Assets:
+
+            ${money(afterTotal)}
+
+        </p>
+
+        <h3>
+
+            WealthEngine Result
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            wealthResult,
+
+            null,
+
+            2
+
+        )}</pre>
+
+        <h3>
+
+            Test Details
+
+        </h3>
+
+        <p>
+
+            Create:
+
+            ${
+
+                createPassed
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+        <p>
+
+            Asset Count:
+
+            ${
+
+                countPassed
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+        <p>
+
+            Asset Value:
+
+            ${
+
+                valuePassed
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+        <p>
+
+            WealthEngine:
+
+            ${
+
+                wealthPassed
+
+                ? "✅ PASS"
+
+                : "❌ FAIL"
+
+            }
+
+        </p>
+
+    `;
+
+}
+
+catch(error){
+
+    app.innerHTML = `
+
+        <h1>
+
+            Assets Dashboard Test Error
+
+        </h1>
+
+        <pre style="
+
+            white-space:pre-wrap;
+
+            word-break:break-word;
+
+            color:red;
+
+        ">${error.stack ||
+
+           error.message ||
+
+           String(error)}</pre>
+
+    `;
+
+}
+
+</script>
+
+</body>
+
+</html>
