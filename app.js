@@ -4,7 +4,7 @@ Family Wealth AI OS V7
 
 Application Entry
 
-Dashboard Data Integration
+Dashboard + Module Navigation
 
 */
 
@@ -81,6 +81,96 @@ function formatPercent(
         "%"
 
     );
+
+}
+
+// ==================================================
+
+// Error
+
+// ==================================================
+
+function renderError(
+
+    title,
+
+    error
+
+){
+
+    app.innerHTML = `
+
+        <div
+
+            class="error-screen"
+
+        >
+
+            <h1>
+
+                ${title}
+
+            </h1>
+
+            <pre
+
+                style="
+
+                    white-space:pre-wrap;
+
+                    word-break:break-word;
+
+                    color:red;
+
+                "
+
+            >${error?.stack ||
+
+               error?.message ||
+
+               String(error)}</pre>
+
+            <br>
+
+            <button
+
+                id="error-home-button"
+
+                type="button"
+
+            >
+
+                🏠 Back to Dashboard
+
+            </button>
+
+        </div>
+
+    `;
+
+    const button =
+
+        document.getElementById(
+
+            "error-home-button"
+
+        );
+
+    if(button){
+
+        button.addEventListener(
+
+            "click",
+
+            () => {
+
+                start();
+
+            }
+
+        );
+
+    }
 
 }
 
@@ -172,7 +262,11 @@ function renderDashboard(
 
         <div class="app-shell">
 
+            <!-- ================================= -->
+
             <!-- Header -->
+
+            <!-- ================================= -->
 
             <header
 
@@ -194,7 +288,11 @@ function renderDashboard(
 
             </header>
 
-            <!-- System -->
+            <!-- ================================= -->
+
+            <!-- System Status -->
+
+            <!-- ================================= -->
 
             <section
 
@@ -232,7 +330,11 @@ function renderDashboard(
 
             </section>
 
+            <!-- ================================= -->
+
             <!-- Dashboard -->
+
+            <!-- ================================= -->
 
             <section
 
@@ -520,7 +622,11 @@ function renderDashboard(
 
             </section>
 
+            <!-- ================================= -->
+
             <!-- Asset Allocation -->
+
+            <!-- ================================= -->
 
             <section
 
@@ -560,7 +666,11 @@ function renderDashboard(
 
             </section>
 
+            <!-- ================================= -->
+
             <!-- Wealth Modules -->
+
+            <!-- ================================= -->
 
             <section
 
@@ -620,7 +730,11 @@ function renderDashboard(
 
             </section>
 
+            <!-- ================================= -->
+
             <!-- AI Agents -->
+
+            <!-- ================================= -->
 
             <section
 
@@ -680,7 +794,11 @@ function renderDashboard(
 
             </section>
 
+            <!-- ================================= -->
+
             <!-- Quick Access -->
+
+            <!-- ================================= -->
 
             <section
 
@@ -714,6 +832,8 @@ function renderDashboard(
 
                     <button
 
+                        id="quick-investment-button"
+
                         type="button"
 
                     >
@@ -723,6 +843,8 @@ function renderDashboard(
                     </button>
 
                     <button
+
+                        id="quick-income-button"
 
                         type="button"
 
@@ -734,6 +856,8 @@ function renderDashboard(
 
                     <button
 
+                        id="quick-liability-button"
+
                         type="button"
 
                     >
@@ -744,6 +868,8 @@ function renderDashboard(
 
                     <button
 
+                        id="quick-cashflow-button"
+
                         type="button"
 
                     >
@@ -753,6 +879,8 @@ function renderDashboard(
                     </button>
 
                     <button
+
+                        id="quick-tax-button"
 
                         type="button"
 
@@ -852,61 +980,51 @@ function renderDashboard(
 
     }
 
-}
+    // ==================================================
 
-// ==================================================
+    // Future Module Navigation
 
-// Error
+    // ==================================================
 
-// ==================================================
+    // Investment
 
-function renderError(
+    //
 
-    title,
+    // 暂时保持按钮，不提前连接。
 
-    error
+    //
 
-){
+    // Income
 
-    app.innerHTML = `
+    //
 
-        <div
+    // 暂时保持按钮，不提前连接。
 
-            class="error-screen"
+    //
 
-        >
+    // Liability
 
-            <h1>
+    //
 
-                ${title}
+    // 暂时保持按钮，不提前连接。
 
-            </h1>
+    //
 
-            <pre
+    // Cashflow
 
-                style="
+    //
 
-                    white-space:pre-wrap;
+    // 暂时保持按钮，不提前连接。
 
-                    word-break:break-word;
+    //
 
-                    color:red;
+    // Tax
 
-                "
+    //
 
-            >
+    // 暂时保持按钮，不提前连接。
 
-${error?.stack ||
-
- error?.message ||
-
- String(error)}
-
-            </pre>
-
-        </div>
-
-    `;
+    //
 
 }
 
@@ -944,11 +1062,11 @@ async function start(){
 
         `;
 
-        // ------------------------------------------
+        // ==========================================
 
         // System Manager
 
-        // ------------------------------------------
+        // ==========================================
 
         const systemModule =
 
@@ -962,11 +1080,11 @@ async function start(){
 
             systemModule.default;
 
-        // ------------------------------------------
+        // ==========================================
 
         // Start System
 
-        // ------------------------------------------
+        // ==========================================
 
         const startResult =
 
@@ -976,11 +1094,11 @@ async function start(){
 
             SystemManager.status();
 
-        // ------------------------------------------
+        // ==========================================
 
         // Assets
 
-        // ------------------------------------------
+        // ==========================================
 
         const assetsModule =
 
@@ -998,11 +1116,11 @@ async function start(){
 
             AssetsModule.api.getAll();
 
-        // ------------------------------------------
+        // ==========================================
 
         // Liabilities
 
-        // ------------------------------------------
+        // ==========================================
 
         const liabilityModule =
 
@@ -1022,11 +1140,11 @@ async function start(){
 
             .getLiabilities();
 
-        // ------------------------------------------
+        // ==========================================
 
         // Cashflow
 
-        // ------------------------------------------
+        // ==========================================
 
         const cashflowModule =
 
@@ -1046,11 +1164,11 @@ async function start(){
 
             .getSummary();
 
-        // ------------------------------------------
+        // ==========================================
 
         // Normalize Cash Flow
 
-        // ------------------------------------------
+        // ==========================================
 
         const cashFlowData = {
 
@@ -1096,11 +1214,11 @@ async function start(){
 
         };
 
-        // ------------------------------------------
+        // ==========================================
 
         // Wealth Engine
 
-        // ------------------------------------------
+        // ==========================================
 
         const wealthModule =
 
@@ -1114,11 +1232,11 @@ async function start(){
 
             wealthModule.default;
 
-        // ------------------------------------------
+        // ==========================================
 
         // Analyze Wealth
 
-        // ------------------------------------------
+        // ==========================================
 
         const wealthResult =
 
@@ -1134,11 +1252,11 @@ async function start(){
 
             );
 
-        // ------------------------------------------
+        // ==========================================
 
         // Final Result
 
-        // ------------------------------------------
+        // ==========================================
 
         const result = {
 
@@ -1154,11 +1272,11 @@ async function start(){
 
         };
 
-        // ------------------------------------------
+        // ==========================================
 
-        // Render
+        // Render Dashboard
 
-        // ------------------------------------------
+        // ==========================================
 
         renderDashboard(
 
@@ -1192,7 +1310,7 @@ async function start(){
 
 // ==================================================
 
-// Start
+// Start Application
 
 // ==================================================
 
