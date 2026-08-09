@@ -2,168 +2,384 @@
 
 Family Wealth AI OS V7
 
-Startup Diagnostic
+Application Entry
 
 */
 
-const app = document.getElementById("app");
+const app =
 
-app.innerHTML = `
+document.getElementById("app");
 
-    <h1>Family Wealth AI OS V7</h1>
+function renderSystem(
 
-    <p>Starting...</p>
+    systemResult,
 
-`;
+    systemStatus
 
-window.addEventListener(
+){
 
-    "error",
+    app.innerHTML = `
 
-    (event) => {
+        <div class="app-shell">
 
-        app.innerHTML = `
+            <header class="app-header">
 
-            <h1>Startup Error</h1>
+                <h1>
 
-            <pre style="
+                    🏠 Family Wealth AI OS
 
-                white-space:pre-wrap;
-
-                word-break:break-word;
-
-            ">${event.error?.stack || event.message}</pre>
-
-        `;
-
-    }
-
-);
-
-window.addEventListener(
-
-    "unhandledrejection",
-
-    (event) => {
-
-        const error =
-
-            event.reason;
-
-        app.innerHTML = `
-
-            <h1>Startup Error</h1>
-
-            <pre style="
-
-                white-space:pre-wrap;
-
-                word-break:break-word;
-
-            ">${error?.stack || error?.message || error}</pre>
-
-        `;
-
-    }
-
-);
-
-import("./core/system/systemManager.js")
-
-    .then(
-
-        ({ default: SystemManager }) => {
-
-            app.innerHTML = `
-
-                <h1>SystemManager Loaded</h1>
+                </h1>
 
                 <p>
 
-                    Testing SystemManager.start()
+                    Family Wealth Operating System V7
 
                 </p>
 
-            `;
+            </header>
 
-            try {
+            <section class="system-status">
 
-                const result =
+                <h2>
 
-                    SystemManager.start();
+                    System Status
 
-                app.innerHTML = `
+                </h2>
 
-                    <h1>
+                <div class="status-ready">
 
-                        Family Wealth AI OS V7
+                    ✅ SYSTEM READY
 
-                    </h1>
+                </div>
 
-                    <p>
+                <p>
 
-                        SystemManager Started
+                    Advisor:
 
-                    </p>
+                    <strong>
 
-                    <pre>${JSON.stringify(
+                        ${systemResult.advisor}
 
-                        result,
+                    </strong>
 
-                        null,
+                </p>
 
-                        2
+            </section>
 
-                    )}</pre>
+            <section class="dashboard">
 
-                `;
+                <h2>
 
-            }
+                    📊 财富驾驶舱
 
-            catch(error){
+                </h2>
 
-                app.innerHTML = `
+                <div class="dashboard-grid">
 
-                    <h1>
+                    <div class="dashboard-card">
 
-                        SystemManager Start Error
+                        <h3>
 
-                    </h1>
+                            净资产
 
-                    <pre style="
+                        </h3>
 
-                        white-space:pre-wrap;
+                        <div class="value">
 
-                        word-break:break-word;
+                            $0
 
-                    ">${error.stack || error.message}</pre>
+                        </div>
 
-                `;
+                    </div>
 
-            }
+                    <div class="dashboard-card">
 
-        }
+                        <h3>
 
-    )
+                            总资产
 
-    .catch(error => {
+                        </h3>
 
-        app.innerHTML = `
+                        <div class="value">
+
+                            $0
+
+                        </div>
+
+                    </div>
+
+                    <div class="dashboard-card">
+
+                        <h3>
+
+                            总负债
+
+                        </h3>
+
+                        <div class="value">
+
+                            $0
+
+                        </div>
+
+                    </div>
+
+                    <div class="dashboard-card">
+
+                        <h3>
+
+                            年度收入
+
+                        </h3>
+
+                        <div class="value">
+
+                            $0
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section class="modules">
+
+                <h2>
+
+                    Wealth Modules
+
+                </h2>
+
+                <div class="module-grid">
+
+                    ${systemStatus.modules.map(
+
+                        module => `
+
+                        <div
+
+                            class="module-card"
+
+                        >
+
+                            <h3>
+
+                                ${module}
+
+                            </h3>
+
+                            <p>
+
+                                ACTIVE
+
+                            </p>
+
+                        </div>
+
+                    `
+
+                    ).join("")}
+
+                </div>
+
+            </section>
+
+            <section class="agents">
+
+                <h2>
+
+                    AI Agents
+
+                </h2>
+
+                <div class="module-grid">
+
+                    ${systemStatus.agents.map(
+
+                        agent => `
+
+                        <div
+
+                            class="module-card"
+
+                        >
+
+                            <h3>
+
+                                🤖 ${agent}
+
+                            </h3>
+
+                            <p>
+
+                                READY
+
+                            </p>
+
+                        </div>
+
+                    `
+
+                    ).join("")}
+
+                </div>
+
+            </section>
+
+            <section class="quick-actions">
+
+                <h2>
+
+                    Quick Access
+
+                </h2>
+
+                <div class="action-grid">
+
+                    <button>
+
+                        💰 Assets
+
+                    </button>
+
+                    <button>
+
+                        📈 Investment
+
+                    </button>
+
+                    <button>
+
+                        💵 Income
+
+                    </button>
+
+                    <button>
+
+                        💳 Liability
+
+                    </button>
+
+                    <button>
+
+                        💸 Cash Flow
+
+                    </button>
+
+                    <button>
+
+                        🧾 Tax
+
+                    </button>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    `;
+
+}
+
+function renderError(
+
+    title,
+
+    error
+
+){
+
+    app.innerHTML = `
+
+        <div class="error-screen">
 
             <h1>
 
-                SystemManager Import Error
+                ${title}
 
             </h1>
 
-            <pre style="
+            <pre>${error?.stack ||
 
-                white-space:pre-wrap;
+                error?.message ||
 
-                word-break:break-word;
+                String(error)}</pre>
 
-            ">${error.stack || error.message}</pre>
+        </div>
+
+    `;
+
+}
+
+async function start(){
+
+    try {
+
+        app.innerHTML = `
+
+            <div class="startup">
+
+                <h1>
+
+                    🏠 Family Wealth AI OS V7
+
+                </h1>
+
+                <p>
+
+                    Starting Family Wealth AI OS...
+
+                </p>
+
+            </div>
 
         `;
 
-    });
+        const module =
+
+            await import(
+
+                "./core/system/systemManager.js"
+
+            );
+
+        const SystemManager =
+
+            module.default;
+
+        const result =
+
+            SystemManager.start();
+
+        const status =
+
+            SystemManager.status();
+
+        renderSystem(
+
+            result,
+
+            status
+
+        );
+
+    }
+
+    catch(error){
+
+        renderError(
+
+            "Family Wealth AI OS V7 Startup Error",
+
+            error
+
+        );
+
+    }
+
+}
+
+start();
