@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+
+        name="viewport"
+
+        content="width=device-width, initial-scale=1.0"
+
+    >
+
+    <title>
+
+        Family Wealth AI OS V7 - Investment API Test
+
+    </title>
+
+</head>
+
+<body>
+
+<h1>
+
+    Family Wealth AI OS V7
+
+</h1>
+
+<h2>
+
+    Investment API Diagnostic
+
+</h2>
+
+<div id="result">
+
+    Running test...
+
+</div>
+
+<script type="module">
+
+import InvestmentAPI
+
+    from "../api/investmentAPI.js";
+
+const resultElement =
+
+    document.getElementById("result");
+
+function pass(
+
+    name
+
+){
+
+    return `
+
+        <p>
+
+            ${name}: ✅ PASS
+
+        </p>
+
+    `;
+
+}
+
+function fail(
+
+    name,
+
+    error
+
+){
+
+    return `
+
+        <p>
+
+            ${name}: ❌ FAIL
+
+        </p>
+
+        <pre>
+
+${error?.stack || error?.message || String(error)}
+
+        </pre>
+
+    `;
+
+}
+
+async function runTest(){
+
+    let html = "";
+
+    try {
+
+        /*
+
+        ==========================================
+
+        Cleanup
+
+        ==========================================
+
+        */
+
+        const existing =
+
+            InvestmentAPI
+
+            .getInvestments();
+
+        existing.forEach(
+
+            investment => {
+
+                InvestmentAPI
+
+                .deleteInvestment(
+
+                    investment.id
+
+                );
+
+            }
+
+        );
+
+        /*
+
+        ==========================================
+
+        Create
+
+        ==========================================
+
+        */
+
+        const created =
+
+            InvestmentAPI
+
+            .createInvestment({
+
+                name:
+
+                    "V7 API Test Investment",
+
+                symbol:
+
+                    "TEST",
+
+                type:
+
+                    "STOCK",
+
+                currentValue:
+
+                    10000
+
+            });
+
+        if(
+
+            !created ||
+
+            !created.id
+
+        ){
+
+            throw new Error(
+
+                "Create did not return investment with id"
+
+            );
+
+        }
+
+        html += pass(
+
+            "Create"
+
+        );
+
+        /*
+
+        ==========================================
+
+        Read
+
+        ==========================================
+
+        */
+
+        const investments =
+
+            InvestmentAPI
+
+            .getInvestments();
+
+        const found =
+
+            investments.find(
+
+                item =>
+
+                    item.id ===
+
+                    created.id
+
+            );
+
+        if(!found){
+
+            throw new Error(
+
+                "Created investment not found"
+
+            );
+
+        }
+
+        html += pass(
+
+            "Read"
+
+        );
+
+        /*
+
+        ==========================================
+
+        Update
+
+        ==========================================
+
+        */
+
+        const updated = {
+
+            ...found,
+
+            name:
+
+                "V7 API Test Investment Updated",
+
+            currentValue:
+
+                25000
+
+        };
+
+        const updateResult =
+
+            InvestmentAPI
+
+            .createInvestment(
+
+                updated
+
+            );
+
+        if(
+
+            !updateResult ||
+
+            updateResult.name !==
+
+                "V7 API Test Investment Updated"
+
+        ){
+
+            throw new Error(
+
+                "Update failed"
+
+            );
+
+        }
+
+        const afterUpdate =
+
+            InvestmentAPI
+
+            .getInvestments()
+
+            .find(
+
+                item =>
+
+                    item.id ===
+
+                    created.id
+
+            );
+
+        if(
+
+            !afterUpdate ||
+
+            afterUpdate.currentValue !==
+
+                25000
+
+        ){
+
+            throw new Error(
+
+                "Updated investment not found"
+
+            );
+
+        }
+
+        html += pass(
+
+            "Update"
+
+        );
+
+        /*
+
+        ==========================================
+
+        Delete
+
+        ==========================================
+
+        */
+
+        InvestmentAPI
+
+        .deleteInvestment(
+
+            created.id
+
+        );
+
+        const afterDelete =
+
+            InvestmentAPI
+
+            .getInvestments()
+
+            .find(
+
+                item =>
+
+                    item.id ===
+
+                    created.id
+
+            );
+
+        if(afterDelete){
+
+            throw new Error(
+
+                "Investment was not deleted"
+
+            );
+
+        }
+
+        html += pass(
+
+            "Delete"
+
+        );
+
+        /*
+
+        ==========================================
+
+        Portfolio
+
+        ==========================================
+
+        */
+
+        const portfolio =
+
+            InvestmentAPI
+
+            .getPortfolioSummary();
+
+        if(
+
+            !portfolio ||
+
+            typeof portfolio !==
+
+                "object"
+
+        ){
+
+            throw new Error(
+
+                "Portfolio summary failed"
+
+            );
+
+        }
+
+        html += pass(
+
+            "Portfolio"
+
+        );
+
+        /*
+
+        ==========================================
+
+        Performance
+
+        ==========================================
+
+        */
+
+        const performance =
+
+            InvestmentAPI
+
+            .getPerformance();
+
+        if(
+
+            !performance ||
+
+            typeof performance !==
+
+                "object"
+
+        ){
+
+            throw new Error(
+
+                "Performance failed"
+
+            );
+
+        }
+
+        html += pass(
+
+            "Performance"
+
+        );
+
+        /*
+
+        ==========================================
+
+        Risk
+
+        ==========================================
+
+        */
+
+        const risk =
+
+            InvestmentAPI
+
+            .getRiskReport();
+
+        if(
+
+            !risk ||
+
+            typeof risk !==
+
+                "object"
+
+        ){
+
+            throw new Error(
+
+                "Risk report failed"
+
+            );
+
+        }
+
+        html += pass(
+
+            "Risk"
+
+        );
+
+        /*
+
+        ==========================================
+
+        Final
+
+        ==========================================
+
+        */
+
+        resultElement.innerHTML = `
+
+            <h2>
+
+                🎉 INVESTMENT API TEST PASSED
+
+            </h2>
+
+            ${html}
+
+            <hr>
+
+            <h3>
+
+                Portfolio
+
+            </h3>
+
+            <pre>
+
+${JSON.stringify(
+
+    portfolio,
+
+    null,
+
+    2
+
+)}
+
+            </pre>
+
+            <h3>
+
+                Performance
+
+            </h3>
+
+            <pre>
+
+${JSON.stringify(
+
+    performance,
+
+    null,
+
+    2
+
+)}
+
+            </pre>
+
+            <h3>
+
+                Risk
+
+            </h3>
+
+            <pre>
+
+${JSON.stringify(
+
+    risk,
+
+    null,
+
+    2
+
+)}
+
+            </pre>
+
+        `;
+
+    }
+
+    catch(error){
+
+        resultElement.innerHTML = `
+
+            <h2>
+
+                ❌ INVESTMENT API TEST FAILED
+
+            </h2>
+
+            ${html}
+
+            <hr>
+
+            <pre>
+
+${error?.stack ||
+
+ error?.message ||
+
+ String(error)}
+
+            </pre>
+
+        `;
+
+    }
+
+}
+
+runTest();
+
+</script>
+
+</body>
+
+</html>
