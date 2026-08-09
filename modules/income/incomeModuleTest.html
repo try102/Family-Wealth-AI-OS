@@ -1,36 +1,206 @@
-/*
+<!DOCTYPE html>
 
-    
+<html lang="en">
 
-Family Wealth AI OS V7
+<head>
 
-Income Agent Test
+    <meta charset="UTF-8">
 
-*/
+    <meta
 
-import IncomeAgent
+        name="viewport"
 
-    from "./incomeAgent.js";
+        content="width=device-width, initial-scale=1.0"
 
-// ==========================================
+    >
 
-// Test Helper
+    <title>
 
-// ==========================================
+        Family Wealth AI OS V7
 
-function assert(
+        Income Module Test
 
-    condition,
+    </title>
 
-    message
+    <style>
 
-){
+        body{
 
-    if(!condition){
+            font-family:
 
-        throw new Error(
+                Arial,
 
-            "❌ FAIL: " +
+                sans-serif;
+
+            margin:40px;
+
+            background:#f5f5f5;
+
+            color:#222;
+
+        }
+
+        .container{
+
+            max-width:900px;
+
+            margin:auto;
+
+            background:white;
+
+            padding:30px;
+
+            border-radius:12px;
+
+            box-shadow:
+
+                0 2px 10px
+
+                rgba(0,0,0,.1);
+
+        }
+
+        h1{
+
+            margin-top:0;
+
+        }
+
+        .status{
+
+            padding:15px;
+
+            background:#eee;
+
+            border-radius:8px;
+
+            margin-bottom:20px;
+
+        }
+
+        .pass{
+
+            color:green;
+
+            font-weight:bold;
+
+        }
+
+        .fail{
+
+            color:red;
+
+            font-weight:bold;
+
+        }
+
+        pre{
+
+            background:#111;
+
+            color:#0f0;
+
+            padding:15px;
+
+            border-radius:8px;
+
+            overflow:auto;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>
+
+        🏠 Family Wealth AI OS V7
+
+    </h1>
+
+    <h2>
+
+        Income Module Integration Test
+
+    </h2>
+
+    <div
+
+        id="status"
+
+        class="status"
+
+    >
+
+        Testing Income Module...
+
+    </div>
+
+    <pre
+
+        id="output"
+
+    ></pre>
+
+</div>
+
+<script type="module">
+
+    import IncomeModule
+
+        from "./incomeModule.js";
+
+    const output =
+
+        document.getElementById(
+
+            "output"
+
+        );
+
+    const status =
+
+        document.getElementById(
+
+            "status"
+
+        );
+
+    function log(message){
+
+        output.textContent +=
+
+            message + "\n";
+
+    }
+
+    function assert(
+
+        condition,
+
+        message
+
+    ){
+
+        if(!condition){
+
+            throw new Error(
+
+                "❌ FAIL: " +
+
+                message
+
+            );
+
+        }
+
+        log(
+
+            "✅ PASS: " +
 
             message
 
@@ -38,368 +208,562 @@ function assert(
 
     }
 
-    console.log(
+    try{
 
-        "✅ PASS: " +
+        log(
 
-        message
+            "=========================================="
 
-    );
+        );
 
-}
+        log(
 
-// ==========================================
+            "Family Wealth AI OS V7"
 
-// Start
+        );
 
-// ==========================================
+        log(
 
-console.log(
+            "Income Module Integration Test"
 
-    "=========================================="
+        );
 
-);
+        log(
 
-console.log(
+            "=========================================="
 
-    "Family Wealth AI OS V7"
+        );
 
-);
+        // ==========================================
 
-console.log(
+        // Module
 
-    "Income Agent Test"
+        // ==========================================
 
-);
+        assert(
 
-console.log(
+            IncomeModule,
 
-    "=========================================="
+            "Income Module loaded"
 
-);
+        );
 
-// ==========================================
+        // ==========================================
 
-// Initialize
+        // Module Information
 
-// ==========================================
+        // ==========================================
 
-const initResult =
+        assert(
 
-    IncomeAgent.init();
+            IncomeModule.name ===
 
-assert(
+                "Income Module V7",
 
-    initResult &&
+            "Module name"
 
-    initResult.status ===
+        );
 
-    "Income Agent Ready",
+        assert(
 
-    "Initialize"
+            IncomeModule.version ===
 
-);
+                "7.0",
 
-// ==========================================
+            "Module version"
 
-// Read Existing Data
+        );
 
-// ==========================================
+        assert(
 
-const before =
+            IncomeModule.status ===
 
-    IncomeAgent.getIncome();
+                "READY",
 
-assert(
+            "Module status"
 
-    Array.isArray(before),
+        );
 
-    "Get income"
+        // ==========================================
 
-);
+        // Components
 
-// ==========================================
+        // ==========================================
 
-// Create
+        assert(
 
-// ==========================================
+            IncomeModule.schema,
 
-const testIncome = {
+            "Schema loaded"
 
-    source:
+        );
 
-        "V7 Agent Test",
+        assert(
 
-    name:
+            IncomeModule.repository,
 
-        "V7 Agent Test",
+            "Repository loaded"
 
-    amount:
+        );
 
-        1000,
+        assert(
 
-    value:
+            IncomeModule.service,
 
-        1000,
+            "Service loaded"
 
-    type:
+        );
 
-        "Other"
+        assert(
 
-};
+            IncomeModule.api,
 
-const created =
+            "API loaded"
 
-    IncomeAgent.addIncome(
+        );
 
-        testIncome
+        assert(
 
-    );
+            IncomeModule.agent,
 
-assert(
+            "Agent loaded"
 
-    created,
+        );
 
-    "Add income"
+        assert(
 
-);
+            IncomeModule.ai,
 
-assert(
+            "AI loaded"
 
-    created.id,
+        );
 
-    "Income ID generated"
+        assert(
 
-);
+            IncomeModule.analysis,
 
-// ==========================================
+            "Analysis Engine loaded"
 
-// Read Created Income
+        );
 
-// ==========================================
+        assert(
 
-const afterCreate =
+            IncomeModule.events,
 
-    IncomeAgent.getIncome();
+            "Events loaded"
 
-const createdIncome =
+        );
 
-    afterCreate.find(
+        assert(
 
-        item =>
+            IncomeModule.view,
 
-            item.id ===
+            "View loaded"
 
-            created.id
+        );
 
-    );
+        // ==========================================
 
-assert(
+        // Agent
 
-    createdIncome,
+        // ==========================================
 
-    "Read created income"
+        const agentInit =
 
-);
+            IncomeModule.agent.init();
 
-// ==========================================
+        assert(
 
-// Update
+            agentInit &&
 
-// ==========================================
+            agentInit.status ===
 
-const updatedData = {
+                "Income Agent Ready",
 
-    source:
+            "Agent initialize"
 
-        "V7 Agent Test Updated",
+        );
 
-    name:
+        // ==========================================
 
-        "V7 Agent Test Updated",
+        // Read
 
-    amount:
+        // ==========================================
 
-        2500,
+        const before =
 
-    value:
+            IncomeModule.agent
 
-        2500,
+                .getIncome();
 
-    type:
+        assert(
 
-        "Business"
+            Array.isArray(before),
 
-};
+            "Read income"
 
-const updated =
+        );
 
-    IncomeAgent.updateIncome(
+        // ==========================================
 
-        created.id,
+        // Create
 
-        updatedData
+        // ==========================================
 
-    );
+        const testIncome = {
 
-assert(
+            source:
 
-    updated,
+                "V7 Module Test",
 
-    "Update income"
+            name:
 
-);
+                "V7 Module Test",
 
-// ==========================================
+            amount:
 
-// Verify Update
+                1000,
 
-// ==========================================
+            value:
 
-const afterUpdate =
+                1000,
 
-    IncomeAgent.getIncome();
+            type:
 
-const updatedIncome =
+                "Other"
 
-    afterUpdate.find(
+        };
 
-        item =>
+        const created =
 
-            item.id ===
+            IncomeModule.agent
 
-            created.id
+                .addIncome(
 
-    );
+                    testIncome
 
-assert(
+                );
 
-    updatedIncome,
+        assert(
 
-    "Read updated income"
+            created,
 
-);
+            "Create income"
 
-assert(
+        );
 
-    Number(
+        assert(
 
-        updatedIncome.amount ??
+            created.id,
 
-        updatedIncome.value ??
+            "Income ID generated"
 
-        0
+        );
 
-    ) === 2500,
+        // ==========================================
 
-    "Updated amount = 2500"
+        // Read Created
 
-);
+        // ==========================================
 
-// ==========================================
+        const afterCreate =
 
-// Summary
+            IncomeModule.agent
 
-// ==========================================
+                .getIncome();
 
-const summary =
+        const createdIncome =
 
-    IncomeAgent.getIncomeSummary();
+            afterCreate.find(
 
-assert(
+                item =>
 
-    summary !== null &&
+                    item.id ===
 
-    summary !== undefined,
+                    created.id
 
-    "Income summary"
+            );
 
-);
+        assert(
 
-// ==========================================
+            createdIncome,
 
-// Analysis
+            "Read created income"
 
-// ==========================================
+        );
 
-const analysis =
+        // ==========================================
 
-    IncomeAgent.analyze();
+        // Update
 
-assert(
+        // ==========================================
 
-    analysis &&
+        const updated =
 
-    analysis.type ===
+            IncomeModule.agent
 
-    "INCOME_ANALYSIS",
+                .updateIncome(
 
-    "Income analysis"
+                    created.id,
 
-);
+                    {
 
-// ==========================================
+                        source:
 
-// Delete
+                            "V7 Module Test Updated",
 
-// ==========================================
+                        name:
 
-IncomeAgent.deleteIncome(
+                            "V7 Module Test Updated",
 
-    created.id
+                        amount:
 
-);
+                            2500,
 
-// ==========================================
+                        value:
 
-// Verify Delete
+                            2500,
 
-// ==========================================
+                        type:
 
-const afterDelete =
+                            "Business"
 
-    IncomeAgent.getIncome();
+                    }
 
-const deletedIncome =
+                );
 
-    afterDelete.find(
+        assert(
 
-        item =>
+            updated,
 
-            item.id ===
+            "Update income"
 
-            created.id
+        );
 
-    );
+        // ==========================================
 
-assert(
+        // Verify Update
 
-    !deletedIncome,
+        // ==========================================
 
-    "Income deleted"
+        const afterUpdate =
 
-);
+            IncomeModule.agent
 
-// ==========================================
+                .getIncome();
 
-// Success
+        const updatedIncome =
 
-// ==========================================
+            afterUpdate.find(
 
-console.log(
+                item =>
 
-    "=========================================="
+                    item.id ===
 
-);
+                    created.id
 
-console.log(
+            );
 
-    "🎉 INCOME AGENT TEST PASSED"
+        assert(
 
-);
+            updatedIncome,
 
-console.log(
+            "Read updated income"
 
-    "=========================================="
+        );
 
-);
+        assert(
+
+            Number(
+
+                updatedIncome.amount ??
+
+                updatedIncome.value ??
+
+                0
+
+            ) === 2500,
+
+            "Updated amount = 2500"
+
+        );
+
+        // ==========================================
+
+        // Summary
+
+        // ==========================================
+
+        const summary =
+
+            IncomeModule.agent
+
+                .getIncomeSummary();
+
+        assert(
+
+            summary !== null &&
+
+            summary !== undefined,
+
+            "Income summary"
+
+        );
+
+        // ==========================================
+
+        // Analysis
+
+        // ==========================================
+
+        const analysis =
+
+            IncomeModule.agent
+
+                .analyze();
+
+        assert(
+
+            analysis &&
+
+            analysis.type ===
+
+                "INCOME_ANALYSIS",
+
+            "Income analysis"
+
+        );
+
+        // ==========================================
+
+        // Delete
+
+        // ==========================================
+
+        IncomeModule.agent
+
+            .deleteIncome(
+
+                created.id
+
+            );
+
+        // ==========================================
+
+        // Verify Delete
+
+        // ==========================================
+
+        const afterDelete =
+
+            IncomeModule.agent
+
+                .getIncome();
+
+        const deletedIncome =
+
+            afterDelete.find(
+
+                item =>
+
+                    item.id ===
+
+                    created.id
+
+            );
+
+        assert(
+
+            !deletedIncome,
+
+            "Delete income"
+
+        );
+
+        // ==========================================
+
+        // Success
+
+        // ==========================================
+
+        log(
+
+            "=========================================="
+
+        );
+
+        log(
+
+            "🎉 INCOME MODULE V7"
+
+        );
+
+        log(
+
+            "INTEGRATION TEST PASSED"
+
+        );
+
+        log(
+
+            "=========================================="
+
+        );
+
+        status.innerHTML =
+
+            '<span class="pass">' +
+
+            '🎉 INCOME MODULE V7 ' +
+
+            'INTEGRATION TEST PASSED' +
+
+            '</span>';
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        log("");
+
+        log(
+
+            "=========================================="
+
+        );
+
+        log(
+
+            "❌ INCOME MODULE TEST FAILED"
+
+        );
+
+        log(
+
+            "=========================================="
+
+        );
+
+        log(
+
+            error.message
+
+        );
+
+        status.innerHTML =
+
+            '<span class="fail">' +
+
+            '❌ INCOME MODULE TEST FAILED' +
+
+            '</span>';
+
+    }
+
+</script>
+
+</body>
+
+</html>
