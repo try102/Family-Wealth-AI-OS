@@ -1,7 +1,5 @@
 /*
 
-    
-
 Family Wealth AI OS V7
 
 Application Entry
@@ -960,7 +958,7 @@ function renderDashboard(
 
                         typeof InvestmentView.render !==
 
-                        "function"
+                            "function"
 
                     ){
 
@@ -1032,67 +1030,35 @@ function renderDashboard(
 
                 try {
 
-                    // ==========================================
-
-                    // Load Income View
-
-                    // ==========================================
-
                     const module =
 
                         await import(
 
-                            "./modules/income/ui/incomeView.js"
+                            "./modules/income/incomeModule.js"
 
                         );
 
-                    const IncomeView =
+                    const IncomeModule =
 
                         module.default;
 
-                    // ==========================================
-
-                    // Verify Income View
-
-                    // ==========================================
-
                     if(
 
-                        !IncomeView
+                        !IncomeModule ||
+
+                        !IncomeModule.view
 
                     ){
 
                         throw new Error(
 
-                            "IncomeView not found"
+                            "IncomeModule.view not found"
 
                         );
 
                     }
 
-                    if(
-
-                        typeof IncomeView.render !==
-
-                        "function"
-
-                    ){
-
-                        throw new Error(
-
-                            "IncomeView.render not found"
-
-                        );
-
-                    }
-
-                    // ==========================================
-
-                    // Render Income Center
-
-                    // ==========================================
-
-                    IncomeView.render(
+                    IncomeModule.view.render(
 
                         app,
 
@@ -1376,7 +1342,91 @@ async function start(){
 
         // ==================================================
 
+        // Income Module
+
+        //
+
+        // V7 Income is the authoritative
+
+        // income source for Dashboard.
+
+        // ==================================================
+
+        const incomeModule =
+
+            await import(
+
+                "./modules/income/incomeModule.js"
+
+            );
+
+        const IncomeModule =
+
+            incomeModule.default;
+
+        if(
+
+            !IncomeModule ||
+
+            !IncomeModule.agent
+
+        ){
+
+            throw new Error(
+
+                "IncomeModule.agent not found"
+
+            );
+
+        }
+
+        // ==================================================
+
+        // Income Summary
+
+        // ==================================================
+
+        const incomeSummary =
+
+            IncomeModule.agent
+
+                .getIncomeSummary();
+
+        const incomeTotal =
+
+            Number(
+
+                incomeSummary?.totalIncome ||
+
+                0
+
+            );
+
+        // ==================================================
+
+        // Expense
+
+        // ==================================================
+
+        const expenseTotal =
+
+            Number(
+
+                cashFlowSummary?.expense ||
+
+                0
+
+            );
+
+        // ==================================================
+
         // Normalize Cash Flow
+
+        //
+
+        // Income comes from Income Module.
+
+        // Expense remains from Cashflow Module.
 
         // ==================================================
 
@@ -1384,43 +1434,23 @@ async function start(){
 
             income:
 
-                Number(
-
-                    cashFlowSummary.income ||
-
-                    0
-
-                ),
+                incomeTotal,
 
             expense:
 
-                Number(
-
-                    cashFlowSummary.expense ||
-
-                    0
-
-                ),
+                expenseTotal,
 
             net:
 
-                Number(
+                incomeTotal -
 
-                    cashFlowSummary.net ||
-
-                    0
-
-                ),
+                expenseTotal,
 
             netCashFlow:
 
-                Number(
+                incomeTotal -
 
-                    cashFlowSummary.net ||
-
-                    0
-
-                )
+                expenseTotal
 
         };
 
