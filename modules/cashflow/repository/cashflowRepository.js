@@ -8,7 +8,7 @@ Cashflow Repository
 
 import Database
 
-from "../../storage/database.js";
+from "../../../storage/database.js";
 
 const TABLE =
 
