@@ -22,7 +22,7 @@ Family Wealth AI OS V7
 
 <div id="app">
 
-Loading AssetsModule Test...
+Loading SystemBootstrap Test...
 
 </div>
 
@@ -42,13 +42,13 @@ Family Wealth AI OS V7
 
 <h2>
 
-AssetsModule Test
+SystemBootstrap Test
 
 </h2>
 
 <p>
 
-Testing AssetsModule...
+Testing SystemBootstrap...
 
 </p>
 
@@ -60,25 +60,29 @@ try {
 
         await import(
 
-            "./core/modules/assetsModule.js"
+            "./core/bootstrap/systemBootstrap.js"
 
         );
 
-    const AssetsModule =
+    const SystemBootstrap =
 
         module.default;
+
+    const result =
+
+        SystemBootstrap.initialize();
 
     app.innerHTML = `
 
         <h1>
 
-        AssetsModule Test
+        SystemBootstrap Test
 
         </h1>
 
         <p style="color:green">
 
-        ✅ AssetsModule
+        ✅ SystemBootstrap
 
         Loaded Successfully
 
@@ -88,97 +92,33 @@ try {
 
         Type:
 
-        ${typeof AssetsModule}
+        ${typeof SystemBootstrap}
 
         </p>
 
         <p>
 
-        Name:
+        initialize:
 
-        ${AssetsModule.name}
-
-        </p>
-
-        <p>
-
-        Version:
-
-        ${AssetsModule.version}
+        ${typeof SystemBootstrap.initialize}
 
         </p>
 
-        <p>
+        <h3>
 
-        Agent:
+        Result
 
-        ${typeof AssetsModule.agent}
+        </h3>
 
-        </p>
+        <pre>${JSON.stringify(
 
-        <p>
+            result,
 
-        AI:
+            null,
 
-        ${typeof AssetsModule.ai}
+            2
 
-        </p>
-
-        <p>
-
-        API:
-
-        ${typeof AssetsModule.api}
-
-        </p>
-
-        <p>
-
-        Analysis:
-
-        ${typeof AssetsModule.analysis}
-
-        </p>
-
-        <p>
-
-        Repository:
-
-        ${typeof AssetsModule.repository}
-
-        </p>
-
-        <p>
-
-        Schema:
-
-        ${typeof AssetsModule.schema}
-
-        </p>
-
-        <p>
-
-        Service:
-
-        ${typeof AssetsModule.service}
-
-        </p>
-
-        <p>
-
-        Events:
-
-        ${typeof AssetsModule.events}
-
-        </p>
-
-        <p>
-
-        View:
-
-        ${typeof AssetsModule.view}
-
-        </p>
+        )}</pre>
 
     `;
 
@@ -190,7 +130,7 @@ catch(error) {
 
         <h1>
 
-        AssetsModule Import Error
+        SystemBootstrap Import Error
 
         </h1>
 
