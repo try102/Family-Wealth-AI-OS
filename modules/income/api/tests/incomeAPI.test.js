@@ -10,8 +10,7 @@ Income API Test
 
 import IncomeAPI
 
-    from "./incomeAPI.js";
-
+    from "../incomeAPI.js";
 // ==========================================
 
 // Test Helper
