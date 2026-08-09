@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+
+content="width=device-width, initial-scale=1.0">
+
+<title>
+
+Family Wealth AI OS V7
+
+AssetView Test Cleanup
+
+</title>
+
+</head>
+
+<body>
+
+<div id="app">
+
+Loading...
+
+</div>
+
+<script type="module">
+
+const app =
+
+document.getElementById("app");
+
+try {
+
+    const module =
+
+        await import(
+
+            "./core/modules/assetsModule.js?v=20260809-cleanup02"
+
+        );
+
+    const AssetsModule =
+
+        module.default;
+
+    const AssetAPI =
+
+        AssetsModule.api;
+
+    // ==========================================
+
+    // Before
+
+    // ==========================================
+
+    const before =
+
+        AssetAPI.getAll();
+
+    // ==========================================
+
+    // Find ONLY AssetView test asset
+
+    // ==========================================
+
+    const testAssets =
+
+        before.filter(
+
+            asset =>
+
+                asset.name ===
+
+                "V7 AssetView Test Cash"
+
+        );
+
+    // ==========================================
+
+    // Delete
+
+    // ==========================================
+
+    testAssets.forEach(
+
+        asset => {
+
+            AssetAPI.remove(
+
+                asset.id
+
+            );
+
+        }
+
+    );
+
+    // ==========================================
+
+    // After
+
+    // ==========================================
+
+    const after =
+
+        AssetAPI.getAll();
+
+    const remainingTestAssets =
+
+        after.filter(
+
+            asset =>
+
+                asset.name ===
+
+                "V7 AssetView Test Cash"
+
+        );
+
+    const passed =
+
+        remainingTestAssets.length === 0;
+
+    // ==========================================
+
+    // Output
+
+    // ==========================================
+
+    app.innerHTML = `
+
+        <h1>
+
+            Family Wealth AI OS V7
+
+        </h1>
+
+        <h2>
+
+            AssetView Test Cleanup
+
+        </h2>
+
+        <h2 style="
+
+            color:${passed
+
+                ? "green"
+
+                : "red"};
+
+        ">
+
+            ${
+
+                passed
+
+                ?
+
+                "✅ TEST DATA CLEANED"
+
+                :
+
+                "❌ CLEANUP FAILED"
+
+            }
+
+        </h2>
+
+        <hr>
+
+        <p>
+
+            Test Assets Found:
+
+            <strong>
+
+                ${testAssets.length}
+
+            </strong>
+
+        </p>
+
+        <p>
+
+            Test Assets Removed:
+
+            <strong>
+
+                ${
+
+                    testAssets.length -
+
+                    remainingTestAssets.length
+
+                }
+
+            </strong>
+
+        </p>
+
+        <p>
+
+            Remaining Assets:
+
+            <strong>
+
+                ${after.length}
+
+            </strong>
+
+        </p>
+
+        <p>
+
+            Current Total Assets:
+
+            <strong>
+
+                $${Number(
+
+                    AssetAPI.getTotalValue()
+
+                ).toLocaleString()}
+
+            </strong>
+
+        </p>
+
+        <h3>
+
+            Remaining Data
+
+        </h3>
+
+        <pre>${JSON.stringify(
+
+            after,
+
+            null,
+
+            2
+
+        )}</pre>
+
+    `;
+
+}
+
+catch(error){
+
+    app.innerHTML = `
+
+        <h1>
+
+            ❌ Cleanup Error
+
+        </h1>
+
+        <pre style="
+
+            white-space:pre-wrap;
+
+            word-break:break-word;
+
+            color:red;
+
+        ">${error.stack ||
+
+           error.message ||
+
+           String(error)}</pre>
+
+    `;
+
+}
+
+</script>
+
+</body>
+
+</html>
