@@ -22,7 +22,7 @@ Family Wealth AI OS V7
 
 <div id="app">
 
-Loading Advisor Test...
+Loading InvestmentAgent Test...
 
 </div>
 
@@ -38,11 +38,11 @@ try {
 
         await import(
 
-            "./ai/advisor.js"
+            "./modules/investment/agent/investmentAgent.js"
 
         );
 
-    const Advisor =
+    const InvestmentAgent =
 
         module.default;
 
@@ -50,13 +50,15 @@ try {
 
         <h1>
 
-        Advisor Test
+        InvestmentAgent Test
 
         </h1>
 
         <p style="color:green">
 
-        ✅ Advisor Loaded Successfully
+        ✅ InvestmentAgent
+
+        Loaded Successfully
 
         </p>
 
@@ -64,7 +66,7 @@ try {
 
         Type:
 
-        ${typeof Advisor}
+        ${typeof InvestmentAgent}
 
         </p>
 
@@ -72,7 +74,7 @@ try {
 
         Name:
 
-        ${Advisor.name}
+        ${InvestmentAgent.name || "N/A"}
 
         </p>
 
@@ -86,7 +88,7 @@ catch(error) {
 
         <h1>
 
-        Advisor Import Error
+        InvestmentAgent Import Error
 
         </h1>
 
