@@ -16,7 +16,7 @@
 
 <title>
 
-Family Wealth AI OS V7 - Core Overall Test
+Family Wealth AI OS V7 - Overall Diagnostic
 
 </title>
 
@@ -26,7 +26,7 @@ Family Wealth AI OS V7 - Core Overall Test
 
 <div id="app">
 
-Loading Family Wealth AI OS V7...
+Loading...
 
 </div>
 
@@ -36,7 +36,15 @@ const app =
 
     document.getElementById("app");
 
-function show(title, content){
+function show(
+
+    title,
+
+    message,
+
+    color = "black"
+
+){
 
     app.innerHTML = `
 
@@ -58,39 +66,113 @@ function show(title, content){
 
             word-break:break-word;
 
-        ">${content}</pre>
+            color:${color};
+
+        ">${message}</pre>
 
     `;
 
 }
 
-try {
+async function loadStep(
+
+    step,
+
+    path
+
+){
 
     show(
 
-        "Core Overall Test",
+        "Overall Diagnostic",
 
-        "Starting complete V7 system..."
+        `Step ${step}
+
+Importing:
+
+${path}
+
+Please wait...`
 
     );
 
+    try {
+
+        const module =
+
+            await import(
+
+                path
+
+            );
+
+        return module;
+
+    }
+
+    catch(error){
+
+        show(
+
+            `❌ FAILED AT STEP ${step}`,
+
+            `Import failed.
+
+Path:
+
+${path}
+
+Error:
+
+${error.stack ||
+
+  error.message ||
+
+  String(error)}`,
+
+            "red"
+
+        );
+
+        throw error;
+
+    }
+
+}
+
+try {
+
     // ==========================================
 
-    // 1. SystemManager
+    // STEP 1
+
+    // SystemManager
 
     // ==========================================
 
     const systemModule =
 
-        await import(
+        await loadStep(
 
-            "./core/system/systemManager.js?v=20260809-overall01"
+            1,
+
+            "./core/system/systemManager.js?v=overall02"
 
         );
 
     const SystemManager =
 
         systemModule.default;
+
+    if(!SystemManager){
+
+        throw new Error(
+
+            "SystemManager default export not found"
+
+        );
+
+    }
 
     const startResult =
 
@@ -102,21 +184,35 @@ try {
 
     // ==========================================
 
-    // 2. Asset API
+    // STEP 2
+
+    // AssetAPI
 
     // ==========================================
 
     const assetModule =
 
-        await import(
+        await loadStep(
 
-            "./modules/asset/api/assetAPI.js?v=20260809-overall01"
+            2,
+
+            "./modules/asset/api/assetAPI.js?v=overall02"
 
         );
 
     const AssetAPI =
 
         assetModule.default;
+
+    if(!AssetAPI){
+
+        throw new Error(
+
+            "AssetAPI default export not found"
+
+        );
+
+    }
 
     const assets =
 
@@ -128,21 +224,35 @@ try {
 
     // ==========================================
 
-    // 3. Wealth Engine
+    // STEP 3
+
+    // WealthEngine
 
     // ==========================================
 
     const wealthModule =
 
-        await import(
+        await loadStep(
 
-            "./core/engines/wealthEngine.js?v=20260809-overall01"
+            3,
+
+            "./core/engines/wealthEngine.js?v=overall02"
 
         );
 
     const WealthEngine =
 
         wealthModule.default;
+
+    if(!WealthEngine){
+
+        throw new Error(
+
+            "WealthEngine default export not found"
+
+        );
+
+    }
 
     const wealthResult =
 
@@ -170,15 +280,19 @@ try {
 
     // ==========================================
 
-    // 4. AssetView
+    // STEP 4
+
+    // AssetView
 
     // ==========================================
 
     const assetViewModule =
 
-        await import(
+        await loadStep(
 
-            "./modules/asset/ui/assetView.js?v=20260809-overall01"
+            4,
+
+            "./modules/asset/ui/assetView.js?v=overall02"
 
         );
 
@@ -186,9 +300,19 @@ try {
 
         assetViewModule.default;
 
+    if(!AssetView){
+
+        throw new Error(
+
+            "AssetView default export not found"
+
+        );
+
+    }
+
     // ==========================================
 
-    // Final Result
+    // SUCCESS
 
     // ==========================================
 
@@ -202,7 +326,7 @@ try {
 
         <h2>
 
-            Core Overall Regression Test
+            Overall Diagnostic
 
         </h2>
 
@@ -210,19 +334,57 @@ try {
 
             color:green;
 
-            font-size:20px;
+            font-size:22px;
 
             font-weight:bold;
 
         ">
 
-            ✅ V7 CORE SYSTEM LOADED SUCCESSFULLY
+            🎉 V7 CORE OVERALL TEST PASSED
 
         </p>
 
         <h3>
 
-            System Start Result
+            Step Results
+
+        </h3>
+
+        <p>
+
+            SystemManager:
+
+            ✅ PASS
+
+        </p>
+
+        <p>
+
+            AssetAPI:
+
+            ✅ PASS
+
+        </p>
+
+        <p>
+
+            WealthEngine:
+
+            ✅ PASS
+
+        </p>
+
+        <p>
+
+            AssetView:
+
+            ✅ PASS
+
+        </p>
+
+        <h3>
+
+            Start Result
 
         </h3>
 
@@ -292,79 +454,23 @@ try {
 
         )}</pre>
 
-        <h3>
-
-            AssetView
-
-        </h3>
-
-        <pre>${
-
-            AssetView
-
-            ?
-
-            "✅ AssetView Loaded"
-
-            :
-
-            "❌ AssetView Failed"
-
-        }</pre>
-
-        <h2 style="
-
-            color:green;
-
-        ">
-
-            🎉 CORE OVERALL TEST PASSED
-
-        </h2>
-
     `;
 
 }
 
 catch(error){
 
-    app.innerHTML = `
+    // Error already displayed
 
-        <h1>
+    // by loadStep or validation.
 
-            Family Wealth AI OS V7
+    console.error(
 
-        </h1>
+        "V7 Overall Diagnostic Error:",
 
-        <h2 style="
+        error
 
-            color:red;
-
-        ">
-
-            ❌ CORE OVERALL TEST FAILED
-
-        </h2>
-
-        <pre style="
-
-            white-space:pre-wrap;
-
-            word-break:break-word;
-
-            color:red;
-
-        ">${
-
-            error.stack ||
-
-            error.message ||
-
-            String(error)
-
-        }</pre>
-
-    `;
+    );
 
 }
 
