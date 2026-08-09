@@ -2,7 +2,7 @@
 
 Family Wealth AI OS V7
 
-Agent Registry Import Test
+System Bootstrap Import Test
 
 */
 
@@ -12,29 +12,29 @@ app.innerHTML = `
 
     <h1>Family Wealth AI OS V7</h1>
 
-    <p>Testing AgentRegistry...</p>
+    <p>Testing SystemBootstrap...</p>
 
 `;
 
-import("./core/registry/agentRegistry.js")
+import("./core/bootstrap/systemBootstrap.js")
 
-    .then(({ default: AgentRegistry }) => {
+    .then(({ default: SystemBootstrap }) => {
 
         app.innerHTML = `
 
-            <h1>AgentRegistry Test</h1>
+            <h1>SystemBootstrap Test</h1>
 
             <p>
 
-                AgentRegistry Loaded Successfully
+                SystemBootstrap Loaded Successfully
 
             </p>
 
             <p>
 
-                Functions:
+                Initialize:
 
-                ${typeof AgentRegistry.list}
+                ${typeof SystemBootstrap.initialize}
 
             </p>
 
@@ -46,7 +46,7 @@ import("./core/registry/agentRegistry.js")
 
         app.innerHTML = `
 
-            <h1>AgentRegistry Import Error</h1>
+            <h1>SystemBootstrap Import Error</h1>
 
             <pre style="
 
