@@ -2,7 +2,7 @@
 
 Family Wealth AI OS V7
 
-Minimal Startup Test
+Module Registry Import Test
 
 */
 
@@ -12,71 +12,23 @@ app.innerHTML = `
 
     <h1>Family Wealth AI OS V7</h1>
 
-    <p>Loading System Manager...</p>
+    <p>Testing ModuleRegistry...</p>
 
 `;
 
-import("./core/system/systemManager.js")
+import("./core/registry/moduleRegistry.js")
 
-    .then(({ default: SystemManager }) => {
+    .then(({ default: ModuleRegistry }) => {
 
         app.innerHTML = `
 
-            <h1>Family Wealth AI OS V7</h1>
+            <h1>ModuleRegistry Test</h1>
 
-            <p>System Manager Loaded Successfully</p>
+            <p>ModuleRegistry Loaded Successfully</p>
 
-            <p>Now starting system...</p>
+            <p>Functions: ${typeof ModuleRegistry.list}</p>
 
         `;
-
-        try {
-
-            const result =
-
-                SystemManager.start();
-
-            app.innerHTML = `
-
-                <h1>Family Wealth AI OS V7</h1>
-
-                <h2>System Started</h2>
-
-                <p>
-
-                    Status:
-
-                    ${result.status}
-
-                </p>
-
-                <p>
-
-                    Advisor:
-
-                    ${result.advisor}
-
-                </p>
-
-            `;
-
-        } catch(error) {
-
-            app.innerHTML = `
-
-                <h1>System Start Error</h1>
-
-                <pre style="
-
-                    white-space:pre-wrap;
-
-                    word-break:break-word;
-
-                ">${error.stack || error.message}</pre>
-
-            `;
-
-        }
 
     })
 
@@ -84,7 +36,7 @@ import("./core/system/systemManager.js")
 
         app.innerHTML = `
 
-            <h1>System Manager Import Error</h1>
+            <h1>ModuleRegistry Import Error</h1>
 
             <pre style="
 
