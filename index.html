@@ -22,7 +22,7 @@ Family Wealth AI OS V7
 
 <div id="app">
 
-Loading AgentRegistry Test...
+Loading ModuleRegistry Test...
 
 </div>
 
@@ -38,29 +38,29 @@ try {
 
         await import(
 
-            "./core/registry/agentRegistry.js"
+            "./core/modules/moduleRegistry.js"
 
         );
 
-    const AgentRegistry =
+    const ModuleRegistry =
 
         module.default;
 
     const list =
 
-        AgentRegistry.list();
+        ModuleRegistry.list();
 
     app.innerHTML = `
 
         <h1>
 
-        AgentRegistry Test
+        ModuleRegistry Test
 
         </h1>
 
         <p style="color:green">
 
-        ✅ AgentRegistry Loaded Successfully
+        ✅ ModuleRegistry Loaded Successfully
 
         </p>
 
@@ -68,7 +68,7 @@ try {
 
         Type:
 
-        ${typeof AgentRegistry}
+        ${typeof ModuleRegistry}
 
         </p>
 
@@ -76,7 +76,7 @@ try {
 
         register:
 
-        ${typeof AgentRegistry.register}
+        ${typeof ModuleRegistry.register}
 
         </p>
 
@@ -84,13 +84,13 @@ try {
 
         list:
 
-        ${typeof AgentRegistry.list}
+        ${typeof ModuleRegistry.list}
 
         </p>
 
         <h3>
 
-        Registered Agents
+        Registered Modules
 
         </h3>
 
@@ -114,7 +114,7 @@ catch(error) {
 
         <h1>
 
-        AgentRegistry Import Error
+        ModuleRegistry Import Error
 
         </h1>
 
