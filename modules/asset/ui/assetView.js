@@ -6,7 +6,7 @@ Asset View
 
 资产中心 UI
 
-第二阶段：
+第三阶段：
 
 Add Asset
 
@@ -15,6 +15,8 @@ View Asset
 Edit Asset
 
 Delete Asset
+
+Return To Dashboard
 
 */
 
@@ -30,7 +32,9 @@ const AssetView = {
 
     render(
 
-        container
+        container,
+
+        onBack
 
     ){
 
@@ -63,6 +67,36 @@ const AssetView = {
                     ).toLocaleString()}
 
                 </p>
+
+                <!-- ==========================
+
+                     Navigation
+
+                =========================== -->
+
+                <div>
+
+                    <button
+
+                        id="asset-home-button"
+
+                        type="button"
+
+                    >
+
+                        🏠 Back to Dashboard
+
+                    </button>
+
+                </div>
+
+                <br>
+
+                <!-- ==========================
+
+                     Add
+
+                =========================== -->
 
                 <button
 
@@ -130,7 +164,9 @@ const AssetView = {
 
                                     <span>
 
-                                        (${asset.category || "OTHER"})
+                                        (${asset.category ||
+
+                                        "OTHER"})
 
                                     </span>
 
@@ -140,7 +176,9 @@ const AssetView = {
 
                                         Liquidity:
 
-                                        ${asset.liquidity || "N/A"}
+                                        ${asset.liquidity ||
+
+                                        "N/A"}
 
                                     </span>
 
@@ -185,6 +223,56 @@ const AssetView = {
             </div>
 
         `;
+
+        // ==========================================
+
+        // Back To Dashboard
+
+        // ==========================================
+
+        const homeButton =
+
+            container.querySelector(
+
+                "#asset-home-button"
+
+            );
+
+        if(
+
+            homeButton
+
+        ){
+
+            homeButton.addEventListener(
+
+                "click",
+
+                () => {
+
+                    if(
+
+                        typeof onBack ===
+
+                        "function"
+
+                    ){
+
+                        onBack();
+
+                    }
+
+                    else {
+
+                        window.location.reload();
+
+                    }
+
+                }
+
+            );
+
+        }
 
         // ==========================================
 
@@ -284,7 +372,9 @@ const AssetView = {
 
                             container,
 
-                            button.dataset.id
+                            button.dataset.id,
+
+                            onBack
 
                         );
 
@@ -526,6 +616,12 @@ const AssetView = {
 
         `;
 
+        // ==========================================
+
+        // Form Submit
+
+        // ==========================================
+
         const form =
 
             formContainer.querySelector(
@@ -598,6 +694,12 @@ const AssetView = {
 
         );
 
+        // ==========================================
+
+        // Cancel
+
+        // ==========================================
+
         const cancelButton =
 
             formContainer.querySelector(
@@ -612,7 +714,9 @@ const AssetView = {
 
             () => {
 
-                formContainer.innerHTML = "";
+                formContainer.innerHTML =
+
+                    "";
 
             }
 
@@ -646,7 +750,9 @@ const AssetView = {
 
             throw new Error(
 
-                "Asset not found: " + id
+                "Asset not found: " +
+
+                id
 
             );
 
@@ -872,13 +978,21 @@ const AssetView = {
 
         `;
 
+        // ==========================================
+
+        // Existing Values
+
+        // ==========================================
+
         formContainer.querySelector(
 
             "#edit-asset-category"
 
         ).value =
 
-            asset.category || "Other";
+            asset.category ||
+
+            "Other";
 
         formContainer.querySelector(
 
@@ -886,7 +1000,15 @@ const AssetView = {
 
         ).value =
 
-            asset.liquidity || "Medium";
+            asset.liquidity ||
+
+            "Medium";
+
+        // ==========================================
+
+        // Edit Submit
+
+        // ==========================================
 
         const form =
 
@@ -962,6 +1084,12 @@ const AssetView = {
 
         );
 
+        // ==========================================
+
+        // Cancel Edit
+
+        // ==========================================
+
         const cancelButton =
 
             formContainer.querySelector(
@@ -976,7 +1104,9 @@ const AssetView = {
 
             () => {
 
-                formContainer.innerHTML = "";
+                formContainer.innerHTML =
+
+                    "";
 
             }
 
@@ -994,7 +1124,9 @@ const AssetView = {
 
         container,
 
-        id
+        id,
+
+        onBack
 
     ){
 
@@ -1010,7 +1142,9 @@ const AssetView = {
 
             throw new Error(
 
-                "Asset not found: " + id
+                "Asset not found: " +
+
+                id
 
             );
 
@@ -1042,7 +1176,9 @@ const AssetView = {
 
         this.render(
 
-            container
+            container,
+
+            onBack
 
         );
 
