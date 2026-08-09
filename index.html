@@ -12,13 +12,9 @@ content="width=device-width, initial-scale=1.0">
 
 <title>
 
-Family Wealth AI OS
+Family Wealth AI OS V7
 
 </title>
-
-<link rel="stylesheet"
-
-href="style.css">
 
 </head>
 
@@ -26,17 +22,170 @@ href="style.css">
 
 <div id="app">
 
-Loading Family Wealth AI OS...
+Loading Assets Dependencies Test...
 
 </div>
 
-<script
+<script type="module">
 
-type="module"
+const app =
 
-src="asset-engine-test.js">
+document.getElementById("app");
+
+const tests = [
+
+    [
+
+        "assetAgent",
+
+        "./modules/assets/agent/assetAgent.js"
+
+    ],
+
+    [
+
+        "assetAI",
+
+        "./modules/assets/ai/assetAI.js"
+
+    ],
+
+    [
+
+        "assetAPI",
+
+        "./modules/assets/api/assetAPI.js"
+
+    ],
+
+    [
+
+        "assetAnalysisEngine",
+
+        "./modules/assets/engines/assetAnalysisEngine.js"
+
+    ],
+
+    [
+
+        "assetEventHandler",
+
+        "./modules/assets/events/assetEventHandler.js"
+
+    ],
+
+    [
+
+        "assetRepository",
+
+        "./modules/assets/repository/assetRepository.js"
+
+    ],
+
+    [
+
+        "assetSchema",
+
+        "./modules/assets/schema/assetSchema.js"
+
+    ],
+
+    [
+
+        "assetService",
+
+        "./modules/assets/services/assetService.js"
+
+    ],
+
+    [
+
+        "assetView",
+
+        "./modules/assets/ui/assetView.js"
+
+    ]
+
+];
+
+app.innerHTML = `
+
+<h1>
+
+Family Wealth AI OS V7
+
+</h1>
+
+<h2>
+
+Assets Dependencies Test
+
+</h2>
+
+<p>
+
+Testing 9 Assets dependencies...
+
+</p>
+
+`;
+
+for(
+
+    const [name,path]
+
+    of tests
+
+){
+
+    try{
+
+        await import(path);
+
+        app.innerHTML += `
+
+        <p style="color:green">
+
+        ✅ ${name} — PASS
+
+        </p>
+
+        `;
+
+    }
+
+    catch(error){
+
+        app.innerHTML += `
+
+        <p style="color:red">
+
+        ❌ ${name} — FAIL
+
+        </p>
+
+        <pre style="
+
+        white-space:pre-wrap;
+
+        word-break:break-word;
+
+        color:red;
+
+        ">${error.stack ||
+
+           error.message ||
+
+           error}</pre>
+
+        `;
+
+    }
+
+}
 
 </script>
+
 </body>
 
 </html>
