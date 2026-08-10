@@ -1205,19 +1205,71 @@ function renderDashboard(
                     );
 
                 }
+catch(error){
 
-                catch(error){
+    console.error(
 
-                    renderError(
+        "Liability Module Error:",
 
-                        "Liability Module Error",
+        error
 
-                        error
+    );
 
-                    );
+    app.innerHTML = `
 
-                }
+        <div
 
+            class="error-screen"
+
+            style="
+
+                padding:30px;
+
+                font-family:Arial,sans-serif;
+
+            "
+
+        >
+
+            <h1>
+
+                Liability Module Error
+
+            </h1>
+
+            <pre
+
+                style="
+
+                    white-space:pre-wrap;
+
+                    word-break:break-word;
+
+                    color:red;
+
+                    background:#f5f5f5;
+
+                    padding:20px;
+
+                    border-radius:8px;
+
+                "
+
+            >${
+
+                error?.stack ||
+
+                error?.message ||
+
+                String(error)
+
+            }</pre>
+
+        </div>
+
+    `;
+
+}
             }
 
         );
