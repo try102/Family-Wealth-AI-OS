@@ -130,7 +130,11 @@ function renderDashboard(
 
                 const item =
 
-                    allocation[category];
+                    allocation[
+
+                        category
+
+                    ];
 
                 return `
 
@@ -180,11 +184,11 @@ function renderDashboard(
 
         <div class="app-shell">
 
-            <!-- ================================= -->
+            <!-- ================================== -->
 
             <!-- Header -->
 
-            <!-- ================================= -->
+            <!-- ================================== -->
 
             <header
 
@@ -206,11 +210,11 @@ function renderDashboard(
 
             </header>
 
-            <!-- ================================= -->
+            <!-- ================================== -->
 
             <!-- System Status -->
 
-            <!-- ================================= -->
+            <!-- ================================== -->
 
             <section
 
@@ -248,11 +252,11 @@ function renderDashboard(
 
             </section>
 
-            <!-- ================================= -->
+            <!-- ================================== -->
 
             <!-- Dashboard -->
 
-            <!-- ================================= -->
+            <!-- ================================== -->
 
             <section
 
@@ -566,11 +570,11 @@ function renderDashboard(
 
             </section>
 
-            <!-- ================================= -->
+            <!-- ================================== -->
 
             <!-- Asset Allocation -->
 
-            <!-- ================================= -->
+            <!-- ================================== -->
 
             <section
 
@@ -610,11 +614,11 @@ function renderDashboard(
 
             </section>
 
-            <!-- ================================= -->
+            <!-- ================================== -->
 
             <!-- Wealth Modules -->
 
-            <!-- ================================= -->
+            <!-- ================================== -->
 
             <section
 
@@ -674,11 +678,11 @@ function renderDashboard(
 
             </section>
 
-            <!-- ================================= -->
+            <!-- ================================== -->
 
             <!-- AI Agents -->
 
-            <!-- ================================= -->
+            <!-- ================================== -->
 
             <section
 
@@ -738,11 +742,11 @@ function renderDashboard(
 
             </section>
 
-            <!-- ================================= -->
+            <!-- ================================== -->
 
             <!-- Quick Access -->
 
-            <!-- ================================= -->
+            <!-- ================================== -->
 
             <section
 
@@ -1060,39 +1064,27 @@ function renderDashboard(
 
                 try{
 
-                    // ==========================================
-
-                    // Load Income View
-
-                    // ==========================================
-
                     const module =
 
                         await import(
 
-                            "./modules/income/ui/incomeView.js"
+                            "./modules/income/incomeModule.js"
 
                         );
 
-                    const IncomeView =
+                    const IncomeModule =
 
                         module.default;
 
-                    // ==========================================
-
-                    // Validate Income View
-
-                    // ==========================================
-
                     if(
 
-                        !IncomeView
+                        !IncomeModule
 
                     ){
 
                         throw new Error(
 
-                            "IncomeView not found"
+                            "IncomeModule not found"
 
                         );
 
@@ -1100,27 +1092,19 @@ function renderDashboard(
 
                     if(
 
-                        typeof IncomeView.render !==
-
-                        "function"
+                        !IncomeModule.view
 
                     ){
 
                         throw new Error(
 
-                            "IncomeView.render not found"
+                            "IncomeModule.view not found"
 
                         );
 
                     }
 
-                    // ==========================================
-
-                    // Render Income Center
-
-                    // ==========================================
-
-                    IncomeView.render(
+                    IncomeModule.view.render(
 
                         app,
 
@@ -1139,6 +1123,270 @@ function renderDashboard(
                     renderError(
 
                         "Income Module Error",
+
+                        error
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Quick Access - Liability
+
+    // ==================================================
+
+    const liabilityButton =
+
+        document.getElementById(
+
+            "quick-liability-button"
+
+        );
+
+    if(
+
+        liabilityButton
+
+    ){
+
+        liabilityButton.addEventListener(
+
+            "click",
+
+            async () => {
+
+                try{
+
+                    const module =
+
+                        await import(
+
+                            "./core/modules/liabilityModule.js"
+
+                        );
+
+                    const LiabilityModule =
+
+                        module.default;
+
+                    if(
+
+                        !LiabilityModule ||
+
+                        !LiabilityModule.view
+
+                    ){
+
+                        throw new Error(
+
+                            "LiabilityModule.view not found"
+
+                        );
+
+                    }
+
+                    LiabilityModule.view.render(
+
+                        app,
+
+                        () => {
+
+                            start();
+
+                        }
+
+                    );
+
+                }
+
+                catch(error){
+
+                    renderError(
+
+                        "Liability Module Error",
+
+                        error
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Quick Access - Cash Flow
+
+    // ==================================================
+
+    const cashflowButton =
+
+        document.getElementById(
+
+            "quick-cashflow-button"
+
+        );
+
+    if(
+
+        cashflowButton
+
+    ){
+
+        cashflowButton.addEventListener(
+
+            "click",
+
+            async () => {
+
+                try{
+
+                    const module =
+
+                        await import(
+
+                            "./core/modules/cashflowModule.js"
+
+                        );
+
+                    const CashflowModule =
+
+                        module.default;
+
+                    if(
+
+                        !CashflowModule ||
+
+                        !CashflowModule.view
+
+                    ){
+
+                        throw new Error(
+
+                            "CashflowModule.view not found"
+
+                        );
+
+                    }
+
+                    CashflowModule.view.render(
+
+                        app,
+
+                        () => {
+
+                            start();
+
+                        }
+
+                    );
+
+                }
+
+                catch(error){
+
+                    renderError(
+
+                        "Cash Flow Module Error",
+
+                        error
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Quick Access - Tax
+
+    // ==================================================
+
+    const taxButton =
+
+        document.getElementById(
+
+            "quick-tax-button"
+
+        );
+
+    if(
+
+        taxButton
+
+    ){
+
+        taxButton.addEventListener(
+
+            "click",
+
+            async () => {
+
+                try{
+
+                    const module =
+
+                        await import(
+
+                            "./core/modules/taxModule.js"
+
+                        );
+
+                    const TaxModule =
+
+                        module.default;
+
+                    if(
+
+                        !TaxModule ||
+
+                        !TaxModule.view
+
+                    ){
+
+                        throw new Error(
+
+                            "TaxModule.view not found"
+
+                        );
+
+                    }
+
+                    TaxModule.view.render(
+
+                        app,
+
+                        () => {
+
+                            start();
+
+                        }
+
+                    );
+
+                }
+
+                catch(error){
+
+                    renderError(
+
+                        "Tax Module Error",
 
                         error
 
@@ -1198,9 +1446,9 @@ function renderError(
 
 ${error?.stack ||
 
- error?.message ||
+  error?.message ||
 
- String(error)}
+  String(error)}
 
             </pre>
 
@@ -1322,38 +1570,6 @@ async function start(){
 
         // ==================================================
 
-        // Investment Value
-
-        // ==================================================
-
-        const investmentValue =
-
-            investments.reduce(
-
-                (
-
-                    total,
-
-                    investment
-
-                ) =>
-
-                    total +
-
-                    Number(
-
-                        investment.currentValue ||
-
-                        0
-
-                    ),
-
-                0
-
-            );
-
-        // ==================================================
-
         // Liabilities
 
         // ==================================================
@@ -1378,31 +1594,161 @@ async function start(){
 
         // ==================================================
 
-        // Cash Flow
+        // Income V7
+
+        //
+
+        // IMPORTANT:
+
+        // Dashboard income MUST come
+
+        // directly from Income V7.
+
+        //
+
+        // Do NOT depend on the old
+
+        // Cashflow income source.
 
         // ==================================================
 
-        const cashflowModule =
+        const incomeModule =
 
             await import(
 
-                "./core/modules/cashflowModule.js"
+                "./modules/income/incomeModule.js"
 
             );
 
-        const CashflowModule =
+        const IncomeModule =
 
-            cashflowModule.default;
+            incomeModule.default;
 
-        const cashFlowSummary =
+        if(
 
-            CashflowModule.api
+            !IncomeModule ||
 
-                .getSummary();
+            !IncomeModule.agent
+
+        ){
+
+            throw new Error(
+
+                "IncomeModule.agent not found"
+
+            );
+
+        }
+
+        const incomeSummary =
+
+            IncomeModule.agent
+
+                .getIncomeSummary();
 
         // ==================================================
 
-        // Normalize Cash Flow
+        // Income Total
+
+        // ==================================================
+
+        const incomeTotal =
+
+            Number(
+
+                incomeSummary?.totalIncome ||
+
+                0
+
+            );
+
+        // ==================================================
+
+        // Cash Flow
+
+        //
+
+        // Expenses continue to come
+
+        // from Cash Flow Module.
+
+        //
+
+        // Income comes from Income V7.
+
+        // ==================================================
+
+        let cashFlowExpense = 0;
+
+        try{
+
+            const cashflowModule =
+
+                await import(
+
+                    "./core/modules/cashflowModule.js"
+
+                );
+
+            const CashflowModule =
+
+                cashflowModule.default;
+
+            if(
+
+                CashflowModule &&
+
+                CashflowModule.api &&
+
+                typeof CashflowModule.api.getSummary ===
+
+                    "function"
+
+            ){
+
+                const cashflowSummary =
+
+                    CashflowModule.api
+
+                        .getSummary();
+
+                cashFlowExpense =
+
+                    Number(
+
+                        cashflowSummary?.expense ||
+
+                        0
+
+                    );
+
+            }
+
+        }
+
+        catch(error){
+
+            console.warn(
+
+                "Cash Flow Module unavailable:",
+
+                error
+
+            );
+
+        }
+
+        // ==================================================
+
+        // Unified Cash Flow
+
+        //
+
+        // Income V7
+
+        // +
+
+        // Cash Flow Expense
 
         // ==================================================
 
@@ -1410,43 +1756,23 @@ async function start(){
 
             income:
 
-                Number(
-
-                    cashFlowSummary.income ||
-
-                    0
-
-                ),
+                incomeTotal,
 
             expense:
 
-                Number(
-
-                    cashFlowSummary.expense ||
-
-                    0
-
-                ),
+                cashFlowExpense,
 
             net:
 
-                Number(
+                incomeTotal -
 
-                    cashFlowSummary.net ||
-
-                    0
-
-                ),
+                cashFlowExpense,
 
             netCashFlow:
 
-                Number(
+                incomeTotal -
 
-                    cashFlowSummary.net ||
-
-                    0
-
-                )
+                cashFlowExpense
 
         };
 
@@ -1480,7 +1806,7 @@ async function start(){
 
         //
 
-        // This does NOT modify the Investment Module.
+        // This does NOT modify Investment Module.
 
         // ==================================================
 
