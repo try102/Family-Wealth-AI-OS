@@ -1,5 +1,7 @@
 /*
 
+    
+
 Family Wealth AI OS V7
 
 Application Entry
@@ -178,7 +180,11 @@ function renderDashboard(
 
         <div class="app-shell">
 
+            <!-- ================================= -->
+
             <!-- Header -->
+
+            <!-- ================================= -->
 
             <header
 
@@ -200,7 +206,11 @@ function renderDashboard(
 
             </header>
 
-            <!-- System -->
+            <!-- ================================= -->
+
+            <!-- System Status -->
+
+            <!-- ================================= -->
 
             <section
 
@@ -238,7 +248,11 @@ function renderDashboard(
 
             </section>
 
+            <!-- ================================= -->
+
             <!-- Dashboard -->
+
+            <!-- ================================= -->
 
             <section
 
@@ -552,7 +566,11 @@ function renderDashboard(
 
             </section>
 
+            <!-- ================================= -->
+
             <!-- Asset Allocation -->
+
+            <!-- ================================= -->
 
             <section
 
@@ -592,7 +610,11 @@ function renderDashboard(
 
             </section>
 
+            <!-- ================================= -->
+
             <!-- Wealth Modules -->
+
+            <!-- ================================= -->
 
             <section
 
@@ -652,7 +674,11 @@ function renderDashboard(
 
             </section>
 
+            <!-- ================================= -->
+
             <!-- AI Agents -->
+
+            <!-- ================================= -->
 
             <section
 
@@ -712,7 +738,11 @@ function renderDashboard(
 
             </section>
 
+            <!-- ================================= -->
+
             <!-- Quick Access -->
+
+            <!-- ================================= -->
 
             <section
 
@@ -850,7 +880,7 @@ function renderDashboard(
 
             async () => {
 
-                try {
+                try{
 
                     const module =
 
@@ -938,7 +968,7 @@ function renderDashboard(
 
             async () => {
 
-                try {
+                try{
 
                     const module =
 
@@ -958,7 +988,7 @@ function renderDashboard(
 
                         typeof InvestmentView.render !==
 
-                            "function"
+                        "function"
 
                     ){
 
@@ -1028,37 +1058,69 @@ function renderDashboard(
 
             async () => {
 
-                try {
+                try{
+
+                    // ==========================================
+
+                    // Load Income View
+
+                    // ==========================================
 
                     const module =
 
                         await import(
 
-                            "./modules/income/incomeModule.js"
+                            "./modules/income/ui/incomeView.js"
 
                         );
 
-                    const IncomeModule =
+                    const IncomeView =
 
                         module.default;
 
+                    // ==========================================
+
+                    // Validate Income View
+
+                    // ==========================================
+
                     if(
 
-                        !IncomeModule ||
-
-                        !IncomeModule.view
+                        !IncomeView
 
                     ){
 
                         throw new Error(
 
-                            "IncomeModule.view not found"
+                            "IncomeView not found"
 
                         );
 
                     }
 
-                    IncomeModule.view.render(
+                    if(
+
+                        typeof IncomeView.render !==
+
+                        "function"
+
+                    ){
+
+                        throw new Error(
+
+                            "IncomeView.render not found"
+
+                        );
+
+                    }
+
+                    // ==========================================
+
+                    // Render Income Center
+
+                    // ==========================================
+
+                    IncomeView.render(
 
                         app,
 
@@ -1156,7 +1218,7 @@ ${error?.stack ||
 
 async function start(){
 
-    try {
+    try{
 
         app.innerHTML = `
 
@@ -1256,9 +1318,7 @@ async function start(){
 
         const investments =
 
-            InvestmentAPI
-
-                .getInvestments();
+            InvestmentAPI.getInvestments();
 
         // ==================================================
 
@@ -1342,91 +1402,7 @@ async function start(){
 
         // ==================================================
 
-        // Income Module
-
-        //
-
-        // V7 Income is the authoritative
-
-        // income source for Dashboard.
-
-        // ==================================================
-
-        const incomeModule =
-
-            await import(
-
-                "./modules/income/incomeModule.js"
-
-            );
-
-        const IncomeModule =
-
-            incomeModule.default;
-
-        if(
-
-            !IncomeModule ||
-
-            !IncomeModule.agent
-
-        ){
-
-            throw new Error(
-
-                "IncomeModule.agent not found"
-
-            );
-
-        }
-
-        // ==================================================
-
-        // Income Summary
-
-        // ==================================================
-
-        const incomeSummary =
-
-            IncomeModule.agent
-
-                .getIncomeSummary();
-
-        const incomeTotal =
-
-            Number(
-
-                incomeSummary?.totalIncome ||
-
-                0
-
-            );
-
-        // ==================================================
-
-        // Expense
-
-        // ==================================================
-
-        const expenseTotal =
-
-            Number(
-
-                cashFlowSummary?.expense ||
-
-                0
-
-            );
-
-        // ==================================================
-
         // Normalize Cash Flow
-
-        //
-
-        // Income comes from Income Module.
-
-        // Expense remains from Cashflow Module.
 
         // ==================================================
 
@@ -1434,23 +1410,43 @@ async function start(){
 
             income:
 
-                incomeTotal,
+                Number(
+
+                    cashFlowSummary.income ||
+
+                    0
+
+                ),
 
             expense:
 
-                expenseTotal,
+                Number(
+
+                    cashFlowSummary.expense ||
+
+                    0
+
+                ),
 
             net:
 
-                incomeTotal -
+                Number(
 
-                expenseTotal,
+                    cashFlowSummary.net ||
+
+                    0
+
+                ),
 
             netCashFlow:
 
-                incomeTotal -
+                Number(
 
-                expenseTotal
+                    cashFlowSummary.net ||
+
+                    0
+
+                )
 
         };
 
@@ -1488,51 +1484,49 @@ async function start(){
 
         // ==================================================
 
-        const dashboardAssets =
+        const dashboardAssets = [
 
-            [
+            ...assets,
 
-                ...assets,
+            ...investments.map(
 
-                ...investments.map(
+                investment => ({
 
-                    investment => ({
+                    id:
 
-                        id:
+                        "investment-" +
 
-                            "investment-" +
+                        investment.id,
 
-                            investment.id,
+                    name:
 
-                        name:
+                        investment.name ||
 
-                            investment.name ||
+                        "Investment",
 
-                            "Investment",
+                    category:
 
-                        category:
+                        "Investment",
 
-                            "Investment",
+                    value:
 
-                        value:
+                        Number(
 
-                            Number(
+                            investment.currentValue ||
 
-                                investment.currentValue ||
+                            0
 
-                                0
+                        ),
 
-                            ),
+                    type:
 
-                        type:
+                        "Investment"
 
-                            "Investment"
+                })
 
-                    })
+            )
 
-                )
-
-            ];
+        ];
 
         // ==================================================
 
