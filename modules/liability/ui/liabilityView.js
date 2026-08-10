@@ -1,5 +1,7 @@
 /*
 
+    
+
 Family Wealth AI OS V7
 
 Liability View
@@ -54,6 +56,20 @@ const LiabilityView = {
 
                 .analyzeDebtStatus();
 
+        const totalLiability =
+
+            Number(
+
+                summary?.totalLiability ??
+
+                summary?.totalLiabilities ??
+
+                summary?.totalDebt ??
+
+                0
+
+            );
+
         container.innerHTML = `
 
             <div
@@ -61,6 +77,8 @@ const LiabilityView = {
                 class="app-shell"
 
             >
+
+                <!-- Header -->
 
                 <header
 
@@ -102,6 +120,8 @@ const LiabilityView = {
 
                     >
 
+                        <!-- Count -->
+
                         <div
 
                             class="dashboard-card"
@@ -120,15 +140,13 @@ const LiabilityView = {
 
                             >
 
-                                ${
-
-                                    liabilities.length
-
-                                }
+                                ${liabilities.length}
 
                             </div>
 
                         </div>
+
+                        <!-- Total -->
 
                         <div
 
@@ -148,21 +166,13 @@ const LiabilityView = {
 
                             >
 
-                                $${Number(
-
-                                    summary?.totalLiabilities ??
-
-                                    summary?.totalLiability ??
-
-                                    summary?.totalDebt ??
-
-                                    0
-
-                                ).toLocaleString()}
+                                $${totalLiability.toLocaleString()}
 
                             </div>
 
                         </div>
+
+                        <!-- Status -->
 
                         <div
 
@@ -400,167 +410,167 @@ const LiabilityView = {
 
                                             liabilities
 
-                                            .map(
+                                                .map(
 
-                                                item => `
+                                                    item => `
 
-                                                <tr
+                                                    <tr
 
-                                                    data-liability-id="${item.id}"
-
-                                                >
-
-                                                    <td
-
-                                                        style="
-
-                                                            padding:10px;
-
-                                                        "
+                                                        data-liability-id="${item.id}"
 
                                                     >
 
-                                                        ${
+                                                        <td
 
-                                                            item.name ||
+                                                            style="
 
-                                                            "Unnamed Liability"
+                                                                padding:10px;
 
-                                                        }
-
-                                                    </td>
-
-                                                    <td
-
-                                                        style="
-
-                                                            padding:10px;
-
-                                                        "
-
-                                                    >
-
-                                                        ${
-
-                                                            item.category ||
-
-                                                            "Other"
-
-                                                        }
-
-                                                    </td>
-
-                                                    <td
-
-                                                        style="
-
-                                                            padding:10px;
-
-                                                        "
-
-                                                    >
-
-                                                        $${Number(
-
-                                                            item.currentBalance ??
-
-                                                            item.balance ??
-
-                                                            0
-
-                                                        ).toLocaleString()}
-
-                                                    </td>
-
-                                                    <td
-
-                                                        style="
-
-                                                            padding:10px;
-
-                                                        "
-
-                                                    >
-
-                                                        ${Number(
-
-                                                            item.interestRate ??
-
-                                                            item.rate ??
-
-                                                            0
-
-                                                        )}%
-
-                                                    </td>
-
-                                                    <td
-
-                                                        style="
-
-                                                            padding:10px;
-
-                                                        "
-
-                                                    >
-
-                                                        ${
-
-                                                            item.status ||
-
-                                                            "Active"
-
-                                                        }
-
-                                                    </td>
-
-                                                    <td
-
-                                                        style="
-
-                                                            padding:10px;
-
-                                                        "
-
-                                                    >
-
-                                                        <button
-
-                                                            type="button"
-
-                                                            class="edit-liability-button"
-
-                                                            data-id="${item.id}"
+                                                            "
 
                                                         >
 
-                                                            Edit
+                                                            ${
 
-                                                        </button>
+                                                                item.name ||
 
-                                                        <button
+                                                                "Unnamed Liability"
 
-                                                            type="button"
+                                                            }
 
-                                                            class="delete-liability-button"
+                                                        </td>
 
-                                                            data-id="${item.id}"
+                                                        <td
+
+                                                            style="
+
+                                                                padding:10px;
+
+                                                            "
 
                                                         >
 
-                                                            Delete
+                                                            ${
 
-                                                        </button>
+                                                                item.category ||
 
-                                                    </td>
+                                                                "Other"
 
-                                                </tr>
+                                                            }
 
-                                                `
+                                                        </td>
 
-                                            )
+                                                        <td
 
-                                            .join("")
+                                                            style="
+
+                                                                padding:10px;
+
+                                                            "
+
+                                                        >
+
+                                                            $${Number(
+
+                                                                item.currentBalance ??
+
+                                                                item.balance ??
+
+                                                                0
+
+                                                            ).toLocaleString()}
+
+                                                        </td>
+
+                                                        <td
+
+                                                            style="
+
+                                                                padding:10px;
+
+                                                            "
+
+                                                        >
+
+                                                            ${Number(
+
+                                                                item.interestRate ??
+
+                                                                item.rate ??
+
+                                                                0
+
+                                                            )}%
+
+                                                        </td>
+
+                                                        <td
+
+                                                            style="
+
+                                                                padding:10px;
+
+                                                            "
+
+                                                        >
+
+                                                            ${
+
+                                                                item.status ||
+
+                                                                "Active"
+
+                                                            }
+
+                                                        </td>
+
+                                                        <td
+
+                                                            style="
+
+                                                                padding:10px;
+
+                                                            "
+
+                                                        >
+
+                                                            <button
+
+                                                                type="button"
+
+                                                                class="edit-liability-button"
+
+                                                                data-id="${item.id}"
+
+                                                            >
+
+                                                                Edit
+
+                                                            </button>
+
+                                                            <button
+
+                                                                type="button"
+
+                                                                class="delete-liability-button"
+
+                                                                data-id="${item.id}"
+
+                                                            >
+
+                                                                Delete
+
+                                                            </button>
+
+                                                        </td>
+
+                                                    </tr>
+
+                                                    `
+
+                                                )
+
+                                                .join("")
 
                                         }
 
@@ -948,15 +958,51 @@ const LiabilityView = {
 
                     <br>
 
-                    <input
+                    <select
 
                         id="liability-category"
 
-                        type="text"
-
-                        value="Other"
+                        required
 
                     >
+
+                        <option value="Mortgage">
+
+                            Mortgage
+
+                        </option>
+
+                        <option value="Credit Card">
+
+                            Credit Card
+
+                        </option>
+
+                        <option value="Auto Loan">
+
+                            Auto Loan
+
+                        </option>
+
+                        <option value="Student Loan">
+
+                            Student Loan
+
+                        </option>
+
+                        <option value="Personal Loan">
+
+                            Personal Loan
+
+                        </option>
+
+                        <option value="Other" selected>
+
+                            Other
+
+                        </option>
+
+                    </select>
 
                     <br><br>
 
@@ -1044,6 +1090,16 @@ const LiabilityView = {
 
             );
 
+        if(!form){
+
+            throw new Error(
+
+                "Liability create form not found"
+
+            );
+
+        }
+
         form.addEventListener(
 
             "submit",
@@ -1051,6 +1107,12 @@ const LiabilityView = {
             event => {
 
                 event.preventDefault();
+
+                // ==========================================
+
+                // Read Form
+
+                // ==========================================
 
                 const name =
 
@@ -1106,89 +1168,111 @@ const LiabilityView = {
 
                     );
 
-                /*
+                // ==========================================
 
-                    Use the existing API.
+                // Validation
 
-                    Do not change the Liability
+                // ==========================================
 
-                    module architecture here.
+                if(!name){
 
-                */
+                    alert(
+
+                        "Please enter liability name."
+
+                    );
+
+                    return;
+
+                }
 
                 if(
 
-                    typeof LiabilityAPI
+                    !Number.isFinite(balance) ||
 
-                        .addLiability ===
-
-                    "function"
+                    balance < 0
 
                 ){
 
-                    LiabilityAPI.addLiability({
+                    alert(
 
-                        name,
+                        "Please enter a valid liability balance."
 
-                        category,
+                    );
 
-                        currentBalance:
-
-                            balance,
-
-                        interestRate:
-
-                            rate,
-
-                        status:
-
-                            "Active"
-
-                    });
+                    return;
 
                 }
 
-                else if(
+                if(
 
-                    typeof LiabilityAgent
+                    !Number.isFinite(rate) ||
 
-                        .addLiability ===
-
-                    "function"
+                    rate < 0
 
                 ){
 
-                    LiabilityAgent.addLiability({
+                    alert(
 
-                        name,
+                        "Please enter a valid interest rate."
 
-                        category,
+                    );
 
-                        currentBalance:
-
-                            balance,
-
-                        interestRate:
-
-                            rate,
-
-                        status:
-
-                            "Active"
-
-                    });
+                    return;
 
                 }
 
-                else{
+                // ==========================================
+
+                // Create
+
+                //
+
+                // IMPORTANT:
+
+                // LiabilityAPI uses createLiability()
+
+                // ==========================================
+
+                const created =
+
+                    LiabilityAPI
+
+                        .createLiability({
+
+                            name,
+
+                            category,
+
+                            currentBalance:
+
+                                balance,
+
+                            interestRate:
+
+                                rate,
+
+                            status:
+
+                                "Active"
+
+                        });
+
+                if(!created){
 
                     throw new Error(
 
-                        "No addLiability method found"
+                        "Liability creation failed"
 
                     );
 
                 }
+
+                // ==========================================
+
+                // Refresh
+
+                // ==========================================
 
                 this.render(
 
@@ -1201,6 +1285,12 @@ const LiabilityView = {
             }
 
         );
+
+        // ==================================================
+
+        // Cancel
+
+        // ==================================================
 
         const cancelButton =
 
@@ -1283,6 +1373,12 @@ const LiabilityView = {
                 "#liability-form-container"
 
             );
+
+        if(!formContainer){
+
+            return;
+
+        }
 
         const balance =
 
@@ -1368,15 +1464,51 @@ const LiabilityView = {
 
                     <br>
 
-                    <input
+                    <select
 
                         id="edit-liability-category"
 
-                        type="text"
-
-                        value="${liability.category || "Other"}"
+                        required
 
                     >
+
+                        <option value="Mortgage">
+
+                            Mortgage
+
+                        </option>
+
+                        <option value="Credit Card">
+
+                            Credit Card
+
+                        </option>
+
+                        <option value="Auto Loan">
+
+                            Auto Loan
+
+                        </option>
+
+                        <option value="Student Loan">
+
+                            Student Loan
+
+                        </option>
+
+                        <option value="Personal Loan">
+
+                            Personal Loan
+
+                        </option>
+
+                        <option value="Other">
+
+                            Other
+
+                        </option>
+
+                    </select>
 
                     <br><br>
 
@@ -1458,6 +1590,20 @@ const LiabilityView = {
 
         `;
 
+        const categorySelect =
+
+            formContainer.querySelector(
+
+                "#edit-liability-category"
+
+            );
+
+        categorySelect.value =
+
+            liability.category ||
+
+            "Other";
+
         const form =
 
             formContainer.querySelector(
@@ -1496,9 +1642,7 @@ const LiabilityView = {
 
                         )
 
-                        .value
-
-                        .trim(),
+                        .value,
 
                     currentBalance:
 
@@ -1538,49 +1682,65 @@ const LiabilityView = {
 
                 if(
 
-                    typeof LiabilityAPI
+                    !Number.isFinite(
 
-                        .updateLiability ===
+                        updated.currentBalance
 
-                    "function"
+                    ) ||
 
-                ){
-
-                    LiabilityAPI.updateLiability(
-
-                        id,
-
-                        updated
-
-                    );
-
-                }
-
-                else if(
-
-                    typeof LiabilityAgent
-
-                        .updateLiability ===
-
-                    "function"
+                    updated.currentBalance < 0
 
                 ){
 
-                    LiabilityAgent.updateLiability(
+                    alert(
 
-                        id,
-
-                        updated
+                        "Please enter a valid liability balance."
 
                     );
 
+                    return;
+
                 }
 
-                else{
+                if(
+
+                    !Number.isFinite(
+
+                        updated.interestRate
+
+                    ) ||
+
+                    updated.interestRate < 0
+
+                ){
+
+                    alert(
+
+                        "Please enter a valid interest rate."
+
+                    );
+
+                    return;
+
+                }
+
+                const result =
+
+                    LiabilityAPI
+
+                        .updateLiability(
+
+                            id,
+
+                            updated
+
+                        );
+
+                if(!result){
 
                     throw new Error(
 
-                        "No updateLiability method found"
+                        "Liability update failed"
 
                     );
 
@@ -1696,47 +1856,21 @@ const LiabilityView = {
 
         }
 
-        if(
+        const result =
 
-            typeof LiabilityAPI
+            LiabilityAPI
 
-                .deleteLiability ===
+                .deleteLiability(
 
-            "function"
+                    id
 
-        ){
+                );
 
-            LiabilityAPI.deleteLiability(
-
-                id
-
-            );
-
-        }
-
-        else if(
-
-            typeof LiabilityAgent
-
-                .deleteLiability ===
-
-            "function"
-
-        ){
-
-            LiabilityAgent.deleteLiability(
-
-                id
-
-            );
-
-        }
-
-        else{
+        if(!result){
 
             throw new Error(
 
-                "No deleteLiability method found"
+                "Liability deletion failed"
 
             );
 
