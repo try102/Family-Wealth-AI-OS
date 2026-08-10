@@ -1,5 +1,7 @@
 /*
 
+    
+
 Family Wealth AI OS V7
 
 Liability Repository
@@ -12,15 +14,15 @@ import Database from "../../../storage/database.js";
 
 const TABLE =
 
-"liabilities";
+    "liabilities";
 
 const LiabilityRepository = {
 
-    // =====================
+    // ==================================================
 
     // Initialize
 
-    // =====================
+    // ==================================================
 
     init(){
 
@@ -30,11 +32,11 @@ const LiabilityRepository = {
 
     },
 
-    // =====================
+    // ==================================================
 
     // Save
 
-    // =====================
+    // ==================================================
 
     save(
 
@@ -52,13 +54,15 @@ const LiabilityRepository = {
 
     },
 
-    // =====================
+    // ==================================================
 
     // Find All
 
-    // =====================
+    // ==================================================
 
     findAll(){
+
+        Database.init();
 
         return Database.find(
 
@@ -68,11 +72,11 @@ const LiabilityRepository = {
 
     },
 
-    // =====================
+    // ==================================================
 
     // Find By Id
 
-    // =====================
+    // ==================================================
 
     findById(
 
@@ -82,27 +86,33 @@ const LiabilityRepository = {
 
         const list =
 
-        this.findAll();
+            this.findAll();
 
-        return list.find(
+        return (
 
-            item =>
+            list.find(
 
-            item.id === id
+                item =>
 
-        )
+                    String(item.id) ===
 
-        ||
+                    String(id)
 
-        null;
+            )
+
+            ||
+
+            null
+
+        );
 
     },
 
-    // =====================
+    // ==================================================
 
     // Update
 
-    // =====================
+    // ==================================================
 
     update(
 
@@ -114,17 +124,19 @@ const LiabilityRepository = {
 
         const list =
 
-        this.findAll();
+            this.findAll();
 
         const index =
 
-        list.findIndex(
+            list.findIndex(
 
-            item =>
+                item =>
 
-            item.id === id
+                    String(item.id) ===
 
-        );
+                    String(id)
+
+            );
 
         if(
 
@@ -136,17 +148,25 @@ const LiabilityRepository = {
 
         }
 
+        const existing =
+
+            list[index];
+
         list[index] = {
 
-            ...list[index],
+            ...existing,
 
             ...data,
 
+            id:
+
+                existing.id,
+
             updatedAt:
 
-            new Date()
+                new Date()
 
-            .toISOString()
+                    .toISOString()
 
         };
 
@@ -156,11 +176,11 @@ const LiabilityRepository = {
 
     },
 
-    // =====================
+    // ==================================================
 
     // Delete
 
-    // =====================
+    // ==================================================
 
     remove(
 
@@ -170,17 +190,19 @@ const LiabilityRepository = {
 
         const list =
 
-        this.findAll();
+            this.findAll();
 
         const index =
 
-        list.findIndex(
+            list.findIndex(
 
-            item =>
+                item =>
 
-            item.id === id
+                    String(item.id) ===
 
-        );
+                    String(id)
+
+            );
 
         if(
 
@@ -206,17 +228,21 @@ const LiabilityRepository = {
 
     },
 
-    // =====================
+    // ==================================================
 
     // Clear Test Data
 
-    // =====================
+    // ==================================================
 
     clear(){
 
-        Database.tables[TABLE]=[];
+        Database.init();
+
+        Database.tables[TABLE] = [];
 
         Database.save();
+
+        return true;
 
     }
 
