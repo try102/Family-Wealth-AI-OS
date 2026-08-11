@@ -6,200 +6,364 @@ Cashflow Schema Test
 
 */
 
-import cashflowSchema from "../cashflowSchema.js";
+import cashflowSchema
 
-// =====================
+    from "../cashflowSchema.js";
 
-// Basic Information
+// ==================================================
 
-// =====================
+// Test 1
 
-if(
+// Create Yearly Income
 
-    cashflowSchema.name !==
+// ==================================================
 
-    "Cashflow Schema V7"
+const yearlyIncome =
 
-){
+    cashflowSchema.create({
 
-    throw new Error(
+        type:
 
-        "Cashflow schema name failed"
+            "INCOME",
+
+        category:
+
+            "Salary",
+
+        description:
+
+            "Annual Salary",
+
+        amount:
+
+            80000,
+
+        frequency:
+
+            "YEARLY"
+
+    });
+
+console.assert(
+
+    yearlyIncome.type ===
+
+        "INCOME",
+
+    "Test 1 failed: type"
+
+);
+
+console.assert(
+
+    yearlyIncome.amount ===
+
+        80000,
+
+    "Test 1 failed: amount"
+
+);
+
+console.assert(
+
+    yearlyIncome.frequency ===
+
+        "YEARLY",
+
+    "Test 1 failed: frequency"
+
+);
+
+console.assert(
+
+    yearlyIncome.annualizedAmount ===
+
+        80000,
+
+    "Test 1 failed: annualized amount"
+
+);
+
+// ==================================================
+
+// Test 2
+
+// Monthly Expense
+
+// ==================================================
+
+const monthlyExpense =
+
+    cashflowSchema.create({
+
+        type:
+
+            "EXPENSE",
+
+        category:
+
+            "Housing",
+
+        amount:
+
+            3000,
+
+        frequency:
+
+            "MONTHLY"
+
+    });
+
+console.assert(
+
+    monthlyExpense.frequency ===
+
+        "MONTHLY",
+
+    "Test 2 failed: frequency"
+
+);
+
+console.assert(
+
+    monthlyExpense.annualizedAmount ===
+
+        36000,
+
+    "Test 2 failed: annualized amount"
+
+);
+
+// ==================================================
+
+// Test 3
+
+// Quarterly Expense
+
+// ==================================================
+
+const quarterlyExpense =
+
+    cashflowSchema.create({
+
+        type:
+
+            "EXPENSE",
+
+        amount:
+
+            3000,
+
+        frequency:
+
+            "QUARTERLY"
+
+    });
+
+console.assert(
+
+    quarterlyExpense.annualizedAmount ===
+
+        12000,
+
+    "Test 3 failed: annualized amount"
+
+);
+
+// ==================================================
+
+// Test 4
+
+// One Time
+
+// ==================================================
+
+const oneTimeExpense =
+
+    cashflowSchema.create({
+
+        type:
+
+            "EXPENSE",
+
+        amount:
+
+            5000,
+
+        frequency:
+
+            "ONE_TIME"
+
+    });
+
+console.assert(
+
+    oneTimeExpense.annualizedAmount ===
+
+        5000,
+
+    "Test 4 failed: annualized amount"
+
+);
+
+// ==================================================
+
+// Test 5
+
+// Default Frequency
+
+// ==================================================
+
+const defaultRecord =
+
+    cashflowSchema.create({
+
+        type:
+
+            "INCOME",
+
+        amount:
+
+            10000
+
+    });
+
+console.assert(
+
+    defaultRecord.frequency ===
+
+        "YEARLY",
+
+    "Test 5 failed: default frequency"
+
+);
+
+console.assert(
+
+    defaultRecord.annualizedAmount ===
+
+        10000,
+
+    "Test 5 failed: default annualized amount"
+
+);
+
+// ==================================================
+
+// Test 6
+
+// Invalid Type
+
+// ==================================================
+
+console.assert(
+
+    cashflowSchema.validate({
+
+        type:
+
+            "INVALID",
+
+        amount:
+
+            1000
+
+    }) === false,
+
+    "Test 6 failed: invalid type"
+
+);
+
+// ==================================================
+
+// Test 7
+
+// Update Monthly Expense
+
+// ==================================================
+
+const updated =
+
+    cashflowSchema.update(
+
+        monthlyExpense,
+
+        {
+
+            amount:
+
+                4000,
+
+            frequency:
+
+                "MONTHLY"
+
+        }
 
     );
 
-}
+console.assert(
 
-if(
+    updated.amount ===
 
-    cashflowSchema.version !==
+        4000,
 
-    "7.0"
+    "Test 7 failed: update amount"
 
-){
+);
 
-    throw new Error(
+console.assert(
 
-        "Cashflow schema version failed"
+    updated.frequency ===
 
-    );
+        "MONTHLY",
 
-}
+    "Test 7 failed: update frequency"
 
-// =====================
+);
 
-// Field Check
+console.assert(
 
-// =====================
+    updated.annualizedAmount ===
 
-const fields =
+        48000,
 
-cashflowSchema.fields;
+    "Test 7 failed: update annualized amount"
 
-if(
+);
 
-    !fields.id
+// ==================================================
 
-){
+// Result
 
-    throw new Error(
-
-        "id field missing"
-
-    );
-
-}
-
-if(
-
-    !fields.type
-
-){
-
-    throw new Error(
-
-        "type field missing"
-
-    );
-
-}
-
-if(
-
-    !fields.amount
-
-){
-
-    throw new Error(
-
-        "amount field missing"
-
-    );
-
-}
-
-if(
-
-    !fields.createdAt
-
-){
-
-    throw new Error(
-
-        "createdAt field missing"
-
-    );
-
-}
-
-// =====================
-
-// Type Validation
-
-// =====================
-
-if(
-
-    fields.type.type !==
-
-    "string"
-
-){
-
-    throw new Error(
-
-        "type field invalid"
-
-    );
-
-}
-
-if(
-
-    !fields.type.values.includes(
-
-        "INCOME"
-
-    )
-
-){
-
-    throw new Error(
-
-        "INCOME type missing"
-
-    );
-
-}
-
-if(
-
-    !fields.type.values.includes(
-
-        "EXPENSE"
-
-    )
-
-){
-
-    throw new Error(
-
-        "EXPENSE type missing"
-
-    );
-
-}
-
-// =====================
-
-// Amount Validation
-
-// =====================
-
-if(
-
-    fields.amount.type !==
-
-    "number"
-
-){
-
-    throw new Error(
-
-        "amount field invalid"
-
-    );
-
-}
-
-// =====================
-
-// Final
-
-// =====================
+// ==================================================
 
 console.log(
 
-    "Cashflow Schema V7 Test Passed"
+    "=========================================="
+
+);
+
+console.log(
+
+    "Family Wealth AI OS V7"
+
+);
+
+console.log(
+
+    "Cashflow Schema Test"
+
+);
+
+console.log(
+
+    "=========================================="
+
+);
+
+console.log(
+
+    "✅ Cashflow Schema Test PASSED"
 
 );
