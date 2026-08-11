@@ -1,10 +1,18 @@
 /*
 
+ 
+
 Family Wealth AI OS V7.7
+
+ 
 
 Tax Manager
 
+ 
+
 负责管理家庭税务规划方案
+
+ 
 
 */
 
@@ -481,6 +489,228 @@ class TaxManager {
                 )[0]
 
         );
+
+    }
+
+    // ==================================================
+
+    // Get Latest Tax Year
+
+    // ==================================================
+
+    getLatestTaxYear(){
+
+        const plan =
+
+            this.getLatestPlan();
+
+        if(
+
+            !plan
+
+        ){
+
+            return null;
+
+        }
+
+        return (
+
+            Number(
+
+                plan.taxYear
+
+            ) || null
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Get Plans By Year
+
+    // ==================================================
+
+    getPlansByYear(
+
+        taxYear
+
+    ){
+
+        this.init();
+
+        return (
+
+            this.taxPlans.filter(
+
+                plan =>
+
+                    Number(
+
+                        plan.taxYear
+
+                    ) ===
+
+                    Number(
+
+                        taxYear
+
+                    )
+
+            )
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Get Plans Count By Year
+
+    // ==================================================
+
+    countByYear(
+
+        taxYear
+
+    ){
+
+        return this.getPlansByYear(
+
+            taxYear
+
+        ).length;
+
+    }
+
+    // ==================================================
+
+    // Replace All Plans
+
+    // ==================================================
+
+    setPlans(
+
+        plans = []
+
+    ){
+
+        if(
+
+            !Array.isArray(
+
+                plans
+
+            )
+
+        ){
+
+            return false;
+
+        }
+
+        this.taxPlans = [
+
+            ...plans
+
+        ];
+
+        return true;
+
+    }
+
+    // ==================================================
+
+    // Export Plans
+
+    // ==================================================
+
+    export(){
+
+        this.init();
+
+        return JSON.parse(
+
+            JSON.stringify(
+
+                this.taxPlans
+
+            )
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Import Plans
+
+    // ==================================================
+
+    import(
+
+        plans = []
+
+    ){
+
+        if(
+
+            !Array.isArray(
+
+                plans
+
+            )
+
+        ){
+
+            return false;
+
+        }
+
+        this.taxPlans = [
+
+            ...plans
+
+        ];
+
+        return true;
+
+    }
+
+    // ==================================================
+
+    // Manager Status
+
+    // ==================================================
+
+    getStatus(){
+
+        this.init();
+
+        return {
+
+            name:
+
+                "Tax Manager",
+
+            version:
+
+                "V7.7",
+
+            count:
+
+                this.taxPlans.length,
+
+            latestTaxYear:
+
+                this.getLatestTaxYear(),
+
+            status:
+
+                "READY"
+
+        };
 
     }
 
