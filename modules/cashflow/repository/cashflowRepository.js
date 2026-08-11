@@ -32,11 +32,7 @@ const cashflowRepository = {
 
         if(
 
-            !Array.isArray(
-
-                Database.tables[TABLE]
-
-            )
+            !Database.tables[TABLE]
 
         ){
 
@@ -68,19 +64,29 @@ const cashflowRepository = {
 
             id:
 
-                Date.now(),
+                Date.now().toString(),
 
-            ...data
+            ...data,
+
+            createdAt:
+
+                new Date().toISOString(),
+
+            updatedAt:
+
+                new Date().toISOString()
 
         };
 
-        return Database.insert(
+        Database.insert(
 
             TABLE,
 
             record
 
         );
+
+        return record;
 
     },
 
@@ -104,7 +110,7 @@ const cashflowRepository = {
 
     // ==================================================
 
-    // Find By ID
+    // Find One
 
     // ==================================================
 
@@ -118,23 +124,15 @@ const cashflowRepository = {
 
             this.findAll();
 
-        return (
+        return list.find(
 
-            list.find(
+            item =>
 
-                item =>
+                String(item.id) ===
 
-                    String(item.id) ===
+                String(id)
 
-                    String(id)
-
-            )
-
-            ||
-
-            null
-
-        );
+        ) || null;
 
     },
 
@@ -190,11 +188,13 @@ const cashflowRepository = {
 
             updatedAt:
 
-                new Date()
-
-                    .toISOString()
+                new Date().toISOString()
 
         };
+
+        Database.tables[TABLE] =
+
+            list;
 
         Database.save();
 
@@ -204,7 +204,7 @@ const cashflowRepository = {
 
     // ==================================================
 
-    // Remove
+    // Delete
 
     // ==================================================
 
@@ -248,6 +248,10 @@ const cashflowRepository = {
 
         );
 
+        Database.tables[TABLE] =
+
+            list;
+
         Database.save();
 
         return true;
@@ -267,8 +271,6 @@ const cashflowRepository = {
         Database.tables[TABLE] = [];
 
         Database.save();
-
-        return true;
 
     }
 
