@@ -22,8 +22,6 @@ TaxView
 
 import TaxController from "./taxController.js";
 
-import taxView from "./ui/taxView.js";
-
 class TaxModule {
 
     constructor(){
@@ -40,13 +38,81 @@ class TaxModule {
 
         // ==================================================
 
-        // View
+        // Lazy Tax View
+
+        //
+
+        // Important:
+
+        // Do NOT import taxView.js here directly.
+
+        //
+
+        // taxView.js imports TaxFacade
+
+        // TaxFacade imports TaxKernel
+
+        // TaxKernel imports TaxModule
+
+        //
+
+        // Direct import would create circular dependency.
 
         // ==================================================
 
-        this.view =
+        this.view = {
 
-            taxView;
+            render:
+
+                async (
+
+                    container,
+
+                    onBack
+
+                ) => {
+
+                    const viewModule =
+
+                        await import(
+
+                            "./ui/taxView.js"
+
+                        );
+
+                    const taxView =
+
+                        viewModule.default;
+
+                    if(
+
+                        !taxView ||
+
+                        typeof taxView.render !==
+
+                            "function"
+
+                    ){
+
+                        throw new Error(
+
+                            "TaxView.render not found"
+
+                        );
+
+                    }
+
+                    return taxView.render(
+
+                        container,
+
+                        onBack
+
+                    );
+
+                }
+
+        };
 
         // ==================================================
 
