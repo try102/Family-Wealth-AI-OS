@@ -1350,13 +1350,13 @@ function renderDashboard(
 
                 try{
 
-                    const module =
+const module =
 
-                        await import(
+    await import(
 
-                            "./core/modules/taxModule.js"
+        "./tax/taxModule.js"
 
-                        );
+    );
 
                     const TaxModule =
 
