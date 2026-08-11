@@ -34,7 +34,7 @@ TaxView
 
  
 
-TaxModule 不依赖 TaxFacade / TaxKernel。
+TaxModule 不再依赖 TaxFacade / TaxKernel。
 
  
 
@@ -92,17 +92,39 @@ class TaxModule {
 
         //
 
-        // TaxView 需要 Controller
+        // TaxView 是 singleton
+
+        // 不再使用 new TaxView()
 
         // ==================================================
 
         this.view =
 
-            new TaxView(
+            TaxView;
+
+        // ==================================================
+
+        // Inject Controller Into View
+
+        // ==================================================
+
+        if(
+
+            this.view &&
+
+            typeof this.view.setController ===
+
+                "function"
+
+        ){
+
+            this.view.setController(
 
                 this.controller
 
             );
+
+        }
 
         // ==================================================
 
@@ -308,7 +330,7 @@ class TaxModule {
 
             this.controller
 
-                .taxService;
+                ?.taxService;
 
         if(
 
