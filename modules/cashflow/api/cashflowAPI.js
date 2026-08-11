@@ -1,18 +1,32 @@
 /*
 
+    
+
 Family Wealth AI OS V7
 
 Cashflow API
+
+现金流统一接口层
 
 */
 
 import cashflowService
 
-from "../services/cashflowService.js";
+    from "../services/cashflowService.js";
 
 const cashflowAPI = {
 
-    createCashflow(data){
+    // ==================================================
+
+    // Create
+
+    // ==================================================
+
+    createCashflow(
+
+        data
+
+    ){
 
         return cashflowService.create(
 
@@ -22,13 +36,29 @@ const cashflowAPI = {
 
     },
 
+    // ==================================================
+
+    // Get All
+
+    // ==================================================
+
     getCashflows(){
 
         return cashflowService.list();
 
     },
 
-    getCashflow(id){
+    // ==================================================
+
+    // Get One
+
+    // ==================================================
+
+    getCashflow(
+
+        id
+
+    ){
 
         return cashflowService.get(
 
@@ -37,6 +67,12 @@ const cashflowAPI = {
         );
 
     },
+
+    // ==================================================
+
+    // Update
+
+    // ==================================================
 
     updateCashflow(
 
@@ -56,7 +92,17 @@ const cashflowAPI = {
 
     },
 
-    deleteCashflow(id){
+    // ==================================================
+
+    // Delete
+
+    // ==================================================
+
+    deleteCashflow(
+
+        id
+
+    ){
 
         return cashflowService.delete(
 
@@ -66,11 +112,23 @@ const cashflowAPI = {
 
     },
 
+    // ==================================================
+
+    // Summary
+
+    // ==================================================
+
     getSummary(){
 
         return cashflowService.summary();
 
     },
+
+    // ==================================================
+
+    // Monthly
+
+    // ==================================================
 
     getMonthlyCashflow(){
 
