@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+
+    name="viewport"
+
+    content="width=device-width, initial-scale=1.0"
+
+>
+
+<title>
+
+Family Wealth AI OS V7 - Cashflow Schema Test
+
+</title>
+
+</head>
+
+<body>
+
+<h1>
+
+Family Wealth AI OS V7
+
+</h1>
+
+<h2>
+
+Cashflow Schema Test
+
+</h2>
+
+<pre id="result">
+
+正在测试...
+
+</pre>
+
+<script type="module">
+
+import cashflowSchema
+
+    from "../cashflowSchema.js";
+
+const output =
+
+    document.getElementById(
+
+        "result"
+
+    );
+
+const results = [];
+
+function test(
+
+    name,
+
+    condition
+
+){
+
+    if(condition){
+
+        results.push(
+
+            "✅ " + name
+
+        );
+
+    }
+
+    else{
+
+        results.push(
+
+            "❌ " + name
+
+        );
+
+    }
+
+}
+
+// ==================================================
+
+// Test 1
+
+// Yearly
+
+// ==================================================
+
+const yearly =
+
+    cashflowSchema.create({
+
+        type:
+
+            "INCOME",
+
+        amount:
+
+            80000,
+
+        frequency:
+
+            "YEARLY"
+
+    });
+
+test(
+
+    "Yearly amount",
+
+    yearly.annualizedAmount ===
+
+        80000
+
+);
+
+// ==================================================
+
+// Test 2
+
+// Monthly
+
+// ==================================================
+
+const monthly =
+
+    cashflowSchema.create({
+
+        type:
+
+            "EXPENSE",
+
+        amount:
+
+            3000,
+
+        frequency:
+
+            "MONTHLY"
+
+    });
+
+test(
+
+    "Monthly annualized amount = 36,000",
+
+    monthly.annualizedAmount ===
+
+        36000
+
+);
+
+// ==================================================
+
+// Test 3
+
+// Quarterly
+
+// ==================================================
+
+const quarterly =
+
+    cashflowSchema.create({
+
+        type:
+
+            "EXPENSE",
+
+        amount:
+
+            3000,
+
+        frequency:
+
+            "QUARTERLY"
+
+    });
+
+test(
+
+    "Quarterly annualized amount = 12,000",
+
+    quarterly.annualizedAmount ===
+
+        12000
+
+);
+
+// ==================================================
+
+// Test 4
+
+// One Time
+
+// ==================================================
+
+const oneTime =
+
+    cashflowSchema.create({
+
+        type:
+
+            "EXPENSE",
+
+        amount:
+
+            5000,
+
+        frequency:
+
+            "ONE_TIME"
+
+    });
+
+test(
+
+    "One-time annualized amount = 5,000",
+
+    oneTime.annualizedAmount ===
+
+        5000
+
+);
+
+// ==================================================
+
+// Test 5
+
+// Default
+
+// ==================================================
+
+const defaultRecord =
+
+    cashflowSchema.create({
+
+        type:
+
+            "INCOME",
+
+        amount:
+
+            10000
+
+    });
+
+test(
+
+    "Default frequency = YEARLY",
+
+    defaultRecord.frequency ===
+
+        "YEARLY"
+
+);
+
+// ==================================================
+
+// Test 6
+
+// Update
+
+// ==================================================
+
+const updated =
+
+    cashflowSchema.update(
+
+        monthly,
+
+        {
+
+            amount:
+
+                4000,
+
+            frequency:
+
+                "MONTHLY"
+
+        }
+
+    );
+
+test(
+
+    "Update amount = 4,000",
+
+    updated.amount ===
+
+        4000
+
+);
+
+test(
+
+    "Updated annualized amount = 48,000",
+
+    updated.annualizedAmount ===
+
+        48000
+
+);
+
+// ==================================================
+
+// Output
+
+// ==================================================
+
+output.textContent =
+
+    "==========================================\n" +
+
+    "Family Wealth AI OS V7\n" +
+
+    "Cashflow Schema Test\n" +
+
+    "==========================================\n\n" +
+
+    results.join("\n") +
+
+    "\n\n==========================================\n" +
+
+    "测试完成\n" +
+
+    "==========================================";
+
+</script>
+
+</body>
+
+</html>
