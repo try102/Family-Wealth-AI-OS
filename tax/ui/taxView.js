@@ -14,22 +14,6 @@ Tax 模块用户界面层
 
  
 
-负责：
-
-1. Tax Dashboard
-
-2. Tax Plan
-
-3. Tax Report
-
-4. Tax Optimization
-
-5. Tax Advisor
-
-6. Tax Status
-
- 
-
 注意：
 
 TaxView 不再依赖 TaxFacade。
@@ -60,21 +44,17 @@ TaxModule
 
 */
 
-import TaxController from "../taxController.js";
-
 class TaxView {
 
-    constructor(){
+    constructor(
 
-        // ==================================================
+        controller = null
 
-        // Controller
-
-        // ==================================================
+    ){
 
         this.controller =
 
-            new TaxController();
+            controller;
 
         this.container =
 
@@ -83,6 +63,26 @@ class TaxView {
         this.onBack =
 
             () => {};
+
+    }
+
+    // ==================================================
+
+    // Set Controller
+
+    // ==================================================
+
+    setController(
+
+        controller
+
+    ){
+
+        this.controller =
+
+            controller;
+
+        return this;
 
     }
 
@@ -109,6 +109,20 @@ class TaxView {
             throw new Error(
 
                 "TaxView render container not found"
+
+            );
+
+        }
+
+        if(
+
+            !this.controller
+
+        ){
+
+            throw new Error(
+
+                "TaxView controller not found"
 
             );
 
@@ -144,25 +158,59 @@ class TaxView {
 
     renderDashboard(){
 
+        if(
+
+            !this.controller
+
+        ){
+
+            throw new Error(
+
+                "TaxView controller not found"
+
+            );
+
+        }
+
         const dashboard =
 
-            this.controller
+            typeof this.controller.dashboard ===
 
-                .taxService
+                "function"
 
-                .dashboard();
+                ?
+
+                this.controller.dashboard()
+
+                :
+
+                {
+
+                    summary: {},
+
+                    latestPlan: null,
+
+                    analysis: null
+
+                };
 
         const summary =
 
-            dashboard.summary || {};
+            dashboard?.summary ||
+
+            {};
 
         const latestPlan =
 
-            dashboard.latestPlan || null;
+            dashboard?.latestPlan ||
+
+            null;
 
         const analysis =
 
-            dashboard.analysis || null;
+            dashboard?.analysis ||
+
+            null;
 
         const optimization =
 
@@ -450,18 +498,6 @@ class TaxView {
 
                                     </p>
 
-                                    <p>
-
-                                        Estimated Tax:
-
-                                        ${this.formatCurrency(
-
-                                            latestPlan.estimatedTax
-
-                                        )}
-
-                                    </p>
-
                                 </div>
 
                                 `
@@ -668,7 +704,7 @@ class TaxView {
 
             Array.isArray(
 
-                optimization.opportunities
+                optimization?.opportunities
 
             )
 
@@ -784,7 +820,7 @@ class TaxView {
 
             Array.isArray(
 
-                advice.recommendations
+                advice?.recommendations
 
             )
 
@@ -1180,6 +1216,22 @@ class TaxView {
 
     savePlan(){
 
+        if(
+
+            !this.controller ||
+
+            !this.controller.taxService
+
+        ){
+
+            throw new Error(
+
+                "TaxView TaxService not found"
+
+            );
+
+        }
+
         const name =
 
             document.getElementById(
@@ -1397,11 +1449,5 @@ class TaxView {
 const taxView =
 
     new TaxView();
-
-// ==================================================
-
-// Export
-
-// ==================================================
 
 export default taxView;
