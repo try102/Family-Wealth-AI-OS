@@ -1,7 +1,5 @@
 /*
 
-    
-
 Family Wealth AI OS V7
 
 Liability View
@@ -56,20 +54,6 @@ const LiabilityView = {
 
                 .analyzeDebtStatus();
 
-        const totalLiability =
-
-            Number(
-
-                summary?.totalLiability ??
-
-                summary?.totalLiabilities ??
-
-                summary?.totalDebt ??
-
-                0
-
-            );
-
         container.innerHTML = `
 
             <div
@@ -78,7 +62,11 @@ const LiabilityView = {
 
             >
 
+                <!-- ================================== -->
+
                 <!-- Header -->
+
+                <!-- ================================== -->
 
                 <header
 
@@ -100,7 +88,11 @@ const LiabilityView = {
 
                 </header>
 
-                <!-- Dashboard -->
+                <!-- ================================== -->
+
+                <!-- Debt Dashboard -->
+
+                <!-- ================================== -->
 
                 <section
 
@@ -120,7 +112,7 @@ const LiabilityView = {
 
                     >
 
-                        <!-- Count -->
+                        <!-- Liability Count -->
 
                         <div
 
@@ -140,13 +132,17 @@ const LiabilityView = {
 
                             >
 
-                                ${liabilities.length}
+                                ${
+
+                                    liabilities.length
+
+                                }
 
                             </div>
 
                         </div>
 
-                        <!-- Total -->
+                        <!-- Total Liability -->
 
                         <div
 
@@ -166,13 +162,139 @@ const LiabilityView = {
 
                             >
 
-                                $${totalLiability.toLocaleString()}
+                                $${Number(
+
+                                    summary?.totalLiability ||
+
+                                    0
+
+                                ).toLocaleString()}
 
                             </div>
 
                         </div>
 
-                        <!-- Status -->
+                        <!-- Annual Interest -->
+
+                        <div
+
+                            class="dashboard-card"
+
+                        >
+
+                            <h3>
+
+                                Annual Interest
+
+                            </h3>
+
+                            <div
+
+                                class="value"
+
+                            >
+
+                                $${Number(
+
+                                    summary?.annualInterest ||
+
+                                    0
+
+                                ).toLocaleString(
+
+                                    "en-US",
+
+                                    {
+
+                                        maximumFractionDigits:
+
+                                            0
+
+                                    }
+
+                                )}
+
+                            </div>
+
+                        </div>
+
+                        <!-- Monthly Interest -->
+
+                        <div
+
+                            class="dashboard-card"
+
+                        >
+
+                            <h3>
+
+                                Monthly Interest
+
+                            </h3>
+
+                            <div
+
+                                class="value"
+
+                            >
+
+                                $${Number(
+
+                                    summary?.monthlyInterest ||
+
+                                    0
+
+                                ).toLocaleString(
+
+                                    "en-US",
+
+                                    {
+
+                                        maximumFractionDigits:
+
+                                            0
+
+                                    }
+
+                                )}
+
+                            </div>
+
+                        </div>
+
+                        <!-- Average Interest Rate -->
+
+                        <div
+
+                            class="dashboard-card"
+
+                        >
+
+                            <h3>
+
+                                Average Interest Rate
+
+                            </h3>
+
+                            <div
+
+                                class="value"
+
+                            >
+
+                                ${Number(
+
+                                    summary?.averageInterestRate ||
+
+                                    0
+
+                                ).toFixed(2)}%
+
+                            </div>
+
+                        </div>
+
+                        <!-- Debt Status -->
 
                         <div
 
@@ -194,9 +316,7 @@ const LiabilityView = {
 
                                 ${
 
-                                    analysis?.status ||
-
-                                    analysis?.type ||
+                                    analysis?.debtLevel ||
 
                                     "READY"
 
@@ -210,7 +330,11 @@ const LiabilityView = {
 
                 </section>
 
-                <!-- Add -->
+                <!-- ================================== -->
+
+                <!-- Add Liability -->
+
+                <!-- ================================== -->
 
                 <section
 
@@ -238,7 +362,11 @@ const LiabilityView = {
 
                 </section>
 
-                <!-- List -->
+                <!-- ================================== -->
+
+                <!-- Liability List -->
+
+                <!-- ================================== -->
 
                 <section
 
@@ -380,6 +508,22 @@ const LiabilityView = {
 
                                             >
 
+                                                Annual Interest
+
+                                            </th>
+
+                                            <th
+
+                                                style="
+
+                                                    padding:10px;
+
+                                                    border-bottom:1px solid #ddd;
+
+                                                "
+
+                                            >
+
                                                 Status
 
                                             </th>
@@ -412,65 +556,11 @@ const LiabilityView = {
 
                                                 .map(
 
-                                                    item => `
+                                                    item => {
 
-                                                    <tr
+                                                        const balance =
 
-                                                        data-liability-id="${item.id}"
-
-                                                    >
-
-                                                        <td
-
-                                                            style="
-
-                                                                padding:10px;
-
-                                                            "
-
-                                                        >
-
-                                                            ${
-
-                                                                item.name ||
-
-                                                                "Unnamed Liability"
-
-                                                            }
-
-                                                        </td>
-
-                                                        <td
-
-                                                            style="
-
-                                                                padding:10px;
-
-                                                            "
-
-                                                        >
-
-                                                            ${
-
-                                                                item.category ||
-
-                                                                "Other"
-
-                                                            }
-
-                                                        </td>
-
-                                                        <td
-
-                                                            style="
-
-                                                                padding:10px;
-
-                                                            "
-
-                                                        >
-
-                                                            $${Number(
+                                                            Number(
 
                                                                 item.currentBalance ??
 
@@ -478,21 +568,11 @@ const LiabilityView = {
 
                                                                 0
 
-                                                            ).toLocaleString()}
+                                                            );
 
-                                                        </td>
+                                                        const rate =
 
-                                                        <td
-
-                                                            style="
-
-                                                                padding:10px;
-
-                                                            "
-
-                                                        >
-
-                                                            ${Number(
+                                                            Number(
 
                                                                 item.interestRate ??
 
@@ -500,73 +580,195 @@ const LiabilityView = {
 
                                                                 0
 
-                                                            )}%
+                                                            );
 
-                                                        </td>
+                                                        const annualInterest =
 
-                                                        <td
+                                                            balance *
 
-                                                            style="
+                                                            rate /
 
-                                                                padding:10px;
+                                                            100;
 
-                                                            "
+                                                        return `
 
-                                                        >
+                                                            <tr
 
-                                                            ${
+                                                                data-liability-id="${
 
-                                                                item.status ||
+                                                                    item.id
 
-                                                                "Active"
-
-                                                            }
-
-                                                        </td>
-
-                                                        <td
-
-                                                            style="
-
-                                                                padding:10px;
-
-                                                            "
-
-                                                        >
-
-                                                            <button
-
-                                                                type="button"
-
-                                                                class="edit-liability-button"
-
-                                                                data-id="${item.id}"
+                                                                }"
 
                                                             >
 
-                                                                Edit
+                                                                <td
 
-                                                            </button>
+                                                                    style="
 
-                                                            <button
+                                                                        padding:10px;
 
-                                                                type="button"
+                                                                    "
 
-                                                                class="delete-liability-button"
+                                                                >
 
-                                                                data-id="${item.id}"
+                                                                    ${
 
-                                                            >
+                                                                        item.name ||
 
-                                                                Delete
+                                                                        "Unnamed Liability"
 
-                                                            </button>
+                                                                    }
 
-                                                        </td>
+                                                                </td>
 
-                                                    </tr>
+                                                                <td
 
-                                                    `
+                                                                    style="
+
+                                                                        padding:10px;
+
+                                                                    "
+
+                                                                >
+
+                                                                    ${
+
+                                                                        item.category ||
+
+                                                                        "Other"
+
+                                                                    }
+
+                                                                </td>
+
+                                                                <td
+
+                                                                    style="
+
+                                                                        padding:10px;
+
+                                                                    "
+
+                                                                >
+
+                                                                    $${balance.toLocaleString()}
+
+                                                                </td>
+
+                                                                <td
+
+                                                                    style="
+
+                                                                        padding:10px;
+
+                                                                    "
+
+                                                                >
+
+                                                                    ${rate}%
+
+                                                                </td>
+
+                                                                <td
+
+                                                                    style="
+
+                                                                        padding:10px;
+
+                                                                    "
+
+                                                                >
+
+                                                                    $${annualInterest.toLocaleString(
+
+                                                                        "en-US",
+
+                                                                        {
+
+                                                                            maximumFractionDigits:
+
+                                                                                0
+
+                                                                        }
+
+                                                                    )}
+
+                                                                </td>
+
+                                                                <td
+
+                                                                    style="
+
+                                                                        padding:10px;
+
+                                                                    "
+
+                                                                >
+
+                                                                    ${
+
+                                                                        item.status ||
+
+                                                                        "Active"
+
+                                                                    }
+
+                                                                </td>
+
+                                                                <td
+
+                                                                    style="
+
+                                                                        padding:10px;
+
+                                                                    "
+
+                                                                >
+
+                                                                    <button
+
+                                                                        type="button"
+
+                                                                        class="edit-liability-button"
+
+                                                                        data-id="${
+
+                                                                            item.id
+
+                                                                        }"
+
+                                                                    >
+
+                                                                        Edit
+
+                                                                    </button>
+
+                                                                    <button
+
+                                                                        type="button"
+
+                                                                        class="delete-liability-button"
+
+                                                                        data-id="${
+
+                                                                            item.id
+
+                                                                        }"
+
+                                                                    >
+
+                                                                        Delete
+
+                                                                    </button>
+
+                                                                </td>
+
+                                                            </tr>
+
+                                                        `;
+
+                                                    }
 
                                                 )
 
@@ -590,7 +792,11 @@ const LiabilityView = {
 
                 <hr>
 
+                <!-- ================================== -->
+
                 <!-- Back -->
+
+                <!-- ================================== -->
 
                 <button
 
@@ -862,6 +1068,22 @@ const LiabilityView = {
 
                     item.interestRate,
 
+                annualInterest:
+
+                    Number(
+
+                        item.currentBalance || 0
+
+                    ) *
+
+                    Number(
+
+                        item.interestRate || 0
+
+                    ) /
+
+                    100,
+
                 status:
 
                     item.status
@@ -958,51 +1180,15 @@ const LiabilityView = {
 
                     <br>
 
-                    <select
+                    <input
 
                         id="liability-category"
 
-                        required
+                        type="text"
+
+                        value="Other"
 
                     >
-
-                        <option value="Mortgage">
-
-                            Mortgage
-
-                        </option>
-
-                        <option value="Credit Card">
-
-                            Credit Card
-
-                        </option>
-
-                        <option value="Auto Loan">
-
-                            Auto Loan
-
-                        </option>
-
-                        <option value="Student Loan">
-
-                            Student Loan
-
-                        </option>
-
-                        <option value="Personal Loan">
-
-                            Personal Loan
-
-                        </option>
-
-                        <option value="Other" selected>
-
-                            Other
-
-                        </option>
-
-                    </select>
 
                     <br><br>
 
@@ -1090,16 +1276,6 @@ const LiabilityView = {
 
             );
 
-        if(!form){
-
-            throw new Error(
-
-                "Liability create form not found"
-
-            );
-
-        }
-
         form.addEventListener(
 
             "submit",
@@ -1107,12 +1283,6 @@ const LiabilityView = {
             event => {
 
                 event.preventDefault();
-
-                // ==========================================
-
-                // Read Form
-
-                // ==========================================
 
                 const name =
 
@@ -1168,111 +1338,29 @@ const LiabilityView = {
 
                     );
 
-                // ==========================================
+                LiabilityAPI.createLiability({
 
-                // Validation
+                    name:
 
-                // ==========================================
+                        name,
 
-                if(!name){
+                    category:
 
-                    alert(
+                        category,
 
-                        "Please enter liability name."
+                    currentBalance:
 
-                    );
+                        balance,
 
-                    return;
+                    interestRate:
 
-                }
+                        rate,
 
-                if(
+                    status:
 
-                    !Number.isFinite(balance) ||
+                        "Active"
 
-                    balance < 0
-
-                ){
-
-                    alert(
-
-                        "Please enter a valid liability balance."
-
-                    );
-
-                    return;
-
-                }
-
-                if(
-
-                    !Number.isFinite(rate) ||
-
-                    rate < 0
-
-                ){
-
-                    alert(
-
-                        "Please enter a valid interest rate."
-
-                    );
-
-                    return;
-
-                }
-
-                // ==========================================
-
-                // Create
-
-                //
-
-                // IMPORTANT:
-
-                // LiabilityAPI uses createLiability()
-
-                // ==========================================
-
-                const created =
-
-                    LiabilityAPI
-
-                        .createLiability({
-
-                            name,
-
-                            category,
-
-                            currentBalance:
-
-                                balance,
-
-                            interestRate:
-
-                                rate,
-
-                            status:
-
-                                "Active"
-
-                        });
-
-                if(!created){
-
-                    throw new Error(
-
-                        "Liability creation failed"
-
-                    );
-
-                }
-
-                // ==========================================
-
-                // Refresh
-
-                // ==========================================
+                });
 
                 this.render(
 
@@ -1285,12 +1373,6 @@ const LiabilityView = {
             }
 
         );
-
-        // ==================================================
-
-        // Cancel
-
-        // ==================================================
 
         const cancelButton =
 
@@ -1450,7 +1532,11 @@ const LiabilityView = {
 
                         required
 
-                        value="${liability.name || ""}"
+                        value="${
+
+                            liability.name || ""
+
+                        }"
 
                     >
 
@@ -1464,51 +1550,21 @@ const LiabilityView = {
 
                     <br>
 
-                    <select
+                    <input
 
                         id="edit-liability-category"
 
-                        required
+                        type="text"
+
+                        value="${
+
+                            liability.category ||
+
+                            "Other"
+
+                        }"
 
                     >
-
-                        <option value="Mortgage">
-
-                            Mortgage
-
-                        </option>
-
-                        <option value="Credit Card">
-
-                            Credit Card
-
-                        </option>
-
-                        <option value="Auto Loan">
-
-                            Auto Loan
-
-                        </option>
-
-                        <option value="Student Loan">
-
-                            Student Loan
-
-                        </option>
-
-                        <option value="Personal Loan">
-
-                            Personal Loan
-
-                        </option>
-
-                        <option value="Other">
-
-                            Other
-
-                        </option>
-
-                    </select>
 
                     <br><br>
 
@@ -1532,7 +1588,11 @@ const LiabilityView = {
 
                         required
 
-                        value="${balance}"
+                        value="${
+
+                            balance
+
+                        }"
 
                     >
 
@@ -1556,7 +1616,11 @@ const LiabilityView = {
 
                         step="0.01"
 
-                        value="${rate}"
+                        value="${
+
+                            rate
+
+                        }"
 
                     >
 
@@ -1589,20 +1653,6 @@ const LiabilityView = {
             </div>
 
         `;
-
-        const categorySelect =
-
-            formContainer.querySelector(
-
-                "#edit-liability-category"
-
-            );
-
-        categorySelect.value =
-
-            liability.category ||
-
-            "Other";
 
         const form =
 
@@ -1642,7 +1692,11 @@ const LiabilityView = {
 
                         )
 
-                        .value,
+                        .value
+
+                        .trim() ||
+
+                        "Other",
 
                     currentBalance:
 
@@ -1680,71 +1734,13 @@ const LiabilityView = {
 
                 };
 
-                if(
+                LiabilityAPI.updateLiability(
 
-                    !Number.isFinite(
+                    id,
 
-                        updated.currentBalance
+                    updated
 
-                    ) ||
-
-                    updated.currentBalance < 0
-
-                ){
-
-                    alert(
-
-                        "Please enter a valid liability balance."
-
-                    );
-
-                    return;
-
-                }
-
-                if(
-
-                    !Number.isFinite(
-
-                        updated.interestRate
-
-                    ) ||
-
-                    updated.interestRate < 0
-
-                ){
-
-                    alert(
-
-                        "Please enter a valid interest rate."
-
-                    );
-
-                    return;
-
-                }
-
-                const result =
-
-                    LiabilityAPI
-
-                        .updateLiability(
-
-                            id,
-
-                            updated
-
-                        );
-
-                if(!result){
-
-                    throw new Error(
-
-                        "Liability update failed"
-
-                    );
-
-                }
+                );
 
                 this.render(
 
@@ -1856,25 +1852,11 @@ const LiabilityView = {
 
         }
 
-        const result =
+        LiabilityAPI.deleteLiability(
 
-            LiabilityAPI
+            id
 
-                .deleteLiability(
-
-                    id
-
-                );
-
-        if(!result){
-
-            throw new Error(
-
-                "Liability deletion failed"
-
-            );
-
-        }
+        );
 
         this.render(
 
