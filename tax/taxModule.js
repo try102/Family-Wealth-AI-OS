@@ -1,18 +1,10 @@
 /*
 
- 
-
 Family Wealth AI OS V7.7
-
- 
 
 Tax Module
 
- 
-
 Tax 模块统一入口
-
- 
 
 负责统一连接：
 
@@ -24,11 +16,13 @@ TaxOptimizer
 
 TaxAdvisor
 
- 
+TaxView
 
 */
 
 import TaxController from "./taxController.js";
+
+import taxView from "./ui/taxView.js";
 
 class TaxModule {
 
@@ -43,6 +37,16 @@ class TaxModule {
         this.controller =
 
             new TaxController();
+
+        // ==================================================
+
+        // View
+
+        // ==================================================
+
+        this.view =
+
+            taxView;
 
         // ==================================================
 
@@ -176,7 +180,73 @@ class TaxModule {
 
     // ==================================================
 
-    // Module Status
+    // Generate Report
+
+    // ==================================================
+
+    generateReport(
+
+        data = {}
+
+    ){
+
+        return this.controller
+
+            .generateReport(
+
+                data
+
+            );
+
+    }
+
+    // ==================================================
+
+    // Optimize Tax
+
+    // ==================================================
+
+    optimizeTax(
+
+        report = {}
+
+    ){
+
+        return this.controller
+
+            .optimizeTax(
+
+                report
+
+            );
+
+    }
+
+    // ==================================================
+
+    // Advise Tax
+
+    // ==================================================
+
+    adviseTax(
+
+        report = {}
+
+    ){
+
+        return this.controller
+
+            .adviseTax(
+
+                report
+
+            );
+
+    }
+
+    // ==================================================
+
+    // Get Status
 
     // ==================================================
 
@@ -202,4 +272,20 @@ class TaxModule {
 
 }
 
-export default TaxModule;
+// ==================================================
+
+// Singleton Module
+
+// ==================================================
+
+const taxModule =
+
+    new TaxModule();
+
+// ==================================================
+
+// Export
+
+// ==================================================
+
+export default taxModule;
