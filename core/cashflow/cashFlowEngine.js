@@ -1,14 +1,52 @@
 /*
 
-Family Wealth AI OS
+    
+
+Family Wealth AI OS V7
 
 Cash Flow Engine
 
+家庭现金流核心引擎
+
 */
+
+import cashflowRepository
+
+    from "../../modules/cashflow/repository/cashflowRepository.js";
 
 const CashFlowEngine = {
 
-    flows:[],
+    name:
+
+        "Cash Flow Engine V7",
+
+    version:
+
+        "7.0",
+
+    status:
+
+        "READY",
+
+    // ==================================================
+
+    // Get All Flows
+
+    // ==================================================
+
+    list(){
+
+        return cashflowRepository
+
+            .findAll();
+
+    },
+
+    // ==================================================
+
+    // Add Flow
+
+    // ==================================================
 
     add(
 
@@ -16,103 +54,121 @@ const CashFlowEngine = {
 
         amount,
 
-        data={}
+        data = {}
 
     ){
 
-        const flow = {
+        return cashflowRepository.create({
 
             type,
 
-            amount,
+            amount:
 
-            data,
+                Number(
 
-            createdAt:
+                    amount || 0
 
-            new Date()
+                ),
 
-            .toISOString()
+            ...data
 
-        };
-
-        this.flows.push(
-
-            flow
-
-        );
-
-        return flow;
+        });
 
     },
+
+    // ==================================================
+
+    // Income
+
+    // ==================================================
 
     income(){
 
-        return this.flows
+        return this.list()
 
-        .filter(
+            .filter(
 
-            item =>
+                item =>
 
-            item.type ===
+                    item.type ===
 
-            "INCOME"
+                    "INCOME"
 
-        )
+            )
 
-        .reduce(
+            .reduce(
 
-            (
+                (
 
-                sum,
+                    sum,
 
-                item
+                    item
 
-            )=>
+                ) =>
 
-                sum +
+                    sum +
 
-                item.amount,
+                    Number(
 
-            0
+                        item.amount || 0
 
-        );
+                    ),
+
+                0
+
+            );
 
     },
+
+    // ==================================================
+
+    // Expense
+
+    // ==================================================
 
     expense(){
 
-        return this.flows
+        return this.list()
 
-        .filter(
+            .filter(
 
-            item =>
+                item =>
 
-            item.type ===
+                    item.type ===
 
-            "EXPENSE"
+                    "EXPENSE"
 
-        )
+            )
 
-        .reduce(
+            .reduce(
 
-            (
+                (
 
-                sum,
+                    sum,
 
-                item
+                    item
 
-            )=>
+                ) =>
 
-                sum +
+                    sum +
 
-                item.amount,
+                    Number(
 
-            0
+                        item.amount || 0
 
-        );
+                    ),
+
+                0
+
+            );
 
     },
+
+    // ==================================================
+
+    // Net Cash Flow
+
+    // ==================================================
 
     net(){
 
@@ -128,35 +184,51 @@ const CashFlowEngine = {
 
     },
 
+    // ==================================================
+
+    // Report
+
+    // ==================================================
+
     report(){
+
+        const income =
+
+            this.income();
+
+        const expense =
+
+            this.expense();
+
+        const net =
+
+            income -
+
+            expense;
 
         return {
 
-            income:
+            income,
 
-            this.income(),
+            expense,
 
-            expense:
-
-            this.expense(),
-
-            net:
-
-            this.net()
+            net
 
         };
 
     },
 
-    list(){
+    // ==================================================
 
-        return this.flows;
+    // Clear
 
-    },
+    // ==================================================
 
     clear(){
 
-        this.flows=[];
+        cashflowRepository
+
+            .clear();
 
     }
 
