@@ -1,26 +1,20 @@
 /*
 
- 
-
 Family Wealth AI OS V7.7
-
- 
 
 Tax Service
 
- 
-
 Tax 模块服务层
 
- 
+负责统一管理：
 
-负责统一管理 TaxPlan、
+TaxPlan
 
-TaxManager、TaxEngine、
+TaxManager
+
+TaxEngine
 
 TaxOptimizer
-
- 
 
 */
 
@@ -66,6 +60,26 @@ class TaxService {
 
             new TaxManager();
 
+        // ==================================================
+
+        // Initialize Manager
+
+        // ==================================================
+
+        if(
+
+            this.taxManager &&
+
+            typeof this.taxManager.init ===
+
+                "function"
+
+        ){
+
+            this.taxManager.init();
+
+        }
+
     }
 
     // ==================================================
@@ -110,7 +124,7 @@ class TaxService {
 
     // ==================================================
 
-    // Get Tax Plan By Id
+    // Get Tax Plan By ID
 
     // ==================================================
 
@@ -340,22 +354,6 @@ class TaxService {
 
                 ),
 
-            taxableIncome:
-
-                Number(
-
-                    plan.taxableIncome || 0
-
-                ),
-
-            estimatedTax:
-
-                Number(
-
-                    plan.estimatedTax || 0
-
-                ),
-
             taxYear:
 
                 Number(
@@ -428,7 +426,7 @@ class TaxService {
 
     // ==================================================
 
-    // Get Tax Summary
+    // Tax Summary
 
     // ==================================================
 
@@ -526,7 +524,7 @@ class TaxService {
 
     // ==================================================
 
-    // Full Tax Dashboard Data
+    // Tax Dashboard
 
     // ==================================================
 
@@ -578,12 +576,8 @@ class TaxService {
 
 // ==================================================
 
-// Singleton Service
+// Export Class
 
 // ==================================================
 
-const taxService =
-
-    new TaxService();
-
-export default taxService;
+export default TaxService;
