@@ -1,10 +1,18 @@
 /*
 
+ 
+
 Family Wealth AI OS V7.7
+
+ 
 
 Tax Planning Model
 
+ 
+
 税务规划数据模型
+
+ 
 
 */
 
@@ -23,6 +31,8 @@ class TaxPlan {
         deductions = 0,
 
         taxableIncome,
+
+        taxRate = 0.20,
 
         estimatedTax = 0
 
@@ -108,11 +118,11 @@ class TaxPlan {
 
             taxableIncome ===
 
-            undefined ||
+                undefined ||
 
             taxableIncome ===
 
-            null
+                null
 
         ){
 
@@ -152,25 +162,97 @@ class TaxPlan {
 
         // ==================================================
 
-        // Estimated Tax
+        // Tax Rate
+
+        //
+
+        // Stored as decimal.
+
+        //
+
+        // Example:
+
+        //
+
+        // 20% → 0.20
+
+        // 15% → 0.15
 
         // ==================================================
 
-        this.estimatedTax =
+        this.taxRate =
 
-            Math.max(
+            this.normalizeTaxRate(
 
-                Number(
+                taxRate
 
-                    estimatedTax ||
+            );
+
+        // ==================================================
+
+        // Estimated Tax
+
+        //
+
+        // If estimatedTax is explicitly supplied,
+
+        // preserve it.
+
+        //
+
+        // Otherwise calculate it from:
+
+        //
+
+        // taxableIncome × taxRate
+
+        // ==================================================
+
+        if(
+
+            estimatedTax ===
+
+                undefined ||
+
+            estimatedTax ===
+
+                null
+
+        ){
+
+            this.estimatedTax =
+
+                Math.max(
+
+                    this.taxableIncome *
+
+                    this.taxRate,
 
                     0
 
-                ),
+                );
 
-                0
+        }
 
-            );
+        else{
+
+            this.estimatedTax =
+
+                Math.max(
+
+                    Number(
+
+                        estimatedTax ||
+
+                        0
+
+                    ),
+
+                    0
+
+                );
+
+        }
 
         // ==================================================
 
@@ -187,6 +269,92 @@ class TaxPlan {
         this.updatedAt =
 
             this.createdAt;
+
+    }
+
+    // ==================================================
+
+    // Normalize Tax Rate
+
+    // ==================================================
+
+    normalizeTaxRate(
+
+        value
+
+    ){
+
+        let rate =
+
+            Number(
+
+                value
+
+            );
+
+        if(
+
+            !Number.isFinite(
+
+                rate
+
+            )
+
+        ){
+
+            rate =
+
+                0.20;
+
+        }
+
+        // ==================================================
+
+        // Support both:
+
+        //
+
+        // 0.20 → 20%
+
+        //
+
+        // 20   → 20%
+
+        // ==================================================
+
+        if(
+
+            rate > 1
+
+        ){
+
+            rate =
+
+                rate /
+
+                100;
+
+        }
+
+        // ==================================================
+
+        // Prevent invalid negative rate
+
+        // ==================================================
+
+        if(
+
+            rate < 0
+
+        ){
+
+            rate =
+
+                0;
+
+        }
+
+        return rate;
 
     }
 
@@ -222,11 +390,79 @@ class TaxPlan {
 
     // ==================================================
 
+    // Recalculate Estimated Tax
+
+    // ==================================================
+
+    calculateEstimatedTax(){
+
+        this.taxableIncome =
+
+            Math.max(
+
+                this.income -
+
+                this.deductions,
+
+                0
+
+            );
+
+        this.estimatedTax =
+
+            Math.max(
+
+                this.taxableIncome *
+
+                this.taxRate,
+
+                0
+
+            );
+
+        this.updatedAt =
+
+            new Date()
+
+                .toISOString();
+
+        return this.estimatedTax;
+
+    }
+
+    // ==================================================
+
+    // Recalculate Tax
+
+    // ==================================================
+
+    recalculate(){
+
+        this.calculateTaxableIncome();
+
+        this.calculateEstimatedTax();
+
+        this.updatedAt =
+
+            new Date()
+
+                .toISOString();
+
+        return this;
+
+    }
+
+    // ==================================================
+
     // Update Plan
 
     // ==================================================
 
-    update(data = {}){
+    update(
+
+        data = {}
+
+    ){
 
         if(
 
@@ -239,6 +475,12 @@ class TaxPlan {
             return this;
 
         }
+
+        // ==================================================
+
+        // Name
+
+        // ==================================================
 
         if(
 
@@ -253,6 +495,12 @@ class TaxPlan {
                 data.name;
 
         }
+
+        // ==================================================
+
+        // Tax Year
+
+        // ==================================================
 
         if(
 
@@ -271,6 +519,12 @@ class TaxPlan {
                 );
 
         }
+
+        // ==================================================
+
+        // Income
+
+        // ==================================================
 
         if(
 
@@ -292,6 +546,12 @@ class TaxPlan {
 
         }
 
+        // ==================================================
+
+        // Deductions
+
+        // ==================================================
+
         if(
 
             data.deductions !==
@@ -311,6 +571,36 @@ class TaxPlan {
                 );
 
         }
+
+        // ==================================================
+
+        // Tax Rate
+
+        // ==================================================
+
+        if(
+
+            data.taxRate !==
+
+            undefined
+
+        ){
+
+            this.taxRate =
+
+                this.normalizeTaxRate(
+
+                    data.taxRate
+
+                );
+
+        }
+
+        // ==================================================
+
+        // Taxable Income
+
+        // ==================================================
 
         if(
 
@@ -342,17 +632,23 @@ class TaxPlan {
 
             data.income !==
 
-            undefined ||
+                undefined ||
 
             data.deductions !==
 
-            undefined
+                undefined
 
         ){
 
             this.calculateTaxableIncome();
 
         }
+
+        // ==================================================
+
+        // Estimated Tax
+
+        // ==================================================
 
         if(
 
@@ -379,6 +675,32 @@ class TaxPlan {
                 );
 
         }
+
+        else if(
+
+            data.taxRate !==
+
+                undefined ||
+
+            data.income !==
+
+                undefined ||
+
+            data.deductions !==
+
+                undefined
+
+        ){
+
+            this.calculateEstimatedTax();
+
+        }
+
+        // ==================================================
+
+        // Updated Time
+
+        // ==================================================
 
         this.updatedAt =
 
@@ -479,6 +801,10 @@ class TaxPlan {
             taxableIncome:
 
                 this.taxableIncome,
+
+            taxRate:
+
+                this.taxRate,
 
             estimatedTax:
 
