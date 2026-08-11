@@ -1,12 +1,26 @@
 /*
 
+ 
+
 Family Wealth AI OS V7.7
+
+ 
 
 Tax Service
 
+ 
+
 Tax 模块服务层
 
-负责统一调用 Tax Engine
+ 
+
+负责统一管理 TaxPlan、
+
+TaxManager、TaxEngine、
+
+TaxOptimizer
+
+ 
 
 */
 
@@ -14,27 +28,193 @@ import TaxEngine from "./taxEngine.js";
 
 import TaxOptimizer from "./taxOptimizer.js";
 
+import TaxManager from "./taxManager.js";
+
+import TaxPlan from "./taxPlan.js";
+
 class TaxService {
 
     constructor(){
+
+        // ==================================================
+
+        // Tax Engine
+
+        // ==================================================
 
         this.taxEngine =
 
             new TaxEngine();
 
+        // ==================================================
+
+        // Tax Optimizer
+
+        // ==================================================
+
         this.taxOptimizer =
 
             new TaxOptimizer();
 
+        // ==================================================
+
+        // Tax Plan Manager
+
+        // ==================================================
+
+        this.taxManager =
+
+            new TaxManager();
+
     }
 
-    // =====================
+    // ==================================================
+
+    // Create Tax Plan
+
+    // ==================================================
+
+    createPlan(
+
+        data = {}
+
+    ){
+
+        const taxPlan =
+
+            new TaxPlan(
+
+                data
+
+            );
+
+        return this.taxManager.addPlan(
+
+            taxPlan
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Get All Tax Plans
+
+    // ==================================================
+
+    getPlans(){
+
+        return this.taxManager.getPlans();
+
+    }
+
+    // ==================================================
+
+    // Get Tax Plan By Id
+
+    // ==================================================
+
+    getPlanById(
+
+        id
+
+    ){
+
+        return this.taxManager.getPlanById(
+
+            id
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Get Tax Plan By Year
+
+    // ==================================================
+
+    getPlanByYear(
+
+        taxYear
+
+    ){
+
+        return this.taxManager.getPlanByYear(
+
+            taxYear
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Update Tax Plan
+
+    // ==================================================
+
+    updatePlan(
+
+        id,
+
+        data = {}
+
+    ){
+
+        return this.taxManager.updatePlan(
+
+            id,
+
+            data
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Delete Tax Plan
+
+    // ==================================================
+
+    deletePlan(
+
+        id
+
+    ){
+
+        return this.taxManager.removePlan(
+
+            id
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Count Tax Plans
+
+    // ==================================================
+
+    countPlans(){
+
+        return this.taxManager.count();
+
+    }
+
+    // ==================================================
 
     // Create Tax Report
 
-    // =====================
+    // ==================================================
 
-    createReport(data){
+    createReport(
+
+        data = {}
+
+    ){
 
         return this.taxEngine.generateReport(
 
@@ -44,13 +224,27 @@ class TaxService {
 
     }
 
-    // =====================
+    // ==================================================
 
     // Analyze Tax Optimization
 
-    // =====================
+    // ==================================================
 
-    analyzeOptimization(report){
+    analyzeOptimization(
+
+        report
+
+    ){
+
+        if(
+
+            !report
+
+        ){
+
+            return null;
+
+        }
 
         return this.taxOptimizer.optimize(
 
@@ -60,13 +254,17 @@ class TaxService {
 
     }
 
-    // =====================
+    // ==================================================
 
     // Full Tax Analysis
 
-    // =====================
+    // ==================================================
 
-    analyze(data){
+    analyze(
+
+        data = {}
+
+    ){
 
         const report =
 
@@ -94,6 +292,298 @@ class TaxService {
 
     }
 
+    // ==================================================
+
+    // Analyze Tax Plan
+
+    // ==================================================
+
+    analyzePlan(
+
+        id
+
+    ){
+
+        const plan =
+
+            this.getPlanById(
+
+                id
+
+            );
+
+        if(
+
+            !plan
+
+        ){
+
+            return null;
+
+        }
+
+        const data = {
+
+            income:
+
+                Number(
+
+                    plan.income || 0
+
+                ),
+
+            deductions:
+
+                Number(
+
+                    plan.deductions || 0
+
+                ),
+
+            taxableIncome:
+
+                Number(
+
+                    plan.taxableIncome || 0
+
+                ),
+
+            estimatedTax:
+
+                Number(
+
+                    plan.estimatedTax || 0
+
+                ),
+
+            taxYear:
+
+                Number(
+
+                    plan.taxYear || 0
+
+                ),
+
+            name:
+
+                plan.name,
+
+            id:
+
+                plan.id
+
+        };
+
+        return {
+
+            plan,
+
+            ...this.analyze(
+
+                data
+
+            )
+
+        };
+
+    }
+
+    // ==================================================
+
+    // Analyze Current Tax Year
+
+    // ==================================================
+
+    analyzeYear(
+
+        taxYear
+
+    ){
+
+        const plan =
+
+            this.getPlanByYear(
+
+                taxYear
+
+            );
+
+        if(
+
+            !plan
+
+        ){
+
+            return null;
+
+        }
+
+        return this.analyzePlan(
+
+            plan.id
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Get Tax Summary
+
+    // ==================================================
+
+    summary(){
+
+        const plans =
+
+            this.getPlans();
+
+        let totalIncome = 0;
+
+        let totalDeductions = 0;
+
+        let totalTaxableIncome = 0;
+
+        let totalEstimatedTax = 0;
+
+        plans.forEach(
+
+            plan => {
+
+                totalIncome +=
+
+                    Number(
+
+                        plan.income || 0
+
+                    );
+
+                totalDeductions +=
+
+                    Number(
+
+                        plan.deductions || 0
+
+                    );
+
+                totalTaxableIncome +=
+
+                    Number(
+
+                        plan.taxableIncome || 0
+
+                    );
+
+                totalEstimatedTax +=
+
+                    Number(
+
+                        plan.estimatedTax || 0
+
+                    );
+
+            }
+
+        );
+
+        return {
+
+            count:
+
+                plans.length,
+
+            totalIncome,
+
+            totalDeductions,
+
+            totalTaxableIncome,
+
+            totalEstimatedTax,
+
+            averageEffectiveTaxRate:
+
+                totalIncome > 0
+
+                    ?
+
+                    totalEstimatedTax /
+
+                    totalIncome
+
+                    :
+
+                    0,
+
+            latestPlan:
+
+                this.taxManager
+
+                    .getLatestPlan()
+
+        };
+
+    }
+
+    // ==================================================
+
+    // Full Tax Dashboard Data
+
+    // ==================================================
+
+    dashboard(){
+
+        const summary =
+
+            this.summary();
+
+        const latestPlan =
+
+            this.taxManager
+
+                .getLatestPlan();
+
+        let analysis =
+
+            null;
+
+        if(
+
+            latestPlan
+
+        ){
+
+            analysis =
+
+                this.analyzePlan(
+
+                    latestPlan.id
+
+                );
+
+        }
+
+        return {
+
+            summary,
+
+            latestPlan,
+
+            analysis
+
+        };
+
+    }
+
 }
 
-export default TaxService;
+// ==================================================
+
+// Singleton Service
+
+// ==================================================
+
+const taxService =
+
+    new TaxService();
+
+export default taxService;
