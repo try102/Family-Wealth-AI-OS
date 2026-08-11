@@ -1,10 +1,18 @@
 /*
 
+ 
+
 Family Wealth AI OS V7.7
+
+ 
 
 Tax Module
 
+ 
+
 Tax 模块统一入口
+
+ 
 
 负责统一连接：
 
@@ -16,11 +24,19 @@ TaxOptimizer
 
 TaxAdvisor
 
+TaxFacade
+
 TaxView
+
+ 
 
 */
 
 import TaxController from "./taxController.js";
+
+import TaxFacade from "./taxFacade.js";
+
+import TaxView from "./ui/taxView.js";
 
 class TaxModule {
 
@@ -38,81 +54,27 @@ class TaxModule {
 
         // ==================================================
 
-        // Lazy Tax View
-
-        //
-
-        // Important:
-
-        // Do NOT import taxView.js here directly.
-
-        //
-
-        // taxView.js imports TaxFacade
-
-        // TaxFacade imports TaxKernel
-
-        // TaxKernel imports TaxModule
-
-        //
-
-        // Direct import would create circular dependency.
+        // Facade
 
         // ==================================================
 
-        this.view = {
+        this.facade =
 
-            render:
+            new TaxFacade();
 
-                async (
+        // ==================================================
 
-                    container,
+        // View
 
-                    onBack
+        // ==================================================
 
-                ) => {
+        this.view =
 
-                    const viewModule =
+            new TaxView(
 
-                        await import(
+                this.facade
 
-                            "./ui/taxView.js"
-
-                        );
-
-                    const taxView =
-
-                        viewModule.default;
-
-                    if(
-
-                        !taxView ||
-
-                        typeof taxView.render !==
-
-                            "function"
-
-                    ){
-
-                        throw new Error(
-
-                            "TaxView.render not found"
-
-                        );
-
-                    }
-
-                    return taxView.render(
-
-                        container,
-
-                        onBack
-
-                    );
-
-                }
-
-        };
+            );
 
         // ==================================================
 
@@ -180,6 +142,28 @@ class TaxModule {
 
     // ==================================================
 
+    // Generate Report
+
+    // Compatibility Alias
+
+    // ==================================================
+
+    generateReport(
+
+        data = {}
+
+    ){
+
+        return this.report(
+
+            data
+
+        );
+
+    }
+
+    // ==================================================
+
     // Tax Optimization
 
     // ==================================================
@@ -197,6 +181,26 @@ class TaxModule {
                 report
 
             );
+
+    }
+
+    // ==================================================
+
+    // Compatibility Alias
+
+    // ==================================================
+
+    optimizeTax(
+
+        report = {}
+
+    ){
+
+        return this.optimize(
+
+            report
+
+        );
 
     }
 
@@ -224,6 +228,26 @@ class TaxModule {
 
     // ==================================================
 
+    // Compatibility Alias
+
+    // ==================================================
+
+    adviseTax(
+
+        report = {}
+
+    ){
+
+        return this.advise(
+
+            report
+
+        );
+
+    }
+
+    // ==================================================
+
     // Full Tax Review
 
     // ==================================================
@@ -246,73 +270,29 @@ class TaxModule {
 
     // ==================================================
 
-    // Generate Report
+    // Dashboard
 
     // ==================================================
 
-    generateReport(
+    dashboard(){
 
-        data = {}
+        return this.facade
 
-    ){
+            .kernel
 
-        return this.controller
+            .getModule()
 
-            .generateReport(
+            .controller
 
-                data
+            .taxService
 
-            );
+            .dashboard();
 
     }
 
     // ==================================================
 
-    // Optimize Tax
-
-    // ==================================================
-
-    optimizeTax(
-
-        report = {}
-
-    ){
-
-        return this.controller
-
-            .optimizeTax(
-
-                report
-
-            );
-
-    }
-
-    // ==================================================
-
-    // Advise Tax
-
-    // ==================================================
-
-    adviseTax(
-
-        report = {}
-
-    ){
-
-        return this.controller
-
-            .adviseTax(
-
-                report
-
-            );
-
-    }
-
-    // ==================================================
-
-    // Get Status
+    // Module Status
 
     // ==================================================
 
