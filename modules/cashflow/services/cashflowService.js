@@ -1,48 +1,68 @@
 /*
 
+    
+
 Family Wealth AI OS V7
 
 Cashflow Service
+
+现金流业务服务层
 
 */
 
 import cashflowRepository
 
-from "../repository/cashflowRepository.js";
-
-import CashFlowEngine
-
-from "../../../core/cashflow/cashFlowEngine.js";
+    from "../repository/cashflowRepository.js";
 
 const cashflowService = {
 
-    create(data){
+    // ==================================================
 
-        const record =
+    // Create
 
-        cashflowRepository.create(
+    // ==================================================
 
-            data
+    create(
 
-        );
+        data
 
-        CashFlowEngine.add(
+    ){
 
-            data.type,
+        return cashflowRepository.create({
 
-            Number(
+            type:
 
-                data.amount || 0
+                data.type,
 
-            ),
+            category:
 
-            data
+                data.category ||
 
-        );
+                "Other",
 
-        return record;
+            description:
+
+                data.description ||
+
+                "",
+
+            amount:
+
+                Number(
+
+                    data.amount || 0
+
+                )
+
+        });
 
     },
+
+    // ==================================================
+
+    // List
+
+    // ==================================================
 
     list(){
 
@@ -50,7 +70,17 @@ const cashflowService = {
 
     },
 
-    get(id){
+    // ==================================================
+
+    // Get
+
+    // ==================================================
+
+    get(
+
+        id
+
+    ){
 
         return cashflowRepository.findById(
 
@@ -59,6 +89,12 @@ const cashflowService = {
         );
 
     },
+
+    // ==================================================
+
+    // Update
+
+    // ==================================================
 
     update(
 
@@ -72,13 +108,49 @@ const cashflowService = {
 
             id,
 
-            data
+            {
+
+                type:
+
+                    data.type,
+
+                category:
+
+                    data.category ||
+
+                    "Other",
+
+                description:
+
+                    data.description ||
+
+                    "",
+
+                amount:
+
+                    Number(
+
+                        data.amount || 0
+
+                    )
+
+            }
 
         );
 
     },
 
-    delete(id){
+    // ==================================================
+
+    // Delete
+
+    // ==================================================
+
+    delete(
+
+        id
+
+    ){
 
         return cashflowRepository.remove(
 
@@ -88,35 +160,27 @@ const cashflowService = {
 
     },
 
+    // ==================================================
+
+    // Summary
+
+    //
+
+    // IMPORTANT:
+
+    // Summary MUST read from Database.
+
+    //
+
+    // Do NOT use CashFlowEngine here.
+
+    // ==================================================
+
     summary(){
-
-        const report =
-
-        CashFlowEngine.report();
-
-        return {
-
-            income:
-
-            report.income,
-
-            expense:
-
-            report.expense,
-
-            net:
-
-            report.net
-
-        };
-
-    },
-
-    monthlyCashflow(){
 
         const list =
 
-        this.list();
+            cashflowRepository.findAll();
 
         let income = 0;
 
@@ -124,7 +188,15 @@ const cashflowService = {
 
         list.forEach(
 
-            item=>{
+            item => {
+
+                const amount =
+
+                    Number(
+
+                        item.amount || 0
+
+                    );
 
                 if(
 
@@ -134,13 +206,7 @@ const cashflowService = {
 
                 ){
 
-                    income +=
-
-                    Number(
-
-                        item.amount
-
-                    );
+                    income += amount;
 
                 }
 
@@ -152,13 +218,7 @@ const cashflowService = {
 
                 ){
 
-                    expense +=
-
-                    Number(
-
-                        item.amount
-
-                    );
+                    expense += amount;
 
                 }
 
@@ -174,9 +234,21 @@ const cashflowService = {
 
             net:
 
-            income - expense
+                income - expense
 
         };
+
+    },
+
+    // ==================================================
+
+    // Monthly Cashflow
+
+    // ==================================================
+
+    monthlyCashflow(){
+
+        return this.summary();
 
     }
 
