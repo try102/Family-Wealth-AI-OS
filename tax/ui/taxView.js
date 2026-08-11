@@ -32,9 +32,13 @@ Tax 模块用户界面层
 
 注意：
 
-TaxView 不再依赖 TaxFacade，
+TaxView 不再依赖 TaxFacade。
 
 避免：
+
+TaxModule
+
+ ↓
 
 TaxView
 
@@ -50,10 +54,6 @@ TaxKernel
 
 TaxModule
 
- ↓
-
-TaxView
-
 形成循环依赖。
 
  
@@ -68,19 +68,13 @@ class TaxView {
 
         // ==================================================
 
-        // Tax Controller
+        // Controller
 
         // ==================================================
 
         this.controller =
 
             new TaxController();
-
-        // ==================================================
-
-        // View State
-
-        // ==================================================
 
         this.container =
 
@@ -144,125 +138,31 @@ class TaxView {
 
     // ==================================================
 
-    // Get Tax Service
-
-    // ==================================================
-
-    getTaxService(){
-
-        if(
-
-            !this.controller
-
-        ){
-
-            throw new Error(
-
-                "TaxController not initialized"
-
-            );
-
-        }
-
-        if(
-
-            !this.controller.taxService
-
-        ){
-
-            throw new Error(
-
-                "TaxService not available"
-
-            );
-
-        }
-
-        return this.controller.taxService;
-
-    }
-
-    // ==================================================
-
     // Dashboard
 
     // ==================================================
 
     renderDashboard(){
 
-        if(
-
-            !this.container
-
-        ){
-
-            throw new Error(
-
-                "TaxView container not initialized"
-
-            );
-
-        }
-
-        const taxService =
-
-            this.getTaxService();
-
         const dashboard =
 
-            typeof taxService.dashboard ===
+            this.controller
 
-                "function"
+                .taxService
 
-                ?
-
-                taxService.dashboard()
-
-                :
-
-                {
-
-                    summary:
-
-                        typeof taxService.summary ===
-
-                            "function"
-
-                            ?
-
-                            taxService.summary()
-
-                            :
-
-                            {},
-
-                    latestPlan:
-
-                        null,
-
-                    analysis:
-
-                        null
-
-                };
+                .dashboard();
 
         const summary =
 
-            dashboard.summary ||
-
-            {};
+            dashboard.summary || {};
 
         const latestPlan =
 
-            dashboard.latestPlan ||
-
-            null;
+            dashboard.latestPlan || null;
 
         const analysis =
 
-            dashboard.analysis ||
-
-            null;
+            dashboard.analysis || null;
 
         const optimization =
 
@@ -1334,37 +1234,21 @@ class TaxView {
 
             );
 
-        const result =
+        this.controller
 
-            this.controller
+            .taxService
 
-                .taxService
+            .createPlan({
 
-                .createPlan({
+                name,
 
-                    name,
+                taxYear,
 
-                    taxYear,
+                income,
 
-                    income,
+                deductions
 
-                    deductions
-
-                });
-
-        if(
-
-            !result
-
-        ){
-
-            throw new Error(
-
-                "Failed to create tax plan"
-
-            );
-
-        }
+            });
 
         this.renderDashboard();
 
@@ -1513,5 +1397,11 @@ class TaxView {
 const taxView =
 
     new TaxView();
+
+// ==================================================
+
+// Export
+
+// ==================================================
 
 export default taxView;
