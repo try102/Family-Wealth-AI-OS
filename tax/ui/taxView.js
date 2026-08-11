@@ -30,31 +30,29 @@ Tax 模块用户界面层
 
  
 
-IMPORTANT:
+注意：
 
-TaxView 不再 import TaxFacade。
+TaxView 不再依赖 TaxFacade，
 
-Facade 由 TaxModule 注入。
-
-这样可以避免：
-
-TaxModule
-
-    ↓
+避免：
 
 TaxView
 
-    ↓
+ ↓
 
 TaxFacade
 
-    ↓
+ ↓
 
 TaxKernel
 
-    ↓
+ ↓
 
 TaxModule
+
+ ↓
+
+TaxView
 
 形成循环依赖。
 
@@ -62,37 +60,35 @@ TaxModule
 
 */
 
+import TaxController from "../taxController.js";
+
 class TaxView {
 
-    constructor(
+    constructor(){
 
-        facade = null
+        // ==================================================
 
-    ){
+        // Tax Controller
 
-        this.facade = facade;
+        // ==================================================
 
-        this.container = null;
+        this.controller =
 
-        this.onBack = () => {};
+            new TaxController();
 
-    }
+        // ==================================================
 
-    // ==================================================
+        // View State
 
-    // Set Facade
+        // ==================================================
 
-    // ==================================================
+        this.container =
 
-    setFacade(
+            null;
 
-        facade
+        this.onBack =
 
-    ){
-
-        this.facade = facade;
-
-        return this;
+            () => {};
 
     }
 
@@ -124,20 +120,6 @@ class TaxView {
 
         }
 
-        if(
-
-            !this.facade
-
-        ){
-
-            throw new Error(
-
-                "TaxView facade not initialized"
-
-            );
-
-        }
-
         this.container =
 
             container;
@@ -156,9 +138,47 @@ class TaxView {
 
                 () => {};
 
-        this.facade.initialize();
-
         this.renderDashboard();
+
+    }
+
+    // ==================================================
+
+    // Get Tax Service
+
+    // ==================================================
+
+    getTaxService(){
+
+        if(
+
+            !this.controller
+
+        ){
+
+            throw new Error(
+
+                "TaxController not initialized"
+
+            );
+
+        }
+
+        if(
+
+            !this.controller.taxService
+
+        ){
+
+            throw new Error(
+
+                "TaxService not available"
+
+            );
+
+        }
+
+        return this.controller.taxService;
 
     }
 
@@ -170,15 +190,61 @@ class TaxView {
 
     renderDashboard(){
 
+        if(
+
+            !this.container
+
+        ){
+
+            throw new Error(
+
+                "TaxView container not initialized"
+
+            );
+
+        }
+
+        const taxService =
+
+            this.getTaxService();
+
         const dashboard =
 
-            this.facade
+            typeof taxService.dashboard ===
 
-                .kernel
+                "function"
 
-                .getModule()
+                ?
 
-                .dashboard();
+                taxService.dashboard()
+
+                :
+
+                {
+
+                    summary:
+
+                        typeof taxService.summary ===
+
+                            "function"
+
+                            ?
+
+                            taxService.summary()
+
+                            :
+
+                            {},
+
+                    latestPlan:
+
+                        null,
+
+                    analysis:
+
+                        null
+
+                };
 
         const summary =
 
@@ -252,9 +318,7 @@ class TaxView {
 
                             ${Number(
 
-                                summary.count ||
-
-                                0
+                                summary.count || 0
 
                             )}
 
@@ -286,9 +350,7 @@ class TaxView {
 
                                 ${Number(
 
-                                    summary.count ||
-
-                                    0
+                                    summary.count || 0
 
                                 )}
 
@@ -483,6 +545,18 @@ class TaxView {
                                         ${this.formatCurrency(
 
                                             latestPlan.taxableIncome
+
+                                        )}
+
+                                    </p>
+
+                                    <p>
+
+                                        Estimated Tax:
+
+                                        ${this.formatCurrency(
+
+                                            latestPlan.estimatedTax
 
                                         )}
 
@@ -1260,27 +1334,37 @@ class TaxView {
 
             );
 
-        this.facade
+        const result =
 
-            .kernel
+            this.controller
 
-            .getModule()
+                .taxService
 
-            .controller
+                .createPlan({
 
-            .taxService
+                    name,
 
-            .createPlan({
+                    taxYear,
 
-                name,
+                    income,
 
-                taxYear,
+                    deductions
 
-                income,
+                });
 
-                deductions
+        if(
 
-            });
+            !result
+
+        ){
+
+            throw new Error(
+
+                "Failed to create tax plan"
+
+            );
+
+        }
 
         this.renderDashboard();
 
@@ -1422,8 +1506,12 @@ class TaxView {
 
 // ==================================================
 
-// Export Class
+// Singleton View
 
 // ==================================================
 
-export default TaxView;
+const taxView =
+
+    new TaxView();
+
+export default taxView;
