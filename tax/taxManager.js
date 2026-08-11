@@ -1,18 +1,10 @@
 /*
 
- 
-
 Family Wealth AI OS V7.7
-
- 
 
 Tax Manager
 
- 
-
 负责管理家庭税务规划方案
-
- 
 
 */
 
@@ -452,31 +444,35 @@ class TaxManager {
 
                     ) => {
 
-                        const yearA =
+                        const dateA =
 
-                            Number(
+                            new Date(
 
-                                a.taxYear ||
+                                a.updatedAt ||
 
-                                0
-
-                            );
-
-                        const yearB =
-
-                            Number(
-
-                                b.taxYear ||
+                                a.createdAt ||
 
                                 0
 
-                            );
+                            ).getTime();
+
+                        const dateB =
+
+                            new Date(
+
+                                b.updatedAt ||
+
+                                b.createdAt ||
+
+                                0
+
+                            ).getTime();
 
                         return (
 
-                            yearB -
+                            dateB -
 
-                            yearA
+                            dateA
 
                         );
 
@@ -488,178 +484,12 @@ class TaxManager {
 
     }
 
-    // ==================================================
-
-    // Get Total Estimated Tax
-
-    // ==================================================
-
-    getTotalEstimatedTax(){
-
-        this.init();
-
-        return this.taxPlans.reduce(
-
-            (
-
-                total,
-
-                plan
-
-            ) => {
-
-                return (
-
-                    total +
-
-                    Number(
-
-                        plan.estimatedTax ||
-
-                        0
-
-                    )
-
-                );
-
-            },
-
-            0
-
-        );
-
-    }
-
-    // ==================================================
-
-    // Get Total Income
-
-    // ==================================================
-
-    getTotalIncome(){
-
-        this.init();
-
-        return this.taxPlans.reduce(
-
-            (
-
-                total,
-
-                plan
-
-            ) => {
-
-                return (
-
-                    total +
-
-                    Number(
-
-                        plan.income ||
-
-                        plan.totalIncome ||
-
-                        0
-
-                    )
-
-                );
-
-            },
-
-            0
-
-        );
-
-    }
-
-    // ==================================================
-
-    // Get Total Deductions
-
-    // ==================================================
-
-    getTotalDeductions(){
-
-        this.init();
-
-        return this.taxPlans.reduce(
-
-            (
-
-                total,
-
-                plan
-
-            ) => {
-
-                return (
-
-                    total +
-
-                    Number(
-
-                        plan.deductions ||
-
-                        plan.totalDeductions ||
-
-                        0
-
-                    )
-
-                );
-
-            },
-
-            0
-
-        );
-
-    }
-
-    // ==================================================
-
-    // Summary
-
-    // ==================================================
-
-    getSummary(){
-
-        this.init();
-
-        return {
-
-            count:
-
-                this.taxPlans.length,
-
-            totalIncome:
-
-                this.getTotalIncome(),
-
-            totalDeductions:
-
-                this.getTotalDeductions(),
-
-            totalEstimatedTax:
-
-                this.getTotalEstimatedTax(),
-
-            latestPlan:
-
-                this.getLatestPlan()
-
-        };
-
-    }
-
 }
 
-// ======================================================
+// ==================================================
 
 // Export
 
-// ======================================================
+// ==================================================
 
 export default TaxManager;
