@@ -1,7 +1,5 @@
 /*
 
-    
-
 Family Wealth AI OS V7
 
 Cashflow View
@@ -42,21 +40,65 @@ const cashflowView = {
 
     ){
 
-        const summary =
-
-            cashflowAPI.getSummary();
-
         const cashflows =
 
-            cashflowAPI.getCashflows();
+            cashflowAPI
 
-        const report =
+                .getCashflows();
 
-            cashflowAgent.generateReport();
+        const summary =
 
-        const advice =
+            cashflowAPI
 
-            cashflowAI.generateAdvice();
+                .getSummary();
+
+        let report = null;
+
+        let advice = null;
+
+        try{
+
+            report =
+
+                cashflowAgent
+
+                    .generateReport();
+
+        }
+
+        catch(error){
+
+            console.warn(
+
+                "Cashflow Agent Report unavailable:",
+
+                error
+
+            );
+
+        }
+
+        try{
+
+            advice =
+
+                cashflowAI
+
+                    .generateAdvice();
+
+        }
+
+        catch(error){
+
+            console.warn(
+
+                "Cashflow AI Advice unavailable:",
+
+                error
+
+            );
+
+        }
 
         container.innerHTML = `
 
@@ -212,7 +254,7 @@ const cashflowView = {
 
                 <!-- ================================== -->
 
-                <!-- Add Cashflow -->
+                <!-- Add -->
 
                 <!-- ================================== -->
 
@@ -244,7 +286,7 @@ const cashflowView = {
 
                 <!-- ================================== -->
 
-                <!-- Cashflow List -->
+                <!-- List -->
 
                 <!-- ================================== -->
 
@@ -274,11 +316,11 @@ const cashflowView = {
 
                             `
 
-                                <p>
+                            <p>
 
-                                    No cash flow data.
+                                No cash flow data.
 
-                                </p>
+                            </p>
 
                             `
 
@@ -286,277 +328,187 @@ const cashflowView = {
 
                             `
 
-                                <div
+                            <div
+
+                                style="
+
+                                    overflow-x:auto;
+
+                                "
+
+                            >
+
+                                <table
 
                                     style="
 
-                                        overflow-x:auto;
+                                        width:100%;
+
+                                        border-collapse:collapse;
 
                                     "
 
                                 >
 
-                                    <table
+                                    <thead>
 
-                                        style="
+                                        <tr>
 
-                                            width:100%;
+                                            <th>Type</th>
 
-                                            border-collapse:collapse;
+                                            <th>Category</th>
 
-                                        "
+                                            <th>Description</th>
 
-                                    >
+                                            <th>Amount</th>
 
-                                        <thead>
+                                            <th>Frequency</th>
 
-                                            <tr>
+                                            <th>Annualized</th>
 
-                                                <th
+                                            <th>Actions</th>
 
-                                                    style="
+                                        </tr>
 
-                                                        padding:10px;
+                                    </thead>
 
-                                                        border-bottom:1px solid #ddd;
+                                    <tbody>
 
-                                                    "
+                                        ${
 
-                                                >
+                                            cashflows
 
-                                                    Type
+                                            .map(
 
-                                                </th>
+                                                item => `
 
-                                                <th
+                                                <tr
 
-                                                    style="
-
-                                                        padding:10px;
-
-                                                        border-bottom:1px solid #ddd;
-
-                                                    "
+                                                    data-id="${item.id}"
 
                                                 >
 
-                                                    Category
+                                                    <td>
 
-                                                </th>
+                                                        ${
 
-                                                <th
+                                                            item.type ||
 
-                                                    style="
+                                                            ""
 
-                                                        padding:10px;
+                                                        }
 
-                                                        border-bottom:1px solid #ddd;
+                                                    </td>
 
-                                                    "
+                                                    <td>
 
-                                                >
+                                                        ${
 
-                                                    Description
+                                                            item.category ||
 
-                                                </th>
+                                                            "Other"
 
-                                                <th
+                                                        }
 
-                                                    style="
+                                                    </td>
 
-                                                        padding:10px;
+                                                    <td>
 
-                                                        border-bottom:1px solid #ddd;
+                                                        ${
 
-                                                    "
+                                                            item.description ||
 
-                                                >
+                                                            ""
 
-                                                    Amount
+                                                        }
 
-                                                </th>
+                                                    </td>
 
-                                                <th
+                                                    <td>
 
-                                                    style="
+                                                        $${Number(
 
-                                                        padding:10px;
+                                                            item.amount ||
 
-                                                        border-bottom:1px solid #ddd;
+                                                            0
 
-                                                    "
+                                                        ).toLocaleString()}
 
-                                                >
+                                                    </td>
 
-                                                    Actions
+                                                    <td>
 
-                                                </th>
+                                                        ${
 
-                                            </tr>
+                                                            item.frequency ||
 
-                                        </thead>
+                                                            "YEARLY"
 
-                                        <tbody>
+                                                        }
 
-                                            ${
+                                                    </td>
 
-                                                cashflows
+                                                    <td>
 
-                                                .map(
+                                                        $${Number(
 
-                                                    item => `
+                                                            item.annualizedAmount ??
 
-                                                        <tr
+                                                            item.amount ??
+
+                                                            0
+
+                                                        ).toLocaleString()}
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <button
+
+                                                            type="button"
+
+                                                            class="edit-cashflow-button"
 
                                                             data-id="${item.id}"
 
                                                         >
 
-                                                            <td
+                                                            Edit
 
-                                                                style="
+                                                        </button>
 
-                                                                    padding:10px;
+                                                        <button
 
-                                                                "
+                                                            type="button"
 
-                                                            >
+                                                            class="delete-cashflow-button"
 
-                                                                ${
+                                                            data-id="${item.id}"
 
-                                                                    item.type ===
+                                                        >
 
-                                                                    "INCOME"
+                                                            Delete
 
-                                                                    ?
+                                                        </button>
 
-                                                                    "Income"
+                                                    </td>
 
-                                                                    :
+                                                </tr>
 
-                                                                    "Expense"
+                                                `
 
-                                                                }
+                                            )
 
-                                                            </td>
+                                            .join("")
 
-                                                            <td
+                                        }
 
-                                                                style="
+                                    </tbody>
 
-                                                                    padding:10px;
+                                </table>
 
-                                                                "
-
-                                                            >
-
-                                                                ${
-
-                                                                    item.category ||
-
-                                                                    "Other"
-
-                                                                }
-
-                                                            </td>
-
-                                                            <td
-
-                                                                style="
-
-                                                                    padding:10px;
-
-                                                                "
-
-                                                            >
-
-                                                                ${
-
-                                                                    item.description ||
-
-                                                                    item.name ||
-
-                                                                    ""
-
-                                                                }
-
-                                                            </td>
-
-                                                            <td
-
-                                                                style="
-
-                                                                    padding:10px;
-
-                                                                "
-
-                                                            >
-
-                                                                $${Number(
-
-                                                                    item.amount ||
-
-                                                                    0
-
-                                                                ).toLocaleString()}
-
-                                                            </td>
-
-                                                            <td
-
-                                                                style="
-
-                                                                    padding:10px;
-
-                                                                "
-
-                                                            >
-
-                                                                <button
-
-                                                                    type="button"
-
-                                                                    class="edit-cashflow-button"
-
-                                                                    data-id="${item.id}"
-
-                                                                >
-
-                                                                    Edit
-
-                                                                </button>
-
-                                                                <button
-
-                                                                    type="button"
-
-                                                                    class="delete-cashflow-button"
-
-                                                                    data-id="${item.id}"
-
-                                                                >
-
-                                                                    Delete
-
-                                                                </button>
-
-                                                            </td>
-
-                                                        </tr>
-
-                                                    `
-
-                                                )
-
-                                                .join("")
-
-                                            }
-
-                                        </tbody>
-
-                                    </table>
-
-                                </div>
+                            </div>
 
                             `
 
@@ -584,35 +536,61 @@ const cashflowView = {
 
                     </h2>
 
-                    <p>
+                    ${
 
-                        Health Score:
+                        report
 
-                        <strong>
+                        ?
 
-                            ${Number(
+                        `
 
-                                report?.healthScore ||
+                        <p>
+
+                            Health Score:
+
+                            ${
+
+                                report.healthScore ??
 
                                 0
 
-                            )}
+                            }
 
-                        </strong>
+                        </p>
 
-                    </p>
+                        `
 
-                    <p>
+                        :
 
-                        ${
+                        ""
 
-                            advice?.recommendation ||
+                    }
 
-                            "No recommendation available."
+                    ${
 
-                        }
+                        advice?.recommendation
 
-                    </p>
+                        ?
+
+                        `
+
+                        <p>
+
+                            ${
+
+                                advice.recommendation
+
+                            }
+
+                        </p>
+
+                        `
+
+                        :
+
+                        ""
+
+                    }
 
                 </section>
 
@@ -682,7 +660,7 @@ const cashflowView = {
 
         // ==================================================
 
-        // Add
+        // Add Button
 
         // ==================================================
 
@@ -804,90 +782,6 @@ const cashflowView = {
 
     // ==================================================
 
-    // Dashboard Data
-
-    // ==================================================
-
-    dashboard(){
-
-        const report =
-
-            cashflowAgent.generateReport();
-
-        const advice =
-
-            cashflowAI.generateAdvice();
-
-        return {
-
-            title:
-
-                "Cashflow Dashboard",
-
-            summary:
-
-                report.summary,
-
-            analysis:
-
-                report.analysis,
-
-            healthScore:
-
-                report.healthScore,
-
-            advice:
-
-                advice.recommendation
-
-        };
-
-    },
-
-    // ==================================================
-
-    // Overview
-
-    // ==================================================
-
-    overview(){
-
-        const summary =
-
-            cashflowAPI.getSummary();
-
-        return {
-
-            income:
-
-                summary.income,
-
-            expense:
-
-                summary.expense,
-
-            net:
-
-                summary.net
-
-        };
-
-    },
-
-    // ==================================================
-
-    // AI Report
-
-    // ==================================================
-
-    aiReport(){
-
-        return cashflowAI.analyze();
-
-    },
-
-    // ==================================================
-
     // Create Form
 
     // ==================================================
@@ -956,23 +850,17 @@ const cashflowView = {
 
                         id="cashflow-type"
 
+                        required
+
                     >
 
-                        <option
-
-                            value="INCOME"
-
-                        >
+                        <option value="INCOME">
 
                             Income
 
                         </option>
 
-                        <option
-
-                            value="EXPENSE"
-
-                        >
+                        <option value="EXPENSE">
 
                             Expense
 
@@ -1044,6 +932,50 @@ const cashflowView = {
 
                     <br><br>
 
+                    <label>
+
+                        Frequency
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="cashflow-frequency"
+
+                        required
+
+                    >
+
+                        <option value="YEARLY">
+
+                            Yearly
+
+                        </option>
+
+                        <option value="MONTHLY">
+
+                            Monthly
+
+                        </option>
+
+                        <option value="QUARTERLY">
+
+                            Quarterly
+
+                        </option>
+
+                        <option value="ONE_TIME">
+
+                            One Time
+
+                        </option>
+
+                    </select>
+
+                    <br><br>
+
                     <button
 
                         type="submit"
@@ -1102,7 +1034,9 @@ const cashflowView = {
 
                         "#cashflow-category"
 
-                    ).value.trim() ||
+                    ).value.trim()
+
+                    ||
 
                     "Other";
 
@@ -1126,6 +1060,14 @@ const cashflowView = {
 
                     );
 
+                const frequency =
+
+                    form.querySelector(
+
+                        "#cashflow-frequency"
+
+                    ).value;
+
                 cashflowAPI.createCashflow({
 
                     type,
@@ -1134,7 +1076,9 @@ const cashflowView = {
 
                     description,
 
-                    amount
+                    amount,
+
+                    frequency
 
                 });
 
@@ -1194,19 +1138,11 @@ const cashflowView = {
 
     ){
 
-        const cashflows =
-
-            cashflowAPI.getCashflows();
-
         const cashflow =
 
-            cashflows.find(
+            cashflowAPI.getCashflow(
 
-                item =>
-
-                    String(item.id) ===
-
-                    String(id)
+                Number(id)
 
             );
 
@@ -1274,45 +1210,13 @@ const cashflowView = {
 
                     >
 
-                        <option
-
-                            value="INCOME"
-
-                            ${
-
-                                cashflow.type ===
-
-                                "INCOME"
-
-                                ? "selected"
-
-                                : ""
-
-                            }
-
-                        >
+                        <option value="INCOME">
 
                             Income
 
                         </option>
 
-                        <option
-
-                            value="EXPENSE"
-
-                            ${
-
-                                cashflow.type ===
-
-                                "EXPENSE"
-
-                                ? "selected"
-
-                                : ""
-
-                            }
-
-                        >
+                        <option value="EXPENSE">
 
                             Expense
 
@@ -1336,13 +1240,7 @@ const cashflowView = {
 
                         type="text"
 
-                        value="${
-
-                            cashflow.category ||
-
-                            "Other"
-
-                        }"
+                        value="${cashflow.category || "Other"}"
 
                     >
 
@@ -1362,13 +1260,7 @@ const cashflowView = {
 
                         type="text"
 
-                        value="${
-
-                            cashflow.description ||
-
-                            ""
-
-                        }"
+                        value="${cashflow.description || ""}"
 
                     >
 
@@ -1392,21 +1284,53 @@ const cashflowView = {
 
                         step="0.01"
 
+                        value="${Number(cashflow.amount || 0)}"
+
                         required
 
-                        value="${
+                    >
 
-                            Number(
+                    <br><br>
 
-                                cashflow.amount ||
+                    <label>
 
-                                0
+                        Frequency
 
-                            )
+                    </label>
 
-                        }"
+                    <br>
+
+                    <select
+
+                        id="edit-cashflow-frequency"
 
                     >
+
+                        <option value="YEARLY">
+
+                            Yearly
+
+                        </option>
+
+                        <option value="MONTHLY">
+
+                            Monthly
+
+                        </option>
+
+                        <option value="QUARTERLY">
+
+                            Quarterly
+
+                        </option>
+
+                        <option value="ONE_TIME">
+
+                            One Time
+
+                        </option>
+
+                    </select>
 
                     <br><br>
 
@@ -1437,6 +1361,22 @@ const cashflowView = {
             </div>
 
         `;
+
+        formContainer.querySelector(
+
+            "#edit-cashflow-type"
+
+        ).value =
+
+            cashflow.type || "EXPENSE";
+
+        formContainer.querySelector(
+
+            "#edit-cashflow-frequency"
+
+        ).value =
+
+            cashflow.frequency || "YEARLY";
 
         const form =
 
@@ -1470,7 +1410,9 @@ const cashflowView = {
 
                             "#edit-cashflow-category"
 
-                        ).value.trim() ||
+                        ).value.trim()
+
+                        ||
 
                         "Other",
 
@@ -1492,13 +1434,21 @@ const cashflowView = {
 
                             ).value
 
-                        )
+                        ),
+
+                    frequency:
+
+                        form.querySelector(
+
+                            "#edit-cashflow-frequency"
+
+                        ).value
 
                 };
 
                 cashflowAPI.updateCashflow(
 
-                    id,
+                    Number(id),
 
                     updated
 
@@ -1560,19 +1510,11 @@ const cashflowView = {
 
     ){
 
-        const cashflows =
-
-            cashflowAPI.getCashflows();
-
         const cashflow =
 
-            cashflows.find(
+            cashflowAPI.getCashflow(
 
-                item =>
-
-                    String(item.id) ===
-
-                    String(id)
+                Number(id)
 
             );
 
@@ -1604,7 +1546,7 @@ const cashflowView = {
 
         cashflowAPI.deleteCashflow(
 
-            id
+            Number(id)
 
         );
 
@@ -1615,6 +1557,60 @@ const cashflowView = {
             onBack
 
         );
+
+    },
+
+    // ==================================================
+
+    // Data Views
+
+    // ==================================================
+
+    dashboard(){
+
+        const report =
+
+            cashflowAgent.generateReport();
+
+        const advice =
+
+            cashflowAI.generateAdvice();
+
+        return {
+
+            title:
+
+                "Cashflow Dashboard",
+
+            summary:
+
+                report.summary,
+
+            analysis:
+
+                report.analysis,
+
+            healthScore:
+
+                report.healthScore,
+
+            advice:
+
+                advice.recommendation
+
+        };
+
+    },
+
+    overview(){
+
+        return cashflowAPI.getSummary();
+
+    },
+
+    aiReport(){
+
+        return cashflowAI.analyze();
 
     }
 
