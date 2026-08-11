@@ -1,20 +1,30 @@
 /*
 
+    
+
 Family Wealth AI OS V7
 
 Cashflow Repository
+
+现金流数据仓库
 
 */
 
 import Database
 
-from "../../../storage/database.js";
+    from "../../../storage/database.js";
 
 const TABLE =
 
-"cashflows";
+    "cashflows";
 
 const cashflowRepository = {
+
+    // ==================================================
+
+    // Initialize
+
+    // ==================================================
 
     init(){
 
@@ -22,11 +32,15 @@ const cashflowRepository = {
 
         if(
 
-            !Database.tables[TABLE]
+            !Array.isArray(
+
+                Database.tables[TABLE]
+
+            )
 
         ){
 
-            Database.tables[TABLE]=[];
+            Database.tables[TABLE] = [];
 
             Database.save();
 
@@ -36,7 +50,17 @@ const cashflowRepository = {
 
     },
 
-    create(data){
+    // ==================================================
+
+    // Create
+
+    // ==================================================
+
+    create(
+
+        data
+
+    ){
 
         this.init();
 
@@ -44,13 +68,13 @@ const cashflowRepository = {
 
             id:
 
-            Date.now(),
+                Date.now(),
 
             ...data
 
         };
 
-        Database.insert(
+        return Database.insert(
 
             TABLE,
 
@@ -58,9 +82,13 @@ const cashflowRepository = {
 
         );
 
-        return record;
-
     },
+
+    // ==================================================
+
+    // Find All
+
+    // ==================================================
 
     findAll(){
 
@@ -74,21 +102,47 @@ const cashflowRepository = {
 
     },
 
-    findById(id){
+    // ==================================================
+
+    // Find By ID
+
+    // ==================================================
+
+    findById(
+
+        id
+
+    ){
 
         const list =
 
-        this.findAll();
+            this.findAll();
 
-        return list.find(
+        return (
 
-            item =>
+            list.find(
 
-            item.id === id
+                item =>
+
+                    String(item.id) ===
+
+                    String(id)
+
+            )
+
+            ||
+
+            null
 
         );
 
     },
+
+    // ==================================================
+
+    // Update
+
+    // ==================================================
 
     update(
 
@@ -100,17 +154,19 @@ const cashflowRepository = {
 
         const list =
 
-        this.findAll();
+            this.findAll();
 
         const index =
 
-        list.findIndex(
+            list.findIndex(
 
-            item =>
+                item =>
 
-            item.id === id
+                    String(item.id) ===
 
-        );
+                    String(id)
+
+            );
 
         if(
 
@@ -122,11 +178,21 @@ const cashflowRepository = {
 
         }
 
-        list[index]={
+        list[index] = {
 
             ...list[index],
 
-            ...data
+            ...data,
+
+            id:
+
+                list[index].id,
+
+            updatedAt:
+
+                new Date()
+
+                    .toISOString()
 
         };
 
@@ -136,25 +202,51 @@ const cashflowRepository = {
 
     },
 
-    remove(id){
+    // ==================================================
+
+    // Remove
+
+    // ==================================================
+
+    remove(
+
+        id
+
+    ){
 
         const list =
 
-        this.findAll();
+            this.findAll();
 
-        const filtered =
+        const index =
 
-        list.filter(
+            list.findIndex(
 
-            item =>
+                item =>
 
-            item.id !== id
+                    String(item.id) ===
+
+                    String(id)
+
+            );
+
+        if(
+
+            index === -1
+
+        ){
+
+            return false;
+
+        }
+
+        list.splice(
+
+            index,
+
+            1
 
         );
-
-        Database.tables[TABLE]=
-
-        filtered;
 
         Database.save();
 
@@ -162,11 +254,21 @@ const cashflowRepository = {
 
     },
 
+    // ==================================================
+
+    // Clear
+
+    // ==================================================
+
     clear(){
 
-        Database.tables[TABLE]=[];
+        this.init();
+
+        Database.tables[TABLE] = [];
 
         Database.save();
+
+        return true;
 
     }
 
