@@ -16,6 +16,8 @@ Tax 模块统一入口
 
 负责统一连接：
 
+ 
+
 TaxController
 
 TaxService
@@ -30,11 +32,21 @@ TaxView
 
 注意：
 
-TaxModule 不再依赖 TaxFacade / TaxKernel。
+ 
+
+TaxModule 不依赖 TaxFacade / TaxKernel。
+
+ 
 
 避免：
 
+ 
+
 TaxModule
+
+ ↓
+
+TaxView
 
  ↓
 
@@ -47,6 +59,8 @@ TaxKernel
  ↓
 
 TaxModule
+
+ 
 
 形成循环依赖。
 
@@ -76,11 +90,19 @@ class TaxModule {
 
         // View
 
+        //
+
+        // TaxView 需要 Controller
+
         // ==================================================
 
         this.view =
 
-            TaxView;
+            new TaxView(
+
+                this.controller
+
+            );
 
         // ==================================================
 
@@ -304,17 +326,11 @@ class TaxModule {
 
         return {
 
-            summary:
+            summary: {},
 
-                {},
+            latestPlan: null,
 
-            latestPlan:
-
-                null,
-
-            analysis:
-
-                null
+            analysis: null
 
         };
 
