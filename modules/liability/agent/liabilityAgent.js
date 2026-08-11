@@ -8,57 +8,59 @@ Liability Agent
 
 */
 
-import LiabilityAPI from "../api/liabilityAPI.js";
+import LiabilityAPI
+
+    from "../api/liabilityAPI.js";
 
 const LiabilityAgent = {
 
     name:
 
-    "Liability Agent V7",
+        "Liability Agent V7",
 
-    // =====================
+    // ==================================================
 
     // Get Data
 
-    // =====================
+    // ==================================================
 
     getLiabilities(){
 
         return LiabilityAPI
 
-        .getLiabilities();
+            .getLiabilities();
 
     },
 
-    // =====================
+    // ==================================================
 
     // Summary
 
-    // =====================
+    // ==================================================
 
     getLiabilitySummary(){
 
         return LiabilityAPI
 
-        .getSummary();
+            .getSummary();
 
     },
 
-    // =====================
+    // ==================================================
 
     // Debt Status
 
-    // =====================
+    // ==================================================
 
     analyzeDebtStatus(){
 
         const summary =
 
-        this.getLiabilitySummary();
+            this.getLiabilitySummary();
 
         let level =
 
-        "LOW";
+            "LOW";
 
         if(
 
@@ -72,7 +74,7 @@ const LiabilityAgent = {
 
             level =
 
-            "HIGH";
+                "HIGH";
 
         }
 
@@ -88,7 +90,7 @@ const LiabilityAgent = {
 
             level =
 
-            "MEDIUM";
+                "MEDIUM";
 
         }
 
@@ -96,41 +98,69 @@ const LiabilityAgent = {
 
             totalLiability:
 
-            summary.totalLiability,
+                summary.totalLiability,
+
+            annualInterest:
+
+                summary.annualInterest,
+
+            monthlyInterest:
+
+                summary.monthlyInterest,
+
+            averageInterestRate:
+
+                summary.averageInterestRate,
+
+            monthlyPayment:
+
+                summary.monthlyPayment,
+
+            debtRiskScore:
+
+                summary.debtRiskScore,
 
             debtLevel:
 
-            level,
+                level,
 
             count:
 
-            summary.count
+                summary.count
 
         };
 
     },
 
-    // =====================
+    // ==================================================
 
     // Generate Review
 
-    // =====================
+    // ==================================================
 
     generateLiabilityReview(){
+
+        const summary =
+
+            this.getLiabilitySummary();
+
+        const analysis =
+
+            this.analyzeDebtStatus();
 
         return {
 
             summary:
 
-            this.getLiabilitySummary(),
+                summary,
 
             analysis:
 
-            this.analyzeDebtStatus(),
+                analysis,
 
             recommendation:
 
-            "Review debt structure and interest cost"
+                "Review debt structure and interest cost"
 
         };
 
