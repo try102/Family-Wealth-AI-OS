@@ -450,6 +450,216 @@ class TaxManager {
 
                         b
 
-                    ) =>
+                    ) => {
 
-                       
+                        const yearA =
+
+                            Number(
+
+                                a.taxYear ||
+
+                                0
+
+                            );
+
+                        const yearB =
+
+                            Number(
+
+                                b.taxYear ||
+
+                                0
+
+                            );
+
+                        return (
+
+                            yearB -
+
+                            yearA
+
+                        );
+
+                    }
+
+                )[0]
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Get Total Estimated Tax
+
+    // ==================================================
+
+    getTotalEstimatedTax(){
+
+        this.init();
+
+        return this.taxPlans.reduce(
+
+            (
+
+                total,
+
+                plan
+
+            ) => {
+
+                return (
+
+                    total +
+
+                    Number(
+
+                        plan.estimatedTax ||
+
+                        0
+
+                    )
+
+                );
+
+            },
+
+            0
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Get Total Income
+
+    // ==================================================
+
+    getTotalIncome(){
+
+        this.init();
+
+        return this.taxPlans.reduce(
+
+            (
+
+                total,
+
+                plan
+
+            ) => {
+
+                return (
+
+                    total +
+
+                    Number(
+
+                        plan.income ||
+
+                        plan.totalIncome ||
+
+                        0
+
+                    )
+
+                );
+
+            },
+
+            0
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Get Total Deductions
+
+    // ==================================================
+
+    getTotalDeductions(){
+
+        this.init();
+
+        return this.taxPlans.reduce(
+
+            (
+
+                total,
+
+                plan
+
+            ) => {
+
+                return (
+
+                    total +
+
+                    Number(
+
+                        plan.deductions ||
+
+                        plan.totalDeductions ||
+
+                        0
+
+                    )
+
+                );
+
+            },
+
+            0
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Summary
+
+    // ==================================================
+
+    getSummary(){
+
+        this.init();
+
+        return {
+
+            count:
+
+                this.taxPlans.length,
+
+            totalIncome:
+
+                this.getTotalIncome(),
+
+            totalDeductions:
+
+                this.getTotalDeductions(),
+
+            totalEstimatedTax:
+
+                this.getTotalEstimatedTax(),
+
+            latestPlan:
+
+                this.getLatestPlan()
+
+        };
+
+    }
+
+}
+
+// ======================================================
+
+// Export
+
+// ======================================================
+
+export default TaxManager;
