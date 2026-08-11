@@ -1,5 +1,7 @@
 /*
 
+ 
+
 Family Wealth AI OS V7
 
 Liability Agent
@@ -8,9 +10,7 @@ Liability Agent
 
 */
 
-import LiabilityAPI
-
-    from "../api/liabilityAPI.js";
+import LiabilityAPI from "../api/liabilityAPI.js";
 
 const LiabilityAgent = {
 
@@ -48,6 +48,170 @@ const LiabilityAgent = {
 
     // ==================================================
 
+    // Annual Interest
+
+    // ==================================================
+
+    totalAnnualInterest(){
+
+        const liabilities =
+
+            this.getLiabilities();
+
+        let total = 0;
+
+        liabilities.forEach(
+
+            item => {
+
+                const balance =
+
+                    Number(
+
+                        item.currentBalance ||
+
+                        item.balance ||
+
+                        0
+
+                    );
+
+                const rate =
+
+                    Number(
+
+                        item.interestRate ||
+
+                        item.rate ||
+
+                        0
+
+                    );
+
+                total +=
+
+                    balance *
+
+                    rate /
+
+                    100;
+
+            }
+
+        );
+
+        return total;
+
+    },
+
+    // ==================================================
+
+    // Monthly Interest
+
+    // ==================================================
+
+    totalMonthlyInterest(){
+
+        return (
+
+            this.totalAnnualInterest()
+
+            /
+
+            12
+
+        );
+
+    },
+
+    // ==================================================
+
+    // Average Interest Rate
+
+    // ==================================================
+
+    averageInterestRate(){
+
+        const liabilities =
+
+            this.getLiabilities();
+
+        if(
+
+            liabilities.length === 0
+
+        ){
+
+            return 0;
+
+        }
+
+        let weightedBalance = 0;
+
+        let totalBalance = 0;
+
+        liabilities.forEach(
+
+            item => {
+
+                const balance =
+
+                    Number(
+
+                        item.currentBalance ||
+
+                        item.balance ||
+
+                        0
+
+                    );
+
+                const rate =
+
+                    Number(
+
+                        item.interestRate ||
+
+                        item.rate ||
+
+                        0
+
+                    );
+
+                weightedBalance +=
+
+                    balance * rate;
+
+                totalBalance +=
+
+                    balance;
+
+            }
+
+        );
+
+        if(
+
+            totalBalance === 0
+
+        ){
+
+            return 0;
+
+        }
+
+        return (
+
+            weightedBalance /
+
+            totalBalance
+
+        );
+
+    },
+
+    // ==================================================
+
     // Debt Status
 
     // ==================================================
@@ -64,9 +228,7 @@ const LiabilityAgent = {
 
         if(
 
-            summary.totalLiability
-
-            >
+            summary.totalLiability >
 
             500000
 
@@ -80,9 +242,7 @@ const LiabilityAgent = {
 
         else if(
 
-            summary.totalLiability
-
-            >
+            summary.totalLiability >
 
             100000
 
@@ -100,33 +260,25 @@ const LiabilityAgent = {
 
                 summary.totalLiability,
 
-            annualInterest:
-
-                summary.annualInterest,
-
-            monthlyInterest:
-
-                summary.monthlyInterest,
-
-            averageInterestRate:
-
-                summary.averageInterestRate,
-
-            monthlyPayment:
-
-                summary.monthlyPayment,
-
-            debtRiskScore:
-
-                summary.debtRiskScore,
-
             debtLevel:
 
                 level,
 
             count:
 
-                summary.count
+                summary.count,
+
+            annualInterest:
+
+                this.totalAnnualInterest(),
+
+            monthlyInterest:
+
+                this.totalMonthlyInterest(),
+
+            averageInterestRate:
+
+                this.averageInterestRate()
 
         };
 
@@ -160,7 +312,15 @@ const LiabilityAgent = {
 
             recommendation:
 
+                analysis.annualInterest > 0
+
+                ?
+
                 "Review debt structure and interest cost"
+
+                :
+
+                "Debt interest cost is currently zero"
 
         };
 
