@@ -2,102 +2,86 @@
 
 Family Wealth AI OS V7
 
-Cashflow Module
+Cashflow Module Definition
 
-家庭现金流核心模块
+现金流模块注册信息
 
 */
 
+import cashflowAPI
+
+    from "../../modules/cashflow/api/cashflowAPI.js";
+
 import cashflowAgent
 
-from "../../modules/cashflow/agent/cashflowAgent.js";
+    from "../../modules/cashflow/agent/cashflowAgent.js";
 
 import cashflowAI
 
-from "../../modules/cashflow/ai/cashflowAI.js";
-
-import cashflowAnalysisEngine
-
-from "../../modules/cashflow/analysis/cashflowAnalysisEngine.js";
-
-import cashflowAPI
-
-from "../../modules/cashflow/api/cashflowAPI.js";
-
-import cashflowEvents
-
-from "../../modules/cashflow/events/cashflowEvents.js";
-
-import cashflowRepository
-
-from "../../modules/cashflow/repository/cashflowRepository.js";
-
-import cashflowSchema
-
-from "../../modules/cashflow/schema/cashflowSchema.js";
-
-import cashflowService
-
-from "../../modules/cashflow/services/cashflowService.js";
+    from "../../modules/cashflow/ai/cashflowAI.js";
 
 import cashflowView
 
-from "../../modules/cashflow/ui/cashflowView.js";
+    from "../../modules/cashflow/ui/cashflowView.js";
 
-const CashflowModule = {
+const cashflowModule = {
 
     name:
 
-    "Cashflow Module V7",
+        "Cashflow Module V7",
 
     version:
 
-    "7.0",
+        "7.0",
 
     type:
 
-    "WEALTH_MODULE",
+        "WEALTH_MODULE",
 
-    status:
+    // ==================================================
 
-    "READY",
+    // API
 
-    schema:
-
-    cashflowSchema,
-
-    repository:
-
-    cashflowRepository,
-
-    service:
-
-    cashflowService,
+    // ==================================================
 
     api:
 
-    cashflowAPI,
+        cashflowAPI,
+
+    // ==================================================
+
+    // Agent
+
+    // ==================================================
 
     agent:
 
-    cashflowAgent,
+        cashflowAgent,
+
+    // ==================================================
+
+    // AI
+
+    // ==================================================
 
     ai:
 
-    cashflowAI,
+        cashflowAI,
 
-    analysis:
+    // ==================================================
 
-    cashflowAnalysisEngine,
+    // UI
 
-    events:
-
-    cashflowEvents,
+    // ==================================================
 
     view:
 
-    cashflowView
+        cashflowView,
+
+    status:
+
+        "READY"
 
 };
 
-export default CashflowModule;
+export default cashflowModule;
