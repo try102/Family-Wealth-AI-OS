@@ -224,15 +224,19 @@ class TaxController {
 
     //
 
-    // View 通过 Controller 访问 Dashboard
+    // Dashboard 基础数据来自 TaxService
 
-    // Controller 再交给 TaxService
+    //
+
+    // Advisor 数据由 TaxController 统一生成
+
+    // 避免 TaxService 与 TaxAdvisor 形成额外依赖
 
     // ==================================================
 
     dashboard(){
 
-        if(
+        const dashboard =
 
             this.taxService &&
 
@@ -240,19 +244,143 @@ class TaxController {
 
                 "function"
 
+                ?
+
+                this.taxService.dashboard()
+
+                :
+
+                {
+
+                    summary: {},
+
+                    latestPlan: null,
+
+                    analysis: null
+
+                };
+
+        const summary =
+
+            dashboard?.summary ||
+
+            {};
+
+        const latestPlan =
+
+            dashboard?.latestPlan ||
+
+            null;
+
+        const analysis =
+
+            dashboard?.analysis ||
+
+            null;
+
+        // ==================================================
+
+        // No Latest Plan
+
+        // ==================================================
+
+        if(
+
+            !latestPlan
+
         ){
 
-            return this.taxService.dashboard();
+            return {
+
+                summary,
+
+                latestPlan:
+
+                    null,
+
+                analysis:
+
+                    null
+
+            };
 
         }
 
+        // ==================================================
+
+        // Generate Advisor Data
+
+        // ==================================================
+
+        let advice =
+
+            null;
+
+        if(
+
+            this.taxAdvisor &&
+
+            typeof this.taxAdvisor.analyze ===
+
+                "function"
+
+        ){
+
+            if(
+
+                analysis &&
+
+                analysis.report
+
+            ){
+
+                advice =
+
+                    this.taxAdvisor
+
+                        .analyze(
+
+                            analysis.report
+
+                        );
+
+            }
+
+            else {
+
+                advice =
+
+                    this.taxAdvisor
+
+                        .analyze(
+
+                            latestPlan
+
+                        );
+
+            }
+
+        }
+
+        // ==================================================
+
+        // Return Complete Dashboard
+
+        // ==================================================
+
         return {
 
-            summary: {},
+            summary,
 
-            latestPlan: null,
+            latestPlan,
 
-            analysis: null
+            analysis: {
+
+                ...(analysis || {}),
+
+                advice
+
+            }
 
         };
 
