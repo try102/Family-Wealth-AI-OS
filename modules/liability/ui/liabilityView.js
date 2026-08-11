@@ -64,9 +64,9 @@ const LiabilityView = {
 
         // IMPORTANT:
 
-        // Interest comes from LiabilityAgent analysis,
+        // Interest data comes from LiabilityAgent.analysis
 
-        // NOT LiabilityAPI summary.
+        // NOT LiabilityAPI.summary
 
         // ==================================================
 
@@ -86,7 +86,7 @@ const LiabilityView = {
 
                 analysis?.monthlyInterest ||
 
-                annualInterest / 12
+                0
 
             );
 
@@ -99,12 +99,6 @@ const LiabilityView = {
                 0
 
             );
-
-        // ==================================================
-
-        // Main HTML
-
-        // ==================================================
 
         container.innerHTML = `
 
@@ -220,7 +214,19 @@ const LiabilityView = {
 
                                     0
 
-                                ).toLocaleString()}
+                                ).toLocaleString(
+
+                                    "en-US",
+
+                                    {
+
+                                        maximumFractionDigits:
+
+                                            0
+
+                                    }
+
+                                )}
 
                             </div>
 
@@ -251,10 +257,6 @@ const LiabilityView = {
                                     "en-US",
 
                                     {
-
-                                        minimumFractionDigits:
-
-                                            0,
 
                                         maximumFractionDigits:
 
@@ -628,7 +630,7 @@ const LiabilityView = {
 
                                                             );
 
-                                                        const itemAnnualInterest =
+                                                        const annualInterest =
 
                                                             balance *
 
@@ -698,7 +700,19 @@ const LiabilityView = {
 
                                                                 >
 
-                                                                    $${balance.toLocaleString()}
+                                                                    $${balance.toLocaleString(
+
+                                                                        "en-US",
+
+                                                                        {
+
+                                                                            maximumFractionDigits:
+
+                                                                                0
+
+                                                                        }
+
+                                                                    )}
 
                                                                 </td>
 
@@ -726,15 +740,11 @@ const LiabilityView = {
 
                                                                 >
 
-                                                                    $${itemAnnualInterest.toLocaleString(
+                                                                    $${annualInterest.toLocaleString(
 
                                                                         "en-US",
 
                                                                         {
-
-                                                                            minimumFractionDigits:
-
-                                                                                0,
 
                                                                             maximumFractionDigits:
 
@@ -1058,18 +1068,6 @@ const LiabilityView = {
 
     getDashboard(){
 
-        const summary =
-
-            LiabilityAPI
-
-                .getSummary();
-
-        const analysis =
-
-            LiabilityAgent
-
-                .analyzeDebtStatus();
-
         return {
 
             title:
@@ -1078,33 +1076,15 @@ const LiabilityView = {
 
             summary:
 
-                {
+                LiabilityAPI
 
-                    ...summary,
-
-                    annualInterest:
-
-                        analysis?.annualInterest ||
-
-                        0,
-
-                    monthlyInterest:
-
-                        analysis?.monthlyInterest ||
-
-                        0,
-
-                    averageInterestRate:
-
-                        analysis?.averageInterestRate ||
-
-                        0
-
-                },
+                    .getSummary(),
 
             analysis:
 
-                analysis
+                LiabilityAgent
+
+                    .analyzeDebtStatus()
 
         };
 
@@ -1132,9 +1112,9 @@ const LiabilityView = {
 
                     Number(
 
-                        item.currentBalance ||
+                        item.currentBalance ??
 
-                        item.balance ||
+                        item.balance ??
 
                         0
 
@@ -1144,9 +1124,9 @@ const LiabilityView = {
 
                     Number(
 
-                        item.interestRate ||
+                        item.interestRate ??
 
-                        item.rate ||
+                        item.rate ??
 
                         0
 
@@ -1181,6 +1161,16 @@ const LiabilityView = {
                         rate /
 
                         100,
+
+                    monthlyInterest:
+
+                        balance *
+
+                        rate /
+
+                        100 /
+
+                        12,
 
                     status:
 
@@ -1418,7 +1408,9 @@ const LiabilityView = {
 
                             "#liability-balance"
 
-                        ).value
+                        )
+
+                        .value
 
                     );
 
@@ -1430,7 +1422,9 @@ const LiabilityView = {
 
                             "#liability-rate"
 
-                        ).value
+                        )
+
+                        .value
 
                     );
 
@@ -1802,7 +1796,9 @@ const LiabilityView = {
 
                                 "#edit-liability-balance"
 
-                            ).value
+                            )
+
+                            .value
 
                         ),
 
@@ -1814,7 +1810,9 @@ const LiabilityView = {
 
                                 "#edit-liability-rate"
 
-                            ).value
+                            )
+
+                            .value
 
                         ),
 
