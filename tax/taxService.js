@@ -1,12 +1,22 @@
 /*
 
+ 
+
 Family Wealth AI OS V7.7
+
+ 
 
 Tax Service
 
+ 
+
 Tax 模块服务层
 
+ 
+
 负责统一管理：
+
+ 
 
 TaxPlan
 
@@ -15,6 +25,8 @@ TaxManager
 TaxEngine
 
 TaxOptimizer
+
+ 
 
 */
 
@@ -102,11 +114,13 @@ class TaxService {
 
             );
 
-        return this.taxManager.addPlan(
+        return this.taxManager
 
-            taxPlan
+            .addPlan(
 
-        );
+                taxPlan
+
+            );
 
     }
 
@@ -118,7 +132,9 @@ class TaxService {
 
     getPlans(){
 
-        return this.taxManager.getPlans();
+        return this.taxManager
+
+            .getPlans();
 
     }
 
@@ -134,11 +150,13 @@ class TaxService {
 
     ){
 
-        return this.taxManager.getPlanById(
+        return this.taxManager
 
-            id
+            .getPlanById(
 
-        );
+                id
+
+            );
 
     }
 
@@ -154,11 +172,13 @@ class TaxService {
 
     ){
 
-        return this.taxManager.getPlanByYear(
+        return this.taxManager
 
-            taxYear
+            .getPlanByYear(
 
-        );
+                taxYear
+
+            );
 
     }
 
@@ -176,13 +196,15 @@ class TaxService {
 
     ){
 
-        return this.taxManager.updatePlan(
+        return this.taxManager
 
-            id,
+            .updatePlan(
 
-            data
+                id,
 
-        );
+                data
+
+            );
 
     }
 
@@ -198,11 +220,13 @@ class TaxService {
 
     ){
 
-        return this.taxManager.removePlan(
+        return this.taxManager
 
-            id
+            .removePlan(
 
-        );
+                id
+
+            );
 
     }
 
@@ -214,7 +238,9 @@ class TaxService {
 
     countPlans(){
 
-        return this.taxManager.count();
+        return this.taxManager
+
+            .count();
 
     }
 
@@ -230,11 +256,13 @@ class TaxService {
 
     ){
 
-        return this.taxEngine.generateReport(
+        return this.taxEngine
 
-            data
+            .generateReport(
 
-        );
+                data
+
+            );
 
     }
 
@@ -260,11 +288,13 @@ class TaxService {
 
         }
 
-        return this.taxOptimizer.optimize(
+        return this.taxOptimizer
 
-            report
+            .optimize(
 
-        );
+                report
+
+            );
 
     }
 
@@ -336,7 +366,45 @@ class TaxService {
 
         }
 
+        // ==================================================
+
+        // Determine Tax Rate
+
+        // ==================================================
+
+        const taxRate =
+
+            plan.taxRate !==
+
+                undefined
+
+                ?
+
+                Number(
+
+                    plan.taxRate
+
+                )
+
+                :
+
+                0.20;
+
+        // ==================================================
+
+        // Tax Engine Input
+
+        // ==================================================
+
         const data = {
+
+            id:
+
+                plan.id,
+
+            name:
+
+                plan.name,
 
             income:
 
@@ -362,25 +430,53 @@ class TaxService {
 
                 ),
 
-            name:
+            taxRate:
 
-                plan.name,
+                taxRate,
 
-            id:
+            strategies:
 
-                plan.id
+                Array.isArray(
+
+                    plan.strategies
+
+                )
+
+                    ?
+
+                    plan.strategies
+
+                    :
+
+                    []
 
         };
+
+        // ==================================================
+
+        // Run Tax Engine
+
+        // ==================================================
+
+        const analysis =
+
+            this.analyze(
+
+                data
+
+            );
+
+        // ==================================================
+
+        // Return Plan + Fresh Analysis
+
+        // ==================================================
 
         return {
 
             plan,
 
-            ...this.analyze(
-
-                data
-
-            )
+            ...analysis
 
         };
 
@@ -428,6 +524,14 @@ class TaxService {
 
     // Tax Summary
 
+    //
+
+    // Summary uses fresh TaxEngine calculations.
+
+    // This prevents old estimatedTax values from
+
+    // remaining visible in the Dashboard.
+
     // ==================================================
 
     summary(){
@@ -444,11 +548,17 @@ class TaxService {
 
         let totalEstimatedTax = 0;
 
+        // ==================================================
+
+        // Calculate Each Plan
+
+        // ==================================================
+
         plans.forEach(
 
             plan => {
 
-                totalIncome +=
+                const income =
 
                     Number(
 
@@ -456,7 +566,7 @@ class TaxService {
 
                     );
 
-                totalDeductions +=
+                const deductions =
 
                     Number(
 
@@ -464,11 +574,85 @@ class TaxService {
 
                     );
 
+                const taxRate =
+
+                    plan.taxRate !==
+
+                        undefined
+
+                        ?
+
+                        Number(
+
+                            plan.taxRate
+
+                        )
+
+                        :
+
+                        0.20;
+
+                const report =
+
+                    this.createReport({
+
+                        id:
+
+                            plan.id,
+
+                        name:
+
+                            plan.name,
+
+                        taxYear:
+
+                            plan.taxYear,
+
+                        income,
+
+                        deductions,
+
+                        taxRate,
+
+                        strategies:
+
+                            Array.isArray(
+
+                                plan.strategies
+
+                            )
+
+                                ?
+
+                                plan.strategies
+
+                                :
+
+                                []
+
+                    });
+
+                totalIncome +=
+
+                    Number(
+
+                        report.totalIncome || 0
+
+                    );
+
+                totalDeductions +=
+
+                    Number(
+
+                        report.totalDeductions || 0
+
+                    );
+
                 totalTaxableIncome +=
 
                     Number(
 
-                        plan.taxableIncome || 0
+                        report.taxableIncome || 0
 
                     );
 
@@ -476,13 +660,19 @@ class TaxService {
 
                     Number(
 
-                        plan.estimatedTax || 0
+                        report.estimatedTax || 0
 
                     );
 
             }
 
         );
+
+        // ==================================================
+
+        // Return Summary
+
+        // ==================================================
 
         return {
 
