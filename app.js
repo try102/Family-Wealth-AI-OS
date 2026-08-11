@@ -12,6 +12,10 @@ Investment Integration
 
 Income Integration
 
+Liability Integration
+
+Cash Flow Integration
+
 */
 
 const app =
@@ -182,7 +186,11 @@ function renderDashboard(
 
     app.innerHTML = `
 
-        <div class="app-shell">
+        <div
+
+            class="app-shell"
+
+        >
 
             <!-- ================================== -->
 
@@ -254,7 +262,7 @@ function renderDashboard(
 
             <!-- ================================== -->
 
-            <!-- Dashboard -->
+            <!-- Wealth Dashboard -->
 
             <!-- ================================== -->
 
@@ -366,7 +374,7 @@ function renderDashboard(
 
                     </div>
 
-                    <!-- Income -->
+                    <!-- Cash Flow Income -->
 
                     <div
 
@@ -396,7 +404,7 @@ function renderDashboard(
 
                     </div>
 
-                    <!-- Expense -->
+                    <!-- Cash Flow Expense -->
 
                     <div
 
@@ -914,6 +922,22 @@ function renderDashboard(
 
                     }
 
+                    if(
+
+                        typeof AssetsModule.view.render !==
+
+                        "function"
+
+                    ){
+
+                        throw new Error(
+
+                            "AssetsModule.view.render not found"
+
+                        );
+
+                    }
+
                     AssetsModule.view.render(
 
                         app,
@@ -1104,6 +1128,22 @@ function renderDashboard(
 
                     }
 
+                    if(
+
+                        typeof IncomeModule.view.render !==
+
+                        "function"
+
+                    ){
+
+                        throw new Error(
+
+                            "IncomeModule.view.render not found"
+
+                        );
+
+                    }
+
                     IncomeModule.view.render(
 
                         app,
@@ -1178,7 +1218,19 @@ function renderDashboard(
 
                     if(
 
-                        !LiabilityModule ||
+                        !LiabilityModule
+
+                    ){
+
+                        throw new Error(
+
+                            "LiabilityModule not found"
+
+                        );
+
+                    }
+
+                    if(
 
                         !LiabilityModule.view
 
@@ -1187,6 +1239,22 @@ function renderDashboard(
                         throw new Error(
 
                             "LiabilityModule.view not found"
+
+                        );
+
+                    }
+
+                    if(
+
+                        typeof LiabilityModule.view.render !==
+
+                        "function"
+
+                    ){
+
+                        throw new Error(
+
+                            "LiabilityModule.view.render not found"
 
                         );
 
@@ -1205,71 +1273,19 @@ function renderDashboard(
                     );
 
                 }
-catch(error){
 
-    console.error(
+                catch(error){
 
-        "Liability Module Error:",
+                    renderError(
 
-        error
+                        "Liability Module Error",
 
-    );
+                        error
 
-    app.innerHTML = `
+                    );
 
-        <div
+                }
 
-            class="error-screen"
-
-            style="
-
-                padding:30px;
-
-                font-family:Arial,sans-serif;
-
-            "
-
-        >
-
-            <h1>
-
-                Liability Module Error
-
-            </h1>
-
-            <pre
-
-                style="
-
-                    white-space:pre-wrap;
-
-                    word-break:break-word;
-
-                    color:red;
-
-                    background:#f5f5f5;
-
-                    padding:20px;
-
-                    border-radius:8px;
-
-                "
-
-            >${
-
-                error?.stack ||
-
-                error?.message ||
-
-                String(error)
-
-            }</pre>
-
-        </div>
-
-    `;
-
-}
             }
 
         );
@@ -1308,7 +1324,7 @@ catch(error){
 
                         await import(
 
-                            "./core/modules/cashflowModule.js"
+                            "./modules/cashflow/cashflowModule.js"
 
                         );
 
@@ -1318,7 +1334,19 @@ catch(error){
 
                     if(
 
-                        !CashflowModule ||
+                        !CashflowModule
+
+                    ){
+
+                        throw new Error(
+
+                            "CashflowModule not found"
+
+                        );
+
+                    }
+
+                    if(
 
                         !CashflowModule.view
 
@@ -1327,6 +1355,22 @@ catch(error){
                         throw new Error(
 
                             "CashflowModule.view not found"
+
+                        );
+
+                    }
+
+                    if(
+
+                        typeof CashflowModule.view.render !==
+
+                        "function"
+
+                    ){
+
+                        throw new Error(
+
+                            "CashflowModule.view.render not found"
 
                         );
 
@@ -1406,7 +1450,19 @@ catch(error){
 
                     if(
 
-                        !TaxModule ||
+                        !TaxModule
+
+                    ){
+
+                        throw new Error(
+
+                            "TaxModule not found"
+
+                        );
+
+                    }
+
+                    if(
 
                         !TaxModule.view
 
@@ -1415,6 +1471,22 @@ catch(error){
                         throw new Error(
 
                             "TaxModule.view not found"
+
+                        );
+
+                    }
+
+                    if(
+
+                        typeof TaxModule.view.render !==
+
+                        "function"
+
+                    ){
+
+                        throw new Error(
+
+                            "TaxModule.view.render not found"
 
                         );
 
@@ -1648,20 +1720,6 @@ async function start(){
 
         // Income V7
 
-        //
-
-        // IMPORTANT:
-
-        // Dashboard income MUST come
-
-        // directly from Income V7.
-
-        //
-
-        // Do NOT depend on the old
-
-        // Cashflow income source.
-
         // ==================================================
 
         const incomeModule =
@@ -1716,21 +1774,33 @@ async function start(){
 
         // ==================================================
 
-        // Cash Flow
+        // Cash Flow Expense
 
         //
 
-        // Expenses continue to come
+        // IMPORTANT:
 
-        // from Cash Flow Module.
+        // Cash Flow is stored in:
 
         //
 
-        // Income comes from Income V7.
+        // modules/cashflow/
+
+        //
+
+        // Do NOT use:
+
+        //
+
+        // ./core/modules/cashflowModule.js
+
+        //
 
         // ==================================================
 
-        let cashFlowExpense = 0;
+        let cashFlowExpense =
+
+            0;
 
         try{
 
@@ -1738,7 +1808,7 @@ async function start(){
 
                 await import(
 
-                    "./core/modules/cashflowModule.js"
+                    "./modules/cashflow/cashflowModule.js"
 
                 );
 
@@ -1794,14 +1864,6 @@ async function start(){
 
         // Unified Cash Flow
 
-        //
-
-        // Income V7
-
-        // +
-
-        // Cash Flow Expense
-
         // ==================================================
 
         const cashFlowData = {
@@ -1852,13 +1914,7 @@ async function start(){
 
         //
 
-        // Investment is treated as an asset
-
-        // for dashboard wealth calculation.
-
-        //
-
-        // This does NOT modify Investment Module.
+        // Investment is treated as an asset.
 
         // ==================================================
 
