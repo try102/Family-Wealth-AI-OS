@@ -16,6 +16,8 @@ Tax 模块对外控制层
 
 负责统一协调：
 
+ 
+
 TaxService
 
 TaxAdvisor
@@ -36,9 +38,21 @@ class TaxController {
 
     constructor(){
 
+        // ==================================================
+
+        // Tax Service
+
+        // ==================================================
+
         this.taxService =
 
             new TaxService();
+
+        // ==================================================
+
+        // Tax Advisor
+
+        // ==================================================
 
         this.taxAdvisor =
 
@@ -60,19 +74,23 @@ class TaxController {
 
         const result =
 
-            this.taxService.analyze(
+            this.taxService
 
-                data
+                .analyze(
 
-            );
+                    data
+
+                );
 
         const advice =
 
-            this.taxAdvisor.analyze(
+            this.taxAdvisor
 
-                result.report
+                .analyze(
 
-            );
+                    result.report
+
+                );
 
         return {
 
@@ -96,11 +114,13 @@ class TaxController {
 
     ){
 
-        return this.taxService.createReport(
+        return this.taxService
 
-            data
+            .createReport(
 
-        );
+                data
+
+            );
 
     }
 
@@ -116,11 +136,13 @@ class TaxController {
 
     ){
 
-        return this.taxService.analyzeOptimization(
+        return this.taxService
 
-            report
+            .analyzeOptimization(
 
-        );
+                report
+
+            );
 
     }
 
@@ -136,11 +158,13 @@ class TaxController {
 
     ){
 
-        return this.taxAdvisor.analyze(
+        return this.taxAdvisor
 
-            report
+            .analyze(
 
-        );
+                report
+
+            );
 
     }
 
@@ -158,19 +182,23 @@ class TaxController {
 
         const analysis =
 
-            this.taxService.analyze(
+            this.taxService
 
-                data
+                .analyze(
 
-            );
+                    data
+
+                );
 
         const advice =
 
-            this.taxAdvisor.analyze(
+            this.taxAdvisor
 
-                analysis.report
+                .analyze(
 
-            );
+                    analysis.report
+
+                );
 
         return {
 
@@ -190,6 +218,52 @@ class TaxController {
 
     }
 
+    // ==================================================
+
+    // Tax Dashboard
+
+    //
+
+    // View 通过 Controller 访问 Dashboard
+
+    // Controller 再交给 TaxService
+
+    // ==================================================
+
+    dashboard(){
+
+        if(
+
+            this.taxService &&
+
+            typeof this.taxService.dashboard ===
+
+                "function"
+
+        ){
+
+            return this.taxService.dashboard();
+
+        }
+
+        return {
+
+            summary: {},
+
+            latestPlan: null,
+
+            analysis: null
+
+        };
+
+    }
+
 }
+
+// ==================================================
+
+// Export
+
+// ==================================================
 
 export default TaxController;
