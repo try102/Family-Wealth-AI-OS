@@ -30,17 +30,69 @@ Tax 模块用户界面层
 
  
 
-*/
+IMPORTANT:
 
-import TaxFacade from "../taxFacade.js";
+TaxView 不再 import TaxFacade。
+
+Facade 由 TaxModule 注入。
+
+这样可以避免：
+
+TaxModule
+
+    ↓
+
+TaxView
+
+    ↓
+
+TaxFacade
+
+    ↓
+
+TaxKernel
+
+    ↓
+
+TaxModule
+
+形成循环依赖。
+
+ 
+
+*/
 
 class TaxView {
 
-    constructor(){
+    constructor(
 
-        this.facade =
+        facade = null
 
-            new TaxFacade();
+    ){
+
+        this.facade = facade;
+
+        this.container = null;
+
+        this.onBack = () => {};
+
+    }
+
+    // ==================================================
+
+    // Set Facade
+
+    // ==================================================
+
+    setFacade(
+
+        facade
+
+    ){
+
+        this.facade = facade;
+
+        return this;
 
     }
 
@@ -67,6 +119,20 @@ class TaxView {
             throw new Error(
 
                 "TaxView render container not found"
+
+            );
+
+        }
+
+        if(
+
+            !this.facade
+
+        ){
+
+            throw new Error(
+
+                "TaxView facade not initialized"
 
             );
 
@@ -116,15 +182,21 @@ class TaxView {
 
         const summary =
 
-            dashboard.summary || {};
+            dashboard.summary ||
+
+            {};
 
         const latestPlan =
 
-            dashboard.latestPlan || null;
+            dashboard.latestPlan ||
+
+            null;
 
         const analysis =
 
-            dashboard.analysis || null;
+            dashboard.analysis ||
+
+            null;
 
         const optimization =
 
@@ -180,7 +252,9 @@ class TaxView {
 
                             ${Number(
 
-                                summary.count || 0
+                                summary.count ||
+
+                                0
 
                             )}
 
@@ -212,7 +286,9 @@ class TaxView {
 
                                 ${Number(
 
-                                    summary.count || 0
+                                    summary.count ||
+
+                                    0
 
                                 )}
 
@@ -1346,12 +1422,8 @@ class TaxView {
 
 // ==================================================
 
-// Singleton View
+// Export Class
 
 // ==================================================
 
-const taxView =
-
-    new TaxView();
-
-export default taxView;
+export default TaxView;
