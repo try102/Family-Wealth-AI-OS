@@ -12,9 +12,7 @@ Investment Integration
 
 Income Integration
 
-Liability Integration
-
-Cash Flow Integration
+Liability Interest Integration
 
 */
 
@@ -996,7 +994,7 @@ function renderDashboard(
 
                         typeof InvestmentView.render !==
 
-                        "function"
+                            "function"
 
                     ){
 
@@ -1212,6 +1210,14 @@ function renderDashboard(
 
                 catch(error){
 
+                    console.error(
+
+                        "Liability Module Error:",
+
+                        error
+
+                    );
+
                     renderError(
 
                         "Liability Module Error",
@@ -1230,29 +1236,7 @@ function renderDashboard(
 
     // ==================================================
 
-    // Quick Access - CASH FLOW
-
-    //
-
-    // IMPORTANT:
-
-    //
-
-    // V7 Cash Flow is located at:
-
-    //
-
-    // ./modules/cashflow/
-
-    //
-
-    // NOT:
-
-    //
-
-    // ./core/modules/cashflowModule.js
-
-    //
+    // Quick Access - Cash Flow
 
     // ==================================================
 
@@ -1278,59 +1262,35 @@ function renderDashboard(
 
                 try{
 
-                    /*
-
-                    
-
-                    Load the actual V7
-
-                    Cash Flow View directly.
-
-                    */
-
                     const module =
 
                         await import(
 
-                            "./modules/cashflow/ui/cashflowView.js"
+                            "./core/modules/cashflowModule.js"
 
                         );
 
-                    const CashflowView =
+                    const CashflowModule =
 
                         module.default;
 
                     if(
 
-                        !CashflowView
+                        !CashflowModule ||
+
+                        !CashflowModule.view
 
                     ){
 
                         throw new Error(
 
-                            "CashflowView not found"
+                            "CashflowModule.view not found"
 
                         );
 
                     }
 
-                    if(
-
-                        typeof CashflowView.render !==
-
-                        "function"
-
-                    ){
-
-                        throw new Error(
-
-                            "CashflowView.render not found"
-
-                        );
-
-                    }
-
-                    CashflowView.render(
+                    CashflowModule.view.render(
 
                         app,
 
@@ -1646,6 +1606,12 @@ async function start(){
 
         // Income V7
 
+        //
+
+        // Dashboard income comes directly
+
+        // from Income V7.
+
         // ==================================================
 
         const incomeModule =
@@ -1700,51 +1666,65 @@ async function start(){
 
         // ==================================================
 
-        // Cash Flow Expense
+        // Cash Flow
+
+        //
+
+        // Direct Cash Flow Expenses
+
+        // +
+
+        // Liability Annual Interest
 
         //
 
         // IMPORTANT:
 
-        //
+        // Liability interest is NOT inserted
 
-        // Dashboard uses the actual
-
-        // V7 Cash Flow API.
+        // into Cashflow Repository.
 
         //
 
-        // Path:
+        // It is calculated dynamically here
 
-        //
-
-        // ./modules/cashflow/api/cashflowAPI.js
-
-        //
+        // to avoid duplicate expenses.
 
         // ==================================================
 
         let cashFlowExpense = 0;
 
+        let directCashflowExpense = 0;
+
+        let liabilityAnnualInterest = 0;
+
+        // ==================================================
+
+        // Direct Cashflow Expense
+
+        // ==================================================
+
         try{
 
-            const cashflowAPI =
+            const cashflowModule =
 
                 await import(
 
-                    "./modules/cashflow/api/cashflowAPI.js"
+                    "./core/modules/cashflowModule.js"
 
                 );
 
-            const CashflowAPI =
+            const CashflowModule =
 
-                cashflowAPI.default;
+                cashflowModule.default;
 
             if(
 
-                CashflowAPI &&
+                CashflowModule &&
 
-                typeof CashflowAPI.getSummary ===
+                CashflowModule.api &&
+
+                typeof CashflowModule.api.getSummary ===
 
                     "function"
 
@@ -1752,9 +1732,11 @@ async function start(){
 
                 const cashflowSummary =
 
-                    CashflowAPI.getSummary();
+                    CashflowModule.api
 
-                cashFlowExpense =
+                        .getSummary();
+
+                directCashflowExpense =
 
                     Number(
 
@@ -1772,7 +1754,7 @@ async function start(){
 
             console.warn(
 
-                "Cash Flow API unavailable:",
+                "Cash Flow Module unavailable:",
 
                 error
 
@@ -1782,7 +1764,99 @@ async function start(){
 
         // ==================================================
 
+        // Liability Annual Interest
+
+        //
+
+        // balance × interestRate / 100
+
+        // ==================================================
+
+        liabilityAnnualInterest =
+
+            liabilities.reduce(
+
+                (
+
+                    total,
+
+                    liability
+
+                ) => {
+
+                    const balance =
+
+                        Number(
+
+                            liability.currentBalance ??
+
+                            liability.balance ??
+
+                            0
+
+                        );
+
+                    const rate =
+
+                        Number(
+
+                            liability.interestRate ??
+
+                            liability.rate ??
+
+                            0
+
+                        );
+
+                    const annualInterest =
+
+                        balance *
+
+                        rate /
+
+                        100;
+
+                    return (
+
+                        total +
+
+                        annualInterest
+
+                    );
+
+                },
+
+                0
+
+            );
+
+        // ==================================================
+
+        // Unified Expense
+
+        // ==================================================
+
+        cashFlowExpense =
+
+            directCashflowExpense +
+
+            liabilityAnnualInterest;
+
+        // ==================================================
+
         // Unified Cash Flow
+
+        //
+
+        // Income V7
+
+        // +
+
+        // Direct Cashflow Expenses
+
+        // +
+
+        // Liability Interest
 
         // ==================================================
 
@@ -1806,7 +1880,15 @@ async function start(){
 
                 incomeTotal -
 
-                cashFlowExpense
+                cashFlowExpense,
+
+            directExpense:
+
+                directCashflowExpense,
+
+            liabilityInterest:
+
+                liabilityAnnualInterest
 
         };
 
@@ -1831,6 +1913,12 @@ async function start(){
         // ==================================================
 
         // Combine Assets + Investments
+
+        //
+
+        // Investment is treated as an asset
+
+        // for dashboard wealth calculation.
 
         // ==================================================
 
