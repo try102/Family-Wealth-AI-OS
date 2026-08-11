@@ -24,17 +24,37 @@ TaxOptimizer
 
 TaxAdvisor
 
+TaxView
+
+ 
+
+注意：
+
+TaxModule 不再依赖 TaxFacade / TaxKernel。
+
+避免：
+
+TaxModule
+
+ ↓
+
 TaxFacade
 
-TaxView
+ ↓
+
+TaxKernel
+
+ ↓
+
+TaxModule
+
+形成循环依赖。
 
  
 
 */
 
 import TaxController from "./taxController.js";
-
-import TaxFacade from "./taxFacade.js";
 
 import TaxView from "./ui/taxView.js";
 
@@ -54,27 +74,13 @@ class TaxModule {
 
         // ==================================================
 
-        // Facade
-
-        // ==================================================
-
-        this.facade =
-
-            new TaxFacade();
-
-        // ==================================================
-
         // View
 
         // ==================================================
 
         this.view =
 
-            new TaxView(
-
-                this.facade
-
-            );
+            TaxView;
 
         // ==================================================
 
@@ -276,17 +282,41 @@ class TaxModule {
 
     dashboard(){
 
-        return this.facade
+        const service =
 
-            .kernel
+            this.controller
 
-            .getModule()
+                .taxService;
 
-            .controller
+        if(
 
-            .taxService
+            service &&
 
-            .dashboard();
+            typeof service.dashboard ===
+
+                "function"
+
+        ){
+
+            return service.dashboard();
+
+        }
+
+        return {
+
+            summary:
+
+                {},
+
+            latestPlan:
+
+                null,
+
+            analysis:
+
+                null
+
+        };
 
     }
 
