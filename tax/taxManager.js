@@ -134,7 +134,7 @@ class TaxManager {
 
     // ==================================================
 
-    // Get Plan By Id
+    // Get Plan By ID
 
     // ==================================================
 
@@ -226,7 +226,7 @@ class TaxManager {
 
         id,
 
-        data
+        data = {}
 
     ){
 
@@ -266,29 +266,11 @@ class TaxManager {
 
             ...this.taxPlans[index],
 
-            ...(
-
-                data &&
-
-                typeof data ===
-
-                "object"
-
-                    ?
-
-                    data
-
-                    :
-
-                    {}
-
-            ),
+            ...data,
 
             id:
 
-                this.taxPlans[index]
-
-                    .id,
+                this.taxPlans[index].id,
 
             updatedAt:
 
@@ -388,7 +370,7 @@ class TaxManager {
 
     // ==================================================
 
-    // Check Whether Plan Exists
+    // Check Plan Exists
 
     // ==================================================
 
@@ -412,7 +394,7 @@ class TaxManager {
 
     // ==================================================
 
-    // Check Whether Tax Year Exists
+    // Check Tax Year Exists
 
     // ==================================================
 
@@ -470,102 +452,4 @@ class TaxManager {
 
                     ) =>
 
-                        Number(
-
-                            b.taxYear || 0
-
-                        )
-
-                        -
-
-                        Number(
-
-                            a.taxYear || 0
-
-                        )
-
-                )[0]
-
-        );
-
-    }
-
-    // ==================================================
-
-    // Summary
-
-    // ==================================================
-
-    summary(){
-
-        this.init();
-
-        const years =
-
-            this.taxPlans
-
-                .map(
-
-                    plan =>
-
-                        Number(
-
-                            plan.taxYear
-
-                        )
-
-                )
-
-                .filter(
-
-                    year =>
-
-                        Number.isFinite(
-
-                            year
-
-                        )
-
-                );
-
-        return {
-
-            count:
-
-                this.taxPlans.length,
-
-            years:
-
-                [
-
-                    ...new Set(
-
-                        years
-
-                    )
-
-                ].sort(
-
-                    (
-
-                        a,
-
-                        b
-
-                    ) =>
-
-                        a - b
-
-                ),
-
-            latestPlan:
-
-                this.getLatestPlan()
-
-        };
-
-    }
-
-}
-
-export default TaxManager;
+                       
