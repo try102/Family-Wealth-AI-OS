@@ -1,14 +1,36 @@
 /*
 
+ 
+
 Family Wealth AI OS V7.7
+
+ 
 
 Tax Controller
 
+ 
+
 Tax 模块对外控制层
+
+ 
+
+负责统一协调：
+
+TaxService
+
+TaxAdvisor
+
+TaxEngine
+
+TaxOptimizer
+
+ 
 
 */
 
 import TaxService from "./taxService.js";
+
+import TaxAdvisor from "./taxAdvisor.js";
 
 class TaxController {
 
@@ -18,31 +40,61 @@ class TaxController {
 
             new TaxService();
 
+        this.taxAdvisor =
+
+            new TaxAdvisor();
+
     }
 
-    // =====================
+    // ==================================================
 
     // Create Tax Analysis
 
-    // =====================
+    // ==================================================
 
-    createTaxAnalysis(data){
+    createTaxAnalysis(
 
-        return this.taxService.analyze(
+        data = {}
 
-            data
+    ){
 
-        );
+        const result =
+
+            this.taxService.analyze(
+
+                data
+
+            );
+
+        const advice =
+
+            this.taxAdvisor.analyze(
+
+                result.report
+
+            );
+
+        return {
+
+            ...result,
+
+            advice
+
+        };
 
     }
 
-    // =====================
+    // ==================================================
 
     // Generate Report
 
-    // =====================
+    // ==================================================
 
-    generateReport(data){
+    generateReport(
+
+        data = {}
+
+    ){
 
         return this.taxService.createReport(
 
@@ -52,19 +104,89 @@ class TaxController {
 
     }
 
-    // =====================
+    // ==================================================
 
     // Optimization Analysis
 
-    // =====================
+    // ==================================================
 
-    optimizeTax(report){
+    optimizeTax(
+
+        report = {}
+
+    ){
 
         return this.taxService.analyzeOptimization(
 
             report
 
         );
+
+    }
+
+    // ==================================================
+
+    // Advisor Analysis
+
+    // ==================================================
+
+    adviseTax(
+
+        report = {}
+
+    ){
+
+        return this.taxAdvisor.analyze(
+
+            report
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Full Tax Review
+
+    // ==================================================
+
+    fullReview(
+
+        data = {}
+
+    ){
+
+        const analysis =
+
+            this.taxService.analyze(
+
+                data
+
+            );
+
+        const advice =
+
+            this.taxAdvisor.analyze(
+
+                analysis.report
+
+            );
+
+        return {
+
+            report:
+
+                analysis.report,
+
+            optimization:
+
+                analysis.optimization,
+
+            advice:
+
+                advice
+
+        };
 
     }
 
