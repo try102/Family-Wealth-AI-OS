@@ -12,13 +12,13 @@ const LiabilityAnalysisEngine = {
 
     name:
 
-    "Liability Analysis Engine V7",
+        "Liability Analysis Engine V7",
 
-    // =====================
+    // ==================================================
 
     // Total Debt
 
-    // =====================
+    // ==================================================
 
     totalDebt(
 
@@ -30,15 +30,15 @@ const LiabilityAnalysisEngine = {
 
         liabilities.forEach(
 
-            item=>{
+            item => {
 
                 total +=
 
-                Number(
+                    Number(
 
-                    item.currentBalance || 0
+                        item.currentBalance || 0
 
-                );
+                    );
 
             }
 
@@ -48,11 +48,11 @@ const LiabilityAnalysisEngine = {
 
     },
 
-    // =====================
+    // ==================================================
 
     // Monthly Payment
 
-    // =====================
+    // ==================================================
 
     totalMonthlyPayment(
 
@@ -64,15 +64,15 @@ const LiabilityAnalysisEngine = {
 
         liabilities.forEach(
 
-            item=>{
+            item => {
 
                 total +=
 
-                Number(
+                    Number(
 
-                    item.monthlyPayment || 0
+                        item.monthlyPayment || 0
 
-                );
+                    );
 
             }
 
@@ -82,11 +82,11 @@ const LiabilityAnalysisEngine = {
 
     },
 
-    // =====================
+    // ==================================================
 
     // Average Interest Rate
 
-    // =====================
+    // ==================================================
 
     averageInterestRate(
 
@@ -104,39 +104,163 @@ const LiabilityAnalysisEngine = {
 
         }
 
-        let total = 0;
+        let totalWeightedInterest = 0;
+
+        let totalDebt = 0;
 
         liabilities.forEach(
 
-            item=>{
+            item => {
 
-                total +=
+                const balance =
 
-                Number(
+                    Number(
 
-                    item.interestRate || 0
+                        item.currentBalance || 0
 
-                );
+                    );
+
+                const rate =
+
+                    Number(
+
+                        item.interestRate || 0
+
+                    );
+
+                totalWeightedInterest +=
+
+                    balance * rate;
+
+                totalDebt +=
+
+                    balance;
 
             }
 
         );
 
+        if(
+
+            totalDebt === 0
+
+        ){
+
+            return 0;
+
+        }
+
         return (
 
-            total /
+            totalWeightedInterest /
 
-            liabilities.length
+            totalDebt
 
         );
 
     },
 
-    // =====================
+    // ==================================================
+
+    // Annual Interest
+
+    //
+
+    // 利息 = 当前负债余额 × 年利率
+
+    //
+
+    // 例如：
+
+    //
+
+    // $250,000 × 6% = $15,000
+
+    //
+
+    // ==================================================
+
+    annualInterest(
+
+        liabilities = []
+
+    ){
+
+        let total = 0;
+
+        liabilities.forEach(
+
+            item => {
+
+                const balance =
+
+                    Number(
+
+                        item.currentBalance || 0
+
+                    );
+
+                const rate =
+
+                    Number(
+
+                        item.interestRate || 0
+
+                    );
+
+                total +=
+
+                    balance *
+
+                    (
+
+                        rate / 100
+
+                    );
+
+            }
+
+        );
+
+        return total;
+
+    },
+
+    // ==================================================
+
+    // Monthly Interest
+
+    //
+
+    // 年利息 ÷ 12
+
+    //
+
+    // ==================================================
+
+    monthlyInterest(
+
+        liabilities = []
+
+    ){
+
+        return (
+
+            this.annualInterest(
+
+                liabilities
+
+            ) / 12
+
+        );
+
+    },
+
+    // ==================================================
 
     // Debt Asset Ratio
 
-    // =====================
+    // ==================================================
 
     debtAssetRatio(
 
@@ -148,25 +272,25 @@ const LiabilityAnalysisEngine = {
 
         const debt =
 
-        this.totalDebt(
+            this.totalDebt(
 
-            liabilities
+                liabilities
 
-        );
+            );
 
         let assetValue = 0;
 
         assets.forEach(
 
-            item=>{
+            item => {
 
                 assetValue +=
 
-                Number(
+                    Number(
 
-                    item.value || 0
+                        item.value || 0
 
-                );
+                    );
 
             }
 
@@ -192,11 +316,11 @@ const LiabilityAnalysisEngine = {
 
     },
 
-    // =====================
+    // ==================================================
 
     // Debt Risk Score
 
-    // =====================
+    // ==================================================
 
     debtRiskScore(
 
@@ -206,19 +330,19 @@ const LiabilityAnalysisEngine = {
 
         const debt =
 
-        this.totalDebt(
+            this.totalDebt(
 
-            liabilities
+                liabilities
 
-        );
+            );
 
         const interest =
 
-        this.averageInterestRate(
+            this.averageInterestRate(
 
-            liabilities
+                liabilities
 
-        );
+            );
 
         let score = 0;
 
@@ -272,11 +396,11 @@ const LiabilityAnalysisEngine = {
 
     },
 
-    // =====================
+    // ==================================================
 
     // Full Analysis
 
-    // =====================
+    // ==================================================
 
     analyze(
 
@@ -284,39 +408,71 @@ const LiabilityAnalysisEngine = {
 
     ){
 
-        return {
-
-            totalDebt:
+        const totalDebt =
 
             this.totalDebt(
 
                 liabilities
 
-            ),
+            );
+
+        const annualInterest =
+
+            this.annualInterest(
+
+                liabilities
+
+            );
+
+        const monthlyInterest =
+
+            this.monthlyInterest(
+
+                liabilities
+
+            );
+
+        return {
+
+            totalDebt:
+
+                totalDebt,
 
             monthlyPayment:
 
-            this.totalMonthlyPayment(
+                this.totalMonthlyPayment(
 
-                liabilities
+                    liabilities
 
-            ),
+                ),
 
             averageInterestRate:
 
-            this.averageInterestRate(
+                this.averageInterestRate(
 
-                liabilities
+                    liabilities
 
-            ),
+                ),
+
+            annualInterest:
+
+                annualInterest,
+
+            monthlyInterest:
+
+                monthlyInterest,
+
+            debtAssetRatio:
+
+                0,
 
             debtRiskScore:
 
-            this.debtRiskScore(
+                this.debtRiskScore(
 
-                liabilities
+                    liabilities
 
-            )
+                )
 
         };
 
