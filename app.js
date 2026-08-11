@@ -186,11 +186,7 @@ function renderDashboard(
 
     app.innerHTML = `
 
-        <div
-
-            class="app-shell"
-
-        >
+        <div class="app-shell">
 
             <!-- ================================== -->
 
@@ -262,7 +258,7 @@ function renderDashboard(
 
             <!-- ================================== -->
 
-            <!-- Wealth Dashboard -->
+            <!-- Dashboard -->
 
             <!-- ================================== -->
 
@@ -374,7 +370,7 @@ function renderDashboard(
 
                     </div>
 
-                    <!-- Cash Flow Income -->
+                    <!-- Income -->
 
                     <div
 
@@ -404,7 +400,7 @@ function renderDashboard(
 
                     </div>
 
-                    <!-- Cash Flow Expense -->
+                    <!-- Expense -->
 
                     <div
 
@@ -922,22 +918,6 @@ function renderDashboard(
 
                     }
 
-                    if(
-
-                        typeof AssetsModule.view.render !==
-
-                        "function"
-
-                    ){
-
-                        throw new Error(
-
-                            "AssetsModule.view.render not found"
-
-                        );
-
-                    }
-
                     AssetsModule.view.render(
 
                         app,
@@ -1128,22 +1108,6 @@ function renderDashboard(
 
                     }
 
-                    if(
-
-                        typeof IncomeModule.view.render !==
-
-                        "function"
-
-                    ){
-
-                        throw new Error(
-
-                            "IncomeModule.view.render not found"
-
-                        );
-
-                    }
-
                     IncomeModule.view.render(
 
                         app,
@@ -1218,19 +1182,7 @@ function renderDashboard(
 
                     if(
 
-                        !LiabilityModule
-
-                    ){
-
-                        throw new Error(
-
-                            "LiabilityModule not found"
-
-                        );
-
-                    }
-
-                    if(
+                        !LiabilityModule ||
 
                         !LiabilityModule.view
 
@@ -1239,22 +1191,6 @@ function renderDashboard(
                         throw new Error(
 
                             "LiabilityModule.view not found"
-
-                        );
-
-                    }
-
-                    if(
-
-                        typeof LiabilityModule.view.render !==
-
-                        "function"
-
-                    ){
-
-                        throw new Error(
-
-                            "LiabilityModule.view.render not found"
 
                         );
 
@@ -1294,7 +1230,29 @@ function renderDashboard(
 
     // ==================================================
 
-    // Quick Access - Cash Flow
+    // Quick Access - CASH FLOW
+
+    //
+
+    // IMPORTANT:
+
+    //
+
+    // V7 Cash Flow is located at:
+
+    //
+
+    // ./modules/cashflow/
+
+    //
+
+    // NOT:
+
+    //
+
+    // ./core/modules/cashflowModule.js
+
+    //
 
     // ==================================================
 
@@ -1320,27 +1278,37 @@ function renderDashboard(
 
                 try{
 
+                    /*
+
+                    
+
+                    Load the actual V7
+
+                    Cash Flow View directly.
+
+                    */
+
                     const module =
 
                         await import(
 
-                            "./modules/cashflow/cashflowModule.js"
+                            "./modules/cashflow/ui/cashflowView.js"
 
                         );
 
-                    const CashflowModule =
+                    const CashflowView =
 
                         module.default;
 
                     if(
 
-                        !CashflowModule
+                        !CashflowView
 
                     ){
 
                         throw new Error(
 
-                            "CashflowModule not found"
+                            "CashflowView not found"
 
                         );
 
@@ -1348,21 +1316,7 @@ function renderDashboard(
 
                     if(
 
-                        !CashflowModule.view
-
-                    ){
-
-                        throw new Error(
-
-                            "CashflowModule.view not found"
-
-                        );
-
-                    }
-
-                    if(
-
-                        typeof CashflowModule.view.render !==
+                        typeof CashflowView.render !==
 
                         "function"
 
@@ -1370,13 +1324,13 @@ function renderDashboard(
 
                         throw new Error(
 
-                            "CashflowModule.view.render not found"
+                            "CashflowView.render not found"
 
                         );
 
                     }
 
-                    CashflowModule.view.render(
+                    CashflowView.render(
 
                         app,
 
@@ -1450,19 +1404,7 @@ function renderDashboard(
 
                     if(
 
-                        !TaxModule
-
-                    ){
-
-                        throw new Error(
-
-                            "TaxModule not found"
-
-                        );
-
-                    }
-
-                    if(
+                        !TaxModule ||
 
                         !TaxModule.view
 
@@ -1471,22 +1413,6 @@ function renderDashboard(
                         throw new Error(
 
                             "TaxModule.view not found"
-
-                        );
-
-                    }
-
-                    if(
-
-                        typeof TaxModule.view.render !==
-
-                        "function"
-
-                    ){
-
-                        throw new Error(
-
-                            "TaxModule.view.render not found"
 
                         );
 
@@ -1780,49 +1706,45 @@ async function start(){
 
         // IMPORTANT:
 
-        // Cash Flow is stored in:
+        //
+
+        // Dashboard uses the actual
+
+        // V7 Cash Flow API.
 
         //
 
-        // modules/cashflow/
+        // Path:
 
         //
 
-        // Do NOT use:
-
-        //
-
-        // ./core/modules/cashflowModule.js
+        // ./modules/cashflow/api/cashflowAPI.js
 
         //
 
         // ==================================================
 
-        let cashFlowExpense =
-
-            0;
+        let cashFlowExpense = 0;
 
         try{
 
-            const cashflowModule =
+            const cashflowAPI =
 
                 await import(
 
-                    "./modules/cashflow/cashflowModule.js"
+                    "./modules/cashflow/api/cashflowAPI.js"
 
                 );
 
-            const CashflowModule =
+            const CashflowAPI =
 
-                cashflowModule.default;
+                cashflowAPI.default;
 
             if(
 
-                CashflowModule &&
+                CashflowAPI &&
 
-                CashflowModule.api &&
-
-                typeof CashflowModule.api.getSummary ===
+                typeof CashflowAPI.getSummary ===
 
                     "function"
 
@@ -1830,9 +1752,7 @@ async function start(){
 
                 const cashflowSummary =
 
-                    CashflowModule.api
-
-                        .getSummary();
+                    CashflowAPI.getSummary();
 
                 cashFlowExpense =
 
@@ -1852,7 +1772,7 @@ async function start(){
 
             console.warn(
 
-                "Cash Flow Module unavailable:",
+                "Cash Flow API unavailable:",
 
                 error
 
@@ -1911,10 +1831,6 @@ async function start(){
         // ==================================================
 
         // Combine Assets + Investments
-
-        //
-
-        // Investment is treated as an asset.
 
         // ==================================================
 
