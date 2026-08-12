@@ -74,6 +74,10 @@
 
  * - Asset
 
+ * - Tax
+
+ * - Interest
+
  *
 
  * IMPORTANT:
@@ -134,42 +138,6 @@ class Transaction {
 
          * the system.
 
-         *
-
-         * Manual:
-
-         *   User entered transaction
-
-         *
-
-         * BusinessModule:
-
-         *   Created by an existing business module
-
-         *
-
-         * BankImport:
-
-         *   Imported from a bank
-
-         *
-
-         * BrokerImport:
-
-         *   Imported from a brokerage
-
-         *
-
-         * API:
-
-         *   External API
-
-         *
-
-         * Migration:
-
-         *   Migrated from another system
-
          */
 
         this.source =
@@ -191,10 +159,6 @@ class Transaction {
          * - Synchronization
 
          * - Duplicate detection
-
-         *
-
-         * This is NOT the system Transaction ID.
 
          */
 
@@ -298,10 +262,6 @@ class Transaction {
 
      * Supported Transaction Types.
 
-     *
-
-     * This describes WHAT happened.
-
      */
 
     static getTransactionTypes() {
@@ -388,12 +348,6 @@ class Transaction {
 
      * Supported Financial Line Types.
 
-     *
-
-     * Line type describes the role of a
-
-     * financial movement.
-
      */
 
     static getLineTypes() {
@@ -442,7 +396,7 @@ class Transaction {
 
      *
 
-     * Financial Lines are intentionally simple.
+     * Financial Lines remain simple.
 
      *
 
@@ -554,11 +508,25 @@ class Transaction {
 
      * Business Details remain flexible so that
 
-     * future Investment, Liability, Income,
+     * business systems can evolve independently.
 
-     * Expense, and Asset systems can evolve
+     *
 
-     * independently.
+     * Supported domains:
+
+     * - investment
+
+     * - liability
+
+     * - income
+
+     * - expense
+
+     * - asset
+
+     * - tax
+
+     * - interest
 
      */
 
@@ -645,6 +613,80 @@ class Transaction {
             normalized.asset = {
 
                 ...details.asset
+
+            };
+
+        }
+
+        /*
+
+         * Tax business details.
+
+         *
+
+         * Tax calculations do NOT belong here.
+
+         * This stores the tax-related meaning
+
+         * of an Actual Transaction.
+
+         */
+
+        if (
+
+            details.tax &&
+
+            typeof details.tax === "object"
+
+        ) {
+
+            normalized.tax = {
+
+                ...details.tax
+
+            };
+
+        }
+
+        /*
+
+         * Interest business details.
+
+         *
+
+         * Interest may originate from:
+
+         * - Bank account
+
+         * - Savings
+
+         * - CD
+
+         * - Bond
+
+         * - Investment
+
+         * - Other financial instruments
+
+         *
+
+         * Interest calculation remains outside
+
+         * Transaction.
+
+         */
+
+        if (
+
+            details.interest &&
+
+            typeof details.interest === "object"
+
+        ) {
+
+            normalized.interest = {
+
+                ...details.interest
 
             };
 
@@ -1004,7 +1046,9 @@ class Transaction {
 
             this.type =
 
-                this.type.trim()
+                this.type
+
+                    .trim()
 
                     .toUpperCase();
 
@@ -1125,22 +1169,6 @@ class Transaction {
 /*
 
  * CommonJS export.
-
- *
-
- * Allows Transaction to be used by:
-
- * - Transaction Manager
-
- * - Transaction Controller
-
- * - Future Repository
-
- * - Business modules
-
- * - Tests when needed
-
- * - Node-based tooling
 
  */
 
