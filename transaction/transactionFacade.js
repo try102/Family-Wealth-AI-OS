@@ -100,7 +100,7 @@ class TransactionFacade {
 
     // =====================================================
 
-    // Generic Transaction
+    // Create - Generic Transaction
 
     // =====================================================
 
@@ -122,7 +122,7 @@ class TransactionFacade {
 
     // =====================================================
 
-    // Income
+    // Create - Income
 
     // =====================================================
 
@@ -144,7 +144,7 @@ class TransactionFacade {
 
     // =====================================================
 
-    // Expense
+    // Create - Expense
 
     // =====================================================
 
@@ -166,7 +166,7 @@ class TransactionFacade {
 
     // =====================================================
 
-    // Transfer
+    // Create - Transfer
 
     // =====================================================
 
@@ -188,7 +188,7 @@ class TransactionFacade {
 
     // =====================================================
 
-    // Investment Buy
+    // Create - Investment Buy
 
     // =====================================================
 
@@ -210,7 +210,7 @@ class TransactionFacade {
 
     // =====================================================
 
-    // Investment Sell
+    // Create - Investment Sell
 
     // =====================================================
 
@@ -232,7 +232,7 @@ class TransactionFacade {
 
     // =====================================================
 
-    // Loan Payment
+    // Create - Loan Payment
 
     // =====================================================
 
@@ -254,7 +254,7 @@ class TransactionFacade {
 
     // =====================================================
 
-    // Dividend
+    // Create - Dividend
 
     // =====================================================
 
@@ -276,7 +276,7 @@ class TransactionFacade {
 
     // =====================================================
 
-    // Interest
+    // Create - Interest
 
     // =====================================================
 
@@ -298,7 +298,7 @@ class TransactionFacade {
 
     // =====================================================
 
-    // Tax Payment
+    // Create - Tax Payment
 
     // =====================================================
 
@@ -313,6 +313,370 @@ class TransactionFacade {
             .createTaxPayment(
 
                 data
+
+            );
+
+    }
+
+    // =====================================================
+
+    // Read - Single Transaction
+
+    // =====================================================
+
+    getTransaction(
+
+        transactionId
+
+    ) {
+
+        return this.controller
+
+            .getTransaction(
+
+                transactionId
+
+            );
+
+    }
+
+    // =====================================================
+
+    // Read - All Transactions
+
+    // =====================================================
+
+    getAllTransactions() {
+
+        return this.controller
+
+            .getAllTransactions();
+
+    }
+
+    // =====================================================
+
+    // Read - Posted Transactions
+
+    // =====================================================
+
+    getPostedTransactions() {
+
+        return this.controller
+
+            .getPostedTransactions();
+
+    }
+
+    // =====================================================
+
+    // Read - Pending Transactions
+
+    // =====================================================
+
+    getPendingTransactions() {
+
+        return this.controller
+
+            .getPendingTransactions();
+
+    }
+
+    // =====================================================
+
+    // Read - Voided Transactions
+
+    // =====================================================
+
+    getVoidedTransactions() {
+
+        return this.controller
+
+            .getVoidedTransactions();
+
+    }
+
+    // =====================================================
+
+    // Query - Account
+
+    // =====================================================
+
+    getTransactionsByAccount(
+
+        accountId
+
+    ) {
+
+        return this.controller
+
+            .getTransactionsByAccount(
+
+                accountId
+
+            );
+
+    }
+
+    // =====================================================
+
+    // Query - Posted Account Transactions
+
+    // =====================================================
+
+    getPostedTransactionsByAccount(
+
+        accountId
+
+    ) {
+
+        return this.controller
+
+            .getPostedTransactionsByAccount(
+
+                accountId
+
+            );
+
+    }
+
+    // =====================================================
+
+    // Query - Type
+
+    // =====================================================
+
+    getTransactionsByType(
+
+        type
+
+    ) {
+
+        return this.controller
+
+            .getTransactionsByType(
+
+                type
+
+            );
+
+    }
+
+    // =====================================================
+
+    // Query - Source
+
+    // =====================================================
+
+    getTransactionsBySource(
+
+        source
+
+    ) {
+
+        return this.controller
+
+            .getTransactionsBySource(
+
+                source
+
+            );
+
+    }
+
+    // =====================================================
+
+    // Query - External ID
+
+    // =====================================================
+
+    findByExternalId(
+
+        externalId
+
+    ) {
+
+        return this.controller
+
+            .findByExternalId(
+
+                externalId
+
+            );
+
+    }
+
+    // =====================================================
+
+    // Query - Date Range
+
+    // =====================================================
+
+    getTransactionsByDateRange(
+
+        startDate,
+
+        endDate
+
+    ) {
+
+        return this.controller
+
+            .getTransactionsByDateRange(
+
+                startDate,
+
+                endDate
+
+            );
+
+    }
+
+    // =====================================================
+
+    // Update
+
+    // =====================================================
+
+    updateTransaction(
+
+        transactionId,
+
+        updates = {}
+
+    ) {
+
+        return this.controller
+
+            .updateTransaction(
+
+                transactionId,
+
+                updates
+
+            );
+
+    }
+
+    // =====================================================
+
+    // Void
+
+    // =====================================================
+
+    voidTransaction(
+
+        transactionId
+
+    ) {
+
+        return this.controller
+
+            .voidTransaction(
+
+                transactionId
+
+            );
+
+    }
+
+    // =====================================================
+
+    // Post
+
+    // =====================================================
+
+    postTransaction(
+
+        transactionId
+
+    ) {
+
+        return this.controller
+
+            .postTransaction(
+
+                transactionId
+
+            );
+
+    }
+
+    // =====================================================
+
+    // Unpost
+
+    // =====================================================
+
+    unpostTransaction(
+
+        transactionId
+
+    ) {
+
+        return this.controller
+
+            .unpostTransaction(
+
+                transactionId
+
+            );
+
+    }
+
+    // =====================================================
+
+    // Controlled Maintenance
+
+    // =====================================================
+
+    removeTransaction(
+
+        transactionId
+
+    ) {
+
+        return this.controller
+
+            .removeTransaction(
+
+                transactionId
+
+            );
+
+    }
+
+    // =====================================================
+
+    // Serialization
+
+    // =====================================================
+
+    toJSON() {
+
+        return this.controller
+
+            .toJSON();
+
+    }
+
+    // =====================================================
+
+    // Load / Restore
+
+    // =====================================================
+
+    loadTransactions(
+
+        transactionData = []
+
+    ) {
+
+        return this.controller
+
+            .loadTransactions(
+
+                transactionData
 
             );
 
