@@ -1,7 +1,5 @@
 /*
 
- *
-
  * Family Wealth AI OS V7
 
  *
@@ -23,46 +21,6 @@
  *   into Cashflow records
 
  * - Keep Cashflow implementation isolated
-
- *
-
- * IMPORTANT:
-
- *
-
- * This file does NOT modify:
-
- *
-
- * - Transaction
-
- * - TransactionManager
-
- * - TransactionService
-
- * - TransactionController
-
- * - TransactionFacade
-
- * - TransactionRepository
-
- *
-
- * It also does NOT perform:
-
- *
-
- * - Tax calculations
-
- * - Investment calculations
-
- * - Cost basis calculations
-
- * - Capital gain calculations
-
- * - Loan calculations
-
- * - Account balance calculations
 
  *
 
@@ -510,6 +468,4 @@ const CashflowIntegration = {
 
 };
 
-export default
-
-    CashflowIntegration;
+export default CashflowIntegration;
