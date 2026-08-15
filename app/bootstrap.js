@@ -1,24 +1,34 @@
 /*
 
-Family Wealth AI OS V7
+ * Family Wealth AI OS V7
 
-Application Bootstrap
+ *
 
-*/
+ * Application Bootstrap
+
+ *
+
+ */
 
 import AIAdvisor from "../ai/advisor.js";
 
 import AdvisorAgent from "../agents/advisor/advisorAgent.js";
 
+import TransactionModule from "../transaction/transactionModule.js";
+
 const AppBootstrap = {
 
     version:
 
-    "V7.0",
+        "V7.0",
 
     status:
 
-    "INITIALIZING",
+        "INITIALIZING",
+
+    transactionModule:
+
+        null,
 
     start(){
 
@@ -32,13 +42,15 @@ const AppBootstrap = {
 
         this.initializeCore();
 
+        this.initializeTransaction();
+
         this.initializeAgents();
 
         this.initializeAI();
 
         this.status =
 
-        "READY";
+            "READY";
 
         console.log(
 
@@ -57,6 +69,48 @@ const AppBootstrap = {
             "Core Layer Loaded"
 
         );
+
+    },
+
+    initializeTransaction(){
+
+        try{
+
+            this.transactionModule =
+
+                new TransactionModule();
+
+            console.log(
+
+                "Transaction Module Loaded"
+
+            );
+
+            console.log(
+
+                "Transaction Status:",
+
+                this.transactionModule
+
+                    .getStatus()
+
+            );
+
+        }
+
+        catch(error){
+
+            console.error(
+
+                "Transaction Module Failed:",
+
+                error
+
+            );
+
+            throw error;
+
+        }
 
     },
 
