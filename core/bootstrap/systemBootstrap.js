@@ -118,9 +118,7 @@ import {
 
     AccountIntegration
 
-}
-
-from "../integration/accountIntegration.js";
+} from "../integration/accountIntegration.js";
 
 // ==================================================
 
@@ -136,9 +134,7 @@ import {
 
     TransactionIntegration
 
-}
-
-from "../integration/transactionIntegration.js";
+} from "../integration/transactionIntegration.js";
 
 // ==================================================
 
