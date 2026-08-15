@@ -14,6 +14,8 @@
 
  * - Keep business modules decoupled from Transaction Manager
 
+ * - Publish system Transaction events
+
  *
 
  * Architecture:
@@ -33,6 +35,10 @@
  *      ↓
 
  * Transaction
+
+ *      ↓
+
+ * EventBus
 
  *
 
@@ -85,6 +91,14 @@
 const Transaction =
 
     require("./transaction");
+
+const EventBus =
+
+    require("../core/events/eventBus");
+
+const EventTypes =
+
+    require("../core/events/eventTypes");
 
 class TransactionService {
 
@@ -146,13 +160,41 @@ class TransactionService {
 
         }
 
-        return this.transactionManager
+        const result =
 
-            .createTransaction(
+            this.transactionManager
 
-                transaction
+                .createTransaction(
 
-            );
+                    transaction
+
+                );
+
+        /*
+
+         * Publish the system-level
+
+         * Transaction Created event.
+
+         *
+
+         * Other modules may subscribe
+
+         * without directly depending on
+
+         * TransactionManager.
+
+         */
+
+        EventBus.publish(
+
+            EventTypes.TRANSACTION_CREATED,
+
+            result
+
+        );
+
+        return result;
 
     }
 
