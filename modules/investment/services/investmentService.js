@@ -1,6 +1,6 @@
 /*
 
- * Family Wealth AI OS V7
+ * Family Wealth AI OS
 
  *
 
@@ -10,71 +10,27 @@
 
  * Responsibility:
 
- *
-
- * - Manage Investment business records
+ * - Manage Investment records
 
  * - Manage Position records
 
- * - Manage Trade records
+ * - Record Investment Trades
 
- * - Connect actual Investment events to Transaction
+ * - Connect actual Investment events
 
- *
-
- * Architecture:
+ *   to the system Transaction layer
 
  *
 
- * Investment
+ * Investment remains an independent
 
- *      ↓
-
- * InvestmentService
-
- *      ↓
-
- * TransactionService
-
- *      ↓
-
- * Transaction
-
- *      ↓
-
- * Financial Lines
-
- *      ↓
-
- * Account
+ * business system.
 
  *
 
- * IMPORTANT:
+ * Transaction remains the system-level
 
- *
-
- * Investment remains an independent business system.
-
- *
-
- * Transaction is the system-level Actual Event registry.
-
- *
-
- * InvestmentService does NOT:
-
- *
-
- * - calculate tax
-
- * - calculate capital gain
-
- * - calculate account balance
-
- * - calculate portfolio allocation
-
- *
+ * Actual Event registry.
 
  */
 
@@ -90,47 +46,87 @@ import EventTypes
 
     from "../../../core/events/eventTypes.js";
 
-import Transaction
-
-    from "../../../transaction/transaction.js";
-
-import TransactionManager
-
-    from "../../../transaction/transactionManager.js";
-
-import TransactionService
-
-    from "../../../transaction/transactionService.js";
-
 /*
 
- * Transaction infrastructure
+ * Transaction Service
 
  *
 
- * InvestmentService uses TransactionService as
+ * Transaction is located at the
 
- * the controlled gateway into the Transaction system.
+ * root-level transaction directory.
 
  *
 
- * TransactionManager remains the owner of the
+ * Because this Investment module is
 
- * Transaction registry.
+ * ES Module based while Transaction
+
+ * currently uses CommonJS, use the
+
+ * browser/global integration boundary
+
+ * rather than changing the Transaction
+
+ * architecture here.
 
  */
 
-const transactionManager =
+let TransactionService = null;
 
-    new TransactionManager();
+/*
 
-const transactionService =
+ * Resolve TransactionService when available.
 
-    new TransactionService(
+ *
 
-        transactionManager
+ * This keeps Investment independent
 
-    );
+ * from the Transaction implementation.
+
+ */
+
+function getTransactionService() {
+
+    if (TransactionService) {
+
+        return TransactionService;
+
+    }
+
+    /*
+
+     * Future application bootstrap may
+
+     * inject TransactionService here.
+
+     */
+
+    if (
+
+        typeof window !== "undefined" &&
+
+        window.FamilyWealthAI &&
+
+        window.FamilyWealthAI
+
+            .TransactionService
+
+    ) {
+
+        TransactionService =
+
+            window.FamilyWealthAI
+
+                .TransactionService;
+
+        return TransactionService;
+
+    }
+
+    return null;
+
+}
 
 const InvestmentService = {
 
@@ -155,6 +151,40 @@ const InvestmentService = {
                     investment
 
                 );
+
+        /*
+
+         * Investment creation itself does
+
+         * not automatically create a
+
+         * Transaction.
+
+         *
+
+         * Creating an Investment record
+
+         * is not necessarily an economic
+
+         * event.
+
+         */
+
+        if (
+
+            EventTypes.INVESTMENT_CREATED
+
+        ) {
+
+            EventBus.publish(
+
+                EventTypes.INVESTMENT_CREATED,
+
+                result
+
+            );
+
+        }
 
         return result;
 
@@ -214,6 +244,14 @@ const InvestmentService = {
 
         );
 
+        EventBus.publish(
+
+            EventTypes.PORTFOLIO_CHANGED,
+
+            result
+
+        );
+
         return result;
 
     },
@@ -240,11 +278,15 @@ const InvestmentService = {
 
         /*
 
-         * -----------------------------------------------
+         * Save the Investment Trade first.
 
-         * 1. Save the Investment Trade
+         *
 
-         * -----------------------------------------------
+         * The Investment system remains
+
+         * responsible for its own trade
+
+         * records.
 
          */
 
@@ -260,463 +302,29 @@ const InvestmentService = {
 
         /*
 
-         * -----------------------------------------------
+         * Record the corresponding Actual
 
-         * 2. Determine whether this Trade represents
-
-         *    an actual financial event.
+         * economic event in Transaction.
 
          *
 
-         * BUY
+         * A missing TransactionService
 
-         * SELL
+         * must NOT destroy the Investment
 
-         * DIVIDEND
-
-         *
-
-         * These events can create Transactions.
-
-         *
-
-         * Other future investment events can be
-
-         * handled separately.
-
-         * -----------------------------------------------
+         * trade record.
 
          */
 
-        if (
+        this.recordTradeTransaction(
 
-            !result.transactionId &&
+            result
 
-            (
-
-                result.action === "BUY" ||
-
-                result.action === "SELL" ||
-
-                result.action === "DIVIDEND"
-
-            )
-
-        ){
-
-            let transaction = null;
-
-            /*
-
-             * -------------------------------------------
-
-             * BUY
-
-             * -------------------------------------------
-
-             */
-
-            if (
-
-                result.action === "BUY"
-
-            ){
-
-                transaction =
-
-                    transactionService
-
-                        .recordInvestmentBuy({
-
-                            date:
-
-                                result.tradeDate,
-
-                            accountId:
-
-                                result.accountId,
-
-                            amount:
-
-                                Number(
-
-                                    result.amount || 0
-
-                                ),
-
-                            currency:
-
-                                result.currency ||
-
-                                "USD",
-
-                            description:
-
-                                result.name
-
-                                    ? `Investment Buy: ${result.name}`
-
-                                    : "Investment Buy",
-
-                            investment: {
-
-                                investmentId:
-
-                                    result.investmentId ||
-
-                                    "",
-
-                                symbol:
-
-                                    result.symbol ||
-
-                                    "",
-
-                                name:
-
-                                    result.name ||
-
-                                    "",
-
-                                quantity:
-
-                                    Number(
-
-                                        result.quantity || 0
-
-                                    ),
-
-                                price:
-
-                                    Number(
-
-                                        result.price || 0
-
-                                    ),
-
-                                commission:
-
-                                    Number(
-
-                                        result.commission || 0
-
-                                    ),
-
-                                tax:
-
-                                    Number(
-
-                                        result.tax || 0
-
-                                    ),
-
-                                /*
-
-                                 * Investment business
-
-                                 * information can be
-
-                                 * extended here.
-
-                                 */
-
-                                tradeId:
-
-                                    result.id,
-
-                                transactionAction:
-
-                                    "BUY"
-
-                            }
-
-                        });
-
-            }
-
-            /*
-
-             * -------------------------------------------
-
-             * SELL
-
-             * -------------------------------------------
-
-             */
-
-            if (
-
-                result.action === "SELL"
-
-            ){
-
-                transaction =
-
-                    transactionService
-
-                        .recordInvestmentSell({
-
-                            date:
-
-                                result.tradeDate,
-
-                            accountId:
-
-                                result.accountId,
-
-                            amount:
-
-                                Number(
-
-                                    result.amount || 0
-
-                                ),
-
-                            currency:
-
-                                result.currency ||
-
-                                "USD",
-
-                            description:
-
-                                result.name
-
-                                    ? `Investment Sell: ${result.name}`
-
-                                    : "Investment Sell",
-
-                            investment: {
-
-                                investmentId:
-
-                                    result.investmentId ||
-
-                                    "",
-
-                                symbol:
-
-                                    result.symbol ||
-
-                                    "",
-
-                                name:
-
-                                    result.name ||
-
-                                    "",
-
-                                quantity:
-
-                                    Number(
-
-                                        result.quantity || 0
-
-                                    ),
-
-                                price:
-
-                                    Number(
-
-                                        result.price || 0
-
-                                    ),
-
-                                commission:
-
-                                    Number(
-
-                                        result.commission || 0
-
-                                    ),
-
-                                tax:
-
-                                    Number(
-
-                                        result.tax || 0
-
-                                    ),
-
-                                /*
-
-                                 * These fields may be
-
-                                 * supplied by the
-
-                                 * Investment business
-
-                                 * engine when available.
-
-                                 */
-
-                                costBasis:
-
-                                    result.costBasis,
-
-                                capitalGain:
-
-                                    result.capitalGain,
-
-                                holdingPeriod:
-
-                                    result.holdingPeriod,
-
-                                holdingPeriodType:
-
-                                    result.holdingPeriodType,
-
-                                tradeId:
-
-                                    result.id,
-
-                                transactionAction:
-
-                                    "SELL"
-
-                            }
-
-                        });
-
-            }
-
-            /*
-
-             * -------------------------------------------
-
-             * DIVIDEND
-
-             * -------------------------------------------
-
-             */
-
-            if (
-
-                result.action === "DIVIDEND"
-
-            ){
-
-                transaction =
-
-                    transactionService
-
-                        .recordDividend({
-
-                            date:
-
-                                result.tradeDate,
-
-                            accountId:
-
-                                result.accountId,
-
-                            amount:
-
-                                Number(
-
-                                    result.amount || 0
-
-                                ),
-
-                            currency:
-
-                                result.currency ||
-
-                                "USD",
-
-                            description:
-
-                                result.name
-
-                                    ? `Dividend: ${result.name}`
-
-                                    : "Dividend",
-
-                            investment: {
-
-                                investmentId:
-
-                                    result.investmentId ||
-
-                                    "",
-
-                                symbol:
-
-                                    result.symbol ||
-
-                                    "",
-
-                                name:
-
-                                    result.name ||
-
-                                    "",
-
-                                quantity:
-
-                                    Number(
-
-                                        result.quantity || 0
-
-                                    ),
-
-                                tradeId:
-
-                                    result.id,
-
-                                transactionAction:
-
-                                    "DIVIDEND"
-
-                            }
-
-                        });
-
-            }
-
-            /*
-
-             * -------------------------------------------
-
-             * 3. Link Trade → Transaction
-
-             * -------------------------------------------
-
-             */
-
-            if (transaction){
-
-                result.transactionId =
-
-                    transaction.id;
-
-                /*
-
-                 * Save the Trade again so the
-
-                 * relationship is permanent.
-
-                 */
-
-                InvestmentRepository
-
-                    .saveTrade(
-
-                        result
-
-                    );
-
-            }
-
-        }
+        );
 
         /*
 
-         * -----------------------------------------------
-
-         * 4. Publish Investment event
-
-         * -----------------------------------------------
+         * Investment event.
 
          */
 
@@ -730,13 +338,25 @@ const InvestmentService = {
 
         /*
 
-         * -----------------------------------------------
-
-         * 5. Return the Investment Trade
-
-         * -----------------------------------------------
+         * System-level trade event.
 
          */
+
+        if (
+
+            EventTypes.TRADE_EXECUTED
+
+        ) {
+
+            EventBus.publish(
+
+                EventTypes.TRADE_EXECUTED,
+
+                result
+
+            );
+
+        }
 
         return result;
 
@@ -747,6 +367,272 @@ const InvestmentService = {
         return InvestmentRepository
 
             .getTrades();
+
+    },
+
+    // =====================================================
+
+    // Investment → Transaction
+
+    // =====================================================
+
+    recordTradeTransaction(
+
+        trade
+
+    ){
+
+        if (!trade) {
+
+            return null;
+
+        }
+
+        const service =
+
+            getTransactionService();
+
+        /*
+
+         * Transaction integration is
+
+         * intentionally optional until
+
+         * the application bootstrap
+
+         * registers TransactionService.
+
+         */
+
+        if (!service) {
+
+            return null;
+
+        }
+
+        /*
+
+         * Do not create a Transaction for
+
+         * unknown or incomplete actions.
+
+         */
+
+        if (!trade.action) {
+
+            return null;
+
+        }
+
+        const action =
+
+            String(
+
+                trade.action
+
+            )
+
+                .trim()
+
+                .toUpperCase();
+
+        const transactionData = {
+
+            date:
+
+                trade.tradeDate ||
+
+                new Date()
+
+                    .toISOString(),
+
+            accountId:
+
+                trade.accountId || "",
+
+            amount:
+
+                Number(
+
+                    trade.amount || 0
+
+                ),
+
+            currency:
+
+                trade.currency ||
+
+                "USD",
+
+            description:
+
+                trade.name ||
+
+                trade.symbol ||
+
+                "Investment transaction",
+
+            investment: {
+
+                investmentId:
+
+                    trade.investmentId ||
+
+                    "",
+
+                symbol:
+
+                    trade.symbol ||
+
+                    "",
+
+                name:
+
+                    trade.name ||
+
+                    "",
+
+                quantity:
+
+                    Number(
+
+                        trade.quantity || 0
+
+                    ),
+
+                price:
+
+                    Number(
+
+                        trade.price || 0
+
+                    ),
+
+                commission:
+
+                    Number(
+
+                        trade.commission || 0
+
+                    ),
+
+                tax:
+
+                    Number(
+
+                        trade.tax || 0
+
+                    ),
+
+                tradeId:
+
+                    trade.id || "",
+
+                action
+
+            }
+
+        };
+
+        /*
+
+         * BUY
+
+         */
+
+        if (
+
+            action === "BUY"
+
+        ) {
+
+            return service
+
+                .recordInvestmentBuy(
+
+                    transactionData
+
+                );
+
+        }
+
+        /*
+
+         * SELL
+
+         */
+
+        if (
+
+            action === "SELL"
+
+        ) {
+
+            return service
+
+                .recordInvestmentSell(
+
+                    transactionData
+
+                );
+
+        }
+
+        /*
+
+         * DIVIDEND
+
+         */
+
+        if (
+
+            action === "DIVIDEND"
+
+        ) {
+
+            return service
+
+                .recordDividend(
+
+                    transactionData
+
+                );
+
+        }
+
+        /*
+
+         * INTEREST
+
+         */
+
+        if (
+
+            action === "INTEREST"
+
+        ) {
+
+            return service
+
+                .recordInterest(
+
+                    transactionData
+
+                );
+
+        }
+
+        /*
+
+         * Other Investment Trade actions
+
+         * are intentionally not converted
+
+         * automatically into Transactions.
+
+         */
+
+        return null;
 
     },
 
@@ -764,61 +650,25 @@ const InvestmentService = {
 
             .reduce(
 
-                (sum, position) =>
+                (
+
+                    sum,
+
+                    position
+
+                ) =>
 
                     sum +
 
                     Number(
 
-                        position.marketValue || 0
+                        position.marketValue ||
+
+                        0
 
                     ),
 
                 0
-
-            );
-
-    },
-
-    // =====================================================
-
-    // Transaction Access
-
-    // =====================================================
-
-    /*
-
-     * InvestmentService does not become the owner
-
-     * of Transactions.
-
-     *
-
-     * This method only provides access to Transactions
-
-     * created by Investment events.
-
-     */
-
-    getTransactions(){
-
-        return transactionManager
-
-            .getAllTransactions();
-
-    },
-
-    getTransaction(
-
-        transactionId
-
-    ){
-
-        return transactionManager
-
-            .getTransaction(
-
-                transactionId
 
             );
 
