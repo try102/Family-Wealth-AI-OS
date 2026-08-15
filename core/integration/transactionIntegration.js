@@ -176,8 +176,4 @@ const TransactionIntegration = {
 
  */
 
-export {
-
-    TransactionIntegration
-
-};
+export default TransactionIntegration;
