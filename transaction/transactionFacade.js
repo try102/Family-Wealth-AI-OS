@@ -1,5 +1,7 @@
 /**
 
+ *
+
  * Family Wealth AI OS V7
 
  * Transaction Facade
@@ -7,6 +9,8 @@
  *
 
  * Responsibility:
+
+ *
 
  * - Provide one stable system-level entry point
 
@@ -64,11 +68,33 @@
 
  * - Account balance calculations
 
+ *
+
  */
 
-const TransactionController =
+/*
 
-    require("./transactionController");
+ *
+
+ * Transaction Controller
+
+ *
+
+ */
+
+import TransactionController
+
+    from "./transactionController.js";
+
+/*
+
+ *
+
+ * Transaction Facade
+
+ *
+
+ */
 
 class TransactionFacade {
 
@@ -686,20 +712,14 @@ class TransactionFacade {
 
 /*
 
- * CommonJS export.
+ *
+
+ * ES Module Export
+
+ *
 
  */
 
-if (
+export default
 
-    typeof module !== "undefined" &&
-
-    module.exports
-
-) {
-
-    module.exports =
-
-        TransactionFacade;
-
-}
+    TransactionFacade;
