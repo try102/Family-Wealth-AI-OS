@@ -12,15 +12,13 @@
 
  * - Register Account into the V7 system
 
- * - Prevent Account internal implementation from
-
- *   affecting the existing startup architecture
+ * - Keep Account implementation isolated
 
  *
 
  * IMPORTANT:
 
- * This integration layer does NOT modify:
+ * This file does NOT modify:
 
  *
 
@@ -38,17 +36,25 @@
 
  *
 
- * It also does NOT modify:
+ * It also does NOT perform:
 
  *
 
- * - Tax
+ * - Transaction calculations
 
- * - Advisor
+ * - Cash Flow calculations
 
- * - WealthEngine
+ * - Investment calculations
 
- * - CashFlow
+ * - Asset calculations
+
+ * - Liability calculations
+
+ * - Tax calculations
+
+ * - Retirement calculations
+
+ * - Advisor logic
 
  */
 
@@ -142,17 +148,23 @@ const AccountIntegration = {
 
 /*
 
+ * Named export.
+
+ *
+
  * IMPORTANT:
 
- *
-
- * Use named export instead of default export.
+ * Do not change this to:
 
  *
 
- * This avoids the current V7 module registry
+ * export default AccountIntegration;
 
- * compatibility problem with default bindings.
+ *
+
+ * The V7 startup currently uses
+
+ * named module bindings for this integration.
 
  */
 
