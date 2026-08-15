@@ -16,9 +16,13 @@
 
  * - Close accounts
 
+ * - Reopen accounts
+
  * - Archive accounts
 
  * - Validate account data
+
+ * - Coordinate Account persistence
 
  *
 
@@ -42,69 +46,107 @@
 
  *
 
+ * Architecture:
+
+ *
+
+ * Account
+
+ *    ↓
+
+ * AccountManager
+
+ *    ↓
+
+ * AccountRepository
+
+ *    ↓
+
+ * DataService
+
+ *
+
  * Account is the system account registry.
 
- * Business modules should reference Account by account.id.
+ *
+
+ * Business modules reference Account by account.id.
 
  */
 
-const Account = require("./account");
+const Account =
+
+    require("./account");
+
+const AccountRepository =
+
+    require("./accountRepository");
 
 class AccountManager {
 
-    constructor(initialAccounts = []) {
+    constructor(
 
-        this.accounts = new Map();
+        initialAccounts = null
 
-        if (Array.isArray(initialAccounts)) {
+    ) {
 
-            initialAccounts.forEach(accountData => {
+        this.accounts =
 
-                const account =
+            new Map();
 
-                    accountData instanceof Account
+        /*
 
-                        ? accountData
+         * Load existing persisted Accounts
 
-                        : new Account(accountData);
+         * unless explicit initial data is supplied.
 
-                const validation =
+         */
 
-                    account.validate();
+        let accountsToLoad;
 
-                if (!validation.valid) {
+        if (
 
-                    throw new Error(
+            Array.isArray(
 
-                        validation.errors.join(" ")
+                initialAccounts
 
-                    );
+            )
 
-                }
+        ) {
 
-                account.normalize();
+            accountsToLoad =
 
-                this.accounts.set(
+                initialAccounts;
 
-                    account.id,
+        } else {
 
-                    account
+            accountsToLoad =
 
-                );
+                AccountRepository
 
-            });
+                    .getAccounts();
 
         }
 
+        this.loadAccounts(
+
+            accountsToLoad
+
+        );
+
     }
 
-    /**
+    // =====================================================
 
-     * Create a new Account.
+    // Create
 
-     */
+    // =====================================================
 
-    createAccount(data = {}) {
+    createAccount(
+
+        data = {}
+
+    ) {
 
         const account =
 
@@ -112,7 +154,11 @@ class AccountManager {
 
                 ? data
 
-                : new Account(data);
+                : new Account(
+
+                    data
+
+                );
 
         account.normalize();
 
@@ -130,7 +176,15 @@ class AccountManager {
 
         }
 
-        if (this.accounts.has(account.id)) {
+        if (
+
+            this.accounts.has(
+
+                account.id
+
+            )
+
+        ) {
 
             throw new Error(
 
@@ -148,17 +202,35 @@ class AccountManager {
 
         );
 
+        /*
+
+         * Persist immediately.
+
+         */
+
+        AccountRepository
+
+            .saveAccount(
+
+                account
+
+            );
+
         return account;
 
     }
 
-    /**
+    // =====================================================
 
-     * Get an Account by ID.
+    // Read
 
-     */
+    // =====================================================
 
-    getAccount(accountId) {
+    getAccount(
+
+        accountId
+
+    ) {
 
         if (!accountId) {
 
@@ -166,15 +238,23 @@ class AccountManager {
 
         }
 
-        return this.accounts.get(accountId) || null;
+        return (
+
+            this.accounts.get(
+
+                accountId
+
+            ) || null
+
+        );
 
     }
 
-    /**
+    // =====================================================
 
-     * Get all Accounts.
+    // Get All
 
-     */
+    // =====================================================
 
     getAllAccounts() {
 
@@ -186,11 +266,11 @@ class AccountManager {
 
     }
 
-    /**
+    // =====================================================
 
-     * Get only active Accounts.
+    // Active Accounts
 
-     */
+    // =====================================================
 
     getActiveAccounts() {
 
@@ -200,17 +280,19 @@ class AccountManager {
 
                 account =>
 
-                    account.status === "Active"
+                    account.status ===
+
+                    "Active"
 
             );
 
     }
 
-    /**
+    // =====================================================
 
-     * Get closed Accounts.
+    // Closed Accounts
 
-     */
+    // =====================================================
 
     getClosedAccounts() {
 
@@ -220,25 +302,25 @@ class AccountManager {
 
                 account =>
 
-                    account.status === "Closed"
+                    account.status ===
+
+                    "Closed"
 
             );
 
     }
 
-    /**
+    // =====================================================
 
-     * Find Accounts by owner member.
+    // Owner
 
-     *
+    // =====================================================
 
-     * This references Family Member ID.
+    getAccountsByOwner(
 
-     * AccountManager does not manage Family Members.
+        ownerMemberId
 
-     */
-
-    getAccountsByOwner(ownerMemberId) {
+    ) {
 
         if (!ownerMemberId) {
 
@@ -252,19 +334,25 @@ class AccountManager {
 
                 account =>
 
-                    account.ownerMemberId === ownerMemberId
+                    account.ownerMemberId ===
+
+                    ownerMemberId
 
             );
 
     }
 
-    /**
+    // =====================================================
 
-     * Find Accounts by type.
+    // Type
 
-     */
+    // =====================================================
 
-    getAccountsByType(accountType) {
+    getAccountsByType(
+
+        accountType
+
+    ) {
 
         if (!accountType) {
 
@@ -278,19 +366,25 @@ class AccountManager {
 
                 account =>
 
-                    account.accountType === accountType
+                    account.accountType ===
+
+                    accountType
 
             );
 
     }
 
-    /**
+    // =====================================================
 
-     * Find Accounts by institution.
+    // Institution
 
-     */
+    // =====================================================
 
-    getAccountsByInstitution(institution) {
+    getAccountsByInstitution(
+
+        institution
+
+    ) {
 
         if (!institution) {
 
@@ -310,35 +404,45 @@ class AccountManager {
 
         return this.getAllAccounts()
 
-            .filter(account =>
+            .filter(
 
-                account.institution
+                account =>
 
-                    .toLowerCase()
+                    account.institution
 
-                    .includes(normalizedInstitution)
+                        .toLowerCase()
+
+                        .includes(
+
+                            normalizedInstitution
+
+                        )
 
             );
 
     }
 
-    /**
+    // =====================================================
 
-     * Update an existing Account.
+    // Update
 
-     *
+    // =====================================================
 
-     * Only fields belonging to the Account model
+    updateAccount(
 
-     * are accepted here.
+        accountId,
 
-     */
+        updates = {}
 
-    updateAccount(accountId, updates = {}) {
+    ) {
 
         const account =
 
-            this.getAccount(accountId);
+            this.getAccount(
+
+                accountId
+
+            );
 
         if (!account) {
 
@@ -352,9 +456,9 @@ class AccountManager {
 
         /*
 
-         * Prevent accidental replacement of
+         * Only Account model fields
 
-         * system identity fields.
+         * may be modified here.
 
          */
 
@@ -380,27 +484,33 @@ class AccountManager {
 
         ];
 
-        allowedFields.forEach(field => {
+        allowedFields.forEach(
 
-            if (
+            field => {
 
-                Object.prototype.hasOwnProperty.call(
+                if (
 
-                    updates,
+                    Object.prototype
 
-                    field
+                        .hasOwnProperty.call(
 
-                )
+                            updates,
 
-            ) {
+                            field
 
-                account[field] =
+                        )
 
-                    updates[field];
+                ) {
+
+                    account[field] =
+
+                        updates[field];
+
+                }
 
             }
 
-        });
+        );
 
         account.normalize();
 
@@ -418,33 +528,43 @@ class AccountManager {
 
         }
 
+        /*
+
+         * Persist update.
+
+         */
+
+        AccountRepository
+
+            .saveAccount(
+
+                account
+
+            );
+
         return account;
 
     }
 
-    /**
+    // =====================================================
 
-     * Close an Account.
+    // Close
 
-     *
+    // =====================================================
 
-     * We do not immediately destroy historical
+    closeAccount(
 
-     * account information.
+        accountId
 
-     *
-
-     * This is important because future Transactions
-
-     * may still reference this Account.
-
-     */
-
-    closeAccount(accountId) {
+    ) {
 
         const account =
 
-            this.getAccount(accountId);
+            this.getAccount(
+
+                accountId
+
+            );
 
         if (!account) {
 
@@ -456,27 +576,45 @@ class AccountManager {
 
         }
 
-        account.status = "Closed";
+        account.status =
+
+            "Closed";
 
         account.updatedAt =
 
             new Date().toISOString();
 
+        AccountRepository
+
+            .saveAccount(
+
+                account
+
+            );
+
         return account;
 
     }
 
-    /**
+    // =====================================================
 
-     * Reopen a previously closed Account.
+    // Reopen
 
-     */
+    // =====================================================
 
-    reopenAccount(accountId) {
+    reopenAccount(
+
+        accountId
+
+    ) {
 
         const account =
 
-            this.getAccount(accountId);
+            this.getAccount(
+
+                accountId
+
+            );
 
         if (!account) {
 
@@ -488,101 +626,141 @@ class AccountManager {
 
         }
 
-        account.status = "Active";
+        account.status =
+
+            "Active";
 
         account.updatedAt =
 
             new Date().toISOString();
 
+        AccountRepository
+
+            .saveAccount(
+
+                account
+
+            );
+
         return account;
 
     }
 
-    /**
+    // =====================================================
 
-     * Remove an Account from the manager registry.
+    // Remove
 
-     *
+    // =====================================================
 
-     * IMPORTANT:
+    removeAccount(
 
-     *
+        accountId
 
-     * This method does not delete external Transaction,
+    ) {
 
-     * Investment, Tax, or other business data.
+        if (
 
-     *
+            !this.accounts.has(
 
-     * Higher-level application logic should decide whether
+                accountId
 
-     * permanent deletion is safe.
+            )
 
-     */
-
-    removeAccount(accountId) {
-
-        if (!this.accounts.has(accountId)) {
+        ) {
 
             return false;
 
         }
 
-        return this.accounts.delete(
+        /*
+
+         * Remove from memory.
+
+         */
+
+        this.accounts.delete(
 
             accountId
 
         );
 
+        /*
+
+         * Remove from persistent storage.
+
+         */
+
+        AccountRepository
+
+            .deleteAccount(
+
+                accountId
+
+            );
+
+        return true;
+
     }
 
-    /**
+    // =====================================================
 
-     * Convert all Accounts into plain objects.
+    // Reload
 
-     *
+    // =====================================================
 
-     * Useful for future persistence / import / export.
+    reloadAccounts() {
 
-     */
+        const accounts =
+
+            AccountRepository
+
+                .getAccounts();
+
+        return this.loadAccounts(
+
+            accounts
+
+        );
+
+    }
+
+    // =====================================================
+
+    // JSON
+
+    // =====================================================
 
     toJSON() {
 
         return this.getAllAccounts()
 
-            .map(account =>
+            .map(
 
-                account.toJSON()
+                account =>
+
+                    account.toJSON()
 
             );
 
     }
 
-    /**
+    // =====================================================
 
-     * Replace the manager contents from
+    // Load Accounts
 
-     * serialized Account data.
+    // =====================================================
 
-     *
+    loadAccounts(
 
-     * This creates a clean boundary for future:
+        accountData = []
 
-     * - Manual Input
+    ) {
 
-     * - CSV Import
+        if (!Array.isArray(
 
-     * - Bank Import
+            accountData
 
-     * - Brokerage Import
-
-     * - External Sync
-
-     */
-
-    loadAccounts(accountData = []) {
-
-        if (!Array.isArray(accountData)) {
+        )) {
 
             throw new Error(
 
@@ -594,51 +772,67 @@ class AccountManager {
 
         this.accounts.clear();
 
-        accountData.forEach(data => {
+        accountData.forEach(
 
-            const account =
+            data => {
 
-                data instanceof Account
+                const account =
 
-                    ? data
+                    data instanceof Account
 
-                    : new Account(data);
+                        ? data
 
-            account.normalize();
+                        : new Account(
 
-            const validation =
+                            data
 
-                account.validate();
+                        );
 
-            if (!validation.valid) {
+                account.normalize();
 
-                throw new Error(
+                const validation =
 
-                    validation.errors.join(" ")
+                    account.validate();
+
+                if (!validation.valid) {
+
+                    throw new Error(
+
+                        validation.errors.join(" ")
+
+                    );
+
+                }
+
+                if (
+
+                    this.accounts.has(
+
+                        account.id
+
+                    )
+
+                ) {
+
+                    throw new Error(
+
+                        `Duplicate Account ID "${account.id}".`
+
+                    );
+
+                }
+
+                this.accounts.set(
+
+                    account.id,
+
+                    account
 
                 );
 
             }
 
-            if (this.accounts.has(account.id)) {
-
-                throw new Error(
-
-                    `Duplicate Account ID "${account.id}".`
-
-                );
-
-            }
-
-            this.accounts.set(
-
-                account.id,
-
-                account
-
-            );
-
-        });
+        );
 
         return this.getAllAccounts();
 
@@ -660,6 +854,8 @@ if (
 
 ) {
 
-    module.exports = AccountManager;
+    module.exports =
+
+        AccountManager;
 
 }
