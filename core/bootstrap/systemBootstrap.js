@@ -6,9 +6,13 @@ System Bootstrap
 
 */
 
-import ModuleRegistry from "../registry/moduleRegistry.js";
+import ModuleRegistry
 
-import AgentRegistry from "../registry/agentRegistry.js";
+    from "../registry/moduleRegistry.js";
+
+import AgentRegistry
+
+    from "../registry/agentRegistry.js";
 
 // =====================
 
@@ -16,7 +20,9 @@ import AgentRegistry from "../registry/agentRegistry.js";
 
 // =====================
 
-import EngineRegistry from "../engines/engineRegistry.js";
+import EngineRegistry
+
+    from "../engines/engineRegistry.js";
 
 import WealthEngine
 
@@ -32,7 +38,9 @@ import CashFlowEngine
 
 // =====================
 
-import AIRegistry from "../../ai/aiRegistry.js";
+import AIRegistry
+
+    from "../../ai/aiRegistry.js";
 
 import Advisor
 
@@ -76,21 +84,15 @@ import AssetsModule
 
 // =====================
 
-// Account
-
-//
-
-// IMPORTANT:
-
-// Account is loaded only through
-
-// the dedicated integration boundary.
+// Account Integration
 
 // =====================
 
-import AccountIntegration
+import {
 
-    from "../integration/accountIntegration.js";
+    AccountIntegration
+
+} from "../integration/accountIntegration.js";
 
 // =====================
 
@@ -200,15 +202,9 @@ const SystemBootstrap = {
 
         // Account
 
-        //
-
-        // Account is foundational
-
-        // but is not yet allowed to
-
-        // affect existing business logic.
-
         // =====================
+
+        AccountIntegration.initialize();
 
         ModuleRegistry.register(
 
@@ -291,6 +287,12 @@ const SystemBootstrap = {
             AIRegistry.list()
 
         );
+
+        // =====================
+
+        // Result
+
+        // =====================
 
         return {
 
