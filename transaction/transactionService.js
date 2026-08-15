@@ -8,15 +8,47 @@
 
  * Responsibility:
 
- * - Provide business-facing entry points
-
- * - Record Actual Transactions
+ * - Provide business-facing entry points for Actual Transactions
 
  * - Convert business events into standard Transactions
 
- * - Keep business modules independent from
+ * - Keep business modules decoupled from Transaction Manager
 
- *   TransactionManager implementation
+ *
+
+ * Architecture:
+
+ *
+
+ * Business Module
+
+ *      ↓
+
+ * TransactionService
+
+ *      ↓
+
+ * TransactionManager
+
+ *      ↓
+
+ * Transaction
+
+ *
+
+ * Account relationship:
+
+ *
+
+ * Account
+
+ *      ↓
+
+ * accountId
+
+ *      ↓
+
+ * Transaction Financial Line
 
  *
 
@@ -42,27 +74,11 @@
 
  *
 
- * Architecture:
+ * IMPORTANT:
 
  *
 
- * Business Module
-
- *        ↓
-
- * TransactionService
-
- *        ↓
-
- * TransactionManager
-
- *        ↓
-
- * TransactionRepository
-
- *        ↓
-
- * DataService
+ * TransactionService records Actual events only.
 
  */
 
@@ -70,53 +86,35 @@ const Transaction =
 
     require("./transaction");
 
-const TransactionManager =
-
-    require("./transactionManager");
-
 class TransactionService {
 
     constructor(
 
-        transactionManager = null
+        transactionManager
 
     ) {
 
+        if (!transactionManager) {
+
+            throw new Error(
+
+                "TransactionManager is required."
+
+            );
+
+        }
+
         this.transactionManager =
 
-            transactionManager ||
-
-            new TransactionManager();
+            transactionManager;
 
     }
 
-    /**
+    // =====================================================
 
-     * Get the Transaction Manager.
+    // Generic Transaction
 
-     */
-
-    getManager() {
-
-        return this.transactionManager;
-
-    }
-
-    /**
-
-     * Record a generic Actual Transaction.
-
-     *
-
-     * Business modules may provide
-
-     * already-calculated businessDetails.
-
-     *
-
-     * TransactionService does not calculate them.
-
-     */
+    // =====================================================
 
     recordTransaction(
 
@@ -131,32 +129,6 @@ class TransactionService {
                 ? data
 
                 : new Transaction(data);
-
-        /*
-
-         * If this method is called by a
-
-         * business module, the default source
-
-         * is BusinessModule.
-
-         */
-
-        if (
-
-            !transaction.source ||
-
-            transaction.source === "Manual"
-
-        ) {
-
-            transaction.source =
-
-                data.source ||
-
-                "BusinessModule";
-
-        }
 
         transaction.normalize();
 
@@ -184,11 +156,11 @@ class TransactionService {
 
     }
 
-    /**
+    // =====================================================
 
-     * Record an Income Actual event.
+    // Income
 
-     */
+    // =====================================================
 
     recordIncome(
 
@@ -276,11 +248,11 @@ class TransactionService {
 
     }
 
-    /**
+    // =====================================================
 
-     * Record an Expense Actual event.
+    // Expense
 
-     */
+    // =====================================================
 
     recordExpense(
 
@@ -368,19 +340,11 @@ class TransactionService {
 
     }
 
-    /**
+    // =====================================================
 
-     * Record an Account-to-Account Transfer.
+    // Account Transfer
 
-     *
-
-     * One economic event.
-
-     *
-
-     * Two Financial Lines.
-
-     */
+    // =====================================================
 
     recordTransfer(
 
@@ -486,31 +450,11 @@ class TransactionService {
 
     }
 
-    /**
+    // =====================================================
 
-     * Record an Investment Buy Actual event.
+    // Investment Buy
 
-     *
-
-     * Investment module calculates:
-
-     *
-
-     * - quantity
-
-     * - price
-
-     * - fees
-
-     * - cost basis
-
-     *
-
-     * TransactionService only records
-
-     * the resulting Actual event.
-
-     */
+    // =====================================================
 
     recordInvestmentBuy(
 
@@ -598,33 +542,11 @@ class TransactionService {
 
     }
 
-    /**
+    // =====================================================
 
-     * Record an Investment Sell Actual event.
+    // Investment Sell
 
-     *
-
-     * Investment module calculates:
-
-     *
-
-     * - quantity
-
-     * - proceeds
-
-     * - cost basis
-
-     * - capital gain
-
-     * - holding period
-
-     *
-
-     * TransactionService only records
-
-     * the resulting Actual event.
-
-     */
+    // =====================================================
 
     recordInvestmentSell(
 
@@ -712,21 +634,11 @@ class TransactionService {
 
     }
 
-    /**
+    // =====================================================
 
-     * Record a Loan Payment Actual event.
+    // Loan Payment
 
-     *
-
-     * Principal and interest must already
-
-     * be calculated by the Liability / Loan module.
-
-     *
-
-     * TransactionService does NOT calculate them.
-
-     */
+    // =====================================================
 
     recordLoanPayment(
 
@@ -814,11 +726,11 @@ class TransactionService {
 
     }
 
-    /**
+    // =====================================================
 
-     * Record a Dividend Actual event.
+    // Dividend
 
-     */
+    // =====================================================
 
     recordDividend(
 
@@ -906,11 +818,11 @@ class TransactionService {
 
     }
 
-    /**
+    // =====================================================
 
-     * Record an Interest Actual event.
+    // Interest
 
-     */
+    // =====================================================
 
     recordInterest(
 
@@ -998,11 +910,11 @@ class TransactionService {
 
     }
 
-    /**
+    // =====================================================
 
-     * Record a Tax Payment Actual event.
+    // Tax Payment
 
-     */
+    // =====================================================
 
     recordTaxPayment(
 
@@ -1087,148 +999,6 @@ class TransactionService {
             }
 
         });
-
-    }
-
-    /**
-
-     * Read all Transactions.
-
-     */
-
-    getTransactions() {
-
-        return this.transactionManager
-
-            .getAllTransactions();
-
-    }
-
-    /**
-
-     * Read one Transaction.
-
-     */
-
-    getTransaction(
-
-        transactionId
-
-    ) {
-
-        return this.transactionManager
-
-            .getTransaction(
-
-                transactionId
-
-            );
-
-    }
-
-    /**
-
-     * Get Posted Transactions.
-
-     */
-
-    getPostedTransactions() {
-
-        return this.transactionManager
-
-            .getPostedTransactions();
-
-    }
-
-    /**
-
-     * Get Transactions by Account.
-
-     */
-
-    getTransactionsByAccount(
-
-        accountId
-
-    ) {
-
-        return this.transactionManager
-
-            .getTransactionsByAccount(
-
-                accountId
-
-            );
-
-    }
-
-    /**
-
-     * Update Transaction.
-
-     */
-
-    updateTransaction(
-
-        transactionId,
-
-        updates = {}
-
-    ) {
-
-        return this.transactionManager
-
-            .updateTransaction(
-
-                transactionId,
-
-                updates
-
-            );
-
-    }
-
-    /**
-
-     * Void Transaction.
-
-     */
-
-    voidTransaction(
-
-        transactionId
-
-    ) {
-
-        return this.transactionManager
-
-            .voidTransaction(
-
-                transactionId
-
-            );
-
-    }
-
-    /**
-
-     * Post Transaction.
-
-     */
-
-    postTransaction(
-
-        transactionId
-
-    ) {
-
-        return this.transactionManager
-
-            .postTransaction(
-
-                transactionId
-
-            );
 
     }
 
