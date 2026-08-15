@@ -114,11 +114,9 @@ import AssetsModule
 
 // ==================================================
 
-import {
+import AccountIntegration
 
-    AccountIntegration
-
-} from "../integration/accountIntegration.js";
+    from "../integration/accountIntegration.js";
 
 // ==================================================
 
@@ -130,11 +128,9 @@ import {
 
 // ==================================================
 
-import {
+import TransactionIntegration
 
-    TransactionIntegration
-
-} from "../integration/transactionIntegration.js";
+    from "../integration/transactionIntegration.js";
 
 // ==================================================
 
