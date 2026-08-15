@@ -40,7 +40,11 @@
 
  *        ↓
 
- * Account
+ * AccountRepository
+
+ *        ↓
+
+ * DataService
 
  *
 
@@ -64,6 +68,10 @@
 
  */
 
+const AccountRepository =
+
+    require("./accountRepository");
+
 const AccountManager =
 
     require("./accountManager");
@@ -84,9 +92,19 @@ class AccountModule {
 
     constructor(
 
-        initialAccounts = []
+        initialAccounts = null
 
     ) {
+
+        /*
+
+         * Persistence layer
+
+         */
+
+        this.repository =
+
+            AccountRepository;
 
         /*
 
@@ -164,7 +182,7 @@ class AccountModule {
 
     //
 
-    // These are exposed primarily for:
+    // Primarily used for:
 
     // - System initialization
 
@@ -179,6 +197,12 @@ class AccountModule {
     // use the facade.
 
     // =====================================================
+
+    getRepository() {
+
+        return this.repository;
+
+    }
 
     getManager() {
 
