@@ -64,19 +64,17 @@
 
  * - Account balance calculations
 
- * - Cashflow calculations
-
  *
 
  */
 
 import EventBus
 
-    from "../core/events/eventBus.js";
+    from "../events/eventBus.js";
 
 import EventTypes
 
-    from "../core/events/eventTypes.js";
+    from "../events/eventTypes.js";
 
 import cashflowAPI
 
@@ -296,7 +294,9 @@ const CashflowIntegration = {
 
             category:
 
-                line.category || "Income"
+                line.category ||
+
+                "Income"
 
         });
 
@@ -368,7 +368,9 @@ const CashflowIntegration = {
 
             category:
 
-                line.category || "Expense"
+                line.category ||
+
+                "Expense"
 
         });
 
