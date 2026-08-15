@@ -14,97 +14,53 @@
 
  *
 
- * - Connect Transaction Module
+ * - Provide a safe system-level integration boundary for Transaction
 
- *   to the system integration layer
+ * - Register Transaction into the V7 system
 
- *
-
- * - Provide one controlled
-
- *   Transaction system entry point
+ * - Keep Transaction implementation isolated
 
  *
 
- * - Keep SystemBootstrap independent
-
- *   from Transaction internal architecture
+ * IMPORTANT:
 
  *
 
- * Architecture:
+ * This file does NOT modify:
 
  *
 
- * SystemBootstrap
+ * - Transaction
 
- *       ↓
+ * - TransactionManager
 
- * TransactionIntegration
+ * - TransactionService
 
- *       ↓
+ * - TransactionController
 
- * TransactionModule
+ * - TransactionFacade
 
- *       ↓
-
- * TransactionFacade
-
- *       ↓
-
- * TransactionController
-
- *       ↓
-
- * TransactionService
-
- *       ↓
-
- * TransactionManager
-
- *       ↓
-
- * TransactionRepository
-
- *       ↓
-
- * DataService
+ * - TransactionRepository
 
  *
 
- * Transaction remains the
-
- * Single Source of Truth
-
- * for financial transactions.
+ * It also does NOT perform:
 
  *
 
- */
+ * - Tax calculations
 
-import TransactionModule
+ * - Investment calculations
 
-    from "../../transaction/transactionModule.js";
+ * - Cost basis calculations
 
-/*
+ * - Capital gain calculations
 
- *
+ * - Loan calculations
 
- * Transaction Module Instance
+ * - Cash Flow calculations
 
- *
-
- */
-
-const transactionModule =
-
-    new TransactionModule();
-
-/*
-
- *
-
- * Transaction Integration
+ * - Account balance calculations
 
  *
 
@@ -112,109 +68,85 @@ const transactionModule =
 
 const TransactionIntegration = {
 
-    /*
-
-     *
-
-     * Module name
-
-     *
-
-     */
-
     name:
 
         "Transaction",
 
-    /*
+    version:
 
-     *
-
-     * Module status
-
-     *
-
-     */
+        "V7",
 
     status:
 
-        "ACTIVE",
+        "READY",
 
-    /*
+    initialized:
 
-     *
+        false,
 
-     * Get Transaction Facade
+    // =====================================================
 
-     *
+    // Initialize
 
-     */
+    // =====================================================
 
-    getFacade(){
+    initialize() {
 
-        return transactionModule
+        this.initialized =
 
-            .getFacade();
-
-    },
-
-    /*
-
-     *
-
-     * Get Transaction Module
-
-     *
-
-     */
-
-    getModule(){
-
-        return transactionModule;
-
-    },
-
-    /*
-
-     *
-
-     * Get Module Status
-
-     *
-
-     */
-
-    getStatus(){
-
-        if(
-
-            transactionModule &&
-
-            typeof transactionModule.getStatus ===
-
-                "function"
-
-        ){
-
-            return transactionModule
-
-                .getStatus();
-
-        }
+            true;
 
         return {
 
-            module:
+            name:
 
-                "Transaction",
+                this.name,
 
             version:
 
-                "V7",
+                this.version,
+
+            status:
+
+                "READY",
 
             initialized:
 
                 true
+
+        };
+
+    },
+
+    // =====================================================
+
+    // Status
+
+    // =====================================================
+
+    getStatus() {
+
+        return {
+
+            name:
+
+                this.name,
+
+            version:
+
+                this.version,
+
+            status:
+
+                this.initialized
+
+                    ? "READY"
+
+                    : "NOT_INITIALIZED",
+
+            initialized:
+
+                this.initialized
 
         };
 
@@ -226,12 +158,26 @@ const TransactionIntegration = {
 
  *
 
- * ES Module Export
+ * Named export.
+
+ *
+
+ * IMPORTANT:
+
+ *
+
+ * Transaction Integration follows
+
+ * the same system integration pattern
+
+ * as Account Integration.
 
  *
 
  */
 
-export default
+export {
 
-    TransactionIntegration;
+    TransactionIntegration
+
+};
