@@ -168,8 +168,4 @@ const AccountIntegration = {
 
  */
 
-export {
-
-    AccountIntegration
-
-};
+export default AccountIntegration;
