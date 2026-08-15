@@ -1,5 +1,7 @@
 /**
 
+ *
+
  * Family Wealth AI OS V7
 
  * Transaction Controller
@@ -7,6 +9,8 @@
  *
 
  * Responsibility:
+
+ *
 
  * - Provide the application/API boundary for Transaction
 
@@ -62,6 +66,26 @@
 
  */
 
+/*
+
+ *
+
+ * Transaction Controller
+
+ *
+
+ * No direct dependency on Repository.
+
+ *
+
+ * TransactionService is injected
+
+ * by the TransactionFacade.
+
+ *
+
+ */
+
 class TransactionController {
 
     constructor(
@@ -86,6 +110,8 @@ class TransactionController {
 
         /*
 
+         *
+
          * TransactionManager is intentionally
 
          * accessed through the Service boundary.
@@ -95,6 +121,8 @@ class TransactionController {
          * The Controller does not access
 
          * Repository or DataService directly.
+
+         *
 
          */
 
@@ -692,20 +720,14 @@ class TransactionController {
 
 /*
 
- * CommonJS export.
+ *
+
+ * ES Module Export
+
+ *
 
  */
 
-if (
+export default
 
-    typeof module !== "undefined" &&
-
-    module.exports
-
-) {
-
-    module.exports =
-
-        TransactionController;
-
-}
+    TransactionController;
