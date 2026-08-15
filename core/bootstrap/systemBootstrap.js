@@ -1,90 +1,180 @@
 /*
 
+==================================================
+
 Family Wealth AI OS V7
 
 System Bootstrap
 
+==================================================
+
+Responsibility:
+
+- Initialize the Family Wealth AI OS
+
+- Register Agents
+
+- Register Modules
+
+- Register Engines
+
+- Register AI
+
+- Provide one system initialization boundary
+
+IMPORTANT:
+
+Account is NOT registered here yet.
+
+Reason:
+
+The current Account subsystem files use CommonJS
+
+(require / module.exports), while the browser V7
+
+application uses ES Modules.
+
+Account will be connected after its browser-compatible
+
+ES Module boundary is completed.
+
+Tax V7 is preserved as the existing working Tax system.
+
+==================================================
+
 */
 
-import ModuleRegistry from "../registry/moduleRegistry.js";
+import ModuleRegistry
 
-import AgentRegistry from "../registry/agentRegistry.js";
+    from "../registry/moduleRegistry.js";
 
-// =====================
+import AgentRegistry
 
-// Engine Registry
+    from "../registry/agentRegistry.js";
 
-// =====================
+import EngineRegistry
 
-import EngineRegistry from "../engines/engineRegistry.js";
+    from "../engines/engineRegistry.js";
 
-import WealthEngine from "../engines/wealth/wealthEngine.js";
+import WealthEngine
 
-import CashFlowEngine from "../engines/cashflow/cashFlowEngine.js";
+    from "../engines/wealth/wealthEngine.js";
 
-// =====================
+import CashFlowEngine
 
-// AI Registry
+    from "../engines/cashflow/cashFlowEngine.js";
 
-// =====================
+import AIRegistry
 
-import AIRegistry from "../../ai/aiRegistry.js";
+    from "../../ai/aiRegistry.js";
 
-import Advisor from "../../ai/advisor.js";
+import Advisor
 
-// =====================
+    from "../../ai/advisor.js";
 
-// Agents
+import InvestmentAgent
 
-// =====================
+    from "../../modules/investment/agent/investmentAgent.js";
 
-import InvestmentAgent from "../../modules/investment/agent/investmentAgent.js";
+import TaxFacade
 
-// =====================
+    from "../../tax/taxFacade.js";
 
-// Modules
+import LiabilityModule
 
-// =====================
+    from "../modules/liabilityModule.js";
 
-import TaxFacade from "../../tax/taxFacade.js";
+import IncomeModule
 
-import LiabilityModule from "../modules/liabilityModule.js";
+    from "../modules/incomeModule.js";
 
-import IncomeModule from "../modules/incomeModule.js";
+import CashflowModule
 
-import CashflowModule from "../modules/cashflowModule.js";
+    from "../modules/cashflowModule.js";
 
-import AssetsModule from "../modules/assetsModule.js";
+import AssetsModule
 
-// =====================
+    from "../modules/assetsModule.js";
 
-// Tax Instance
+/*
 
-// =====================
+==================================================
+
+Tax Instance
+
+==================================================
+
+*/
 
 const taxModule = new TaxFacade();
 
-// =====================
+/*
 
-// Bootstrap
+==================================================
 
-// =====================
+System Bootstrap
+
+==================================================
+
+*/
 
 const SystemBootstrap = {
 
-    initialize(){
+    initialized: false,
+
+    /*
+
+    ----------------------------------------------
+
+    Initialize System
+
+    ----------------------------------------------
+
+    */
+
+    initialize() {
+
+        /*
+
+        ------------------------------------------
+
+        Prevent duplicate initialization
+
+        ------------------------------------------
+
+        */
+
+        if (this.initialized) {
+
+            return {
+
+                status:
+
+                    "READY",
+
+                advisor:
+
+                    Advisor.name
+
+            };
+
+        }
 
         console.log(
 
-            "Family Wealth AI OS Starting..."
+            "Family Wealth AI OS V7 Starting..."
 
         );
 
-        // =====================
+        /*
 
-        // Agents
+        ==========================================
 
-        // =====================
+        Agents
+
+        ==========================================
+
+        */
 
         AgentRegistry.register(
 
@@ -94,11 +184,15 @@ const SystemBootstrap = {
 
         );
 
-        // =====================
+        /*
 
-        // Modules
+        ==========================================
 
-        // =====================
+        Modules
+
+        ==========================================
+
+        */
 
         ModuleRegistry.register(
 
@@ -108,11 +202,11 @@ const SystemBootstrap = {
 
                 name:
 
-                "Investment Center",
+                    "Investment Center",
 
                 status:
 
-                "ACTIVE"
+                    "ACTIVE"
 
             }
 
@@ -158,11 +252,15 @@ const SystemBootstrap = {
 
         );
 
-        // =====================
+        /*
 
-        // Engines
+        ==========================================
 
-        // =====================
+        Engines
+
+        ==========================================
+
+        */
 
         EngineRegistry.register(
 
@@ -180,11 +278,15 @@ const SystemBootstrap = {
 
         );
 
-        // =====================
+        /*
 
-        // AI
+        ==========================================
 
-        // =====================
+        AI
+
+        ==========================================
+
+        */
 
         AIRegistry.register(
 
@@ -194,11 +296,27 @@ const SystemBootstrap = {
 
         );
 
-        // =====================
+        /*
 
-        // Logs
+        ==========================================
 
-        // =====================
+        Mark Initialized
+
+        ==========================================
+
+        */
+
+        this.initialized = true;
+
+        /*
+
+        ==========================================
+
+        Logs
+
+        ==========================================
+
+        */
 
         console.log(
 
@@ -232,15 +350,31 @@ const SystemBootstrap = {
 
         );
 
+        console.log(
+
+            "Family Wealth AI OS V7 READY"
+
+        );
+
+        /*
+
+        ==========================================
+
+        Return
+
+        ==========================================
+
+        */
+
         return {
 
             status:
 
-            "READY",
+                "READY",
 
             advisor:
 
-            Advisor.name
+                Advisor.name
 
         };
 
