@@ -136,20 +136,6 @@ import TransactionIntegration
 
 //
 
-// Cashflow Integration
-
-//
-
-// ==================================================
-
-import CashflowIntegration
-
-    from "../integration/cashflowIntegration.js";
-
-// ==================================================
-
-//
-
 // Tax Instance
 
 //
@@ -301,26 +287,6 @@ const SystemBootstrap = {
             TransactionIntegration
 
         );
-
-        // ==================================================
-
-        //
-
-        // Cashflow Integration
-
-        //
-
-        // ==================================================
-
-        ModuleRegistry.register(
-
-            "cashflowIntegration",
-
-            CashflowIntegration
-
-        );
-
-        CashflowIntegration.initialize();
 
         // ==================================================
 
