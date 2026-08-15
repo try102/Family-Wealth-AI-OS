@@ -8,45 +8,15 @@
 
  * Responsibility:
 
- * - Create Transactions
+ * - Manage Transaction lifecycle
 
- * - Read Transactions
-
- * - Update Transactions
-
- * - Void Transactions
+ * - Create / Read / Update / Void Transactions
 
  * - Query Transactions
 
  * - Validate Transaction data
 
- * - Maintain Transaction registry
-
- * - Persist Transaction data through Repository
-
- *
-
- * Architecture:
-
- *
-
- * Business Module
-
- *        ↓
-
- * TransactionService
-
- *        ↓
-
- * TransactionManager
-
- *        ↓
-
- * TransactionRepository
-
- *        ↓
-
- * DataService
+ * - Coordinate TransactionRepository persistence
 
  *
 
@@ -80,95 +50,27 @@ class TransactionManager {
 
     constructor(
 
-        initialTransactions = []
+        initialTransactions = null
 
     ) {
 
-        this.transactions = new Map();
-
         /*
 
-         * Load persisted Transactions first.
+         * TransactionRepository is the
 
-         *
-
-         * This allows the Manager to restore
-
-         * the existing Actual Transaction registry.
+         * persistent source of Transaction data.
 
          */
 
-        const storedTransactions =
+        this.repository =
 
-            TransactionRepository
-
-                .getTransactions();
-
-        if (
-
-            Array.isArray(
-
-                storedTransactions
-
-            ) &&
-
-            storedTransactions.length > 0
-
-        ) {
-
-            storedTransactions.forEach(
-
-                transactionData => {
-
-                    const transaction =
-
-                        transactionData instanceof Transaction
-
-                            ? transactionData
-
-                            : new Transaction(
-
-                                transactionData
-
-                            );
-
-                    transaction.normalize();
-
-                    const validation =
-
-                        transaction.validate();
-
-                    if (!validation.valid) {
-
-                        throw new Error(
-
-                            validation.errors.join(" ")
-
-                        );
-
-                    }
-
-                    this.transactions.set(
-
-                        transaction.id,
-
-                        transaction
-
-                    );
-
-                }
-
-            );
-
-        }
+            TransactionRepository;
 
         /*
 
-         * Optional initial Transactions.
+         * Load existing persisted Transactions
 
-         *
-
-         * These are loaded after persisted data.
+         * unless explicit initial data is supplied.
 
          */
 
@@ -182,79 +84,95 @@ class TransactionManager {
 
         ) {
 
-            initialTransactions.forEach(
+            this.loadTransactions(
 
-                transactionData => {
-
-                    const transaction =
-
-                        transactionData instanceof Transaction
-
-                            ? transactionData
-
-                            : new Transaction(
-
-                                transactionData
-
-                            );
-
-                    transaction.normalize();
-
-                    const validation =
-
-                        transaction.validate();
-
-                    if (!validation.valid) {
-
-                        throw new Error(
-
-                            validation.errors.join(" ")
-
-                        );
-
-                    }
-
-                    this.transactions.set(
-
-                        transaction.id,
-
-                        transaction
-
-                    );
-
-                }
+                initialTransactions
 
             );
+
+        } else {
+
+            this.transactions =
+
+                new Map();
+
+            this.getAllTransactions();
 
         }
 
     }
 
-    /**
+    // =====================================================
 
-     * Persist the current Transaction registry.
+    // Internal Registry Synchronization
 
-     */
+    // =====================================================
 
-    persist() {
+    syncFromRepository() {
 
-        TransactionRepository
+        const transactions =
 
-            .saveTransactions(
+            this.repository
 
-                this.getAllTransactions()
+                .getTransactions();
 
-            );
+        this.transactions =
 
-        return true;
+            new Map();
+
+        transactions.forEach(
+
+            transaction => {
+
+                this.transactions.set(
+
+                    transaction.id,
+
+                    transaction
+
+                );
+
+            }
+
+        );
+
+        return this.transactions;
 
     }
 
-    /**
+    persistTransaction(
 
-     * Create a new Actual Transaction.
+        transaction
 
-     */
+    ) {
+
+        const saved =
+
+            this.repository
+
+                .saveTransaction(
+
+                    transaction
+
+                );
+
+        this.transactions.set(
+
+            saved.id,
+
+            saved
+
+        );
+
+        return saved;
+
+    }
+
+    // =====================================================
+
+    // Create
+
+    // =====================================================
 
     createTransaction(
 
@@ -268,7 +186,11 @@ class TransactionManager {
 
                 ? data
 
-                : new Transaction(data);
+                : new Transaction(
+
+                    data
+
+                );
 
         transaction.normalize();
 
@@ -285,6 +207,16 @@ class TransactionManager {
             );
 
         }
+
+        /*
+
+         * Refresh from persistent storage
+
+         * before duplicate checking.
+
+         */
+
+        this.syncFromRepository();
 
         if (
 
@@ -338,37 +270,19 @@ class TransactionManager {
 
         }
 
-        this.transactions.set(
-
-            transaction.id,
+        return this.persistTransaction(
 
             transaction
 
         );
 
-        /*
-
-         * Persist immediately.
-
-         */
-
-        TransactionRepository
-
-            .saveTransaction(
-
-                transaction
-
-            );
-
-        return transaction;
-
     }
 
-    /**
+    // =====================================================
 
-     * Get Transaction by ID.
+    // Read
 
-     */
+    // =====================================================
 
     getTransaction(
 
@@ -382,25 +296,19 @@ class TransactionManager {
 
         }
 
-        return (
+        return this.repository
 
-            this.transactions.get(
+            .getTransaction(
 
                 transactionId
 
-            ) || null
-
-        );
+            );
 
     }
 
-    /**
-
-     * Get all Transactions.
-
-     */
-
     getAllTransactions() {
+
+        this.syncFromRepository();
 
         return Array.from(
 
@@ -410,11 +318,11 @@ class TransactionManager {
 
     }
 
-    /**
+    // =====================================================
 
-     * Get Posted Transactions.
+    // Status Queries
 
-     */
+    // =====================================================
 
     getPostedTransactions() {
 
@@ -432,12 +340,6 @@ class TransactionManager {
 
     }
 
-    /**
-
-     * Get Pending Transactions.
-
-     */
-
     getPendingTransactions() {
 
         return this.getAllTransactions()
@@ -453,12 +355,6 @@ class TransactionManager {
             );
 
     }
-
-    /**
-
-     * Get Voided Transactions.
-
-     */
 
     getVoidedTransactions() {
 
@@ -476,17 +372,11 @@ class TransactionManager {
 
     }
 
-    /**
+    // =====================================================
 
-     * Find Transactions by Account.
+    // Account Queries
 
-     *
-
-     * A Transaction may contain
-
-     * multiple Financial Lines.
-
-     */
+    // =====================================================
 
     getTransactionsByAccount(
 
@@ -520,12 +410,6 @@ class TransactionManager {
 
     }
 
-    /**
-
-     * Get Posted Transactions for Account.
-
-     */
-
     getPostedTransactionsByAccount(
 
         accountId
@@ -552,11 +436,11 @@ class TransactionManager {
 
     }
 
-    /**
+    // =====================================================
 
-     * Find Transactions by Type.
+    // Type Query
 
-     */
+    // =====================================================
 
     getTransactionsByType(
 
@@ -584,11 +468,11 @@ class TransactionManager {
 
     }
 
-    /**
+    // =====================================================
 
-     * Find Transactions by Source.
+    // Source Query
 
-     */
+    // =====================================================
 
     getTransactionsBySource(
 
@@ -616,11 +500,11 @@ class TransactionManager {
 
     }
 
-    /**
+    // =====================================================
 
-     * Find Transaction by external ID.
+    // External ID Query
 
-     */
+    // =====================================================
 
     findByExternalId(
 
@@ -634,33 +518,25 @@ class TransactionManager {
 
         }
 
-        return (
+        return this.getAllTransactions()
 
-            this.getAllTransactions()
+            .find(
 
-                .find(
+                transaction =>
 
-                    transaction =>
+                    transaction.externalId ===
 
-                        transaction.externalId ===
+                    externalId
 
-                        externalId
-
-                ) || null
-
-        );
+            ) || null;
 
     }
 
-    /**
+    // =====================================================
 
-     * Find Transactions by date range.
+    // Date Range Query
 
-     *
-
-     * Inclusive date range.
-
-     */
+    // =====================================================
 
     getTransactionsByDateRange(
 
@@ -726,9 +602,13 @@ class TransactionManager {
 
                     return (
 
-                        transactionTime >= start &&
+                        transactionTime >=
 
-                        transactionTime <= end
+                            start &&
+
+                        transactionTime <=
+
+                            end
 
                     );
 
@@ -738,11 +618,11 @@ class TransactionManager {
 
     }
 
-    /**
+    // =====================================================
 
-     * Update an existing Transaction.
+    // Update
 
-     */
+    // =====================================================
 
     updateTransaction(
 
@@ -772,9 +652,9 @@ class TransactionManager {
 
         /*
 
-         * Voided Transactions cannot
+         * Voided Transactions are historical
 
-         * normally be edited.
+         * records and cannot normally be edited.
 
          */
 
@@ -822,13 +702,17 @@ class TransactionManager {
 
                 if (
 
-                    Object.prototype.hasOwnProperty.call(
+                    Object.prototype
 
-                        updates,
+                        .hasOwnProperty
 
-                        field
+                        .call(
 
-                    )
+                            updates,
+
+                            field
+
+                        )
 
                 ) {
 
@@ -900,33 +784,19 @@ class TransactionManager {
 
         }
 
-        /*
+        return this.persistTransaction(
 
-         * Persist updated Transaction.
+            transaction
 
-         */
-
-        TransactionRepository
-
-            .saveTransaction(
-
-                transaction
-
-            );
-
-        return transaction;
+        );
 
     }
 
-    /**
+    // =====================================================
 
-     * Void a Transaction.
+    // Void
 
-     *
-
-     * Historical Actual record remains.
-
-     */
+    // =====================================================
 
     voidTransaction(
 
@@ -970,25 +840,23 @@ class TransactionManager {
 
         transaction.updatedAt =
 
-            new Date().toISOString();
+            new Date()
 
-        TransactionRepository
+                .toISOString();
 
-            .saveTransaction(
+        return this.persistTransaction(
 
-                transaction
+            transaction
 
-            );
-
-        return transaction;
+        );
 
     }
 
-    /**
+    // =====================================================
 
-     * Mark a Pending Transaction as Posted.
+    // Post
 
-     */
+    // =====================================================
 
     postTransaction(
 
@@ -1036,25 +904,23 @@ class TransactionManager {
 
         transaction.updatedAt =
 
-            new Date().toISOString();
+            new Date()
 
-        TransactionRepository
+                .toISOString();
 
-            .saveTransaction(
+        return this.persistTransaction(
 
-                transaction
+            transaction
 
-            );
-
-        return transaction;
+        );
 
     }
 
-    /**
+    // =====================================================
 
-     * Mark a Posted Transaction as Pending.
+    // Unpost
 
-     */
+    // =====================================================
 
     unpostTransaction(
 
@@ -1102,29 +968,23 @@ class TransactionManager {
 
         transaction.updatedAt =
 
-            new Date().toISOString();
+            new Date()
 
-        TransactionRepository
+                .toISOString();
 
-            .saveTransaction(
+        return this.persistTransaction(
 
-                transaction
+            transaction
 
-            );
-
-        return transaction;
+        );
 
     }
 
-    /**
+    // =====================================================
 
-     * Remove a Transaction.
+    // Controlled Removal
 
-     *
-
-     * Controlled maintenance only.
-
-     */
+    // =====================================================
 
     removeTransaction(
 
@@ -1132,15 +992,7 @@ class TransactionManager {
 
     ) {
 
-        if (
-
-            !this.transactions.has(
-
-                transactionId
-
-            )
-
-        ) {
+        if (!transactionId) {
 
             return false;
 
@@ -1148,15 +1000,7 @@ class TransactionManager {
 
         const removed =
 
-            this.transactions.delete(
-
-                transactionId
-
-            );
-
-        if (removed) {
-
-            TransactionRepository
+            this.repository
 
                 .deleteTransaction(
 
@@ -1164,19 +1008,25 @@ class TransactionManager {
 
                 );
 
+        if (removed) {
+
+            this.transactions.delete(
+
+                transactionId
+
+            );
+
         }
 
         return removed;
 
     }
 
-    /**
+    // =====================================================
 
-     * Convert all Transactions to
+    // Serialization
 
-     * plain objects.
-
-     */
+    // =====================================================
 
     toJSON() {
 
@@ -1192,13 +1042,11 @@ class TransactionManager {
 
     }
 
-    /**
+    // =====================================================
 
-     * Replace Manager contents from
+    // Load / Restore
 
-     * serialized Transaction data.
-
-     */
+    // =====================================================
 
     loadTransactions(
 
@@ -1224,17 +1072,17 @@ class TransactionManager {
 
         }
 
-        /*
+        const normalizedTransactions =
 
-         * Validate everything before
+            [];
 
-         * replacing the current registry.
+        const ids =
 
-         */
+            new Set();
 
-        const newTransactions =
+        const externalIds =
 
-            new Map();
+            new Set();
 
         transactionData.forEach(
 
@@ -1246,7 +1094,11 @@ class TransactionManager {
 
                         ? data
 
-                        : new Transaction(data);
+                        : new Transaction(
+
+                            data
+
+                        );
 
                 transaction.normalize();
 
@@ -1266,7 +1118,7 @@ class TransactionManager {
 
                 if (
 
-                    newTransactions.has(
+                    ids.has(
 
                         transaction.id
 
@@ -1282,29 +1134,27 @@ class TransactionManager {
 
                 }
 
+                ids.add(
+
+                    transaction.id
+
+                );
+
                 if (
 
                     transaction.externalId
 
                 ) {
 
-                    const duplicate =
+                    if (
 
-                        Array.from(
+                        externalIds.has(
 
-                            newTransactions.values()
+                            transaction.externalId
 
-                        ).find(
+                        )
 
-                            item =>
-
-                                item.externalId ===
-
-                                transaction.externalId
-
-                        );
-
-                    if (duplicate) {
+                    ) {
 
                         throw new Error(
 
@@ -1314,11 +1164,15 @@ class TransactionManager {
 
                     }
 
+                    externalIds.add(
+
+                        transaction.externalId
+
+                    );
+
                 }
 
-                newTransactions.set(
-
-                    transaction.id,
+                normalizedTransactions.push(
 
                     transaction
 
@@ -1330,39 +1184,47 @@ class TransactionManager {
 
         /*
 
-         * Replace in-memory registry.
+         * Replace persistent storage only after
+
+         * the entire input has passed validation.
 
          */
+
+        const saved =
+
+            this.repository
+
+                .replaceTransactions(
+
+                    normalizedTransactions
+
+                );
 
         this.transactions =
 
-            newTransactions;
+            new Map();
 
-        /*
+        saved.forEach(
 
-         * Persist replacement.
+            transaction => {
 
-         */
+                this.transactions.set(
 
-        TransactionRepository
+                    transaction.id,
 
-            .saveTransactions(
+                    transaction
 
-                this.getAllTransactions()
+                );
 
-            );
+            }
+
+        );
 
         return this.getAllTransactions();
 
     }
 
 }
-
-/*
-
- * CommonJS export.
-
- */
 
 if (
 
