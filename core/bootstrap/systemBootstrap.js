@@ -112,12 +112,6 @@ import AssetsModule
 
 //
 
-// IMPORTANT:
-
-// AccountIntegration uses NAMED EXPORT.
-
-//
-
 // ==================================================
 
 import {
@@ -133,12 +127,6 @@ from "../integration/accountIntegration.js";
 //
 
 // Transaction
-
-//
-
-// IMPORTANT:
-
-// TransactionIntegration uses NAMED EXPORT.
 
 //
 
@@ -178,7 +166,7 @@ const taxModule =
 
 const SystemBootstrap = {
 
-    initialize(){
+    initialize() {
 
         console.log(
 
