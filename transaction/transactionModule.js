@@ -1,5 +1,7 @@
 /**
 
+ *
+
  * Family Wealth AI OS V7
 
  * Transaction Module
@@ -7,6 +9,8 @@
  *
 
  * Responsibility:
+
+ *
 
  * - Assemble the Transaction subsystem
 
@@ -64,27 +68,89 @@
 
  * - Account balance calculations
 
+ *
+
  */
 
-const TransactionRepository =
+/*
 
-    require("./transactionRepository");
+ *
 
-const TransactionManager =
+ * Repository
 
-    require("./transactionManager");
+ *
 
-const TransactionService =
+ */
 
-    require("./transactionService");
+import TransactionRepository
 
-const TransactionController =
+    from "./transactionRepository.js";
 
-    require("./transactionController");
+/*
 
-const TransactionFacade =
+ *
 
-    require("./transactionFacade");
+ * Manager
+
+ *
+
+ */
+
+import TransactionManager
+
+    from "./transactionManager.js";
+
+/*
+
+ *
+
+ * Service
+
+ *
+
+ */
+
+import TransactionService
+
+    from "./transactionService.js";
+
+/*
+
+ *
+
+ * Controller
+
+ *
+
+ */
+
+import TransactionController
+
+    from "./transactionController.js";
+
+/*
+
+ *
+
+ * Facade
+
+ *
+
+ */
+
+import TransactionFacade
+
+    from "./transactionFacade.js";
+
+/*
+
+ *
+
+ * Transaction Module
+
+ *
+
+ */
 
 class TransactionModule {
 
@@ -92,7 +158,11 @@ class TransactionModule {
 
         /*
 
+         *
+
          * Persistence layer
+
+         *
 
          */
 
@@ -102,7 +172,11 @@ class TransactionModule {
 
         /*
 
+         *
+
          * Transaction management layer
+
+         *
 
          */
 
@@ -112,7 +186,11 @@ class TransactionModule {
 
         /*
 
+         *
+
          * Business-facing service layer
+
+         *
 
          */
 
@@ -126,7 +204,11 @@ class TransactionModule {
 
         /*
 
+         *
+
          * Application/API boundary
+
+         *
 
          */
 
@@ -140,7 +222,11 @@ class TransactionModule {
 
         /*
 
+         *
+
          * Stable system-level entry point
+
+         *
 
          */
 
@@ -156,7 +242,11 @@ class TransactionModule {
 
     // =====================================================
 
+    //
+
     // System Entry Point
+
+    //
 
     // =====================================================
 
@@ -168,19 +258,11 @@ class TransactionModule {
 
     // =====================================================
 
+    //
+
     // Direct Access
 
     //
-
-    // These are exposed primarily for
-
-    // system initialization / diagnostics.
-
-    //
-
-    // Higher-level business modules should
-
-    // normally use facade.
 
     // =====================================================
 
@@ -210,7 +292,11 @@ class TransactionModule {
 
     // =====================================================
 
+    //
+
     // System Status
+
+    //
 
     // =====================================================
 
@@ -272,20 +358,14 @@ class TransactionModule {
 
 /*
 
- * CommonJS export.
+ *
+
+ * ES Module export
+
+ *
 
  */
 
-if (
+export default
 
-    typeof module !== "undefined" &&
-
-    module.exports
-
-) {
-
-    module.exports =
-
-        TransactionModule;
-
-}
+    TransactionModule;
