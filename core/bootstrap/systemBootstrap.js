@@ -1,60 +1,22 @@
 /*
 
-==================================================
-
 Family Wealth AI OS V7
 
 System Bootstrap
 
-==================================================
-
-Responsibility:
-
-- Initialize the Family Wealth AI OS
-
-- Register Agents
-
-- Register Modules
-
-- Register Engines
-
-- Register AI
-
-- Provide one system initialization boundary
-
-IMPORTANT:
-
-Account is NOT registered here yet.
-
-Reason:
-
-The current Account subsystem files use CommonJS
-
-(require / module.exports), while the browser V7
-
-application uses ES Modules.
-
-Account will be connected after its browser-compatible
-
-ES Module boundary is completed.
-
-Tax V7 is preserved as the existing working Tax system.
-
-==================================================
-
 */
 
-import ModuleRegistry
+import ModuleRegistry from "../registry/moduleRegistry.js";
 
-    from "../registry/moduleRegistry.js";
+import AgentRegistry from "../registry/agentRegistry.js";
 
-import AgentRegistry
+// =====================
 
-    from "../registry/agentRegistry.js";
+// Engine Registry
 
-import EngineRegistry
+// =====================
 
-    from "../engines/engineRegistry.js";
+import EngineRegistry from "../engines/engineRegistry.js";
 
 import WealthEngine
 
@@ -64,17 +26,33 @@ import CashFlowEngine
 
     from "../engines/cashflow/cashFlowEngine.js";
 
-import AIRegistry
+// =====================
 
-    from "../../ai/aiRegistry.js";
+// AI Registry
+
+// =====================
+
+import AIRegistry from "../../ai/aiRegistry.js";
 
 import Advisor
 
     from "../../ai/advisor.js";
 
+// =====================
+
+// Agents
+
+// =====================
+
 import InvestmentAgent
 
     from "../../modules/investment/agent/investmentAgent.js";
+
+// =====================
+
+// Modules
+
+// =====================
 
 import TaxFacade
 
@@ -96,85 +74,55 @@ import AssetsModule
 
     from "../modules/assetsModule.js";
 
-/*
+// =====================
 
-==================================================
+// Account
 
-Tax Instance
+//
 
-==================================================
+// IMPORTANT:
 
-*/
+// Account is loaded only through
 
-const taxModule = new TaxFacade();
+// the dedicated integration boundary.
 
-/*
+// =====================
 
-==================================================
+import AccountIntegration
 
-System Bootstrap
+    from "../integration/accountIntegration.js";
 
-==================================================
+// =====================
 
-*/
+// Tax Instance
+
+// =====================
+
+const taxModule =
+
+    new TaxFacade();
+
+// =====================
+
+// Bootstrap
+
+// =====================
 
 const SystemBootstrap = {
 
-    initialized: false,
-
-    /*
-
-    ----------------------------------------------
-
-    Initialize System
-
-    ----------------------------------------------
-
-    */
-
-    initialize() {
-
-        /*
-
-        ------------------------------------------
-
-        Prevent duplicate initialization
-
-        ------------------------------------------
-
-        */
-
-        if (this.initialized) {
-
-            return {
-
-                status:
-
-                    "READY",
-
-                advisor:
-
-                    Advisor.name
-
-            };
-
-        }
+    initialize(){
 
         console.log(
 
-            "Family Wealth AI OS V7 Starting..."
+            "Family Wealth AI OS Starting..."
 
         );
 
-        /*
+        // =====================
 
-        ==========================================
+        // Agents
 
-        Agents
-
-        ==========================================
-
-        */
+        // =====================
 
         AgentRegistry.register(
 
@@ -184,15 +132,11 @@ const SystemBootstrap = {
 
         );
 
-        /*
+        // =====================
 
-        ==========================================
+        // Modules
 
-        Modules
-
-        ==========================================
-
-        */
+        // =====================
 
         ModuleRegistry.register(
 
@@ -252,15 +196,33 @@ const SystemBootstrap = {
 
         );
 
-        /*
+        // =====================
 
-        ==========================================
+        // Account
 
-        Engines
+        //
 
-        ==========================================
+        // Account is foundational
 
-        */
+        // but is not yet allowed to
+
+        // affect existing business logic.
+
+        // =====================
+
+        ModuleRegistry.register(
+
+            "account",
+
+            AccountIntegration
+
+        );
+
+        // =====================
+
+        // Engines
+
+        // =====================
 
         EngineRegistry.register(
 
@@ -278,15 +240,11 @@ const SystemBootstrap = {
 
         );
 
-        /*
+        // =====================
 
-        ==========================================
+        // AI
 
-        AI
-
-        ==========================================
-
-        */
+        // =====================
 
         AIRegistry.register(
 
@@ -296,27 +254,11 @@ const SystemBootstrap = {
 
         );
 
-        /*
+        // =====================
 
-        ==========================================
+        // Logs
 
-        Mark Initialized
-
-        ==========================================
-
-        */
-
-        this.initialized = true;
-
-        /*
-
-        ==========================================
-
-        Logs
-
-        ==========================================
-
-        */
+        // =====================
 
         console.log(
 
@@ -349,22 +291,6 @@ const SystemBootstrap = {
             AIRegistry.list()
 
         );
-
-        console.log(
-
-            "Family Wealth AI OS V7 READY"
-
-        );
-
-        /*
-
-        ==========================================
-
-        Return
-
-        ==========================================
-
-        */
 
         return {
 
