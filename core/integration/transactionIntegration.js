@@ -156,24 +156,22 @@ const TransactionIntegration = {
 
 /*
 
- *
-
- * Named export.
+ * Default export.
 
  *
 
- * IMPORTANT:
+ * This matches the SystemBootstrap import:
 
  *
 
- * Transaction Integration follows
+ * import TransactionIntegration
 
- * the same system integration pattern
-
- * as Account Integration.
+ *     from "../integration/transactionIntegration.js";
 
  *
 
  */
 
-export default TransactionIntegration;
+export default
+
+    TransactionIntegration;
