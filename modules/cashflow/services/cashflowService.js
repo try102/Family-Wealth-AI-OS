@@ -1,5 +1,7 @@
 /*
 
+ 
+
 Family Wealth AI OS V7
 
 Cashflow Service
@@ -22,17 +24,21 @@ Cashflow Service
 
 7. 计算年度化净现金流
 
-8. 提供驾驶仓使用的统一 Summary
+8. 提供驾驶舱使用的统一 Summary
 
 */
 
 import cashflowRepository
 
-    from "../repository/cashflowRepository.js";
+    from "../cashflowRepository.js";
 
 // ==================================================
 
+//
+
 // Annualization
+
+//
 
 // ==================================================
 
@@ -84,13 +90,17 @@ function annualize(
 
 // ==================================================
 
+//
+
 // Normalize Record
+
+//
 
 // ==================================================
 
 function normalizeRecord(
 
-    data
+    data = {}
 
 ){
 
@@ -132,7 +142,11 @@ function normalizeRecord(
 
 // ==================================================
 
-// Service
+//
+
+// Cashflow Service
+
+//
 
 // ==================================================
 
@@ -150,7 +164,7 @@ const cashflowService = {
 
     create(
 
-        data
+        data = {}
 
     ){
 
@@ -212,7 +226,7 @@ const cashflowService = {
 
         id,
 
-        data
+        data = {}
 
     ){
 
