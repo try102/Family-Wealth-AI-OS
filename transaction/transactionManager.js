@@ -22,6 +22,8 @@
 
  * - Maintain the system Transaction registry
 
+ * - Persist Transaction data through Repository
+
  *
 
  * TransactionManager does NOT perform:
@@ -39,6 +41,26 @@
  * - Cash Flow calculations
 
  * - Account balance calculations
+
+ *
+
+ * Architecture:
+
+ *
+
+ * TransactionService
+
+ *        ↓
+
+ * TransactionManager
+
+ *        ↓
+
+ * TransactionRepository
+
+ *        ↓
+
+ * DataService
 
  *
 
@@ -60,39 +82,49 @@
 
  * Account
 
- *
-
- * IMPORTANT:
-
- *
-
- * Transaction is the system Actual-event registry.
-
- *
-
- * Business modules may create Transactions when
-
- * an actual business event occurs.
-
- *
-
- * Planning / forecasting / simulation data must
-
- * NOT automatically become Transactions.
-
  */
 
-const Transaction = require("./transaction");
+const Transaction =
+
+    require("./transaction");
+
+const TransactionRepository =
+
+    require("./transactionRepository");
 
 class TransactionManager {
 
-    constructor(initialTransactions = []) {
+    constructor(initialTransactions = null) {
 
         this.transactions = new Map();
 
-        if (Array.isArray(initialTransactions)) {
+        /*
 
-            initialTransactions.forEach(
+         * If initial transactions are explicitly supplied,
+
+         * load them.
+
+         *
+
+         * Otherwise load persisted Transactions from
+
+         * TransactionRepository.
+
+         */
+
+        const source =
+
+            Array.isArray(initialTransactions)
+
+                ? initialTransactions
+
+                : TransactionRepository
+
+                    .getTransactions();
+
+        if (Array.isArray(source)) {
+
+            source.forEach(
 
                 transactionData => {
 
@@ -124,6 +156,24 @@ class TransactionManager {
 
                     }
 
+                    if (
+
+                        this.transactions.has(
+
+                            transaction.id
+
+                        )
+
+                    ) {
+
+                        throw new Error(
+
+                            `Duplicate Transaction ID "${transaction.id}".`
+
+                        );
+
+                    }
+
                     this.transactions.set(
 
                         transaction.id,
@@ -142,6 +192,24 @@ class TransactionManager {
 
     /**
 
+     * Persist the current Transaction registry.
+
+     */
+
+    persist() {
+
+        return TransactionRepository
+
+            .replaceTransactions(
+
+                this.getAllTransactions()
+
+            );
+
+    }
+
+    /**
+
      * Create a new Transaction.
 
      *
@@ -154,7 +222,11 @@ class TransactionManager {
 
      */
 
-    createTransaction(data = {}) {
+    createTransaction(
+
+        data = {}
+
+    ) {
 
         const transaction =
 
@@ -236,6 +308,8 @@ class TransactionManager {
 
         );
 
+        this.persist();
+
         return transaction;
 
     }
@@ -246,7 +320,11 @@ class TransactionManager {
 
      */
 
-    getTransaction(transactionId) {
+    getTransaction(
+
+        transactionId
+
+    ) {
 
         if (!transactionId) {
 
@@ -290,13 +368,17 @@ class TransactionManager {
 
     getPostedTransactions() {
 
-        return this.getAllTransactions()
+        return this
+
+            .getAllTransactions()
 
             .filter(
 
                 transaction =>
 
-                    transaction.status === "Posted"
+                    transaction.status ===
+
+                    "Posted"
 
             );
 
@@ -310,13 +392,17 @@ class TransactionManager {
 
     getPendingTransactions() {
 
-        return this.getAllTransactions()
+        return this
+
+            .getAllTransactions()
 
             .filter(
 
                 transaction =>
 
-                    transaction.status === "Pending"
+                    transaction.status ===
+
+                    "Pending"
 
             );
 
@@ -330,13 +416,17 @@ class TransactionManager {
 
     getVoidedTransactions() {
 
-        return this.getAllTransactions()
+        return this
+
+            .getAllTransactions()
 
             .filter(
 
                 transaction =>
 
-                    transaction.status === "Voided"
+                    transaction.status ===
+
+                    "Voided"
 
             );
 
@@ -356,7 +446,11 @@ class TransactionManager {
 
      */
 
-    getTransactionsByAccount(accountId) {
+    getTransactionsByAccount(
+
+        accountId
+
+    ) {
 
         if (!accountId) {
 
@@ -364,7 +458,9 @@ class TransactionManager {
 
         }
 
-        return this.getAllTransactions()
+        return this
+
+            .getAllTransactions()
 
             .filter(
 
@@ -374,7 +470,9 @@ class TransactionManager {
 
                         line =>
 
-                            line.accountId === accountId
+                            line.accountId ===
+
+                            accountId
 
                     )
 
@@ -394,17 +492,23 @@ class TransactionManager {
 
     ) {
 
-        return this.getTransactionsByAccount(
+        return this
 
-            accountId
+            .getTransactionsByAccount(
 
-        ).filter(
+                accountId
 
-            transaction =>
+            )
 
-                transaction.status === "Posted"
+            .filter(
 
-        );
+                transaction =>
+
+                    transaction.status ===
+
+                    "Posted"
+
+            );
 
     }
 
@@ -414,7 +518,11 @@ class TransactionManager {
 
      */
 
-    getTransactionsByType(type) {
+    getTransactionsByType(
+
+        type
+
+    ) {
 
         if (!type) {
 
@@ -422,13 +530,17 @@ class TransactionManager {
 
         }
 
-        return this.getAllTransactions()
+        return this
+
+            .getAllTransactions()
 
             .filter(
 
                 transaction =>
 
-                    transaction.type === type
+                    transaction.type ===
+
+                    type
 
             );
 
@@ -440,7 +552,11 @@ class TransactionManager {
 
      */
 
-    getTransactionsBySource(source) {
+    getTransactionsBySource(
+
+        source
+
+    ) {
 
         if (!source) {
 
@@ -448,13 +564,17 @@ class TransactionManager {
 
         }
 
-        return this.getAllTransactions()
+        return this
+
+            .getAllTransactions()
 
             .filter(
 
                 transaction =>
 
-                    transaction.source === source
+                    transaction.source ===
+
+                    source
 
             );
 
@@ -470,7 +590,11 @@ class TransactionManager {
 
      */
 
-    findByExternalId(externalId) {
+    findByExternalId(
+
+        externalId
+
+    ) {
 
         if (!externalId) {
 
@@ -480,7 +604,9 @@ class TransactionManager {
 
         return (
 
-            this.getAllTransactions()
+            this
+
+                .getAllTransactions()
 
                 .find(
 
@@ -514,7 +640,13 @@ class TransactionManager {
 
     ) {
 
-        if (!startDate || !endDate) {
+        if (
+
+            !startDate ||
+
+            !endDate
+
+        ) {
 
             return [];
 
@@ -522,11 +654,19 @@ class TransactionManager {
 
         const start =
 
-            new Date(startDate).getTime();
+            new Date(
+
+                startDate
+
+            ).getTime();
 
         const end =
 
-            new Date(endDate).getTime();
+            new Date(
+
+                endDate
+
+            ).getTime();
 
         if (
 
@@ -540,39 +680,43 @@ class TransactionManager {
 
         }
 
-        return this.getAllTransactions()
+        return this
 
-            .filter(transaction => {
+            .getAllTransactions()
 
-                const transactionTime =
+            .filter(
 
-                    new Date(
+                transaction => {
 
-                        transaction.date
+                    const transactionTime =
 
-                    ).getTime();
+                        new Date(
 
-                return (
+                            transaction.date
 
-                    transactionTime >= start &&
+                        ).getTime();
 
-                    transactionTime <= end
+                    return (
 
-                );
+                        transactionTime >=
 
-            });
+                            start &&
+
+                        transactionTime <=
+
+                            end
+
+                    );
+
+                }
+
+            );
 
     }
 
     /**
 
      * Update an existing Transaction.
-
-     *
-
-     * System identity and audit fields cannot
-
-     * be replaced through normal updates.
 
      */
 
@@ -612,7 +756,9 @@ class TransactionManager {
 
         if (
 
-            transaction.status === "Voided"
+            transaction.status ===
+
+            "Voided"
 
         ) {
 
@@ -646,27 +792,31 @@ class TransactionManager {
 
         ];
 
-        allowedFields.forEach(field => {
+        allowedFields.forEach(
 
-            if (
+            field => {
 
-                Object.prototype.hasOwnProperty.call(
+                if (
 
-                    updates,
+                    Object.prototype.hasOwnProperty.call(
 
-                    field
+                        updates,
 
-                )
+                        field
 
-            ) {
+                    )
 
-                transaction[field] =
+                ) {
 
-                    updates[field];
+                    transaction[field] =
+
+                        updates[field];
+
+                }
 
             }
 
-        });
+        );
 
         transaction.normalize();
 
@@ -696,7 +846,9 @@ class TransactionManager {
 
             const duplicate =
 
-                this.getAllTransactions()
+                this
+
+                    .getAllTransactions()
 
                     .find(
 
@@ -724,6 +876,16 @@ class TransactionManager {
 
         }
 
+        this.transactions.set(
+
+            transaction.id,
+
+            transaction
+
+        );
+
+        this.persist();
+
         return transaction;
 
     }
@@ -742,7 +904,11 @@ class TransactionManager {
 
      */
 
-    voidTransaction(transactionId) {
+    voidTransaction(
+
+        transactionId
+
+    ) {
 
         const transaction =
 
@@ -764,7 +930,9 @@ class TransactionManager {
 
         if (
 
-            transaction.status === "Voided"
+            transaction.status ===
+
+            "Voided"
 
         ) {
 
@@ -780,6 +948,16 @@ class TransactionManager {
 
             new Date().toISOString();
 
+        this.transactions.set(
+
+            transaction.id,
+
+            transaction
+
+        );
+
+        this.persist();
+
         return transaction;
 
     }
@@ -790,7 +968,11 @@ class TransactionManager {
 
      */
 
-    postTransaction(transactionId) {
+    postTransaction(
+
+        transactionId
+
+    ) {
 
         const transaction =
 
@@ -812,7 +994,9 @@ class TransactionManager {
 
         if (
 
-            transaction.status === "Voided"
+            transaction.status ===
+
+            "Voided"
 
         ) {
 
@@ -832,6 +1016,16 @@ class TransactionManager {
 
             new Date().toISOString();
 
+        this.transactions.set(
+
+            transaction.id,
+
+            transaction
+
+        );
+
+        this.persist();
+
         return transaction;
 
     }
@@ -840,17 +1034,13 @@ class TransactionManager {
 
      * Mark a Posted Transaction as Pending.
 
-     *
-
-     * This is intentionally restricted.
-
-     *
-
-     * It is mainly useful for controlled workflows.
-
      */
 
-    unpostTransaction(transactionId) {
+    unpostTransaction(
+
+        transactionId
+
+    ) {
 
         const transaction =
 
@@ -872,7 +1062,9 @@ class TransactionManager {
 
         if (
 
-            transaction.status === "Voided"
+            transaction.status ===
+
+            "Voided"
 
         ) {
 
@@ -892,6 +1084,16 @@ class TransactionManager {
 
             new Date().toISOString();
 
+        this.transactions.set(
+
+            transaction.id,
+
+            transaction
+
+        );
+
+        this.persist();
+
         return transaction;
 
     }
@@ -899,10 +1101,6 @@ class TransactionManager {
     /**
 
      * Remove a Transaction from the registry.
-
-     *
-
-     * IMPORTANT:
 
      *
 
@@ -914,15 +1112,13 @@ class TransactionManager {
 
      * Normal correction should use voidTransaction().
 
-     *
-
-     * Permanent removal should only be used for
-
-     * controlled data maintenance.
-
      */
 
-    removeTransaction(transactionId) {
+    removeTransaction(
+
+        transactionId
+
+    ) {
 
         if (
 
@@ -938,11 +1134,21 @@ class TransactionManager {
 
         }
 
-        return this.transactions.delete(
+        const removed =
 
-            transactionId
+            this.transactions.delete(
 
-        );
+                transactionId
+
+            );
+
+        if (removed) {
+
+            this.persist();
+
+        }
+
+        return removed;
 
     }
 
@@ -954,7 +1160,9 @@ class TransactionManager {
 
     toJSON() {
 
-        return this.getAllTransactions()
+        return this
+
+            .getAllTransactions()
 
             .map(
 
@@ -972,17 +1180,15 @@ class TransactionManager {
 
      *
 
-     * This creates a clean boundary for future:
+     * Used by:
 
-     * - Manual Input
-
-     * - Bank Import
-
-     * - Brokerage Import
-
-     * - External Sync
+     * - Import
 
      * - Migration
+
+     * - Restore
+
+     * - Controlled synchronization
 
      */
 
@@ -994,7 +1200,11 @@ class TransactionManager {
 
         if (
 
-            !Array.isArray(transactionData)
+            !Array.isArray(
+
+                transactionData
+
+            )
 
         ) {
 
@@ -1006,7 +1216,9 @@ class TransactionManager {
 
         }
 
-        this.transactions.clear();
+        const newTransactions =
+
+            new Map();
 
         transactionData.forEach(
 
@@ -1018,7 +1230,11 @@ class TransactionManager {
 
                         ? data
 
-                        : new Transaction(data);
+                        : new Transaction(
+
+                            data
+
+                        );
 
                 transaction.normalize();
 
@@ -1038,7 +1254,7 @@ class TransactionManager {
 
                 if (
 
-                    this.transactions.has(
+                    newTransactions.has(
 
                         transaction.id
 
@@ -1062,9 +1278,17 @@ class TransactionManager {
 
                     const existing =
 
-                        this.findByExternalId(
+                        Array.from(
 
-                            transaction.externalId
+                            newTransactions.values()
+
+                        ).find(
+
+                            item =>
+
+                                item.externalId ===
+
+                                transaction.externalId
 
                         );
 
@@ -1077,6 +1301,80 @@ class TransactionManager {
                         );
 
                     }
+
+                }
+
+                newTransactions.set(
+
+                    transaction.id,
+
+                    transaction
+
+                );
+
+            }
+
+        );
+
+        /*
+
+         * Only replace the current registry
+
+         * after the entire input has been
+
+         * successfully validated.
+
+         */
+
+        this.transactions =
+
+            newTransactions;
+
+        this.persist();
+
+        return this.getAllTransactions();
+
+    }
+
+    /**
+
+     * Reload Transactions from persistent storage.
+
+     *
+
+     * Useful after external import/sync.
+
+     */
+
+    reload() {
+
+        const transactions =
+
+            TransactionRepository
+
+                .getTransactions();
+
+        this.transactions =
+
+            new Map();
+
+        transactions.forEach(
+
+            transaction => {
+
+                transaction.normalize();
+
+                const validation =
+
+                    transaction.validate();
+
+                if (!validation.valid) {
+
+                    throw new Error(
+
+                        validation.errors.join(" ")
+
+                    );
 
                 }
 
@@ -1097,6 +1395,12 @@ class TransactionManager {
     }
 
 }
+
+/*
+
+ * CommonJS export.
+
+ */
 
 if (
 
