@@ -20,9 +20,33 @@
 
  * - Validate Transaction data
 
- * - Maintain the system Transaction registry
+ * - Maintain Transaction registry
 
  * - Persist Transaction data through Repository
+
+ *
+
+ * Architecture:
+
+ *
+
+ * Business Module
+
+ *        ↓
+
+ * TransactionService
+
+ *        ↓
+
+ * TransactionManager
+
+ *        ↓
+
+ * TransactionRepository
+
+ *        ↓
+
+ * DataService
 
  *
 
@@ -42,46 +66,6 @@
 
  * - Account balance calculations
 
- *
-
- * Architecture:
-
- *
-
- * TransactionService
-
- *        ↓
-
- * TransactionManager
-
- *        ↓
-
- * TransactionRepository
-
- *        ↓
-
- * DataService
-
- *
-
- * Account relationship:
-
- *
-
- * Transaction
-
- *      ↓
-
- * Financial Line
-
- *      ↓
-
- * accountId
-
- *      ↓
-
- * Account
-
  */
 
 const Transaction =
@@ -94,37 +78,45 @@ const TransactionRepository =
 
 class TransactionManager {
 
-    constructor(initialTransactions = null) {
+    constructor(
+
+        initialTransactions = []
+
+    ) {
 
         this.transactions = new Map();
 
         /*
 
-         * If initial transactions are explicitly supplied,
-
-         * load them.
+         * Load persisted Transactions first.
 
          *
 
-         * Otherwise load persisted Transactions from
+         * This allows the Manager to restore
 
-         * TransactionRepository.
+         * the existing Actual Transaction registry.
 
          */
 
-        const source =
+        const storedTransactions =
 
-            Array.isArray(initialTransactions)
+            TransactionRepository
 
-                ? initialTransactions
+                .getTransactions();
 
-                : TransactionRepository
+        if (
 
-                    .getTransactions();
+            Array.isArray(
 
-        if (Array.isArray(source)) {
+                storedTransactions
 
-            source.forEach(
+            ) &&
+
+            storedTransactions.length > 0
+
+        ) {
+
+            storedTransactions.forEach(
 
                 transactionData => {
 
@@ -156,19 +148,67 @@ class TransactionManager {
 
                     }
 
-                    if (
+                    this.transactions.set(
 
-                        this.transactions.has(
+                        transaction.id,
 
-                            transaction.id
+                        transaction
 
-                        )
+                    );
 
-                    ) {
+                }
+
+            );
+
+        }
+
+        /*
+
+         * Optional initial Transactions.
+
+         *
+
+         * These are loaded after persisted data.
+
+         */
+
+        if (
+
+            Array.isArray(
+
+                initialTransactions
+
+            )
+
+        ) {
+
+            initialTransactions.forEach(
+
+                transactionData => {
+
+                    const transaction =
+
+                        transactionData instanceof Transaction
+
+                            ? transactionData
+
+                            : new Transaction(
+
+                                transactionData
+
+                            );
+
+                    transaction.normalize();
+
+                    const validation =
+
+                        transaction.validate();
+
+                    if (!validation.valid) {
 
                         throw new Error(
 
-                            `Duplicate Transaction ID "${transaction.id}".`
+                            validation.errors.join(" ")
 
                         );
 
@@ -198,27 +238,21 @@ class TransactionManager {
 
     persist() {
 
-        return TransactionRepository
+        TransactionRepository
 
-            .replaceTransactions(
+            .saveTransactions(
 
                 this.getAllTransactions()
 
             );
 
+        return true;
+
     }
 
     /**
 
-     * Create a new Transaction.
-
-     *
-
-     * This method creates an Actual Transaction.
-
-     *
-
-     * Planning / forecast data should not be sent here.
+     * Create a new Actual Transaction.
 
      */
 
@@ -272,13 +306,17 @@ class TransactionManager {
 
         /*
 
-         * Prevent duplicate imported transactions
+         * Prevent duplicate imported
 
-         * when an external ID is available.
+         * transactions.
 
          */
 
-        if (transaction.externalId) {
+        if (
+
+            transaction.externalId
+
+        ) {
 
             const existing =
 
@@ -308,7 +346,19 @@ class TransactionManager {
 
         );
 
-        this.persist();
+        /*
+
+         * Persist immediately.
+
+         */
+
+        TransactionRepository
+
+            .saveTransaction(
+
+                transaction
+
+            );
 
         return transaction;
 
@@ -362,15 +412,13 @@ class TransactionManager {
 
     /**
 
-     * Get only Posted Transactions.
+     * Get Posted Transactions.
 
      */
 
     getPostedTransactions() {
 
-        return this
-
-            .getAllTransactions()
+        return this.getAllTransactions()
 
             .filter(
 
@@ -392,9 +440,7 @@ class TransactionManager {
 
     getPendingTransactions() {
 
-        return this
-
-            .getAllTransactions()
+        return this.getAllTransactions()
 
             .filter(
 
@@ -416,9 +462,7 @@ class TransactionManager {
 
     getVoidedTransactions() {
 
-        return this
-
-            .getAllTransactions()
+        return this.getAllTransactions()
 
             .filter(
 
@@ -438,11 +482,9 @@ class TransactionManager {
 
      *
 
-     * A Transaction can contain multiple
+     * A Transaction may contain
 
-     * Financial Lines and therefore can belong
-
-     * to multiple Accounts.
+     * multiple Financial Lines.
 
      */
 
@@ -458,9 +500,7 @@ class TransactionManager {
 
         }
 
-        return this
-
-            .getAllTransactions()
+        return this.getAllTransactions()
 
             .filter(
 
@@ -482,7 +522,7 @@ class TransactionManager {
 
     /**
 
-     * Get Posted Transactions for an Account.
+     * Get Posted Transactions for Account.
 
      */
 
@@ -514,7 +554,7 @@ class TransactionManager {
 
     /**
 
-     * Find Transactions by type.
+     * Find Transactions by Type.
 
      */
 
@@ -530,9 +570,7 @@ class TransactionManager {
 
         }
 
-        return this
-
-            .getAllTransactions()
+        return this.getAllTransactions()
 
             .filter(
 
@@ -548,7 +586,7 @@ class TransactionManager {
 
     /**
 
-     * Find Transactions by source.
+     * Find Transactions by Source.
 
      */
 
@@ -564,9 +602,7 @@ class TransactionManager {
 
         }
 
-        return this
-
-            .getAllTransactions()
+        return this.getAllTransactions()
 
             .filter(
 
@@ -582,11 +618,7 @@ class TransactionManager {
 
     /**
 
-     * Find Transactions by external ID.
-
-     *
-
-     * Primarily used for import / sync.
+     * Find Transaction by external ID.
 
      */
 
@@ -604,9 +636,7 @@ class TransactionManager {
 
         return (
 
-            this
-
-                .getAllTransactions()
+            this.getAllTransactions()
 
                 .find(
 
@@ -680,9 +710,7 @@ class TransactionManager {
 
         }
 
-        return this
-
-            .getAllTransactions()
+        return this.getAllTransactions()
 
             .filter(
 
@@ -698,13 +726,9 @@ class TransactionManager {
 
                     return (
 
-                        transactionTime >=
+                        transactionTime >= start &&
 
-                            start &&
-
-                        transactionTime <=
-
-                            end
+                        transactionTime <= end
 
                     );
 
@@ -748,9 +772,9 @@ class TransactionManager {
 
         /*
 
-         * Voided Transactions should not normally
+         * Voided Transactions cannot
 
-         * be edited.
+         * normally be edited.
 
          */
 
@@ -836,19 +860,19 @@ class TransactionManager {
 
         /*
 
-         * Prevent an external ID from being changed
-
-         * to an ID already used by another Transaction.
+         * Prevent duplicate external IDs.
 
          */
 
-        if (transaction.externalId) {
+        if (
+
+            transaction.externalId
+
+        ) {
 
             const duplicate =
 
-                this
-
-                    .getAllTransactions()
+                this.getAllTransactions()
 
                     .find(
 
@@ -876,15 +900,19 @@ class TransactionManager {
 
         }
 
-        this.transactions.set(
+        /*
 
-            transaction.id,
+         * Persist updated Transaction.
 
-            transaction
+         */
 
-        );
+        TransactionRepository
 
-        this.persist();
+            .saveTransaction(
+
+                transaction
+
+            );
 
         return transaction;
 
@@ -896,11 +924,7 @@ class TransactionManager {
 
      *
 
-     * Historical Actual records are retained.
-
-     *
-
-     * We do NOT delete the Transaction.
+     * Historical Actual record remains.
 
      */
 
@@ -948,15 +972,13 @@ class TransactionManager {
 
             new Date().toISOString();
 
-        this.transactions.set(
+        TransactionRepository
 
-            transaction.id,
+            .saveTransaction(
 
-            transaction
+                transaction
 
-        );
-
-        this.persist();
+            );
 
         return transaction;
 
@@ -1016,15 +1038,13 @@ class TransactionManager {
 
             new Date().toISOString();
 
-        this.transactions.set(
+        TransactionRepository
 
-            transaction.id,
+            .saveTransaction(
 
-            transaction
+                transaction
 
-        );
-
-        this.persist();
+            );
 
         return transaction;
 
@@ -1084,15 +1104,13 @@ class TransactionManager {
 
             new Date().toISOString();
 
-        this.transactions.set(
+        TransactionRepository
 
-            transaction.id,
+            .saveTransaction(
 
-            transaction
+                transaction
 
-        );
-
-        this.persist();
+            );
 
         return transaction;
 
@@ -1100,17 +1118,11 @@ class TransactionManager {
 
     /**
 
-     * Remove a Transaction from the registry.
+     * Remove a Transaction.
 
      *
 
-     * This is not the normal way to correct
-
-     * an Actual Transaction.
-
-     *
-
-     * Normal correction should use voidTransaction().
+     * Controlled maintenance only.
 
      */
 
@@ -1144,7 +1156,13 @@ class TransactionManager {
 
         if (removed) {
 
-            this.persist();
+            TransactionRepository
+
+                .deleteTransaction(
+
+                    transactionId
+
+                );
 
         }
 
@@ -1154,15 +1172,15 @@ class TransactionManager {
 
     /**
 
-     * Convert all Transactions to plain objects.
+     * Convert all Transactions to
+
+     * plain objects.
 
      */
 
     toJSON() {
 
-        return this
-
-            .getAllTransactions()
+        return this.getAllTransactions()
 
             .map(
 
@@ -1176,19 +1194,9 @@ class TransactionManager {
 
     /**
 
-     * Replace Manager contents from serialized data.
+     * Replace Manager contents from
 
-     *
-
-     * Used by:
-
-     * - Import
-
-     * - Migration
-
-     * - Restore
-
-     * - Controlled synchronization
+     * serialized Transaction data.
 
      */
 
@@ -1216,6 +1224,14 @@ class TransactionManager {
 
         }
 
+        /*
+
+         * Validate everything before
+
+         * replacing the current registry.
+
+         */
+
         const newTransactions =
 
             new Map();
@@ -1230,11 +1246,7 @@ class TransactionManager {
 
                         ? data
 
-                        : new Transaction(
-
-                            data
-
-                        );
+                        : new Transaction(data);
 
                 transaction.normalize();
 
@@ -1276,7 +1288,7 @@ class TransactionManager {
 
                 ) {
 
-                    const existing =
+                    const duplicate =
 
                         Array.from(
 
@@ -1292,7 +1304,7 @@ class TransactionManager {
 
                         );
 
-                    if (existing) {
+                    if (duplicate) {
 
                         throw new Error(
 
@@ -1318,11 +1330,7 @@ class TransactionManager {
 
         /*
 
-         * Only replace the current registry
-
-         * after the entire input has been
-
-         * successfully validated.
+         * Replace in-memory registry.
 
          */
 
@@ -1330,65 +1338,19 @@ class TransactionManager {
 
             newTransactions;
 
-        this.persist();
+        /*
 
-        return this.getAllTransactions();
+         * Persist replacement.
 
-    }
+         */
 
-    /**
+        TransactionRepository
 
-     * Reload Transactions from persistent storage.
+            .saveTransactions(
 
-     *
+                this.getAllTransactions()
 
-     * Useful after external import/sync.
-
-     */
-
-    reload() {
-
-        const transactions =
-
-            TransactionRepository
-
-                .getTransactions();
-
-        this.transactions =
-
-            new Map();
-
-        transactions.forEach(
-
-            transaction => {
-
-                transaction.normalize();
-
-                const validation =
-
-                    transaction.validate();
-
-                if (!validation.valid) {
-
-                    throw new Error(
-
-                        validation.errors.join(" ")
-
-                    );
-
-                }
-
-                this.transactions.set(
-
-                    transaction.id,
-
-                    transaction
-
-                );
-
-            }
-
-        );
+            );
 
         return this.getAllTransactions();
 
