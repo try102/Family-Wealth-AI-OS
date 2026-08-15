@@ -50,11 +50,19 @@ import TaxFacade from "../../tax/taxFacade.js";
 
 import LiabilityModule from "../modules/liabilityModule.js";
 
-import IncomeModule from "../modules/incomeModule.js";
+import IncomeModule from "../modules/income/incomeModule.js";
 
 import CashflowModule from "../modules/cashflowModule.js";
 
 import AssetsModule from "../modules/assetsModule.js";
+
+// =====================
+
+// Account
+
+// =====================
+
+import AccountModule from "../../account/accountModule.js";
 
 // =====================
 
@@ -63,6 +71,14 @@ import AssetsModule from "../modules/assetsModule.js";
 // =====================
 
 const taxModule = new TaxFacade();
+
+// =====================
+
+// Account Instance
+
+// =====================
+
+const accountModule = new AccountModule();
 
 // =====================
 
@@ -155,6 +171,20 @@ const SystemBootstrap = {
             "assets",
 
             AssetsModule
+
+        );
+
+        // =====================
+
+        // Account Module
+
+        // =====================
+
+        ModuleRegistry.register(
+
+            "account",
+
+            accountModule
 
         );
 
