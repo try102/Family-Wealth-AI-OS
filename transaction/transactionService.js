@@ -1,5 +1,7 @@
 /**
 
+ *
+
  * Family Wealth AI OS V7
 
  * Transaction Service
@@ -7,6 +9,8 @@
  *
 
  * Responsibility:
+
+ *
 
  * - Provide business-facing entry points for Actual Transactions
 
@@ -42,63 +46,57 @@
 
  *
 
- * Account relationship:
-
- *
-
- * Account
-
- *      ↓
-
- * accountId
-
- *      ↓
-
- * Transaction Financial Line
-
- *
-
- * TransactionService does NOT perform:
-
- * - Tax calculations
-
- * - Investment calculations
-
- * - Cost basis calculations
-
- * - Capital gain calculations
-
- * - Loan calculations
-
- * - Interest calculations
-
- * - Account balance calculations
-
- * - Forecast calculations
-
- * - Simulation calculations
-
- *
-
  * IMPORTANT:
 
  *
 
  * TransactionService records Actual events only.
 
+ *
+
  */
 
-const Transaction =
+/*
 
-    require("./transaction");
+ *
 
-const EventBus =
+ * Transaction Model
 
-    require("../core/events/eventBus");
+ *
 
-const EventTypes =
+ */
 
-    require("../core/events/eventTypes");
+import Transaction
+
+    from "./transaction.js";
+
+/*
+
+ *
+
+ * Event Bus
+
+ *
+
+ */
+
+import EventBus
+
+    from "../core/events/eventBus.js";
+
+/*
+
+ *
+
+ * Event Types
+
+ *
+
+ */
+
+import EventTypes
+
+    from "../core/events/eventTypes.js";
 
 class TransactionService {
 
@@ -172,17 +170,13 @@ class TransactionService {
 
         /*
 
-         * Publish the system-level
+         *
+
+         * Publish system-level
 
          * Transaction Created event.
 
          *
-
-         * Other modules may subscribe
-
-         * without directly depending on
-
-         * TransactionManager.
 
          */
 
@@ -1048,20 +1042,14 @@ class TransactionService {
 
 /*
 
- * CommonJS export.
+ *
+
+ * ES Module Export
+
+ *
 
  */
 
-if (
+export default
 
-    typeof module !== "undefined" &&
-
-    module.exports
-
-) {
-
-    module.exports =
-
-        TransactionService;
-
-}
+    TransactionService;
