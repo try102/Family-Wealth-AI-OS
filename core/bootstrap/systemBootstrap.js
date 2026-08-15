@@ -112,11 +112,21 @@ import AssetsModule
 
 //
 
+// IMPORTANT:
+
+// AccountIntegration uses NAMED EXPORT.
+
+//
+
 // ==================================================
 
-import AccountIntegration
+import {
 
-    from "../integration/accountIntegration.js";
+    AccountIntegration
+
+}
+
+from "../integration/accountIntegration.js";
 
 // ==================================================
 
@@ -126,11 +136,21 @@ import AccountIntegration
 
 //
 
+// IMPORTANT:
+
+// TransactionIntegration uses NAMED EXPORT.
+
+//
+
 // ==================================================
 
-import TransactionIntegration
+import {
 
-    from "../integration/transactionIntegration.js";
+    TransactionIntegration
+
+}
+
+from "../integration/transactionIntegration.js";
 
 // ==================================================
 
