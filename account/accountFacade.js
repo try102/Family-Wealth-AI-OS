@@ -66,13 +66,17 @@
 
  */
 
-const AccountController =
+import AccountController
 
-    require("./accountController");
+    from "./accountController.js";
 
 class AccountFacade {
 
-    constructor(accountService) {
+    constructor(
+
+        accountService
+
+    ) {
 
         if (!accountService) {
 
@@ -96,7 +100,11 @@ class AccountFacade {
 
     // =====================================================
 
+    //
+
     // Create
+
+    //
 
     // =====================================================
 
@@ -118,7 +126,11 @@ class AccountFacade {
 
     // =====================================================
 
+    //
+
     // Read
+
+    //
 
     // =====================================================
 
@@ -164,7 +176,11 @@ class AccountFacade {
 
     // =====================================================
 
+    //
+
     // Query
+
+    //
 
     // =====================================================
 
@@ -218,7 +234,11 @@ class AccountFacade {
 
     // =====================================================
 
+    //
+
     // Update
+
+    //
 
     // =====================================================
 
@@ -244,7 +264,11 @@ class AccountFacade {
 
     // =====================================================
 
+    //
+
     // Account Lifecycle
+
+    //
 
     // =====================================================
 
@@ -282,7 +306,11 @@ class AccountFacade {
 
     // =====================================================
 
+    //
+
     // Controlled Removal
+
+    //
 
     // =====================================================
 
@@ -304,7 +332,11 @@ class AccountFacade {
 
     // =====================================================
 
+    //
+
     // Serialization
+
+    //
 
     // =====================================================
 
@@ -318,7 +350,11 @@ class AccountFacade {
 
     // =====================================================
 
+    //
+
     // Load / Replace
+
+    //
 
     // =====================================================
 
@@ -342,20 +378,12 @@ class AccountFacade {
 
 /*
 
- * CommonJS export.
+ *
+
+ * ES Module Export
+
+ *
 
  */
 
-if (
-
-    typeof module !== "undefined" &&
-
-    module.exports
-
-) {
-
-    module.exports =
-
-        AccountFacade;
-
-}
+export default AccountFacade;
