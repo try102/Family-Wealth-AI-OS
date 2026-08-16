@@ -1,272 +1,164 @@
 /*
 
-Family Wealth AI OS V7
+ *
 
-Cashflow Integration
+ * Family Wealth AI OS V7
 
-Responsibility:
+ *
 
-- Connect Transaction events to Cashflow
+ * Transaction Integration
 
-- Listen for actual Transaction creation
+ *
 
-- Convert cash-impacting Transactions
+ * System-level integration layer
 
-  into Cashflow records
+ *
 
-- Keep Cashflow implementation isolated
+ * Responsibility:
 
-IMPORTANT:
+ *
 
-This file does NOT modify:
+ * - Connect business modules to Transaction system
 
-- Transaction
+ * - Convert business events into Actual Transactions
 
-- TransactionManager
+ * - Provide a stable integration boundary
 
-- TransactionService
+ *
 
-- TransactionController
+ * This file belongs to:
 
-- TransactionFacade
+ *
 
-- TransactionRepository
+ * core/integration/
 
-It also does NOT perform:
+ *
 
-- Tax calculations
+ * It does NOT belong to:
 
-- Investment calculations
+ *
 
-- Cost basis calculations
+ * modules/income/
 
-- Capital gain calculations
+ * modules/cashflow/
 
-- Loan calculations
+ * modules/investment/
 
-- Account balance calculations
+ *
 
-*/
+ *
 
-import EventBus
+ * Architecture:
 
-    from "../events/eventBus.js";
+ *
 
-import EventTypes
+ * Business Module
 
-    from "../events/eventTypes.js";
+ *       ↓
+
+ * TransactionIntegration
+
+ *       ↓
+
+ * TransactionFacade
+
+ *       ↓
+
+ * TransactionController
+
+ *       ↓
+
+ * TransactionService
+
+ *       ↓
+
+ * TransactionManager
+
+ *       ↓
+
+ * TransactionRepository
+
+ *
+
+ *
+
+ * Transaction remains the
+
+ * system-level Actual Event record.
+
+ *
+
+ */
 
 /*
 
-IMPORTANT PATH
+ *
 
-core/
+ * Transaction Module
 
-modules/
+ *
 
-They are parallel directories.
+ */
 
-Therefore:
+import TransactionModule
 
-core/integration/cashflowIntegration.js
+    from "../../transaction/transactionModule.js";
 
-        ↓
+class TransactionIntegration {
 
-../../modules/cashflow/api/cashflowAPI.js
-
-*/
-
-import cashflowAPI
-
-    from "../../modules/cashflow/api/cashflowAPI.js";
-
-const CashflowIntegration = {
-
-    name:
-
-        "Cashflow",
-
-    version:
-
-        "V7",
-
-    status:
-
-        "READY",
-
-    initialized:
-
-        false,
-
-    transactionListener:
-
-        null,
-
-    // ==================================================
-
-    //
-
-    // Initialize
-
-    //
-
-    // ==================================================
-
-    initialize() {
-
-        if (
-
-            this.initialized
-
-        ) {
-
-            return this.getStatus();
-
-        }
-
-        this.transactionListener =
-
-            transaction => {
-
-                try {
-
-                    return this.handleTransactionCreated(
-
-                        transaction
-
-                    );
-
-                }
-
-                catch(error) {
-
-                    console.error(
-
-                        "Cashflow Integration Error:",
-
-                        error
-
-                    );
-
-                    return null;
-
-                }
-
-            };
-
-        EventBus.subscribe(
-
-            EventTypes.TRANSACTION_CREATED,
-
-            this.transactionListener
-
-        );
-
-        this.initialized =
-
-            true;
-
-        return {
-
-            name:
-
-                this.name,
-
-            version:
-
-                this.version,
-
-            status:
-
-                "READY",
-
-            initialized:
-
-                true
-
-        };
-
-    },
-
-    // ==================================================
-
-    //
-
-    // Handle Transaction Created
-
-    //
-
-    // ==================================================
-
-    handleTransactionCreated(
-
-        transaction
-
-    ) {
-
-        if (
-
-            !transaction ||
-
-            typeof transaction !==
-
-                "object"
-
-        ) {
-
-            return null;
-
-        }
+    constructor() {
 
         /*
 
-        
+         *
 
-        Only actual cash-impacting
+         * Create one Transaction system
 
-        Income / Expense transactions
+         * entry point.
 
-        are converted here.
+         *
 
-        */
+         */
 
-        if (
+        this.transactionModule =
 
-            transaction.type ===
+            new TransactionModule();
 
-            "INCOME"
+        this.facade =
 
-        ) {
+            this.transactionModule
 
-            return this.recordIncome(
+                .getFacade();
 
-                transaction
+    }
+
+    // =====================================================
+
+    //
+
+    // Generic Transaction
+
+    //
+
+    // =====================================================
+
+    createTransaction(
+
+        data = {}
+
+    ) {
+
+        return this.facade
+
+            .createTransaction(
+
+                data
 
             );
 
-        }
+    }
 
-        if (
-
-            transaction.type ===
-
-            "EXPENSE"
-
-        ) {
-
-            return this.recordExpense(
-
-                transaction
-
-            );
-
-        }
-
-        return null;
-
-    },
-
-    // ==================================================
+    // =====================================================
 
     //
 
@@ -274,85 +166,25 @@ const CashflowIntegration = {
 
     //
 
-    // ==================================================
+    // =====================================================
 
     recordIncome(
 
-        transaction
+        data = {}
 
     ) {
 
-        const line =
+        return this.facade
 
-            this.getPrimaryCashLine(
+            .createIncome(
 
-                transaction
+                data
 
             );
 
-        if (!line) {
+    }
 
-            return null;
-
-        }
-
-        return cashflowAPI.createCashflow({
-
-            transactionId:
-
-                transaction.id,
-
-            date:
-
-                transaction.date,
-
-            type:
-
-                "INCOME",
-
-            amount:
-
-                Math.abs(
-
-                    line.amount
-
-                ),
-
-            currency:
-
-                transaction.currency ||
-
-                "USD",
-
-            description:
-
-                transaction.description ||
-
-                "",
-
-            frequency:
-
-                "ONE_TIME",
-
-            source:
-
-                "Transaction",
-
-            accountId:
-
-                line.accountId,
-
-            category:
-
-                line.category ||
-
-                "Income"
-
-        });
-
-    },
-
-    // ==================================================
+    // =====================================================
 
     //
 
@@ -360,151 +192,593 @@ const CashflowIntegration = {
 
     //
 
-    // ==================================================
+    // =====================================================
 
     recordExpense(
 
-        transaction
+        data = {}
 
     ) {
 
-        const line =
+        return this.facade
 
-            this.getPrimaryCashLine(
+            .createExpense(
 
-                transaction
+                data
 
             );
 
-        if (!line) {
+    }
 
-            return null;
-
-        }
-
-        return cashflowAPI.createCashflow({
-
-            transactionId:
-
-                transaction.id,
-
-            date:
-
-                transaction.date,
-
-            type:
-
-                "EXPENSE",
-
-            amount:
-
-                Math.abs(
-
-                    line.amount
-
-                ),
-
-            currency:
-
-                transaction.currency ||
-
-                "USD",
-
-            description:
-
-                transaction.description ||
-
-                "",
-
-            frequency:
-
-                "ONE_TIME",
-
-            source:
-
-                "Transaction",
-
-            accountId:
-
-                line.accountId,
-
-            category:
-
-                line.category ||
-
-                "Expense"
-
-        });
-
-    },
-
-    // ==================================================
+    // =====================================================
 
     //
 
-    // Get Primary Cash Line
+    // Transfer
 
     //
 
-    // ==================================================
+    // =====================================================
 
-    getPrimaryCashLine(
+    recordTransfer(
 
-        transaction
+        data = {}
 
     ) {
 
-        if (
+        return this.facade
 
-            !Array.isArray(
+            .createTransfer(
 
-                transaction.lines
-
-            )
-
-        ) {
-
-            return null;
-
-        }
-
-        const cashLines =
-
-            transaction.lines.filter(
-
-                line =>
-
-                    line &&
-
-                    line.cashEffect === true &&
-
-                    typeof line.amount ===
-
-                        "number" &&
-
-                    Number.isFinite(
-
-                        line.amount
-
-                    )
+                data
 
             );
 
-        if (
+    }
 
-            cashLines.length === 0
+    // =====================================================
 
-        ) {
+    //
 
-            return null;
+    // Investment Buy
 
-        }
+    //
 
-        return cashLines[0];
+    // =====================================================
 
-    },
+    recordInvestmentBuy(
 
-    // ==================================================
+        data = {}
+
+    ) {
+
+        return this.facade
+
+            .createInvestmentBuy(
+
+                data
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Investment Sell
+
+    //
+
+    // =====================================================
+
+    recordInvestmentSell(
+
+        data = {}
+
+    ) {
+
+        return this.facade
+
+            .createInvestmentSell(
+
+                data
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Loan Payment
+
+    //
+
+    // =====================================================
+
+    recordLoanPayment(
+
+        data = {}
+
+    ) {
+
+        return this.facade
+
+            .createLoanPayment(
+
+                data
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Dividend
+
+    //
+
+    // =====================================================
+
+    recordDividend(
+
+        data = {}
+
+    ) {
+
+        return this.facade
+
+            .createDividend(
+
+                data
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Interest
+
+    //
+
+    // =====================================================
+
+    recordInterest(
+
+        data = {}
+
+    ) {
+
+        return this.facade
+
+            .createInterest(
+
+                data
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Tax Payment
+
+    //
+
+    // =====================================================
+
+    recordTaxPayment(
+
+        data = {}
+
+    ) {
+
+        return this.facade
+
+            .createTaxPayment(
+
+                data
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Read Transactions
+
+    //
+
+    // =====================================================
+
+    getTransaction(
+
+        transactionId
+
+    ) {
+
+        return this.facade
+
+            .getTransaction(
+
+                transactionId
+
+            );
+
+    }
+
+    getAllTransactions() {
+
+        return this.facade
+
+            .getAllTransactions();
+
+    }
+
+    getPostedTransactions() {
+
+        return this.facade
+
+            .getPostedTransactions();
+
+    }
+
+    getPendingTransactions() {
+
+        return this.facade
+
+            .getPendingTransactions();
+
+    }
+
+    getVoidedTransactions() {
+
+        return this.facade
+
+            .getVoidedTransactions();
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Account Queries
+
+    //
+
+    // =====================================================
+
+    getTransactionsByAccount(
+
+        accountId
+
+    ) {
+
+        return this.facade
+
+            .getTransactionsByAccount(
+
+                accountId
+
+            );
+
+    }
+
+    getPostedTransactionsByAccount(
+
+        accountId
+
+    ) {
+
+        return this.facade
+
+            .getPostedTransactionsByAccount(
+
+                accountId
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Type Query
+
+    //
+
+    // =====================================================
+
+    getTransactionsByType(
+
+        type
+
+    ) {
+
+        return this.facade
+
+            .getTransactionsByType(
+
+                type
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Source Query
+
+    //
+
+    // =====================================================
+
+    getTransactionsBySource(
+
+        source
+
+    ) {
+
+        return this.facade
+
+            .getTransactionsBySource(
+
+                source
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // External ID
+
+    //
+
+    // =====================================================
+
+    findByExternalId(
+
+        externalId
+
+    ) {
+
+        return this.facade
+
+            .findByExternalId(
+
+                externalId
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Date Range
+
+    //
+
+    // =====================================================
+
+    getTransactionsByDateRange(
+
+        startDate,
+
+        endDate
+
+    ) {
+
+        return this.facade
+
+            .getTransactionsByDateRange(
+
+                startDate,
+
+                endDate
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Update
+
+    //
+
+    // =====================================================
+
+    updateTransaction(
+
+        transactionId,
+
+        updates = {}
+
+    ) {
+
+        return this.facade
+
+            .updateTransaction(
+
+                transactionId,
+
+                updates
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Post
+
+    //
+
+    // =====================================================
+
+    postTransaction(
+
+        transactionId
+
+    ) {
+
+        return this.facade
+
+            .postTransaction(
+
+                transactionId
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Unpost
+
+    //
+
+    // =====================================================
+
+    unpostTransaction(
+
+        transactionId
+
+    ) {
+
+        return this.facade
+
+            .unpostTransaction(
+
+                transactionId
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Void
+
+    //
+
+    // =====================================================
+
+    voidTransaction(
+
+        transactionId
+
+    ) {
+
+        return this.facade
+
+            .voidTransaction(
+
+                transactionId
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Controlled Removal
+
+    //
+
+    // =====================================================
+
+    removeTransaction(
+
+        transactionId
+
+    ) {
+
+        return this.facade
+
+            .removeTransaction(
+
+                transactionId
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Load / Restore
+
+    //
+
+    // =====================================================
+
+    loadTransactions(
+
+        transactionData = []
+
+    ) {
+
+        return this.facade
+
+            .loadTransactions(
+
+                transactionData
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Serialization
+
+    //
+
+    // =====================================================
+
+    toJSON() {
+
+        return this.facade
+
+            .toJSON();
+
+    }
+
+    // =====================================================
 
     //
 
@@ -512,78 +786,50 @@ const CashflowIntegration = {
 
     //
 
-    // ==================================================
+    // =====================================================
 
     getStatus() {
 
-        return {
+        return this.transactionModule
 
-            name:
-
-                this.name,
-
-            version:
-
-                this.version,
-
-            status:
-
-                this.initialized
-
-                    ? "READY"
-
-                    : "NOT_INITIALIZED",
-
-            initialized:
-
-                this.initialized
-
-        };
-
-    },
-
-    // ==================================================
-
-    //
-
-    // Shutdown
-
-    //
-
-    // ==================================================
-
-    shutdown() {
-
-        if (
-
-            this.transactionListener
-
-        ) {
-
-            EventBus.unsubscribe(
-
-                EventTypes.TRANSACTION_CREATED,
-
-                this.transactionListener
-
-            );
-
-        }
-
-        this.transactionListener =
-
-            null;
-
-        this.initialized =
-
-            false;
-
-        return true;
+            .getStatus();
 
     }
 
-};
+}
+
+/*
+
+ *
+
+ * Singleton Integration Instance
+
+ *
+
+ * Higher-level modules can use:
+
+ *
+
+ * TransactionIntegration.recordIncome(...)
+
+ *
+
+ */
+
+const transactionIntegration =
+
+    new TransactionIntegration();
+
+/*
+
+ *
+
+ * ES Module Export
+
+ *
+
+ */
 
 export default
 
-    CashflowIntegration;
+    transactionIntegration;
