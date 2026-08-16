@@ -10,125 +10,105 @@
 
  *
 
- * System-level integration layer
+ * System-level integration boundary
 
  *
 
- * Responsibility:
+ * IMPORTANT:
 
  *
 
- * - Connect business modules to Transaction system
+ * This integration layer intentionally does NOT
 
- * - Convert business events into Actual Transactions
-
- * - Provide a stable integration boundary
+ * import TransactionModule directly.
 
  *
 
- * This file belongs to:
+ * The Transaction subsystem currently contains
+
+ * both ES Module and CommonJS boundaries.
 
  *
 
- * core/integration/
+ * Therefore the integration layer uses an injected
 
- *
-
- * It does NOT belong to:
-
- *
-
- * modules/income/
-
- * modules/cashflow/
-
- * modules/investment/
-
- *
-
- *
-
- * Architecture:
-
- *
-
- * Business Module
-
- *       ↓
-
- * TransactionIntegration
-
- *       ↓
-
- * TransactionFacade
-
- *       ↓
-
- * TransactionController
-
- *       ↓
-
- * TransactionService
-
- *       ↓
-
- * TransactionManager
-
- *       ↓
-
- * TransactionRepository
-
- *
-
- *
-
- * Transaction remains the
-
- * system-level Actual Event record.
+ * TransactionFacade.
 
  *
 
  */
-
-/*
-
- *
-
- * Transaction Module
-
- *
-
- */
-
-import TransactionModule
-
-    from "../../transaction/transactionModule.js";
 
 class TransactionIntegration {
 
-    constructor() {
+    constructor(
 
-        /*
+        transactionFacade = null
 
-         *
-
-         * Create one Transaction system
-
-         * entry point.
-
-         *
-
-         */
-
-        this.transactionModule =
-
-            new TransactionModule();
+    ) {
 
         this.facade =
 
-            this.transactionModule
+            transactionFacade;
 
-                .getFacade();
+    }
+
+    // =====================================================
+
+    //
+
+    // Configure Transaction Facade
+
+    //
+
+    // =====================================================
+
+    setFacade(
+
+        transactionFacade
+
+    ) {
+
+        if (!transactionFacade) {
+
+            throw new Error(
+
+                "TransactionFacade is required."
+
+            );
+
+        }
+
+        this.facade =
+
+            transactionFacade;
+
+        return this.facade;
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Internal Guard
+
+    //
+
+    // =====================================================
+
+    requireFacade() {
+
+        if (!this.facade) {
+
+            throw new Error(
+
+                "TransactionIntegration is not connected to TransactionFacade."
+
+            );
+
+        }
+
+        return this.facade;
 
     }
 
@@ -148,7 +128,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .createTransaction(
 
@@ -174,7 +156,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .createIncome(
 
@@ -200,7 +184,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .createExpense(
 
@@ -226,7 +212,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .createTransfer(
 
@@ -252,7 +240,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .createInvestmentBuy(
 
@@ -278,7 +268,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .createInvestmentSell(
 
@@ -304,7 +296,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .createLoanPayment(
 
@@ -330,7 +324,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .createDividend(
 
@@ -356,7 +352,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .createInterest(
 
@@ -382,7 +380,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .createTaxPayment(
 
@@ -396,7 +396,7 @@ class TransactionIntegration {
 
     //
 
-    // Read Transactions
+    // Read
 
     //
 
@@ -408,7 +408,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .getTransaction(
 
@@ -420,7 +422,9 @@ class TransactionIntegration {
 
     getAllTransactions() {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .getAllTransactions();
 
@@ -428,7 +432,9 @@ class TransactionIntegration {
 
     getPostedTransactions() {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .getPostedTransactions();
 
@@ -436,7 +442,9 @@ class TransactionIntegration {
 
     getPendingTransactions() {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .getPendingTransactions();
 
@@ -444,7 +452,9 @@ class TransactionIntegration {
 
     getVoidedTransactions() {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .getVoidedTransactions();
 
@@ -466,7 +476,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .getTransactionsByAccount(
 
@@ -482,7 +494,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .getPostedTransactionsByAccount(
 
@@ -508,7 +522,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .getTransactionsByType(
 
@@ -534,7 +550,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .getTransactionsBySource(
 
@@ -560,7 +578,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .findByExternalId(
 
@@ -588,7 +608,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .getTransactionsByDateRange(
 
@@ -618,13 +640,43 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .updateTransaction(
 
                 transactionId,
 
                 updates
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Void
+
+    //
+
+    // =====================================================
+
+    voidTransaction(
+
+        transactionId
+
+    ) {
+
+        return this
+
+            .requireFacade()
+
+            .voidTransaction(
+
+                transactionId
 
             );
 
@@ -646,7 +698,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .postTransaction(
 
@@ -672,35 +726,11 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .unpostTransaction(
-
-                transactionId
-
-            );
-
-    }
-
-    // =====================================================
-
-    //
-
-    // Void
-
-    //
-
-    // =====================================================
-
-    voidTransaction(
-
-        transactionId
-
-    ) {
-
-        return this.facade
-
-            .voidTransaction(
 
                 transactionId
 
@@ -724,7 +754,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .removeTransaction(
 
@@ -750,7 +782,9 @@ class TransactionIntegration {
 
     ) {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .loadTransactions(
 
@@ -772,27 +806,11 @@ class TransactionIntegration {
 
     toJSON() {
 
-        return this.facade
+        return this
+
+            .requireFacade()
 
             .toJSON();
-
-    }
-
-    // =====================================================
-
-    //
-
-    // Status
-
-    //
-
-    // =====================================================
-
-    getStatus() {
-
-        return this.transactionModule
-
-            .getStatus();
 
     }
 
@@ -802,34 +820,16 @@ class TransactionIntegration {
 
  *
 
- * Singleton Integration Instance
-
- *
-
- * Higher-level modules can use:
-
- *
-
- * TransactionIntegration.recordIncome(...)
+ * Shared Integration Instance
 
  *
 
  */
 
-const transactionIntegration =
+const TransactionIntegration =
 
     new TransactionIntegration();
 
-/*
-
- *
-
- * ES Module Export
-
- *
-
- */
-
 export default
 
-    transactionIntegration;
+    TransactionIntegration;
