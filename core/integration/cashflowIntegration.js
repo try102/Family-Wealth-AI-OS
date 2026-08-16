@@ -38,6 +38,10 @@ import EventTypes
 
     from "../events/eventTypes.js";
 
+import ModuleRegistry
+
+    from "../registry/moduleRegistry.js";
+
 import cashflowAPI
 
     from "../../modules/cashflow/api/cashflowAPI.js";
@@ -120,15 +124,9 @@ const CashflowIntegration = {
 
          *
 
-         * Synchronize EXISTING Transactions.
+         * Synchronize Transactions that
 
-         *
-
-         * This is important because Transactions
-
-         * may already exist before CashflowIntegration
-
-         * is initialized.
+         * already exist in the system.
 
          *
 
@@ -156,119 +154,113 @@ const CashflowIntegration = {
 
     syncExistingTransactions() {
 
-        /*
+        const transactionIntegration =
 
-         *
+            ModuleRegistry.get(
 
-         * Find the active Transaction system
-
-         * through the system registry.
-
-         *
-
-         * Cashflow Integration must not construct
-
-         * another Transaction system.
-
-         *
-
-         */
-
-        let transactions = [];
-
-        try {
-
-            /*
-
-             *
-
-             * Access ModuleRegistry dynamically
-
-             * to avoid creating a circular dependency
-
-             * during system bootstrap.
-
-             *
-
-             */
-
-            const moduleRegistryModule =
-
-                window.__FAMILY_WEALTH_MODULE_REGISTRY__;
-
-            if (
-
-                moduleRegistryModule &&
-
-                typeof moduleRegistryModule
-
-                    .get ===
-
-                    "function"
-
-            ) {
-
-                const transactionModule =
-
-                    moduleRegistryModule.get(
-
-                        "transaction"
-
-                    );
-
-                if (
-
-                    transactionModule &&
-
-                    typeof transactionModule
-
-                        .getAllTransactions ===
-
-                        "function"
-
-                ) {
-
-                    transactions =
-
-                        transactionModule
-
-                            .getAllTransactions();
-
-                }
-
-            }
-
-        }
-
-        catch (error) {
-
-            console.warn(
-
-                "Cashflow Integration: existing Transaction synchronization unavailable.",
-
-                error
+                "transaction"
 
             );
 
+        /*
+
+         *
+
+         * Transaction module may not yet be
+
+         * registered during some initialization
+
+         * scenarios.
+
+         *
+
+         */
+
+        if (
+
+            !transactionIntegration
+
+        ) {
+
+            console.warn(
+
+                "Cashflow Integration: Transaction module is not registered."
+
+            );
+
+            return [];
+
+        }
+
+        let transactions = [];
+
+        /*
+
+         *
+
+         * Preferred system-level interface:
+
+         *
+
+         * TransactionIntegration.getAllTransactions()
+
+         *
+
+         */
+
+        if (
+
+            typeof transactionIntegration
+
+                .getAllTransactions ===
+
+                "function"
+
+        ) {
+
+            transactions =
+
+                transactionIntegration
+
+                    .getAllTransactions();
+
         }
 
         /*
 
          *
 
-         * If the global registry bridge is unavailable,
+         * Compatibility with an object exposing
 
-         * simply return.
-
-         *
-
-         *
-
-         * New Transaction events will still work.
+         * the Transaction Facade.
 
          *
 
          */
+
+        else if (
+
+            transactionIntegration.facade &&
+
+            typeof transactionIntegration
+
+                .facade
+
+                .getAllTransactions ===
+
+                "function"
+
+        ) {
+
+            transactions =
+
+                transactionIntegration
+
+                    .facade
+
+                    .getAllTransactions();
+
+        }
 
         if (
 
@@ -308,7 +300,9 @@ const CashflowIntegration = {
 
                  *
 
-                 * Prevent duplicate Cashflow records.
+                 * Prevent duplicate Cashflow
+
+                 * records.
 
                  *
 
@@ -388,9 +382,9 @@ const CashflowIntegration = {
 
          *
 
-         * Voided Transactions must never
+         * Voided Transactions do not
 
-         * become active Cashflow records.
+         * create Cashflow records.
 
          *
 
@@ -412,11 +406,7 @@ const CashflowIntegration = {
 
          *
 
-         * Only actual cash-flow-producing
-
-         * Income / Expense Transactions
-
-         * are processed here.
+         * Income
 
          *
 
@@ -438,6 +428,16 @@ const CashflowIntegration = {
 
         }
 
+        /*
+
+         *
+
+         * Expense
+
+         *
+
+         */
+
         if (
 
             transaction.type ===
@@ -458,13 +458,29 @@ const CashflowIntegration = {
 
          *
 
-         * Transfer, Investment Buy,
+         * Other Transaction types are
 
-         * Investment Sell, etc. are not
+         * intentionally ignored here.
 
-         * treated as ordinary income / expense
+         *
 
-         * by this integration.
+         * Examples:
+
+         *
+
+         * TRANSFER
+
+         * INVESTMENT_BUY
+
+         * INVESTMENT_SELL
+
+         * DIVIDEND
+
+         * INTEREST
+
+         * LOAN_PAYMENT
+
+         * TAX_PAYMENT
 
          *
 
@@ -545,16 +561,6 @@ const CashflowIntegration = {
         transaction
 
     ) {
-
-        /*
-
-         *
-
-         * Prevent duplicate creation.
-
-         *
-
-         */
 
         if (
 
@@ -647,16 +653,6 @@ const CashflowIntegration = {
         transaction
 
     ) {
-
-        /*
-
-         *
-
-         * Prevent duplicate creation.
-
-         *
-
-         */
 
         if (
 
