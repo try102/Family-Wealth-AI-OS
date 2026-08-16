@@ -18,11 +18,11 @@
 
  * - Listen for actual Transaction creation
 
- * - Convert cash-impact Transactions
+ * - Synchronize existing Transactions on startup
+
+ * - Convert Income / Expense Transactions
 
  *   into Cashflow records
-
- * - Synchronize existing Transactions
 
  *
 
@@ -62,6 +62,10 @@ const CashflowIntegration = {
 
         null,
 
+    transactionManager:
+
+        null,
+
     // ==================================================
 
     //
@@ -72,17 +76,47 @@ const CashflowIntegration = {
 
     // ==================================================
 
-    initialize() {
+    initialize(
 
-        if (
+        transactionManager = null
+
+    ){
+
+        if(
 
             this.initialized
 
-        ) {
+        ){
 
             return this.getStatus();
 
         }
+
+        /*
+
+         *
+
+         * Keep reference to the real
+
+         * Transaction Manager.
+
+         *
+
+         */
+
+        this.transactionManager =
+
+            transactionManager;
+
+        /*
+
+         *
+
+         * Listen for future transactions.
+
+         *
+
+         */
 
         this.transactionListener =
 
@@ -104,11 +138,123 @@ const CashflowIntegration = {
 
         );
 
+        /*
+
+         *
+
+         * Mark initialized before
+
+         * historical synchronization.
+
+         *
+
+         */
+
         this.initialized =
 
             true;
 
+        /*
+
+         *
+
+         * Synchronize transactions
+
+         * that already existed before
+
+         * system startup.
+
+         *
+
+         */
+
+        this.syncExistingTransactions();
+
         return this.getStatus();
+
+    },
+
+    // ==================================================
+
+    //
+
+    // Synchronize Existing Transactions
+
+    //
+
+    // ==================================================
+
+    syncExistingTransactions(){
+
+        if(
+
+            !this.transactionManager
+
+        ){
+
+            return {
+
+                synced:
+
+                    0,
+
+                skipped:
+
+                    0
+
+            };
+
+        }
+
+        const transactions =
+
+            this.transactionManager
+
+                .getAllTransactions();
+
+        let synced = 0;
+
+        let skipped = 0;
+
+        transactions.forEach(
+
+            transaction => {
+
+                const result =
+
+                    this.handleTransactionCreated(
+
+                        transaction
+
+                    );
+
+                if(
+
+                    result
+
+                ){
+
+                    synced++;
+
+                }
+
+                else{
+
+                    skipped++;
+
+                }
+
+            }
+
+        );
+
+        return {
+
+            synced,
+
+            skipped
+
+        };
 
     },
 
@@ -126,9 +272,9 @@ const CashflowIntegration = {
 
         transaction
 
-    ) {
+    ){
 
-        if (
+        if(
 
             !transaction ||
 
@@ -136,7 +282,7 @@ const CashflowIntegration = {
 
                 "object"
 
-        ) {
+        ){
 
             return null;
 
@@ -146,101 +292,49 @@ const CashflowIntegration = {
 
          *
 
-         * Only actual cash-impact
+         * Only actual Income / Expense
 
-         * transaction types are converted.
+         * transactions create Cashflow
+
+         * records.
 
          *
 
          */
 
-        switch (
+        if(
 
-            transaction.type
+            transaction.type ===
 
-        ) {
+            "INCOME"
 
-            case "INCOME":
+        ){
 
-                return this.recordIncome(
+            return this.recordIncome(
 
-                    transaction
+                transaction
 
-                );
-
-            case "EXPENSE":
-
-                return this.recordExpense(
-
-                    transaction
-
-                );
-
-            case "DIVIDEND":
-
-                return this.recordIncome(
-
-                    transaction,
-
-                    "Dividend"
-
-                );
-
-            case "INTEREST":
-
-                return this.recordIncome(
-
-                    transaction,
-
-                    "Interest"
-
-                );
-
-            case "INVESTMENT_BUY":
-
-                return this.recordExpense(
-
-                    transaction,
-
-                    "Investment Purchase"
-
-                );
-
-            case "INVESTMENT_SELL":
-
-                return this.recordIncome(
-
-                    transaction,
-
-                    "Investment Sale"
-
-                );
-
-            case "LOAN_PAYMENT":
-
-                return this.recordExpense(
-
-                    transaction,
-
-                    "Loan Payment"
-
-                );
-
-            case "TAX_PAYMENT":
-
-                return this.recordExpense(
-
-                    transaction,
-
-                    "Tax"
-
-                );
-
-            default:
-
-                return null;
+            );
 
         }
+
+        if(
+
+            transaction.type ===
+
+            "EXPENSE"
+
+        ){
+
+            return this.recordExpense(
+
+                transaction
+
+            );
+
+        }
+
+        return null;
 
     },
 
@@ -256,25 +350,9 @@ const CashflowIntegration = {
 
     recordIncome(
 
-        transaction,
+        transaction
 
-        defaultCategory = "Income"
-
-    ) {
-
-        const line =
-
-            this.getPrimaryCashLine(
-
-                transaction
-
-            );
-
-        if (!line) {
-
-            return null;
-
-        }
+    ){
 
         /*
 
@@ -288,17 +366,35 @@ const CashflowIntegration = {
 
          */
 
-        const existing =
+        if(
 
-            this.findByTransactionId(
+            this.cashflowAlreadyExists(
 
                 transaction.id
 
+            )
+
+        ){
+
+            return null;
+
+        }
+
+        const line =
+
+            this.getPrimaryCashLine(
+
+                transaction
+
             );
 
-        if (existing) {
+        if(
 
-            return existing;
+            !line
+
+        ){
+
+            return null;
 
         }
 
@@ -344,7 +440,7 @@ const CashflowIntegration = {
 
                 line.category ||
 
-                defaultCategory
+                "Income"
 
         });
 
@@ -362,25 +458,9 @@ const CashflowIntegration = {
 
     recordExpense(
 
-        transaction,
+        transaction
 
-        defaultCategory = "Expense"
-
-    ) {
-
-        const line =
-
-            this.getPrimaryCashLine(
-
-                transaction
-
-            );
-
-        if (!line) {
-
-            return null;
-
-        }
+    ){
 
         /*
 
@@ -394,17 +474,35 @@ const CashflowIntegration = {
 
          */
 
-        const existing =
+        if(
 
-            this.findByTransactionId(
+            this.cashflowAlreadyExists(
 
                 transaction.id
 
+            )
+
+        ){
+
+            return null;
+
+        }
+
+        const line =
+
+            this.getPrimaryCashLine(
+
+                transaction
+
             );
 
-        if (existing) {
+        if(
 
-            return existing;
+            !line
+
+        ){
+
+            return null;
 
         }
 
@@ -450,9 +548,61 @@ const CashflowIntegration = {
 
                 line.category ||
 
-                defaultCategory
+                "Expense"
 
         });
+
+    },
+
+    // ==================================================
+
+    //
+
+    // Check Existing Cashflow
+
+    //
+
+    // ==================================================
+
+    cashflowAlreadyExists(
+
+        transactionId
+
+    ){
+
+        if(
+
+            !transactionId
+
+        ){
+
+            return false;
+
+        }
+
+        const cashflows =
+
+            cashflowAPI
+
+                .getCashflows();
+
+        return cashflows.some(
+
+            cashflow =>
+
+                String(
+
+                    cashflow.transactionId
+
+                ) ===
+
+                String(
+
+                    transactionId
+
+                )
+
+        );
 
     },
 
@@ -470,9 +620,9 @@ const CashflowIntegration = {
 
         transaction
 
-    ) {
+    ){
 
-        if (
+        if(
 
             !Array.isArray(
 
@@ -480,7 +630,7 @@ const CashflowIntegration = {
 
             )
 
-        ) {
+        ){
 
             return null;
 
@@ -510,215 +660,19 @@ const CashflowIntegration = {
 
             );
 
-        if (
+        if(
 
-            cashLines.length === 0
+            cashLines.length ===
 
-        ) {
+            0
+
+        ){
 
             return null;
 
         }
-
-        /*
-
-         *
-
-         * For now the first cash-impact
-
-         * line is the primary cash line.
-
-         *
-
-         */
 
         return cashLines[0];
-
-    },
-
-    // ==================================================
-
-    //
-
-    // Find Cashflow By Transaction ID
-
-    //
-
-    // ==================================================
-
-    findByTransactionId(
-
-        transactionId
-
-    ) {
-
-        if (!transactionId) {
-
-            return null;
-
-        }
-
-        const cashflows =
-
-            cashflowAPI.getCashflows();
-
-        if (
-
-            !Array.isArray(
-
-                cashflows
-
-            )
-
-        ) {
-
-            return null;
-
-        }
-
-        return (
-
-            cashflows.find(
-
-                item =>
-
-                    String(
-
-                        item.transactionId
-
-                    ) ===
-
-                    String(
-
-                        transactionId
-
-                    )
-
-            ) || null
-
-        );
-
-    },
-
-    // ==================================================
-
-    //
-
-    // Synchronize Existing Transactions
-
-    //
-
-    // ==================================================
-
-    synchronizeTransactions(
-
-        transactions = []
-
-    ) {
-
-        if (
-
-            !Array.isArray(
-
-                transactions
-
-            )
-
-        ) {
-
-            return {
-
-                processed:
-
-                    0,
-
-                created:
-
-                    0,
-
-                existing:
-
-                    0
-
-            };
-
-        }
-
-        let processed =
-
-            0;
-
-        let created =
-
-            0;
-
-        let existing =
-
-            0;
-
-        transactions.forEach(
-
-            transaction => {
-
-                if (
-
-                    !transaction ||
-
-                    typeof transaction !==
-
-                        "object"
-
-                ) {
-
-                    return;
-
-                }
-
-                processed++;
-
-                const before =
-
-                    this.findByTransactionId(
-
-                        transaction.id
-
-                    );
-
-                if (before) {
-
-                    existing++;
-
-                    return;
-
-                }
-
-                const result =
-
-                    this.handleTransactionCreated(
-
-                        transaction
-
-                    );
-
-                if (result) {
-
-                    created++;
-
-                }
-
-            }
-
-        );
-
-        return {
-
-            processed,
-
-            created,
-
-            existing
-
-        };
 
     },
 
@@ -732,7 +686,7 @@ const CashflowIntegration = {
 
     // ==================================================
 
-    getStatus() {
+    getStatus(){
 
         return {
 
@@ -754,7 +708,11 @@ const CashflowIntegration = {
 
             initialized:
 
-                this.initialized
+                this.initialized,
+
+            transactionManagerConnected:
+
+                !!this.transactionManager
 
         };
 
@@ -770,13 +728,13 @@ const CashflowIntegration = {
 
     // ==================================================
 
-    shutdown() {
+    shutdown(){
 
-        if (
+        if(
 
             this.transactionListener
 
-        ) {
+        ){
 
             EventBus.unsubscribe(
 
@@ -789,6 +747,10 @@ const CashflowIntegration = {
         }
 
         this.transactionListener =
+
+            null;
+
+        this.transactionManager =
 
             null;
 
