@@ -64,53 +64,15 @@
 
  * DataService
 
- *
-
- * Account is the system account registry.
-
- *
-
- * Business modules reference Account by account.id.
-
- */
-
-/*
-
- *
-
- * Account Model
-
- *
-
  */
 
 import Account
 
     from "./account.js";
 
-/*
-
- *
-
- * Account Repository
-
- *
-
- */
-
 import AccountRepository
 
     from "./accountRepository.js";
-
-/*
-
- *
-
- * Account Manager
-
- *
-
- */
 
 class AccountManager {
 
@@ -126,15 +88,9 @@ class AccountManager {
 
         /*
 
-         *
-
          * Load existing persisted Accounts
 
-         * unless explicit initial data
-
-         * is supplied.
-
-         *
+         * unless explicit initial data is supplied.
 
          */
 
@@ -174,11 +130,7 @@ class AccountManager {
 
     // =====================================================
 
-    //
-
     // Create
-
-    //
 
     // =====================================================
 
@@ -244,11 +196,7 @@ class AccountManager {
 
         /*
 
-         *
-
          * Persist immediately.
-
-         *
 
          */
 
@@ -266,11 +214,7 @@ class AccountManager {
 
     // =====================================================
 
-    //
-
     // Read
-
-    //
 
     // =====================================================
 
@@ -300,11 +244,7 @@ class AccountManager {
 
     // =====================================================
 
-    //
-
     // Get All
-
-    //
 
     // =====================================================
 
@@ -320,11 +260,7 @@ class AccountManager {
 
     // =====================================================
 
-    //
-
     // Active Accounts
-
-    //
 
     // =====================================================
 
@@ -348,11 +284,7 @@ class AccountManager {
 
     // =====================================================
 
-    //
-
     // Closed Accounts
-
-    //
 
     // =====================================================
 
@@ -376,11 +308,7 @@ class AccountManager {
 
     // =====================================================
 
-    //
-
     // Owner
-
-    //
 
     // =====================================================
 
@@ -414,11 +342,7 @@ class AccountManager {
 
     // =====================================================
 
-    //
-
     // Type
-
-    //
 
     // =====================================================
 
@@ -452,11 +376,7 @@ class AccountManager {
 
     // =====================================================
 
-    //
-
     // Institution
-
-    //
 
     // =====================================================
 
@@ -490,11 +410,7 @@ class AccountManager {
 
                 account =>
 
-                    String(
-
-                        account.institution || ""
-
-                    )
+                    account.institution
 
                         .toLowerCase()
 
@@ -510,11 +426,7 @@ class AccountManager {
 
     // =====================================================
 
-    //
-
     // Update
-
-    //
 
     // =====================================================
 
@@ -546,13 +458,9 @@ class AccountManager {
 
         /*
 
-         *
-
          * Only Account model fields
 
          * may be modified here.
-
-         *
 
          */
 
@@ -624,11 +532,7 @@ class AccountManager {
 
         /*
 
-         *
-
          * Persist update.
-
-         *
 
          */
 
@@ -646,11 +550,7 @@ class AccountManager {
 
     // =====================================================
 
-    //
-
     // Close
-
-    //
 
     // =====================================================
 
@@ -700,11 +600,7 @@ class AccountManager {
 
     // =====================================================
 
-    //
-
     // Reopen
-
-    //
 
     // =====================================================
 
@@ -754,11 +650,7 @@ class AccountManager {
 
     // =====================================================
 
-    //
-
     // Remove
-
-    //
 
     // =====================================================
 
@@ -784,11 +676,7 @@ class AccountManager {
 
         /*
 
-         *
-
          * Remove from memory.
-
-         *
 
          */
 
@@ -800,11 +688,7 @@ class AccountManager {
 
         /*
 
-         *
-
          * Remove from persistent storage.
-
-         *
 
          */
 
@@ -822,11 +706,7 @@ class AccountManager {
 
     // =====================================================
 
-    //
-
     // Reload
-
-    //
 
     // =====================================================
 
@@ -848,11 +728,7 @@ class AccountManager {
 
     // =====================================================
 
-    //
-
     // JSON
-
-    //
 
     // =====================================================
 
@@ -874,11 +750,7 @@ class AccountManager {
 
     // =====================================================
 
-    //
-
     // Load Accounts
-
-    //
 
     // =====================================================
 
@@ -976,14 +848,10 @@ class AccountManager {
 
 }
 
-/*
+// =====================================================
 
- *
+// ES Module Export
 
- * ES Module Export
-
- *
-
- */
+// =====================================================
 
 export default AccountManager;
