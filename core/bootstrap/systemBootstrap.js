@@ -108,7 +108,21 @@ import AssetsModule
 
 //
 
-// Account
+// Account Module
+
+//
+
+// ==================================================
+
+import AccountModule
+
+    from "../../account/accountModule.js";
+
+// ==================================================
+
+//
+
+// Account Integration
 
 //
 
@@ -177,6 +191,20 @@ import CashflowIntegration
 const taxModule =
 
     new TaxFacade();
+
+// ==================================================
+
+//
+
+// Account Instance
+
+//
+
+// ==================================================
+
+const accountModule =
+
+    new AccountModule();
 
 // ==================================================
 
@@ -308,13 +336,35 @@ const SystemBootstrap = {
 
         // ==================================================
 
+        /*
+
+         *
+
+         * Register the real Account Module.
+
+         *
+
+         */
+
         ModuleRegistry.register(
 
             "account",
 
-            AccountIntegration
+            accountModule
 
         );
+
+        /*
+
+         *
+
+         * Initialize the Account integration
+
+         * boundary.
+
+         *
+
+         */
 
         AccountIntegration.initialize();
 
@@ -349,6 +399,10 @@ const SystemBootstrap = {
         //
 
         // Cashflow Integration
+
+        //
+
+        // Transaction → Cashflow
 
         //
 
@@ -510,7 +564,31 @@ const SystemBootstrap = {
 
         //
 
-        // Final Transaction Status
+        // Account Status
+
+        //
+
+        // ==================================================
+
+        const accountStatus =
+
+            accountModule
+
+                .getStatus();
+
+        console.log(
+
+            "Account Status:",
+
+            accountStatus
+
+        );
+
+        // ==================================================
+
+        //
+
+        // Transaction Status
 
         //
 
@@ -574,6 +652,10 @@ const SystemBootstrap = {
 
                 Advisor.name,
 
+            account:
+
+                accountStatus,
+
             transaction:
 
                 transactionStatus,
@@ -598,6 +680,4 @@ const SystemBootstrap = {
 
 // ==================================================
 
-export default
-
-    SystemBootstrap;
+export default SystemBootstrap;
