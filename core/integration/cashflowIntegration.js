@@ -36,7 +36,7 @@ import EventTypes
 
 import cashflowAPI
 
-    from "../modules/cashflow/api/cashflowAPI.js";
+    from "../../modules/cashflow/api/cashflowAPI.js";
 
 const CashflowIntegration = {
 
