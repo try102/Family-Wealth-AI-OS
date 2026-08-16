@@ -1,32 +1,52 @@
 /*
 
- *
+Family Wealth AI OS V7
 
- * Family Wealth AI OS V7
+Cashflow Integration
 
- *
+Responsibility:
 
- * Cashflow Integration
+- Connect Transaction events to Cashflow
 
- *
+- Listen for actual Transaction creation
 
- * Responsibility:
+- Convert Income / Expense Transactions
 
- *
+  into Cashflow records
 
- * - Connect Transaction events to Cashflow
+- Keep Cashflow implementation isolated
 
- * - Listen for actual Transaction creation
+IMPORTANT:
 
- * - Convert Income / Expense Transactions
+This file does NOT modify:
 
- *   into Cashflow records
+- Transaction
 
- * - Keep Cashflow implementation isolated
+- TransactionManager
 
- *
+- TransactionService
 
- */
+- TransactionController
+
+- TransactionFacade
+
+- TransactionRepository
+
+It also does NOT perform:
+
+- Tax calculations
+
+- Investment calculations
+
+- Cost basis calculations
+
+- Capital gain calculations
+
+- Loan calculations
+
+- Account balance calculations
+
+*/
 
 import EventBus
 
@@ -35,6 +55,22 @@ import EventBus
 import EventTypes
 
     from "../events/eventTypes.js";
+
+/*
+
+IMPORTANT PATH
+
+modules is parallel to core.
+
+Therefore:
+
+core/integration
+
+        ↓
+
+../../modules/cashflow/api
+
+*/
 
 import cashflowAPI
 
@@ -62,7 +98,7 @@ const CashflowIntegration = {
 
         null,
 
-    // =====================================================
+    // ==================================================
 
     //
 
@@ -70,7 +106,7 @@ const CashflowIntegration = {
 
     //
 
-    // =====================================================
+    // ==================================================
 
     initialize() {
 
@@ -130,7 +166,7 @@ const CashflowIntegration = {
 
     },
 
-    // =====================================================
+    // ==================================================
 
     //
 
@@ -138,7 +174,7 @@ const CashflowIntegration = {
 
     //
 
-    // =====================================================
+    // ==================================================
 
     handleTransactionCreated(
 
@@ -196,7 +232,7 @@ const CashflowIntegration = {
 
     },
 
-    // =====================================================
+    // ==================================================
 
     //
 
@@ -204,7 +240,7 @@ const CashflowIntegration = {
 
     //
 
-    // =====================================================
+    // ==================================================
 
     recordIncome(
 
@@ -274,7 +310,7 @@ const CashflowIntegration = {
 
     },
 
-    // =====================================================
+    // ==================================================
 
     //
 
@@ -282,7 +318,7 @@ const CashflowIntegration = {
 
     //
 
-    // =====================================================
+    // ==================================================
 
     recordExpense(
 
@@ -352,7 +388,7 @@ const CashflowIntegration = {
 
     },
 
-    // =====================================================
+    // ==================================================
 
     //
 
@@ -360,7 +396,7 @@ const CashflowIntegration = {
 
     //
 
-    // =====================================================
+    // ==================================================
 
     getPrimaryCashLine(
 
@@ -418,7 +454,7 @@ const CashflowIntegration = {
 
     },
 
-    // =====================================================
+    // ==================================================
 
     //
 
@@ -426,7 +462,7 @@ const CashflowIntegration = {
 
     //
 
-    // =====================================================
+    // ==================================================
 
     getStatus() {
 
@@ -456,7 +492,7 @@ const CashflowIntegration = {
 
     },
 
-    // =====================================================
+    // ==================================================
 
     //
 
@@ -464,7 +500,7 @@ const CashflowIntegration = {
 
     //
 
-    // =====================================================
+    // ==================================================
 
     shutdown() {
 
@@ -498,6 +534,4 @@ const CashflowIntegration = {
 
 };
 
-export default
-
-    CashflowIntegration;
+export default CashflowIntegration;
