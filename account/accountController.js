@@ -66,7 +66,11 @@
 
 class AccountController {
 
-    constructor(accountService) {
+    constructor(
+
+        accountService
+
+    ) {
 
         if (!accountService) {
 
@@ -86,29 +90,53 @@ class AccountController {
 
     // =====================================================
 
+    //
+
     // Create
+
+    //
 
     // =====================================================
 
-    createAccount(data = {}) {
+    createAccount(
+
+        data = {}
+
+    ) {
 
         return this.accountService
 
-            .createAccount(data);
+            .createAccount(
+
+                data
+
+            );
 
     }
 
     // =====================================================
 
+    //
+
     // Read
+
+    //
 
     // =====================================================
 
-    getAccount(accountId) {
+    getAccount(
+
+        accountId
+
+    ) {
 
         return this.accountService
 
-            .getAccount(accountId);
+            .getAccount(
+
+                accountId
+
+            );
 
     }
 
@@ -138,7 +166,11 @@ class AccountController {
 
     // =====================================================
 
+    //
+
     // Query
+
+    //
 
     // =====================================================
 
@@ -192,7 +224,11 @@ class AccountController {
 
     // =====================================================
 
+    //
+
     // Update
+
+    //
 
     // =====================================================
 
@@ -218,7 +254,11 @@ class AccountController {
 
     // =====================================================
 
+    //
+
     // Account Lifecycle
+
+    //
 
     // =====================================================
 
@@ -256,7 +296,11 @@ class AccountController {
 
     // =====================================================
 
+    //
+
     // Controlled Removal
+
+    //
 
     // =====================================================
 
@@ -278,7 +322,11 @@ class AccountController {
 
     // =====================================================
 
+    //
+
     // Serialization
+
+    //
 
     // =====================================================
 
@@ -292,7 +340,11 @@ class AccountController {
 
     // =====================================================
 
+    //
+
     // Load / Replace
+
+    //
 
     // =====================================================
 
@@ -316,20 +368,12 @@ class AccountController {
 
 /*
 
- * CommonJS export.
+ *
+
+ * ES Module Export
+
+ *
 
  */
 
-if (
-
-    typeof module !== "undefined" &&
-
-    module.exports
-
-) {
-
-    module.exports =
-
-        AccountController;
-
-}
+export default AccountController;
