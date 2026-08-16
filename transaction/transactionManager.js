@@ -1,12 +1,18 @@
 /**
 
+ *
+
  * Family Wealth AI OS V7
+
+ *
 
  * Transaction Manager
 
  *
 
  * Responsibility:
+
+ *
 
  * - Manage Transaction lifecycle
 
@@ -20,31 +26,15 @@
 
  *
 
- * TransactionManager does NOT perform:
-
- * - Tax calculations
-
- * - Investment calculations
-
- * - Cost basis calculations
-
- * - Capital gain calculations
-
- * - Loan calculations
-
- * - Cash Flow calculations
-
- * - Account balance calculations
-
  */
 
-const Transaction =
+import Transaction
 
-    require("./transaction");
+    from "./transaction.js";
 
-const TransactionRepository =
+import TransactionRepository
 
-    require("./transactionRepository");
+    from "./transactionRepository.js";
 
 class TransactionManager {
 
@@ -54,25 +44,9 @@ class TransactionManager {
 
     ) {
 
-        /*
-
-         * TransactionRepository is the
-
-         * persistent source of Transaction data.
-
-         */
-
         this.repository =
 
             TransactionRepository;
-
-        /*
-
-         * Load existing persisted Transactions
-
-         * unless explicit initial data is supplied.
-
-         */
 
         if (
 
@@ -96,7 +70,7 @@ class TransactionManager {
 
                 new Map();
 
-            this.getAllTransactions();
+            this.syncFromRepository();
 
         }
 
@@ -104,7 +78,11 @@ class TransactionManager {
 
     // =====================================================
 
+    //
+
     // Internal Registry Synchronization
+
+    //
 
     // =====================================================
 
@@ -140,6 +118,16 @@ class TransactionManager {
 
     }
 
+    // =====================================================
+
+    //
+
+    // Persistence
+
+    //
+
+    // =====================================================
+
     persistTransaction(
 
         transaction
@@ -170,7 +158,11 @@ class TransactionManager {
 
     // =====================================================
 
+    //
+
     // Create
+
+    //
 
     // =====================================================
 
@@ -208,14 +200,6 @@ class TransactionManager {
 
         }
 
-        /*
-
-         * Refresh from persistent storage
-
-         * before duplicate checking.
-
-         */
-
         this.syncFromRepository();
 
         if (
@@ -235,14 +219,6 @@ class TransactionManager {
             );
 
         }
-
-        /*
-
-         * Prevent duplicate imported
-
-         * transactions.
-
-         */
 
         if (
 
@@ -280,7 +256,11 @@ class TransactionManager {
 
     // =====================================================
 
+    //
+
     // Read
+
+    //
 
     // =====================================================
 
@@ -320,13 +300,19 @@ class TransactionManager {
 
     // =====================================================
 
+    //
+
     // Status Queries
+
+    //
 
     // =====================================================
 
     getPostedTransactions() {
 
-        return this.getAllTransactions()
+        return this
+
+            .getAllTransactions()
 
             .filter(
 
@@ -342,7 +328,9 @@ class TransactionManager {
 
     getPendingTransactions() {
 
-        return this.getAllTransactions()
+        return this
+
+            .getAllTransactions()
 
             .filter(
 
@@ -358,7 +346,9 @@ class TransactionManager {
 
     getVoidedTransactions() {
 
-        return this.getAllTransactions()
+        return this
+
+            .getAllTransactions()
 
             .filter(
 
@@ -374,7 +364,11 @@ class TransactionManager {
 
     // =====================================================
 
+    //
+
     // Account Queries
+
+    //
 
     // =====================================================
 
@@ -390,7 +384,9 @@ class TransactionManager {
 
         }
 
-        return this.getAllTransactions()
+        return this
+
+            .getAllTransactions()
 
             .filter(
 
@@ -438,7 +434,11 @@ class TransactionManager {
 
     // =====================================================
 
+    //
+
     // Type Query
+
+    //
 
     // =====================================================
 
@@ -454,7 +454,9 @@ class TransactionManager {
 
         }
 
-        return this.getAllTransactions()
+        return this
+
+            .getAllTransactions()
 
             .filter(
 
@@ -470,7 +472,11 @@ class TransactionManager {
 
     // =====================================================
 
+    //
+
     // Source Query
+
+    //
 
     // =====================================================
 
@@ -486,7 +492,9 @@ class TransactionManager {
 
         }
 
-        return this.getAllTransactions()
+        return this
+
+            .getAllTransactions()
 
             .filter(
 
@@ -502,7 +510,11 @@ class TransactionManager {
 
     // =====================================================
 
+    //
+
     // External ID Query
+
+    //
 
     // =====================================================
 
@@ -518,23 +530,33 @@ class TransactionManager {
 
         }
 
-        return this.getAllTransactions()
+        return (
 
-            .find(
+            this
 
-                transaction =>
+                .getAllTransactions()
 
-                    transaction.externalId ===
+                .find(
 
-                    externalId
+                    transaction =>
 
-            ) || null;
+                        transaction.externalId ===
+
+                        externalId
+
+                ) || null
+
+        );
 
     }
 
     // =====================================================
 
+    //
+
     // Date Range Query
+
+    //
 
     // =====================================================
 
@@ -586,7 +608,9 @@ class TransactionManager {
 
         }
 
-        return this.getAllTransactions()
+        return this
+
+            .getAllTransactions()
 
             .filter(
 
@@ -620,7 +644,11 @@ class TransactionManager {
 
     // =====================================================
 
+    //
+
     // Update
+
+    //
 
     // =====================================================
 
@@ -649,14 +677,6 @@ class TransactionManager {
             );
 
         }
-
-        /*
-
-         * Voided Transactions are historical
-
-         * records and cannot normally be edited.
-
-         */
 
         if (
 
@@ -742,12 +762,6 @@ class TransactionManager {
 
         }
 
-        /*
-
-         * Prevent duplicate external IDs.
-
-         */
-
         if (
 
             transaction.externalId
@@ -756,7 +770,9 @@ class TransactionManager {
 
             const duplicate =
 
-                this.getAllTransactions()
+                this
+
+                    .getAllTransactions()
 
                     .find(
 
@@ -794,7 +810,11 @@ class TransactionManager {
 
     // =====================================================
 
+    //
+
     // Void
+
+    //
 
     // =====================================================
 
@@ -840,9 +860,7 @@ class TransactionManager {
 
         transaction.updatedAt =
 
-            new Date()
-
-                .toISOString();
+            new Date().toISOString();
 
         return this.persistTransaction(
 
@@ -854,7 +872,11 @@ class TransactionManager {
 
     // =====================================================
 
+    //
+
     // Post
+
+    //
 
     // =====================================================
 
@@ -904,9 +926,7 @@ class TransactionManager {
 
         transaction.updatedAt =
 
-            new Date()
-
-                .toISOString();
+            new Date().toISOString();
 
         return this.persistTransaction(
 
@@ -918,7 +938,11 @@ class TransactionManager {
 
     // =====================================================
 
+    //
+
     // Unpost
+
+    //
 
     // =====================================================
 
@@ -968,9 +992,7 @@ class TransactionManager {
 
         transaction.updatedAt =
 
-            new Date()
-
-                .toISOString();
+            new Date().toISOString();
 
         return this.persistTransaction(
 
@@ -982,7 +1004,11 @@ class TransactionManager {
 
     // =====================================================
 
+    //
+
     // Controlled Removal
+
+    //
 
     // =====================================================
 
@@ -1024,13 +1050,19 @@ class TransactionManager {
 
     // =====================================================
 
+    //
+
     // Serialization
+
+    //
 
     // =====================================================
 
     toJSON() {
 
-        return this.getAllTransactions()
+        return this
+
+            .getAllTransactions()
 
             .map(
 
@@ -1044,7 +1076,11 @@ class TransactionManager {
 
     // =====================================================
 
+    //
+
     // Load / Restore
+
+    //
 
     // =====================================================
 
@@ -1182,14 +1218,6 @@ class TransactionManager {
 
         );
 
-        /*
-
-         * Replace persistent storage only after
-
-         * the entire input has passed validation.
-
-         */
-
         const saved =
 
             this.repository
@@ -1226,16 +1254,16 @@ class TransactionManager {
 
 }
 
-if (
+// =====================================================
 
-    typeof module !== "undefined" &&
+//
 
-    module.exports
+// ES Module Export
 
-) {
+//
 
-    module.exports =
+// =====================================================
 
-        TransactionManager;
+export default
 
-}
+    TransactionManager;
