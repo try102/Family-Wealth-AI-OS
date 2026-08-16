@@ -364,9 +364,35 @@ const SystemBootstrap = {
 
         //
 
+        // Transaction → EventBus → Cashflow
+
+        //
+
         // ==================================================
 
-        CashflowIntegration.initialize();
+        /*
+
+         *
+
+         * Connect Cashflow Integration to the
+
+         * real Transaction Manager.
+
+         *
+
+         */
+
+        const transactionManager =
+
+            transactionModule
+
+                .getManager();
+
+        CashflowIntegration.initialize(
+
+            transactionManager
+
+        );
 
         // ==================================================
 
@@ -376,17 +402,11 @@ const SystemBootstrap = {
 
         //
 
-        // Transaction → Cashflow
-
-        //
-
         // ==================================================
 
         const existingTransactions =
 
-            transactionModule
-
-                .getManager()
+            transactionManager
 
                 .getAllTransactions();
 
@@ -394,17 +414,27 @@ const SystemBootstrap = {
 
             CashflowIntegration
 
-                .synchronizeTransactions(
-
-                    existingTransactions
-
-                );
+                .syncExistingTransactions();
 
         console.log(
 
             "Cashflow Transaction Sync:",
 
-            cashflowSyncResult
+            {
+
+                existingTransactions:
+
+                    existingTransactions.length,
+
+                synced:
+
+                    cashflowSyncResult.synced,
+
+                skipped:
+
+                    cashflowSyncResult.skipped
+
+            }
 
         );
 
@@ -512,11 +542,7 @@ const SystemBootstrap = {
 
             advisor:
 
-                Advisor.name,
-
-            cashflowSync:
-
-                cashflowSyncResult
+                Advisor.name
 
         };
 
