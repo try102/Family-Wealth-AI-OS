@@ -1,58 +1,42 @@
 /*
 
- *
+Family Wealth AI OS V7
 
- * Family Wealth AI OS V7
+Cashflow Repository
 
- *
+现金流数据仓库
 
- * Cashflow Repository
+Responsibility:
 
- *
+- Persist Cashflow records
 
- * 现金流数据仓库
+- Read Cashflow records
 
- *
+- Update Cashflow records
 
- * Responsibility:
+- Delete Cashflow records
 
- *
+Architecture:
 
- * - Persist Cashflow records
+CashflowService
 
- * - Read Cashflow records
+        ↓
 
- * - Update Cashflow records
+CashflowRepository
 
- * - Delete Cashflow records
+        ↓
 
- *
+Database
 
- * Architecture:
+        ↓
 
- *
+StorageAdapter
 
- * CashflowService
+        ↓
 
- *        ↓
+localStorage
 
- * CashflowRepository
-
- *        ↓
-
- * Database
-
- *        ↓
-
- * StorageAdapter
-
- *        ↓
-
- * localStorage
-
- *
-
- */
+*/
 
 import Database
 
