@@ -140,6 +140,14 @@ import TransactionIntegration
 
 //
 
+// IMPORTANT:
+
+// This is the system integration boundary between
+
+// Transaction events and Cashflow.
+
+//
+
 // ==================================================
 
 import CashflowIntegration
@@ -276,8 +284,6 @@ const SystemBootstrap = {
 
         // ==================================================
 
-        AccountIntegration.initialize();
-
         ModuleRegistry.register(
 
             "account",
@@ -285,6 +291,8 @@ const SystemBootstrap = {
             AccountIntegration
 
         );
+
+        AccountIntegration.initialize();
 
         // ==================================================
 
@@ -296,8 +304,6 @@ const SystemBootstrap = {
 
         // ==================================================
 
-        TransactionIntegration.initialize();
-
         ModuleRegistry.register(
 
             "transaction",
@@ -305,6 +311,8 @@ const SystemBootstrap = {
             TransactionIntegration
 
         );
+
+        TransactionIntegration.initialize();
 
         // ==================================================
 
@@ -317,14 +325,6 @@ const SystemBootstrap = {
         // ==================================================
 
         CashflowIntegration.initialize();
-
-        ModuleRegistry.register(
-
-            "cashflowIntegration",
-
-            CashflowIntegration
-
-        );
 
         // ==================================================
 
