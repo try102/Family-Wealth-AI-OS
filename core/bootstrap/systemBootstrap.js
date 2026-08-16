@@ -32,15 +32,15 @@ import AgentRegistry
 
 import EngineRegistry
 
-    from "../../engines/engineRegistry.js";
+    from "../engines/engineRegistry.js";
 
 import WealthEngine
 
-    from "../../engines/wealth/wealthEngine.js";
+    from "../engines/wealth/wealthEngine.js";
 
 import CashFlowEngine
 
-    from "../../engines/cashflow/cashFlowEngine.js";
+    from "../engines/cashflow/cashFlowEngine.js";
 
 // ==================================================
 
@@ -90,19 +90,19 @@ import TaxFacade
 
 import LiabilityModule
 
-    from "../../modules/liabilityModule.js";
+    from "../modules/liabilityModule.js";
 
 import IncomeModule
 
-    from "../../modules/incomeModule.js";
+    from "../modules/incomeModule.js";
 
 import CashflowModule
 
-    from "../../modules/cashflowModule.js";
+    from "../modules/cashflowModule.js";
 
 import AssetsModule
 
-    from "../../modules/assetsModule.js";
+    from "../modules/assetsModule.js";
 
 // ==================================================
 
@@ -136,25 +136,25 @@ import TransactionIntegration
 
 //
 
-// Cashflow Integration
-
-//
-
 // IMPORTANT:
 
 //
 
-// This is the system integration boundary between
+// CashflowIntegration is temporarily NOT imported.
 
-// Transaction events and Cashflow.
+//
+
+// This isolates Cashflow Integration from the
+
+// system startup chain.
+
+//
+
+// Account and Transaction remain unchanged.
 
 //
 
 // ==================================================
-
-import CashflowIntegration
-
-    from "../integration/cashflowIntegration.js";
 
 // ==================================================
 
@@ -324,9 +324,21 @@ const SystemBootstrap = {
 
         //
 
+        // TEMPORARILY DISABLED
+
+        //
+
+        // Cashflow Module itself remains registered above.
+
+        // Only the Transaction → Cashflow event bridge
+
+        // is isolated for diagnosis.
+
+        //
+
         // ==================================================
 
-        CashflowIntegration.initialize();
+        // CashflowIntegration.initialize();
 
         // ==================================================
 
