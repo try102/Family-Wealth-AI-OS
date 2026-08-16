@@ -20,153 +20,73 @@
 
  * Account is a foundational data container.
 
- *
-
- * Account does NOT own:
-
- * - Transaction logic
-
- * - Cash Flow logic
-
- * - Investment decision logic
-
- * - Asset logic
-
- * - Liability logic
-
- * - Tax calculation logic
-
- * - Retirement logic
-
- * - Advisor logic
-
- *
-
- * Relationship:
-
- *
-
- * Family Member
-
- *      ↓
-
- * ownerMemberId
-
- *      ↓
-
- * Account
-
- *      ↓
-
- * accountId
-
- *      ↓
-
- * Transaction
-
- *
-
- * Investment Center may reference Account,
-
- * but Investment remains an independent business system.
-
  */
 
 class Account {
 
     constructor(data = {}) {
 
-        this.id = data.id || Account.generateId();
+        this.id =
 
-        this.name = data.name || "";
+            data.id ||
 
-        this.accountType = data.accountType || "";
+            Account.generateId();
 
-        this.institution = data.institution || "";
+        this.name =
 
-        /*
+            data.name || "";
 
-         * References an existing Family Member.
+        this.accountType =
 
-         * Account does not duplicate Family member information.
+            data.accountType || "";
 
-         */
+        this.institution =
 
-        this.ownerMemberId = data.ownerMemberId || "";
+            data.institution || "";
 
-        this.currency = data.currency || "USD";
+        this.ownerMemberId =
 
-        this.status = data.status || "Active";
+            data.ownerMemberId || "";
 
-        /*
+        this.currency =
 
-         * Indicates where the account information came from.
+            data.currency || "USD";
 
-         *
+        this.status =
 
-         * Manual:
+            data.status || "Active";
 
-         *   User-created account
+        this.dataSource =
 
-         *
+            data.dataSource || "Manual";
 
-         * Import:
+        this.taxTreatment =
 
-         *   Bank / brokerage / statement import
+            data.taxTreatment || "Unknown";
 
-         *
+        this.description =
 
-         * Sync:
-
-         *   Future external financial connection
-
-         *
-
-         * System:
-
-         *   System-generated account
-
-         */
-
-        this.dataSource = data.dataSource || "Manual";
-
-        /*
-
-         * Describes the tax treatment of the account.
-
-         *
-
-         * This is metadata only.
-
-         * Account does NOT perform tax calculations.
-
-         */
-
-        this.taxTreatment = data.taxTreatment || "Unknown";
-
-        this.description = data.description || "";
+            data.description || "";
 
         this.createdAt =
 
-            data.createdAt || new Date().toISOString();
+            data.createdAt ||
+
+            new Date().toISOString();
 
         this.updatedAt =
 
-            data.updatedAt || new Date().toISOString();
+            data.updatedAt ||
+
+            new Date().toISOString();
 
     }
 
-    /**
+    // =====================================================
 
-     * Generate a stable unique Account ID.
+    // Generate ID
 
-     *
-
-     * Transaction and future Investment Position records
-
-     * will reference this ID.
-
-     */
+    // =====================================================
 
     static generateId() {
 
@@ -188,27 +108,11 @@ class Account {
 
     }
 
-    /**
+    // =====================================================
 
-     * Supported Account Types.
+    // Account Types
 
-     *
-
-     * This list describes WHAT the account is.
-
-     *
-
-     * It does not describe:
-
-     * - investment strategy
-
-     * - portfolio allocation
-
-     * - security holdings
-
-     * - investment decisions
-
-     */
+    // =====================================================
 
     static getAccountTypes() {
 
@@ -246,11 +150,11 @@ class Account {
 
     }
 
-    /**
+    // =====================================================
 
-     * Supported currencies.
+    // Currencies
 
-     */
+    // =====================================================
 
     static getCurrencies() {
 
@@ -272,11 +176,11 @@ class Account {
 
     }
 
-    /**
+    // =====================================================
 
-     * Supported Account Status values.
+    // Status
 
-     */
+    // =====================================================
 
     static getStatuses() {
 
@@ -290,11 +194,11 @@ class Account {
 
     }
 
-    /**
+    // =====================================================
 
-     * Supported Data Sources.
+    // Data Sources
 
-     */
+    // =====================================================
 
     static getDataSources() {
 
@@ -312,15 +216,11 @@ class Account {
 
     }
 
-    /**
+    // =====================================================
 
-     * Supported Tax Treatment values.
+    // Tax Treatments
 
-     *
-
-     * Tax logic remains outside Account.
-
-     */
+    // =====================================================
 
     static getTaxTreatments() {
 
@@ -344,33 +244,15 @@ class Account {
 
     }
 
-    /**
+    // =====================================================
 
-     * Validate Account data.
+    // Validate
 
-     *
-
-     * Required user-level fields:
-
-     * - name
-
-     * - accountType
-
-     *
-
-     * ID is generated automatically.
-
-     */
+    // =====================================================
 
     validate() {
 
         const errors = [];
-
-        /*
-
-         * Account name
-
-         */
 
         if (
 
@@ -390,12 +272,6 @@ class Account {
 
         }
 
-        /*
-
-         * Account type
-
-         */
-
         if (
 
             !this.accountType ||
@@ -411,12 +287,6 @@ class Account {
             );
 
         }
-
-        /*
-
-         * Account type validation
-
-         */
 
         if (
 
@@ -438,22 +308,6 @@ class Account {
 
         }
 
-        /*
-
-         * ownerMemberId is optional.
-
-         *
-
-         * If supplied, it must be a string.
-
-         *
-
-         * Actual Family Member existence validation
-
-         * belongs to a higher-level manager/service.
-
-         */
-
         if (
 
             this.ownerMemberId &&
@@ -469,12 +323,6 @@ class Account {
             );
 
         }
-
-        /*
-
-         * Currency validation
-
-         */
 
         if (
 
@@ -496,12 +344,6 @@ class Account {
 
         }
 
-        /*
-
-         * Status validation
-
-         */
-
         if (
 
             this.status &&
@@ -522,12 +364,6 @@ class Account {
 
         }
 
-        /*
-
-         * Data source validation
-
-         */
-
         if (
 
             this.dataSource &&
@@ -547,12 +383,6 @@ class Account {
             );
 
         }
-
-        /*
-
-         * Tax treatment validation
-
-         */
 
         if (
 
@@ -576,7 +406,9 @@ class Account {
 
         return {
 
-            valid: errors.length === 0,
+            valid:
+
+                errors.length === 0,
 
             errors
 
@@ -584,21 +416,31 @@ class Account {
 
     }
 
-    /**
+    // =====================================================
 
-     * Normalize Account values.
+    // Normalize
 
-     */
+    // =====================================================
 
     normalize() {
 
-        if (typeof this.name === "string") {
+        if (
 
-            this.name = this.name.trim();
+            typeof this.name === "string"
+
+        ) {
+
+            this.name =
+
+                this.name.trim();
 
         }
 
-        if (typeof this.institution === "string") {
+        if (
+
+            typeof this.institution === "string"
+
+        ) {
 
             this.institution =
 
@@ -606,7 +448,11 @@ class Account {
 
         }
 
-        if (typeof this.description === "string") {
+        if (
+
+            typeof this.description === "string"
+
+        ) {
 
             this.description =
 
@@ -614,7 +460,11 @@ class Account {
 
         }
 
-        if (typeof this.ownerMemberId === "string") {
+        if (
+
+            typeof this.ownerMemberId === "string"
+
+        ) {
 
             this.ownerMemberId =
 
@@ -630,43 +480,63 @@ class Account {
 
     }
 
-    /**
+    // =====================================================
 
-     * Return the system-level Account data structure.
+    // JSON
 
-     *
-
-     * No business calculations are performed here.
-
-     */
+    // =====================================================
 
     toJSON() {
 
         return {
 
-            id: this.id,
+            id:
 
-            name: this.name,
+                this.id,
 
-            accountType: this.accountType,
+            name:
 
-            institution: this.institution,
+                this.name,
 
-            ownerMemberId: this.ownerMemberId,
+            accountType:
 
-            currency: this.currency,
+                this.accountType,
 
-            status: this.status,
+            institution:
 
-            dataSource: this.dataSource,
+                this.institution,
 
-            taxTreatment: this.taxTreatment,
+            ownerMemberId:
 
-            description: this.description,
+                this.ownerMemberId,
 
-            createdAt: this.createdAt,
+            currency:
 
-            updatedAt: this.updatedAt
+                this.currency,
+
+            status:
+
+                this.status,
+
+            dataSource:
+
+                this.dataSource,
+
+            taxTreatment:
+
+                this.taxTreatment,
+
+            description:
+
+                this.description,
+
+            createdAt:
+
+                this.createdAt,
+
+            updatedAt:
+
+                this.updatedAt
 
         };
 
@@ -674,32 +544,10 @@ class Account {
 
 }
 
-/*
+// =====================================================
 
- * CommonJS export.
+// ES Module Export
 
- *
+// =====================================================
 
- * Allows Account to be used by:
-
- * - Account Manager
-
- * - Account Controller
-
- * - Tests when needed
-
- * - Node-based tooling
-
- */
-
-if (
-
-    typeof module !== "undefined" &&
-
-    module.exports
-
-) {
-
-    module.exports = Account;
-
-}
+export default Account;
