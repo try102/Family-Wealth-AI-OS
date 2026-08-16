@@ -18,13 +18,11 @@
 
  * - Listen for actual Transaction creation
 
- * - Synchronize existing Transactions into Cashflow
-
- * - Convert Income / Expense Transactions
+ * - Convert cash-impact Transactions
 
  *   into Cashflow records
 
- * - Prevent duplicate Cashflow records
+ * - Synchronize existing Transactions
 
  *
 
@@ -37,10 +35,6 @@ import EventBus
 import EventTypes
 
     from "../events/eventTypes.js";
-
-import ModuleRegistry
-
-    from "../registry/moduleRegistry.js";
 
 import cashflowAPI
 
@@ -90,16 +84,6 @@ const CashflowIntegration = {
 
         }
 
-        /*
-
-         *
-
-         * Listen for NEW Transactions.
-
-         *
-
-         */
-
         this.transactionListener =
 
             transaction => {
@@ -120,231 +104,11 @@ const CashflowIntegration = {
 
         );
 
-        /*
-
-         *
-
-         * Synchronize Transactions that
-
-         * already exist in the system.
-
-         *
-
-         */
-
-        this.syncExistingTransactions();
-
         this.initialized =
 
             true;
 
         return this.getStatus();
-
-    },
-
-    // ==================================================
-
-    //
-
-    // Synchronize Existing Transactions
-
-    //
-
-    // ==================================================
-
-    syncExistingTransactions() {
-
-        const transactionIntegration =
-
-            ModuleRegistry.get(
-
-                "transaction"
-
-            );
-
-        /*
-
-         *
-
-         * Transaction module may not yet be
-
-         * registered during some initialization
-
-         * scenarios.
-
-         *
-
-         */
-
-        if (
-
-            !transactionIntegration
-
-        ) {
-
-            console.warn(
-
-                "Cashflow Integration: Transaction module is not registered."
-
-            );
-
-            return [];
-
-        }
-
-        let transactions = [];
-
-        /*
-
-         *
-
-         * Preferred system-level interface:
-
-         *
-
-         * TransactionIntegration.getAllTransactions()
-
-         *
-
-         */
-
-        if (
-
-            typeof transactionIntegration
-
-                .getAllTransactions ===
-
-                "function"
-
-        ) {
-
-            transactions =
-
-                transactionIntegration
-
-                    .getAllTransactions();
-
-        }
-
-        /*
-
-         *
-
-         * Compatibility with an object exposing
-
-         * the Transaction Facade.
-
-         *
-
-         */
-
-        else if (
-
-            transactionIntegration.facade &&
-
-            typeof transactionIntegration
-
-                .facade
-
-                .getAllTransactions ===
-
-                "function"
-
-        ) {
-
-            transactions =
-
-                transactionIntegration
-
-                    .facade
-
-                    .getAllTransactions();
-
-        }
-
-        if (
-
-            !Array.isArray(
-
-                transactions
-
-            )
-
-        ) {
-
-            return [];
-
-        }
-
-        const results = [];
-
-        transactions.forEach(
-
-            transaction => {
-
-                if (
-
-                    !transaction ||
-
-                    transaction.status ===
-
-                        "Voided"
-
-                ) {
-
-                    return;
-
-                }
-
-                /*
-
-                 *
-
-                 * Prevent duplicate Cashflow
-
-                 * records.
-
-                 *
-
-                 */
-
-                if (
-
-                    this.cashflowAlreadyExists(
-
-                        transaction.id
-
-                    )
-
-                ) {
-
-                    return;
-
-                }
-
-                const result =
-
-                    this.handleTransactionCreated(
-
-                        transaction
-
-                    );
-
-                if (result) {
-
-                    results.push(
-
-                        result
-
-                    );
-
-                }
-
-            }
-
-        );
-
-        return results;
 
     },
 
@@ -382,167 +146,101 @@ const CashflowIntegration = {
 
          *
 
-         * Voided Transactions do not
+         * Only actual cash-impact
 
-         * create Cashflow records.
-
-         *
-
-         */
-
-        if (
-
-            transaction.status ===
-
-                "Voided"
-
-        ) {
-
-            return null;
-
-        }
-
-        /*
-
-         *
-
-         * Income
+         * transaction types are converted.
 
          *
 
          */
 
-        if (
+        switch (
 
-            transaction.type ===
-
-                "INCOME"
+            transaction.type
 
         ) {
 
-            return this.recordIncome(
+            case "INCOME":
 
-                transaction
+                return this.recordIncome(
 
-            );
+                    transaction
 
-        }
+                );
 
-        /*
+            case "EXPENSE":
 
-         *
+                return this.recordExpense(
 
-         * Expense
+                    transaction
 
-         *
+                );
 
-         */
+            case "DIVIDEND":
 
-        if (
+                return this.recordIncome(
 
-            transaction.type ===
+                    transaction,
 
-                "EXPENSE"
+                    "Dividend"
 
-        ) {
+                );
 
-            return this.recordExpense(
+            case "INTEREST":
 
-                transaction
+                return this.recordIncome(
 
-            );
+                    transaction,
 
-        }
+                    "Interest"
 
-        /*
+                );
 
-         *
+            case "INVESTMENT_BUY":
 
-         * Other Transaction types are
+                return this.recordExpense(
 
-         * intentionally ignored here.
+                    transaction,
 
-         *
+                    "Investment Purchase"
 
-         * Examples:
+                );
 
-         *
+            case "INVESTMENT_SELL":
 
-         * TRANSFER
+                return this.recordIncome(
 
-         * INVESTMENT_BUY
+                    transaction,
 
-         * INVESTMENT_SELL
+                    "Investment Sale"
 
-         * DIVIDEND
+                );
 
-         * INTEREST
+            case "LOAN_PAYMENT":
 
-         * LOAN_PAYMENT
+                return this.recordExpense(
 
-         * TAX_PAYMENT
+                    transaction,
 
-         *
+                    "Loan Payment"
 
-         */
+                );
 
-        return null;
+            case "TAX_PAYMENT":
 
-    },
+                return this.recordExpense(
 
-    // ==================================================
+                    transaction,
 
-    //
+                    "Tax"
 
-    // Check Existing Cashflow
+                );
 
-    //
+            default:
 
-    // ==================================================
-
-    cashflowAlreadyExists(
-
-        transactionId
-
-    ) {
-
-        if (!transactionId) {
-
-            return false;
+                return null;
 
         }
-
-        const cashflows =
-
-            cashflowAPI
-
-                .getCashflows();
-
-        if (
-
-            !Array.isArray(
-
-                cashflows
-
-            )
-
-        ) {
-
-            return false;
-
-        }
-
-        return cashflows.some(
-
-            cashflow =>
-
-                cashflow &&
-
-                cashflow.transactionId ===
-
-                    transactionId
-
-        );
 
     },
 
@@ -558,23 +256,11 @@ const CashflowIntegration = {
 
     recordIncome(
 
-        transaction
+        transaction,
+
+        defaultCategory = "Income"
 
     ) {
-
-        if (
-
-            this.cashflowAlreadyExists(
-
-                transaction.id
-
-            )
-
-        ) {
-
-            return null;
-
-        }
 
         const line =
 
@@ -587,6 +273,32 @@ const CashflowIntegration = {
         if (!line) {
 
             return null;
+
+        }
+
+        /*
+
+         *
+
+         * Prevent duplicate Cashflow
+
+         * records for the same Transaction.
+
+         *
+
+         */
+
+        const existing =
+
+            this.findByTransactionId(
+
+                transaction.id
+
+            );
+
+        if (existing) {
+
+            return existing;
 
         }
 
@@ -632,7 +344,7 @@ const CashflowIntegration = {
 
                 line.category ||
 
-                "Income"
+                defaultCategory
 
         });
 
@@ -650,23 +362,11 @@ const CashflowIntegration = {
 
     recordExpense(
 
-        transaction
+        transaction,
+
+        defaultCategory = "Expense"
 
     ) {
-
-        if (
-
-            this.cashflowAlreadyExists(
-
-                transaction.id
-
-            )
-
-        ) {
-
-            return null;
-
-        }
 
         const line =
 
@@ -679,6 +379,32 @@ const CashflowIntegration = {
         if (!line) {
 
             return null;
+
+        }
+
+        /*
+
+         *
+
+         * Prevent duplicate Cashflow
+
+         * records for the same Transaction.
+
+         *
+
+         */
+
+        const existing =
+
+            this.findByTransactionId(
+
+                transaction.id
+
+            );
+
+        if (existing) {
+
+            return existing;
 
         }
 
@@ -724,7 +450,7 @@ const CashflowIntegration = {
 
                 line.category ||
 
-                "Expense"
+                defaultCategory
 
         });
 
@@ -786,9 +512,7 @@ const CashflowIntegration = {
 
         if (
 
-            cashLines.length ===
-
-                0
+            cashLines.length === 0
 
         ) {
 
@@ -796,7 +520,205 @@ const CashflowIntegration = {
 
         }
 
+        /*
+
+         *
+
+         * For now the first cash-impact
+
+         * line is the primary cash line.
+
+         *
+
+         */
+
         return cashLines[0];
+
+    },
+
+    // ==================================================
+
+    //
+
+    // Find Cashflow By Transaction ID
+
+    //
+
+    // ==================================================
+
+    findByTransactionId(
+
+        transactionId
+
+    ) {
+
+        if (!transactionId) {
+
+            return null;
+
+        }
+
+        const cashflows =
+
+            cashflowAPI.getCashflows();
+
+        if (
+
+            !Array.isArray(
+
+                cashflows
+
+            )
+
+        ) {
+
+            return null;
+
+        }
+
+        return (
+
+            cashflows.find(
+
+                item =>
+
+                    String(
+
+                        item.transactionId
+
+                    ) ===
+
+                    String(
+
+                        transactionId
+
+                    )
+
+            ) || null
+
+        );
+
+    },
+
+    // ==================================================
+
+    //
+
+    // Synchronize Existing Transactions
+
+    //
+
+    // ==================================================
+
+    synchronizeTransactions(
+
+        transactions = []
+
+    ) {
+
+        if (
+
+            !Array.isArray(
+
+                transactions
+
+            )
+
+        ) {
+
+            return {
+
+                processed:
+
+                    0,
+
+                created:
+
+                    0,
+
+                existing:
+
+                    0
+
+            };
+
+        }
+
+        let processed =
+
+            0;
+
+        let created =
+
+            0;
+
+        let existing =
+
+            0;
+
+        transactions.forEach(
+
+            transaction => {
+
+                if (
+
+                    !transaction ||
+
+                    typeof transaction !==
+
+                        "object"
+
+                ) {
+
+                    return;
+
+                }
+
+                processed++;
+
+                const before =
+
+                    this.findByTransactionId(
+
+                        transaction.id
+
+                    );
+
+                if (before) {
+
+                    existing++;
+
+                    return;
+
+                }
+
+                const result =
+
+                    this.handleTransactionCreated(
+
+                        transaction
+
+                    );
+
+                if (result) {
+
+                    created++;
+
+                }
+
+            }
+
+        );
+
+        return {
+
+            processed,
+
+            created,
+
+            existing
+
+        };
 
     },
 
