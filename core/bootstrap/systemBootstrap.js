@@ -364,10 +364,6 @@ const SystemBootstrap = {
 
         //
 
-        // Transaction → EventBus → Cashflow
-
-        //
-
         // ==================================================
 
         /*
@@ -376,65 +372,33 @@ const SystemBootstrap = {
 
          * Connect Cashflow Integration to the
 
-         * real Transaction Manager.
+         * REAL Transaction Manager.
+
+         *
+
+         * This allows CashflowIntegration to:
+
+         *
+
+         * 1. Listen for new Transactions
+
+         *
+
+         * 2. Read existing Transactions
+
+         *
+
+         * 3. Synchronize existing INCOME / EXPENSE
+
+         *    Transactions into Cashflow records
 
          *
 
          */
 
-        const transactionManager =
-
-            transactionModule
-
-                .getManager();
-
         CashflowIntegration.initialize(
 
-            transactionManager
-
-        );
-
-        // ==================================================
-
-        //
-
-        // Synchronize Existing Transactions
-
-        //
-
-        // ==================================================
-
-        const existingTransactions =
-
-            transactionManager
-
-                .getAllTransactions();
-
-        const cashflowSyncResult =
-
-            CashflowIntegration
-
-                .syncExistingTransactions();
-
-        console.log(
-
-            "Cashflow Transaction Sync:",
-
-            {
-
-                existingTransactions:
-
-                    existingTransactions.length,
-
-                synced:
-
-                    cashflowSyncResult.synced,
-
-                skipped:
-
-                    cashflowSyncResult.skipped
-
-            }
+            transactionModule.getManager()
 
         );
 
