@@ -370,35 +370,37 @@ const SystemBootstrap = {
 
          *
 
-         * Connect Cashflow Integration to the
-
-         * REAL Transaction Manager.
+         * IMPORTANT:
 
          *
 
-         * This allows CashflowIntegration to:
+         * CashflowIntegration must receive the
+
+         * REAL TransactionManager.
 
          *
 
-         * 1. Listen for new Transactions
+         * This allows it to synchronize existing
 
-         *
-
-         * 2. Read existing Transactions
-
-         *
-
-         * 3. Synchronize existing INCOME / EXPENSE
-
-         *    Transactions into Cashflow records
+         * Transactions during system startup.
 
          *
 
          */
 
-        CashflowIntegration.initialize(
+        const cashflowIntegrationStatus =
 
-            transactionModule.getManager()
+            CashflowIntegration.initialize(
+
+                transactionModule.getManager()
+
+            );
+
+        console.log(
+
+            "Cashflow Integration Status:",
+
+            cashflowIntegrationStatus
 
         );
 
