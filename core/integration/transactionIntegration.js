@@ -14,31 +14,31 @@
 
  *
 
- * IMPORTANT:
+ * Responsibility:
 
  *
 
- * This integration layer intentionally does NOT
+ * - Provide a stable integration boundary
 
- * import TransactionModule directly.
+ * - Connect business modules with Transaction
 
- *
-
- * The Transaction subsystem currently contains
-
- * both ES Module and CommonJS boundaries.
-
- *
-
- * Therefore the integration layer uses an injected
-
- * TransactionFacade.
+ * - Avoid direct dependency on Transaction internals
 
  *
 
  */
 
-class TransactionIntegration {
+/*
+
+ *
+
+ * Transaction Integration Service
+
+ *
+
+ */
+
+class TransactionIntegrationService {
 
     constructor(
 
@@ -826,10 +826,20 @@ class TransactionIntegration {
 
  */
 
-const TransactionIntegration =
+const transactionIntegration =
 
-    new TransactionIntegration();
+    new TransactionIntegrationService();
+
+/*
+
+ *
+
+ * ES Module Export
+
+ *
+
+ */
 
 export default
 
-    TransactionIntegration;
+    transactionIntegration;
