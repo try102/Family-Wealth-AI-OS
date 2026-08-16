@@ -74,13 +74,43 @@
 
  */
 
-const Account =
+/*
 
-    require("./account");
+ *
 
-const AccountRepository =
+ * Account Model
 
-    require("./accountRepository");
+ *
+
+ */
+
+import Account
+
+    from "./account.js";
+
+/*
+
+ *
+
+ * Account Repository
+
+ *
+
+ */
+
+import AccountRepository
+
+    from "./accountRepository.js";
+
+/*
+
+ *
+
+ * Account Manager
+
+ *
+
+ */
 
 class AccountManager {
 
@@ -96,9 +126,15 @@ class AccountManager {
 
         /*
 
+         *
+
          * Load existing persisted Accounts
 
-         * unless explicit initial data is supplied.
+         * unless explicit initial data
+
+         * is supplied.
+
+         *
 
          */
 
@@ -138,7 +174,11 @@ class AccountManager {
 
     // =====================================================
 
+    //
+
     // Create
+
+    //
 
     // =====================================================
 
@@ -204,7 +244,11 @@ class AccountManager {
 
         /*
 
+         *
+
          * Persist immediately.
+
+         *
 
          */
 
@@ -222,7 +266,11 @@ class AccountManager {
 
     // =====================================================
 
+    //
+
     // Read
+
+    //
 
     // =====================================================
 
@@ -252,7 +300,11 @@ class AccountManager {
 
     // =====================================================
 
+    //
+
     // Get All
+
+    //
 
     // =====================================================
 
@@ -268,13 +320,19 @@ class AccountManager {
 
     // =====================================================
 
+    //
+
     // Active Accounts
+
+    //
 
     // =====================================================
 
     getActiveAccounts() {
 
-        return this.getAllAccounts()
+        return this
+
+            .getAllAccounts()
 
             .filter(
 
@@ -290,13 +348,19 @@ class AccountManager {
 
     // =====================================================
 
+    //
+
     // Closed Accounts
+
+    //
 
     // =====================================================
 
     getClosedAccounts() {
 
-        return this.getAllAccounts()
+        return this
+
+            .getAllAccounts()
 
             .filter(
 
@@ -312,7 +376,11 @@ class AccountManager {
 
     // =====================================================
 
+    //
+
     // Owner
+
+    //
 
     // =====================================================
 
@@ -328,7 +396,9 @@ class AccountManager {
 
         }
 
-        return this.getAllAccounts()
+        return this
+
+            .getAllAccounts()
 
             .filter(
 
@@ -344,7 +414,11 @@ class AccountManager {
 
     // =====================================================
 
+    //
+
     // Type
+
+    //
 
     // =====================================================
 
@@ -360,7 +434,9 @@ class AccountManager {
 
         }
 
-        return this.getAllAccounts()
+        return this
+
+            .getAllAccounts()
 
             .filter(
 
@@ -376,7 +452,11 @@ class AccountManager {
 
     // =====================================================
 
+    //
+
     // Institution
+
+    //
 
     // =====================================================
 
@@ -402,13 +482,19 @@ class AccountManager {
 
                 .toLowerCase();
 
-        return this.getAllAccounts()
+        return this
+
+            .getAllAccounts()
 
             .filter(
 
                 account =>
 
-                    account.institution
+                    String(
+
+                        account.institution || ""
+
+                    )
 
                         .toLowerCase()
 
@@ -424,7 +510,11 @@ class AccountManager {
 
     // =====================================================
 
+    //
+
     // Update
+
+    //
 
     // =====================================================
 
@@ -456,9 +546,13 @@ class AccountManager {
 
         /*
 
+         *
+
          * Only Account model fields
 
          * may be modified here.
+
+         *
 
          */
 
@@ -530,7 +624,11 @@ class AccountManager {
 
         /*
 
+         *
+
          * Persist update.
+
+         *
 
          */
 
@@ -548,7 +646,11 @@ class AccountManager {
 
     // =====================================================
 
+    //
+
     // Close
+
+    //
 
     // =====================================================
 
@@ -598,7 +700,11 @@ class AccountManager {
 
     // =====================================================
 
+    //
+
     // Reopen
+
+    //
 
     // =====================================================
 
@@ -648,7 +754,11 @@ class AccountManager {
 
     // =====================================================
 
+    //
+
     // Remove
+
+    //
 
     // =====================================================
 
@@ -674,7 +784,11 @@ class AccountManager {
 
         /*
 
+         *
+
          * Remove from memory.
+
+         *
 
          */
 
@@ -686,7 +800,11 @@ class AccountManager {
 
         /*
 
+         *
+
          * Remove from persistent storage.
+
+         *
 
          */
 
@@ -704,7 +822,11 @@ class AccountManager {
 
     // =====================================================
 
+    //
+
     // Reload
+
+    //
 
     // =====================================================
 
@@ -726,13 +848,19 @@ class AccountManager {
 
     // =====================================================
 
+    //
+
     // JSON
+
+    //
 
     // =====================================================
 
     toJSON() {
 
-        return this.getAllAccounts()
+        return this
+
+            .getAllAccounts()
 
             .map(
 
@@ -746,7 +874,11 @@ class AccountManager {
 
     // =====================================================
 
+    //
+
     // Load Accounts
+
+    //
 
     // =====================================================
 
@@ -756,11 +888,15 @@ class AccountManager {
 
     ) {
 
-        if (!Array.isArray(
+        if (
 
-            accountData
+            !Array.isArray(
 
-        )) {
+                accountData
+
+            )
+
+        ) {
 
             throw new Error(
 
@@ -842,20 +978,12 @@ class AccountManager {
 
 /*
 
- * CommonJS export.
+ *
+
+ * ES Module Export
+
+ *
 
  */
 
-if (
-
-    typeof module !== "undefined" &&
-
-    module.exports
-
-) {
-
-    module.exports =
-
-        AccountManager;
-
-}
+export default AccountManager;
