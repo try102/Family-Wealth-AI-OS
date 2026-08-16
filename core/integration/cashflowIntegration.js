@@ -24,6 +24,8 @@
 
  *   into Cashflow records
 
+ * - Provide synchronization diagnostics
+
  *
 
  */
@@ -63,6 +65,10 @@ const CashflowIntegration = {
         null,
 
     transactionManager:
+
+        null,
+
+    lastSyncResult:
 
         null,
 
@@ -168,7 +174,17 @@ const CashflowIntegration = {
 
          */
 
-        this.syncExistingTransactions();
+        this.lastSyncResult =
+
+            this.syncExistingTransactions();
+
+        console.log(
+
+            "Cashflow Integration Sync:",
+
+            this.lastSyncResult
+
+        );
 
         return this.getStatus();
 
@@ -192,7 +208,19 @@ const CashflowIntegration = {
 
         ){
 
-            return {
+            const result = {
+
+                transactionCount:
+
+                    0,
+
+                incomeTransactions:
+
+                    0,
+
+                expenseTransactions:
+
+                    0,
 
                 synced:
 
@@ -200,9 +228,23 @@ const CashflowIntegration = {
 
                 skipped:
 
-                    0
+                    0,
+
+                noManager:
+
+                    true
 
             };
+
+            console.log(
+
+                "Cashflow Integration:",
+
+                "Transaction Manager NOT connected."
+
+            );
+
+            return result;
 
         }
 
@@ -212,11 +254,79 @@ const CashflowIntegration = {
 
                 .getAllTransactions();
 
-        let synced = 0;
+        const safeTransactions =
 
-        let skipped = 0;
+            Array.isArray(
 
-        transactions.forEach(
+                transactions
+
+            )
+
+                ? transactions
+
+                : [];
+
+        let incomeTransactions =
+
+            0;
+
+        let expenseTransactions =
+
+            0;
+
+        let synced =
+
+            0;
+
+        let skipped =
+
+            0;
+
+        let noCashLine =
+
+            0;
+
+        let alreadyExists =
+
+            0;
+
+        let unsupported =
+
+            0;
+
+        safeTransactions.forEach(
+
+            transaction => {
+
+                if(
+
+                    transaction?.type ===
+
+                    "INCOME"
+
+                ){
+
+                    incomeTransactions++;
+
+                }
+
+                else if(
+
+                    transaction?.type ===
+
+                    "EXPENSE"
+
+                ){
+
+                    expenseTransactions++;
+
+                }
+
+            }
+
+        );
+
+        safeTransactions.forEach(
 
             transaction => {
 
@@ -230,7 +340,7 @@ const CashflowIntegration = {
 
                 if(
 
-                    result
+                    result?.created
 
                 ){
 
@@ -244,17 +354,81 @@ const CashflowIntegration = {
 
                 }
 
+                if(
+
+                    result?.reason ===
+
+                    "NO_CASH_LINE"
+
+                ){
+
+                    noCashLine++;
+
+                }
+
+                if(
+
+                    result?.reason ===
+
+                    "ALREADY_EXISTS"
+
+                ){
+
+                    alreadyExists++;
+
+                }
+
+                if(
+
+                    result?.reason ===
+
+                    "UNSUPPORTED_TYPE"
+
+                ){
+
+                    unsupported++;
+
+                }
+
             }
 
         );
 
-        return {
+        const result = {
+
+            transactionCount:
+
+                safeTransactions.length,
+
+            incomeTransactions,
+
+            expenseTransactions,
 
             synced,
 
-            skipped
+            skipped,
+
+            noCashLine,
+
+            alreadyExists,
+
+            unsupported,
+
+            noManager:
+
+                false
 
         };
+
+        console.log(
+
+            "Cashflow Integration Diagnostic:",
+
+            result
+
+        );
+
+        return result;
 
     },
 
@@ -284,7 +458,17 @@ const CashflowIntegration = {
 
         ){
 
-            return null;
+            return {
+
+                created:
+
+                    false,
+
+                reason:
+
+                    "INVALID_TRANSACTION"
+
+            };
 
         }
 
@@ -334,7 +518,17 @@ const CashflowIntegration = {
 
         }
 
-        return null;
+        return {
+
+            created:
+
+                false,
+
+            reason:
+
+                "UNSUPPORTED_TYPE"
+
+        };
 
     },
 
@@ -376,7 +570,17 @@ const CashflowIntegration = {
 
         ){
 
-            return null;
+            return {
+
+                created:
+
+                    false,
+
+                reason:
+
+                    "ALREADY_EXISTS"
+
+            };
 
         }
 
@@ -394,55 +598,111 @@ const CashflowIntegration = {
 
         ){
 
-            return null;
+            console.warn(
+
+                "Cashflow Integration:",
+
+                "INCOME transaction has no valid cash line.",
+
+                transaction
+
+            );
+
+            return {
+
+                created:
+
+                    false,
+
+                reason:
+
+                    "NO_CASH_LINE"
+
+            };
 
         }
 
-        return cashflowAPI.createCashflow({
+        const cashflow =
 
-            transactionId:
+            cashflowAPI.createCashflow({
 
-                transaction.id,
+                transactionId:
 
-            date:
+                    transaction.id,
 
-                transaction.date,
+                date:
 
-            type:
+                    transaction.date,
 
-                "INCOME",
+                type:
 
-            amount:
+                    "INCOME",
 
-                line.amount,
+                amount:
 
-            currency:
+                    line.amount,
 
-                transaction.currency,
+                currency:
 
-            description:
+                    transaction.currency,
 
-                transaction.description,
+                description:
 
-            frequency:
+                    transaction.description,
 
-                "ONE_TIME",
+                frequency:
 
-            source:
+                    "ONE_TIME",
 
-                "Transaction",
+                source:
 
-            accountId:
+                    "Transaction",
 
-                line.accountId,
+                accountId:
 
-            category:
+                    line.accountId,
 
-                line.category ||
+                category:
 
-                "Income"
+                    line.category ||
 
-        });
+                    "Income"
+
+            });
+
+        if(
+
+            cashflow
+
+        ){
+
+            return {
+
+                created:
+
+                    true,
+
+                reason:
+
+                    "CREATED",
+
+                cashflow
+
+            };
+
+        }
+
+        return {
+
+            created:
+
+                false,
+
+            reason:
+
+                "CREATE_FAILED"
+
+        };
 
     },
 
@@ -484,7 +744,17 @@ const CashflowIntegration = {
 
         ){
 
-            return null;
+            return {
+
+                created:
+
+                    false,
+
+                reason:
+
+                    "ALREADY_EXISTS"
+
+            };
 
         }
 
@@ -502,55 +772,111 @@ const CashflowIntegration = {
 
         ){
 
-            return null;
+            console.warn(
+
+                "Cashflow Integration:",
+
+                "EXPENSE transaction has no valid cash line.",
+
+                transaction
+
+            );
+
+            return {
+
+                created:
+
+                    false,
+
+                reason:
+
+                    "NO_CASH_LINE"
+
+            };
 
         }
 
-        return cashflowAPI.createCashflow({
+        const cashflow =
 
-            transactionId:
+            cashflowAPI.createCashflow({
 
-                transaction.id,
+                transactionId:
 
-            date:
+                    transaction.id,
 
-                transaction.date,
+                date:
 
-            type:
+                    transaction.date,
 
-                "EXPENSE",
+                type:
 
-            amount:
+                    "EXPENSE",
 
-                line.amount,
+                amount:
 
-            currency:
+                    line.amount,
 
-                transaction.currency,
+                currency:
 
-            description:
+                    transaction.currency,
 
-                transaction.description,
+                description:
 
-            frequency:
+                    transaction.description,
 
-                "ONE_TIME",
+                frequency:
 
-            source:
+                    "ONE_TIME",
 
-                "Transaction",
+                source:
 
-            accountId:
+                    "Transaction",
 
-                line.accountId,
+                accountId:
 
-            category:
+                    line.accountId,
 
-                line.category ||
+                category:
 
-                "Expense"
+                    line.category ||
 
-        });
+                    "Expense"
+
+            });
+
+        if(
+
+            cashflow
+
+        ){
+
+            return {
+
+                created:
+
+                    true,
+
+                reason:
+
+                    "CREATED",
+
+                cashflow
+
+            };
+
+        }
+
+        return {
+
+            created:
+
+                false,
+
+            reason:
+
+                "CREATE_FAILED"
+
+        };
 
     },
 
@@ -585,6 +911,20 @@ const CashflowIntegration = {
             cashflowAPI
 
                 .getCashflows();
+
+        if(
+
+            !Array.isArray(
+
+                cashflows
+
+            )
+
+        ){
+
+            return false;
+
+        }
 
         return cashflows.some(
 
@@ -680,6 +1020,50 @@ const CashflowIntegration = {
 
     //
 
+    // Get Last Sync Result
+
+    //
+
+    // ==================================================
+
+    getLastSyncResult(){
+
+        return (
+
+            this.lastSyncResult
+
+            || {
+
+                transactionCount:
+
+                    0,
+
+                incomeTransactions:
+
+                    0,
+
+                expenseTransactions:
+
+                    0,
+
+                synced:
+
+                    0,
+
+                skipped:
+
+                    0
+
+            }
+
+        );
+
+    },
+
+    // ==================================================
+
+    //
+
     // Status
 
     //
@@ -712,7 +1096,11 @@ const CashflowIntegration = {
 
             transactionManagerConnected:
 
-                !!this.transactionManager
+                !!this.transactionManager,
+
+            lastSyncResult:
+
+                this.getLastSyncResult()
 
         };
 
@@ -757,6 +1145,10 @@ const CashflowIntegration = {
         this.initialized =
 
             false;
+
+        this.lastSyncResult =
+
+            null;
 
         return true;
 
