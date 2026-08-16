@@ -28,16 +28,6 @@
 
  */
 
-/*
-
- *
-
- * Transaction Integration Service
-
- *
-
- */
-
 class TransactionIntegrationService {
 
     constructor(
@@ -49,6 +39,44 @@ class TransactionIntegrationService {
         this.facade =
 
             transactionFacade;
+
+        this.initialized =
+
+            false;
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Initialize
+
+    //
+
+    // =====================================================
+
+    initialize() {
+
+        this.initialized =
+
+            true;
+
+        return {
+
+            module:
+
+                "Transaction Integration",
+
+            version:
+
+                "V7",
+
+            initialized:
+
+                true
+
+        };
 
     }
 
@@ -396,7 +424,7 @@ class TransactionIntegrationService {
 
     //
 
-    // Read
+    // Read - Single Transaction
 
     //
 
@@ -420,6 +448,16 @@ class TransactionIntegrationService {
 
     }
 
+    // =====================================================
+
+    //
+
+    // Read - All Transactions
+
+    //
+
+    // =====================================================
+
     getAllTransactions() {
 
         return this
@@ -429,6 +467,16 @@ class TransactionIntegrationService {
             .getAllTransactions();
 
     }
+
+    // =====================================================
+
+    //
+
+    // Read - Posted Transactions
+
+    //
+
+    // =====================================================
 
     getPostedTransactions() {
 
@@ -440,6 +488,16 @@ class TransactionIntegrationService {
 
     }
 
+    // =====================================================
+
+    //
+
+    // Read - Pending Transactions
+
+    //
+
+    // =====================================================
+
     getPendingTransactions() {
 
         return this
@@ -449,6 +507,16 @@ class TransactionIntegrationService {
             .getPendingTransactions();
 
     }
+
+    // =====================================================
+
+    //
+
+    // Read - Voided Transactions
+
+    //
+
+    // =====================================================
 
     getVoidedTransactions() {
 
@@ -464,7 +532,7 @@ class TransactionIntegrationService {
 
     //
 
-    // Account Queries
+    // Query - Account
 
     //
 
@@ -488,6 +556,16 @@ class TransactionIntegrationService {
 
     }
 
+    // =====================================================
+
+    //
+
+    // Query - Posted Account Transactions
+
+    //
+
+    // =====================================================
+
     getPostedTransactionsByAccount(
 
         accountId
@@ -510,7 +588,7 @@ class TransactionIntegrationService {
 
     //
 
-    // Type Query
+    // Query - Type
 
     //
 
@@ -538,7 +616,7 @@ class TransactionIntegrationService {
 
     //
 
-    // Source Query
+    // Query - Source
 
     //
 
@@ -566,7 +644,7 @@ class TransactionIntegrationService {
 
     //
 
-    // External ID
+    // Query - External ID
 
     //
 
@@ -594,7 +672,7 @@ class TransactionIntegrationService {
 
     //
 
-    // Date Range
+    // Query - Date Range
 
     //
 
@@ -820,7 +898,7 @@ class TransactionIntegrationService {
 
  *
 
- * Shared Integration Instance
+ * Shared Transaction Integration Instance
 
  *
 
