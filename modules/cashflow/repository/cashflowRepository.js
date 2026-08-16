@@ -1,18 +1,48 @@
 /*
 
-    
+ *
 
-Family Wealth AI OS V7
+ * Family Wealth AI OS V7
 
-Cashflow Repository
+ *
 
-现金流数据仓库
+ * Cashflow Repository
 
-*/
+ *
+
+ * 现金流数据仓库
+
+ *
+
+ * Responsibility:
+
+ *
+
+ * - Persist Cashflow records
+
+ * - Read Cashflow records
+
+ * - Update Cashflow records
+
+ * - Delete Cashflow records
+
+ *
+
+ * IMPORTANT:
+
+ *
+
+ * This Repository uses the existing
+
+ * Family Wealth AI OS Database Core.
+
+ *
+
+ */
 
 import Database
 
-    from "../../../storage/database.js";
+    from "../../database/database.js";
 
 const TABLE =
 
@@ -20,69 +50,129 @@ const TABLE =
 
 const cashflowRepository = {
 
+    name:
+
+        "Cashflow Repository V7",
+
     // ==================================================
 
-    // Initialize
+    //
+
+    // Internal Load
+
+    //
 
     // ==================================================
 
-    init(){
+    loadRecords(){
 
-        Database.init();
+        const records =
+
+            Database.load(
+
+                TABLE
+
+            );
 
         if(
 
-            !Database.tables[TABLE]
+            Array.isArray(
+
+                records
+
+            )
 
         ){
 
-            Database.tables[TABLE] = [];
-
-            Database.save();
+            return records;
 
         }
 
-        return true;
+        return [];
 
     },
 
     // ==================================================
 
+    //
+
+    // Internal Save
+
+    //
+
+    // ==================================================
+
+    saveRecords(
+
+        records
+
+    ){
+
+        return Database.save(
+
+            TABLE,
+
+            records
+
+        );
+
+    },
+
+    // ==================================================
+
+    //
+
     // Create
+
+    //
 
     // ==================================================
 
     create(
 
-        data
+        data = {}
 
     ){
 
-        this.init();
+        const records =
+
+            this.loadRecords();
+
+        const now =
+
+            new Date()
+
+                .toISOString();
 
         const record = {
 
             id:
 
-                Date.now().toString(),
+                Date.now()
+
+                .toString(),
 
             ...data,
 
             createdAt:
 
-                new Date().toISOString(),
+                now,
 
             updatedAt:
 
-                new Date().toISOString()
+                now
 
         };
 
-        Database.insert(
-
-            TABLE,
+        records.push(
 
             record
+
+        );
+
+        this.saveRecords(
+
+            records
 
         );
 
@@ -92,25 +182,27 @@ const cashflowRepository = {
 
     // ==================================================
 
+    //
+
     // Find All
+
+    //
 
     // ==================================================
 
     findAll(){
 
-        this.init();
-
-        return Database.find(
-
-            TABLE
-
-        );
+        return this.loadRecords();
 
     },
 
     // ==================================================
 
+    //
+
     // Find One
+
+    //
 
     // ==================================================
 
@@ -120,17 +212,29 @@ const cashflowRepository = {
 
     ){
 
-        const list =
+        const records =
 
-            this.findAll();
+            this.loadRecords();
 
-        return list.find(
+        return (
 
-            item =>
+            records.find(
 
-                String(item.id) ===
+                item =>
 
-                String(id)
+                    String(
+
+                        item.id
+
+                    ) ===
+
+                    String(
+
+                        id
+
+                    )
+
+            )
 
         ) || null;
 
@@ -138,7 +242,11 @@ const cashflowRepository = {
 
     // ==================================================
 
+    //
+
     // Update
+
+    //
 
     // ==================================================
 
@@ -146,23 +254,31 @@ const cashflowRepository = {
 
         id,
 
-        data
+        data = {}
 
     ){
 
-        const list =
+        const records =
 
-            this.findAll();
+            this.loadRecords();
 
         const index =
 
-            list.findIndex(
+            records.findIndex(
 
                 item =>
 
-                    String(item.id) ===
+                    String(
 
-                    String(id)
+                        item.id
+
+                    ) ===
+
+                    String(
+
+                        id
+
+                    )
 
             );
 
@@ -176,35 +292,53 @@ const cashflowRepository = {
 
         }
 
-        list[index] = {
+        const updated = {
 
-            ...list[index],
+            ...records[index],
 
             ...data,
 
             id:
 
-                list[index].id,
+                records[index]
+
+                    .id,
+
+            createdAt:
+
+                records[index]
+
+                    .createdAt,
 
             updatedAt:
 
-                new Date().toISOString()
+                new Date()
+
+                    .toISOString()
 
         };
 
-        Database.tables[TABLE] =
+        records[index] =
 
-            list;
+            updated;
 
-        Database.save();
+        this.saveRecords(
 
-        return list[index];
+            records
+
+        );
+
+        return updated;
 
     },
 
     // ==================================================
 
+    //
+
     // Delete
+
+    //
 
     // ==================================================
 
@@ -214,19 +348,27 @@ const cashflowRepository = {
 
     ){
 
-        const list =
+        const records =
 
-            this.findAll();
+            this.loadRecords();
 
         const index =
 
-            list.findIndex(
+            records.findIndex(
 
                 item =>
 
-                    String(item.id) ===
+                    String(
 
-                    String(id)
+                        item.id
+
+                    ) ===
+
+                    String(
+
+                        id
+
+                    )
 
             );
 
@@ -240,7 +382,7 @@ const cashflowRepository = {
 
         }
 
-        list.splice(
+        records.splice(
 
             index,
 
@@ -248,11 +390,11 @@ const cashflowRepository = {
 
         );
 
-        Database.tables[TABLE] =
+        this.saveRecords(
 
-            list;
+            records
 
-        Database.save();
+        );
 
         return true;
 
@@ -260,20 +402,28 @@ const cashflowRepository = {
 
     // ==================================================
 
+    //
+
     // Clear
+
+    //
 
     // ==================================================
 
     clear(){
 
-        this.init();
+        this.saveRecords(
 
-        Database.tables[TABLE] = [];
+            []
 
-        Database.save();
+        );
+
+        return true;
 
     }
 
 };
 
-export default cashflowRepository;
+export default
+
+    cashflowRepository;
