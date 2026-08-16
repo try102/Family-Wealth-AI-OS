@@ -68,25 +68,25 @@
 
  */
 
-const AccountRepository =
+import AccountRepository
 
-    require("./accountRepository");
+    from "./accountRepository.js";
 
-const AccountManager =
+import AccountManager
 
-    require("./accountManager");
+    from "./accountManager.js";
 
-const AccountService =
+import AccountService
 
-    require("./accountService");
+    from "./accountService.js";
 
-const AccountController =
+import AccountController
 
-    require("./accountController");
+    from "./accountController.js";
 
-const AccountFacade =
+import AccountFacade
 
-    require("./accountFacade");
+    from "./accountFacade.js";
 
 class AccountModule {
 
@@ -98,7 +98,11 @@ class AccountModule {
 
         /*
 
+         *
+
          * Persistence layer
+
+         *
 
          */
 
@@ -108,7 +112,11 @@ class AccountModule {
 
         /*
 
+         *
+
          * Account management layer
+
+         *
 
          */
 
@@ -122,7 +130,11 @@ class AccountModule {
 
         /*
 
+         *
+
          * Business-facing service layer
+
+         *
 
          */
 
@@ -136,7 +148,11 @@ class AccountModule {
 
         /*
 
+         *
+
          * Application/API boundary
+
+         *
 
          */
 
@@ -150,7 +166,11 @@ class AccountModule {
 
         /*
 
+         *
+
          * Stable system-level entry point
+
+         *
 
          */
 
@@ -166,7 +186,11 @@ class AccountModule {
 
     // =====================================================
 
+    //
+
     // System Entry Point
+
+    //
 
     // =====================================================
 
@@ -178,11 +202,15 @@ class AccountModule {
 
     // =====================================================
 
+    //
+
     // Direct Access
 
     //
 
     // Primarily used for:
+
+    //
 
     // - System initialization
 
@@ -195,6 +223,8 @@ class AccountModule {
     // Higher-level business modules should normally
 
     // use the facade.
+
+    //
 
     // =====================================================
 
@@ -224,7 +254,11 @@ class AccountModule {
 
     // =====================================================
 
+    //
+
     // System Status
+
+    //
 
     // =====================================================
 
@@ -282,20 +316,12 @@ class AccountModule {
 
 /*
 
- * CommonJS export.
+ *
+
+ * ES Module Export
+
+ *
 
  */
 
-if (
-
-    typeof module !== "undefined" &&
-
-    module.exports
-
-) {
-
-    module.exports =
-
-        AccountModule;
-
-}
+export default AccountModule;
