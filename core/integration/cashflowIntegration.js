@@ -1,52 +1,30 @@
 /*
 
-Family Wealth AI OS V7
+ *
 
-Cashflow Integration
+ * Family Wealth AI OS V7
 
-Responsibility:
+ *
 
-- Connect Transaction events to Cashflow
+ * Cashflow Integration
 
-- Listen for actual Transaction creation
+ *
 
-- Convert Income / Expense Transactions
+ * Responsibility:
 
-  into Cashflow records
+ *
 
-- Keep Cashflow implementation isolated
+ * - Connect Transaction events to Cashflow
 
-IMPORTANT:
+ * - Listen for actual Transaction creation
 
-This file does NOT modify:
+ * - Convert Income / Expense Transactions
 
-- Transaction
+ *   into Cashflow records
 
-- TransactionManager
+ *
 
-- TransactionService
-
-- TransactionController
-
-- TransactionFacade
-
-- TransactionRepository
-
-It also does NOT perform:
-
-- Tax calculations
-
-- Investment calculations
-
-- Cost basis calculations
-
-- Capital gain calculations
-
-- Loan calculations
-
-- Account balance calculations
-
-*/
+ */
 
 import EventBus
 
@@ -56,25 +34,9 @@ import EventTypes
 
     from "../events/eventTypes.js";
 
-/*
-
-IMPORTANT PATH
-
-modules is parallel to core.
-
-Therefore:
-
-core/integration
-
-        ↓
-
-../../modules/cashflow/api
-
-*/
-
 import cashflowAPI
 
-    from "../../modules/cashflow/api/cashflowAPI.js";
+    from "../modules/cashflow/api/cashflowAPI.js";
 
 const CashflowIntegration = {
 
@@ -144,25 +106,7 @@ const CashflowIntegration = {
 
             true;
 
-        return {
-
-            name:
-
-                this.name,
-
-            version:
-
-                this.version,
-
-            status:
-
-                "READY",
-
-            initialized:
-
-                true
-
-        };
+        return this.getStatus();
 
     },
 
@@ -426,7 +370,9 @@ const CashflowIntegration = {
 
                     line &&
 
-                    line.cashEffect === true &&
+                    line.cashEffect ===
+
+                        true &&
 
                     typeof line.amount ===
 
@@ -534,4 +480,6 @@ const CashflowIntegration = {
 
 };
 
-export default CashflowIntegration;
+export default
+
+    CashflowIntegration;
