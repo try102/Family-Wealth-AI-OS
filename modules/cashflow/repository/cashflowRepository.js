@@ -56,7 +56,7 @@
 
 import Database
 
-    from "../../../database/database.js";
+    from "../../../core/database/database.js";
 
 const STORAGE_KEY =
 
