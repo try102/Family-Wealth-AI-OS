@@ -66,7 +66,11 @@
 
 class AccountService {
 
-    constructor(accountManager) {
+    constructor(
+
+        accountManager
+
+    ) {
 
         if (!accountManager) {
 
@@ -86,29 +90,53 @@ class AccountService {
 
     // =====================================================
 
+    //
+
     // Create
+
+    //
 
     // =====================================================
 
-    createAccount(data = {}) {
+    createAccount(
+
+        data = {}
+
+    ) {
 
         return this.accountManager
 
-            .createAccount(data);
+            .createAccount(
+
+                data
+
+            );
 
     }
 
     // =====================================================
 
+    //
+
     // Read
+
+    //
 
     // =====================================================
 
-    getAccount(accountId) {
+    getAccount(
+
+        accountId
+
+    ) {
 
         return this.accountManager
 
-            .getAccount(accountId);
+            .getAccount(
+
+                accountId
+
+            );
 
     }
 
@@ -138,7 +166,11 @@ class AccountService {
 
     // =====================================================
 
+    //
+
     // Query
+
+    //
 
     // =====================================================
 
@@ -192,7 +224,11 @@ class AccountService {
 
     // =====================================================
 
+    //
+
     // Update
+
+    //
 
     // =====================================================
 
@@ -218,7 +254,11 @@ class AccountService {
 
     // =====================================================
 
+    //
+
     // Account Lifecycle
+
+    //
 
     // =====================================================
 
@@ -256,7 +296,11 @@ class AccountService {
 
     // =====================================================
 
+    //
+
     // Controlled Removal
+
+    //
 
     // =====================================================
 
@@ -278,7 +322,11 @@ class AccountService {
 
     // =====================================================
 
+    //
+
     // Serialization
+
+    //
 
     // =====================================================
 
@@ -292,7 +340,11 @@ class AccountService {
 
     // =====================================================
 
+    //
+
     // Load / Replace
+
+    //
 
     // =====================================================
 
@@ -316,20 +368,12 @@ class AccountService {
 
 /*
 
- * CommonJS export.
+ *
+
+ * ES Module Export
+
+ *
 
  */
 
-if (
-
-    typeof module !== "undefined" &&
-
-    module.exports
-
-) {
-
-    module.exports =
-
-        AccountService;
-
-}
+export default AccountService;
