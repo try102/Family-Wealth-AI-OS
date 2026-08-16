@@ -18,9 +18,13 @@
 
  * - Listen for actual Transaction creation
 
+ * - Synchronize existing Transactions into Cashflow
+
  * - Convert Income / Expense Transactions
 
  *   into Cashflow records
+
+ * - Prevent duplicate Cashflow records
 
  *
 
@@ -82,6 +86,16 @@ const CashflowIntegration = {
 
         }
 
+        /*
+
+         *
+
+         * Listen for NEW Transactions.
+
+         *
+
+         */
+
         this.transactionListener =
 
             transaction => {
@@ -102,11 +116,241 @@ const CashflowIntegration = {
 
         );
 
+        /*
+
+         *
+
+         * Synchronize EXISTING Transactions.
+
+         *
+
+         * This is important because Transactions
+
+         * may already exist before CashflowIntegration
+
+         * is initialized.
+
+         *
+
+         */
+
+        this.syncExistingTransactions();
+
         this.initialized =
 
             true;
 
         return this.getStatus();
+
+    },
+
+    // ==================================================
+
+    //
+
+    // Synchronize Existing Transactions
+
+    //
+
+    // ==================================================
+
+    syncExistingTransactions() {
+
+        /*
+
+         *
+
+         * Find the active Transaction system
+
+         * through the system registry.
+
+         *
+
+         * Cashflow Integration must not construct
+
+         * another Transaction system.
+
+         *
+
+         */
+
+        let transactions = [];
+
+        try {
+
+            /*
+
+             *
+
+             * Access ModuleRegistry dynamically
+
+             * to avoid creating a circular dependency
+
+             * during system bootstrap.
+
+             *
+
+             */
+
+            const moduleRegistryModule =
+
+                window.__FAMILY_WEALTH_MODULE_REGISTRY__;
+
+            if (
+
+                moduleRegistryModule &&
+
+                typeof moduleRegistryModule
+
+                    .get ===
+
+                    "function"
+
+            ) {
+
+                const transactionModule =
+
+                    moduleRegistryModule.get(
+
+                        "transaction"
+
+                    );
+
+                if (
+
+                    transactionModule &&
+
+                    typeof transactionModule
+
+                        .getAllTransactions ===
+
+                        "function"
+
+                ) {
+
+                    transactions =
+
+                        transactionModule
+
+                            .getAllTransactions();
+
+                }
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.warn(
+
+                "Cashflow Integration: existing Transaction synchronization unavailable.",
+
+                error
+
+            );
+
+        }
+
+        /*
+
+         *
+
+         * If the global registry bridge is unavailable,
+
+         * simply return.
+
+         *
+
+         *
+
+         * New Transaction events will still work.
+
+         *
+
+         */
+
+        if (
+
+            !Array.isArray(
+
+                transactions
+
+            )
+
+        ) {
+
+            return [];
+
+        }
+
+        const results = [];
+
+        transactions.forEach(
+
+            transaction => {
+
+                if (
+
+                    !transaction ||
+
+                    transaction.status ===
+
+                        "Voided"
+
+                ) {
+
+                    return;
+
+                }
+
+                /*
+
+                 *
+
+                 * Prevent duplicate Cashflow records.
+
+                 *
+
+                 */
+
+                if (
+
+                    this.cashflowAlreadyExists(
+
+                        transaction.id
+
+                    )
+
+                ) {
+
+                    return;
+
+                }
+
+                const result =
+
+                    this.handleTransactionCreated(
+
+                        transaction
+
+                    );
+
+                if (result) {
+
+                    results.push(
+
+                        result
+
+                    );
+
+                }
+
+            }
+
+        );
+
+        return results;
 
     },
 
@@ -140,11 +384,49 @@ const CashflowIntegration = {
 
         }
 
+        /*
+
+         *
+
+         * Voided Transactions must never
+
+         * become active Cashflow records.
+
+         *
+
+         */
+
+        if (
+
+            transaction.status ===
+
+                "Voided"
+
+        ) {
+
+            return null;
+
+        }
+
+        /*
+
+         *
+
+         * Only actual cash-flow-producing
+
+         * Income / Expense Transactions
+
+         * are processed here.
+
+         *
+
+         */
+
         if (
 
             transaction.type ===
 
-            "INCOME"
+                "INCOME"
 
         ) {
 
@@ -160,7 +442,7 @@ const CashflowIntegration = {
 
             transaction.type ===
 
-            "EXPENSE"
+                "EXPENSE"
 
         ) {
 
@@ -172,7 +454,79 @@ const CashflowIntegration = {
 
         }
 
+        /*
+
+         *
+
+         * Transfer, Investment Buy,
+
+         * Investment Sell, etc. are not
+
+         * treated as ordinary income / expense
+
+         * by this integration.
+
+         *
+
+         */
+
         return null;
+
+    },
+
+    // ==================================================
+
+    //
+
+    // Check Existing Cashflow
+
+    //
+
+    // ==================================================
+
+    cashflowAlreadyExists(
+
+        transactionId
+
+    ) {
+
+        if (!transactionId) {
+
+            return false;
+
+        }
+
+        const cashflows =
+
+            cashflowAPI
+
+                .getCashflows();
+
+        if (
+
+            !Array.isArray(
+
+                cashflows
+
+            )
+
+        ) {
+
+            return false;
+
+        }
+
+        return cashflows.some(
+
+            cashflow =>
+
+                cashflow &&
+
+                cashflow.transactionId ===
+
+                    transactionId
+
+        );
 
     },
 
@@ -191,6 +545,30 @@ const CashflowIntegration = {
         transaction
 
     ) {
+
+        /*
+
+         *
+
+         * Prevent duplicate creation.
+
+         *
+
+         */
+
+        if (
+
+            this.cashflowAlreadyExists(
+
+                transaction.id
+
+            )
+
+        ) {
+
+            return null;
+
+        }
 
         const line =
 
@@ -269,6 +647,30 @@ const CashflowIntegration = {
         transaction
 
     ) {
+
+        /*
+
+         *
+
+         * Prevent duplicate creation.
+
+         *
+
+         */
+
+        if (
+
+            this.cashflowAlreadyExists(
+
+                transaction.id
+
+            )
+
+        ) {
+
+            return null;
+
+        }
 
         const line =
 
@@ -388,7 +790,9 @@ const CashflowIntegration = {
 
         if (
 
-            cashLines.length === 0
+            cashLines.length ===
+
+                0
 
         ) {
 
