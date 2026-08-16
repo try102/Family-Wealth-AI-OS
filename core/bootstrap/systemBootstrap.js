@@ -122,7 +122,21 @@ import AccountIntegration
 
 //
 
-// Transaction
+// Transaction Module
+
+//
+
+// ==================================================
+
+import TransactionModule
+
+    from "../../transaction/transactionModule.js";
+
+// ==================================================
+
+//
+
+// Transaction Integration
 
 //
 
@@ -163,6 +177,20 @@ import CashflowIntegration
 const taxModule =
 
     new TaxFacade();
+
+// ==================================================
+
+//
+
+// Transaction Instance
+
+//
+
+// ==================================================
+
+const transactionModule =
+
+    new TransactionModule();
 
 // ==================================================
 
@@ -299,6 +327,24 @@ const SystemBootstrap = {
         //
 
         // ==================================================
+
+        /*
+
+         *
+
+         * Connect the real Transaction Facade
+
+         * to the system-level Integration boundary.
+
+         *
+
+         */
+
+        TransactionIntegration.setFacade(
+
+            transactionModule.getFacade()
+
+        );
 
         ModuleRegistry.register(
 
