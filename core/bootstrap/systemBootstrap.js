@@ -328,18 +328,6 @@ const SystemBootstrap = {
 
         // ==================================================
 
-        /*
-
-         *
-
-         * Connect the real Transaction Facade
-
-         * to the system-level Integration boundary.
-
-         *
-
-         */
-
         TransactionIntegration.setFacade(
 
             transactionModule.getFacade()
@@ -364,43 +352,71 @@ const SystemBootstrap = {
 
         //
 
+        // IMPORTANT:
+
+        //
+
+        // CashflowIntegration MUST receive
+
+        // the REAL TransactionManager.
+
+        //
+
+        // Otherwise existing Transactions
+
+        // cannot be synchronized into Cashflow.
+
+        //
+
         // ==================================================
 
-        /*
+        const transactionManager =
 
-         *
+            transactionModule.getManager();
 
-         * IMPORTANT:
+        console.log(
 
-         *
+            "Transaction Manager:",
 
-         * CashflowIntegration must receive the
+            transactionManager
 
-         * REAL TransactionManager.
+        );
 
-         *
+        const existingTransactions =
 
-         * This allows it to synchronize existing
+            transactionManager
 
-         * Transactions during system startup.
+                .getAllTransactions();
 
-         *
+        console.log(
 
-         */
+            "Existing Transactions:",
 
-        const cashflowIntegrationStatus =
+            existingTransactions
+
+        );
+
+        console.log(
+
+            "Existing Transaction Count:",
+
+            existingTransactions.length
+
+        );
+
+        const cashflowStatus =
 
             CashflowIntegration.initialize(
 
-                transactionModule.getManager()
+                transactionManager
 
             );
 
         console.log(
 
-            "Cashflow Integration Status:",
+            "Cashflow Integration:",
 
-            cashflowIntegrationStatus
+            cashflowStatus
 
         );
 
@@ -494,6 +510,54 @@ const SystemBootstrap = {
 
         //
 
+        // Final Transaction Status
+
+        //
+
+        // ==================================================
+
+        const transactionStatus =
+
+            transactionModule
+
+                .getStatus();
+
+        console.log(
+
+            "Transaction Status:",
+
+            transactionStatus
+
+        );
+
+        // ==================================================
+
+        //
+
+        // Final Cashflow Status
+
+        //
+
+        // ==================================================
+
+        const finalCashflowStatus =
+
+            CashflowIntegration
+
+                .getStatus();
+
+        console.log(
+
+            "Cashflow Status:",
+
+            finalCashflowStatus
+
+        );
+
+        // ==================================================
+
+        //
+
         // Ready
 
         //
@@ -508,7 +572,15 @@ const SystemBootstrap = {
 
             advisor:
 
-                Advisor.name
+                Advisor.name,
+
+            transaction:
+
+                transactionStatus,
+
+            cashflow:
+
+                finalCashflowStatus
 
         };
 
