@@ -1,5 +1,7 @@
 /*
 
+ *
+
  * Family Wealth AI OS V7
 
  *
@@ -36,7 +38,7 @@ import EventTypes
 
 import cashflowAPI
 
-    from "../modules/cashflow/api/cashflowAPI.js";
+    from "../../modules/cashflow/api/cashflowAPI.js";
 
 const CashflowIntegration = {
 
@@ -62,7 +64,11 @@ const CashflowIntegration = {
 
     // =====================================================
 
+    //
+
     // Initialize
+
+    //
 
     // =====================================================
 
@@ -126,7 +132,11 @@ const CashflowIntegration = {
 
     // =====================================================
 
+    //
+
     // Handle Transaction Created
+
+    //
 
     // =====================================================
 
@@ -188,7 +198,11 @@ const CashflowIntegration = {
 
     // =====================================================
 
+    //
+
     // Income
+
+    //
 
     // =====================================================
 
@@ -262,7 +276,11 @@ const CashflowIntegration = {
 
     // =====================================================
 
+    //
+
     // Expense
+
+    //
 
     // =====================================================
 
@@ -336,7 +354,11 @@ const CashflowIntegration = {
 
     // =====================================================
 
+    //
+
     // Get Primary Cash Line
+
+    //
 
     // =====================================================
 
@@ -398,7 +420,11 @@ const CashflowIntegration = {
 
     // =====================================================
 
+    //
+
     // Status
+
+    //
 
     // =====================================================
 
@@ -432,7 +458,11 @@ const CashflowIntegration = {
 
     // =====================================================
 
+    //
+
     // Shutdown
+
+    //
 
     // =====================================================
 
@@ -468,4 +498,6 @@ const CashflowIntegration = {
 
 };
 
-export default CashflowIntegration;
+export default
+
+    CashflowIntegration;
