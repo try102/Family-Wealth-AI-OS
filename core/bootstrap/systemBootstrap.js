@@ -136,25 +136,19 @@ import TransactionIntegration
 
 //
 
-// IMPORTANT:
+// Cashflow Integration
 
 //
 
-// CashflowIntegration is temporarily NOT imported.
-
-//
-
-// This isolates Cashflow Integration from the
-
-// system startup chain.
-
-//
-
-// Account and Transaction remain unchanged.
+// Transaction → EventBus → Cashflow
 
 //
 
 // ==================================================
+
+import CashflowIntegration
+
+    from "../integration/cashflowIntegration.js";
 
 // ==================================================
 
@@ -324,21 +318,9 @@ const SystemBootstrap = {
 
         //
 
-        // TEMPORARILY DISABLED
-
-        //
-
-        // Cashflow Module itself remains registered above.
-
-        // Only the Transaction → Cashflow event bridge
-
-        // is isolated for diagnosis.
-
-        //
-
         // ==================================================
 
-        // CashflowIntegration.initialize();
+        CashflowIntegration.initialize();
 
         // ==================================================
 
