@@ -28,13 +28,27 @@
 
  *
 
- * IMPORTANT:
+ * Architecture:
 
  *
 
- * This Repository uses the existing
+ * CashflowService
 
- * Family Wealth AI OS Database Core.
+ *        ↓
+
+ * CashflowRepository
+
+ *        ↓
+
+ * Database
+
+ *        ↓
+
+ * StorageAdapter
+
+ *        ↓
+
+ * localStorage
 
  *
 
@@ -44,9 +58,9 @@ import Database
 
     from "../../database/database.js";
 
-const TABLE =
+const STORAGE_KEY =
 
-    "cashflows";
+    "wealth_cashflows_v7";
 
 const cashflowRepository = {
 
@@ -58,7 +72,7 @@ const cashflowRepository = {
 
     //
 
-    // Internal Load
+    // Load Records
 
     //
 
@@ -66,29 +80,29 @@ const cashflowRepository = {
 
     loadRecords(){
 
-        const records =
+        const data =
 
             Database.load(
 
-                TABLE
+                STORAGE_KEY
 
             );
 
         if(
 
-            Array.isArray(
+            !Array.isArray(
 
-                records
+                data
 
             )
 
         ){
 
-            return records;
+            return [];
 
         }
 
-        return [];
+        return data;
 
     },
 
@@ -96,7 +110,7 @@ const cashflowRepository = {
 
     //
 
-    // Internal Save
+    // Save Records
 
     //
 
@@ -108,13 +122,15 @@ const cashflowRepository = {
 
     ){
 
-        return Database.save(
+        Database.save(
 
-            TABLE,
+            STORAGE_KEY,
 
             records
 
         );
+
+        return true;
 
     },
 
@@ -212,6 +228,16 @@ const cashflowRepository = {
 
     ){
 
+        if(
+
+            !id
+
+        ){
+
+            return null;
+
+        }
+
         const records =
 
             this.loadRecords();
@@ -220,11 +246,11 @@ const cashflowRepository = {
 
             records.find(
 
-                item =>
+                record =>
 
                     String(
 
-                        item.id
+                        record.id
 
                     ) ===
 
@@ -258,6 +284,16 @@ const cashflowRepository = {
 
     ){
 
+        if(
+
+            !id
+
+        ){
+
+            return null;
+
+        }
+
         const records =
 
             this.loadRecords();
@@ -266,11 +302,11 @@ const cashflowRepository = {
 
             records.findIndex(
 
-                item =>
+                record =>
 
                     String(
 
-                        item.id
+                        record.id
 
                     ) ===
 
@@ -292,23 +328,23 @@ const cashflowRepository = {
 
         }
 
+        const existing =
+
+            records[index];
+
         const updated = {
 
-            ...records[index],
+            ...existing,
 
             ...data,
 
             id:
 
-                records[index]
-
-                    .id,
+                existing.id,
 
             createdAt:
 
-                records[index]
-
-                    .createdAt,
+                existing.createdAt,
 
             updatedAt:
 
@@ -348,6 +384,16 @@ const cashflowRepository = {
 
     ){
 
+        if(
+
+            !id
+
+        ){
+
+            return false;
+
+        }
+
         const records =
 
             this.loadRecords();
@@ -356,11 +402,11 @@ const cashflowRepository = {
 
             records.findIndex(
 
-                item =>
+                record =>
 
                     String(
 
-                        item.id
+                        record.id
 
                     ) ===
 
