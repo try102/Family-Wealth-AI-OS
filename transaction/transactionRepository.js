@@ -1,12 +1,18 @@
 /**
 
+ *
+
  * Family Wealth AI OS V7
+
+ *
 
  * Transaction Repository
 
  *
 
  * Responsibility:
+
+ *
 
  * - Persist Transaction data
 
@@ -16,53 +22,15 @@
 
  *
 
- * TransactionRepository does NOT perform:
-
- * - Tax calculations
-
- * - Investment calculations
-
- * - Cost basis calculations
-
- * - Capital gain calculations
-
- * - Cash Flow calculations
-
- * - Account balance calculations
-
- *
-
- * Architecture:
-
- *
-
- * TransactionService
-
- *        ↓
-
- * TransactionManager
-
- *        ↓
-
- * TransactionRepository
-
- *        ↓
-
- * DataService
-
- *
-
- * TransactionRepository is the persistence boundary.
-
  */
 
-const DataService =
+import DataService
 
-    require("../core/database/dataService");
+    from "../core/database/dataService.js";
 
-const Transaction =
+import Transaction
 
-    require("./transaction");
+    from "./transaction.js";
 
 const TRANSACTION_KEY =
 
@@ -70,17 +38,15 @@ const TRANSACTION_KEY =
 
 const TransactionRepository = {
 
-    /**
+    // =====================================================
 
-     * Load all Transactions.
+    //
 
-     *
+    // Load All Transactions
 
-     * Stored data is converted back into
+    //
 
-     * Transaction objects.
-
-     */
+    // =====================================================
 
     getTransactions() {
 
@@ -116,13 +82,21 @@ const TransactionRepository = {
 
     },
 
-    /**
+    // =====================================================
 
-     * Get one Transaction by ID.
+    //
 
-     */
+    // Get One Transaction
 
-    getTransaction(transactionId) {
+    //
+
+    // =====================================================
+
+    getTransaction(
+
+        transactionId
+
+    ) {
 
         if (!transactionId) {
 
@@ -132,7 +106,9 @@ const TransactionRepository = {
 
         return (
 
-            this.getTransactions()
+            this
+
+                .getTransactions()
 
                 .find(
 
@@ -148,23 +124,15 @@ const TransactionRepository = {
 
     },
 
-    /**
+    // =====================================================
 
-     * Save one Transaction.
+    //
 
-     *
+    // Save One Transaction
 
-     * Existing Transaction:
+    //
 
-     *   Update
-
-     *
-
-     * New Transaction:
-
-     *   Insert
-
-     */
+    // =====================================================
 
     saveTransaction(
 
@@ -260,11 +228,15 @@ const TransactionRepository = {
 
     },
 
-    /**
+    // =====================================================
 
-     * Save multiple Transactions.
+    //
 
-     */
+    // Save Multiple Transactions
+
+    //
+
+    // =====================================================
 
     saveTransactions(
 
@@ -272,7 +244,15 @@ const TransactionRepository = {
 
     ) {
 
-        if (!Array.isArray(transactions)) {
+        if (
+
+            !Array.isArray(
+
+                transactions
+
+            )
+
+        ) {
 
             throw new Error(
 
@@ -340,23 +320,15 @@ const TransactionRepository = {
 
     },
 
-    /**
+    // =====================================================
 
-     * Delete one Transaction.
+    //
 
-     *
+    // Delete One Transaction
 
-     * Normally Actual Transactions should
+    //
 
-     * be voided rather than deleted.
-
-     *
-
-     * This method exists only for controlled
-
-     * data maintenance.
-
-     */
+    // =====================================================
 
     deleteTransaction(
 
@@ -416,23 +388,15 @@ const TransactionRepository = {
 
     },
 
-    /**
+    // =====================================================
 
-     * Replace all stored Transactions.
+    //
 
-     *
+    // Replace All Transactions
 
-     * Used for:
+    //
 
-     * - Import
-
-     * - Migration
-
-     * - Restore
-
-     * - Controlled synchronization
-
-     */
+    // =====================================================
 
     replaceTransactions(
 
@@ -448,17 +412,15 @@ const TransactionRepository = {
 
     },
 
-    /**
+    // =====================================================
 
-     * Clear all Transaction data.
+    //
 
-     *
+    // Clear Transactions
 
-     * Intended only for controlled
+    //
 
-     * development / maintenance operations.
-
-     */
+    // =====================================================
 
     clearTransactions() {
 
@@ -476,6 +438,16 @@ const TransactionRepository = {
 
 };
 
-module.exports =
+// =====================================================
+
+//
+
+// ES Module Export
+
+//
+
+// =====================================================
+
+export default
 
     TransactionRepository;
