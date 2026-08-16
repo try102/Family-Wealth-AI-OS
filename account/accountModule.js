@@ -98,11 +98,7 @@ class AccountModule {
 
         /*
 
-         *
-
          * Persistence layer
-
-         *
 
          */
 
@@ -112,11 +108,7 @@ class AccountModule {
 
         /*
 
-         *
-
          * Account management layer
-
-         *
 
          */
 
@@ -130,11 +122,7 @@ class AccountModule {
 
         /*
 
-         *
-
          * Business-facing service layer
-
-         *
 
          */
 
@@ -148,11 +136,7 @@ class AccountModule {
 
         /*
 
-         *
-
          * Application/API boundary
-
-         *
 
          */
 
@@ -166,11 +150,7 @@ class AccountModule {
 
         /*
 
-         *
-
          * Stable system-level entry point
-
-         *
 
          */
 
@@ -186,11 +166,7 @@ class AccountModule {
 
     // =====================================================
 
-    //
-
     // System Entry Point
-
-    //
 
     // =====================================================
 
@@ -202,15 +178,11 @@ class AccountModule {
 
     // =====================================================
 
-    //
-
     // Direct Access
 
     //
 
     // Primarily used for:
-
-    //
 
     // - System initialization
 
@@ -223,8 +195,6 @@ class AccountModule {
     // Higher-level business modules should normally
 
     // use the facade.
-
-    //
 
     // =====================================================
 
@@ -254,11 +224,7 @@ class AccountModule {
 
     // =====================================================
 
-    //
-
     // System Status
-
-    //
 
     // =====================================================
 
@@ -314,14 +280,10 @@ class AccountModule {
 
 }
 
-/*
+// =====================================================
 
- *
+// ES Module Export
 
- * ES Module Export
-
- *
-
- */
+// =====================================================
 
 export default AccountModule;
