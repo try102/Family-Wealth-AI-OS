@@ -372,6 +372,46 @@ const SystemBootstrap = {
 
         //
 
+        // Synchronize Existing Transactions
+
+        //
+
+        // Transaction → Cashflow
+
+        //
+
+        // ==================================================
+
+        const existingTransactions =
+
+            transactionModule
+
+                .getManager()
+
+                .getAllTransactions();
+
+        const cashflowSyncResult =
+
+            CashflowIntegration
+
+                .synchronizeTransactions(
+
+                    existingTransactions
+
+                );
+
+        console.log(
+
+            "Cashflow Transaction Sync:",
+
+            cashflowSyncResult
+
+        );
+
+        // ==================================================
+
+        //
+
         // Engines
 
         //
@@ -472,7 +512,11 @@ const SystemBootstrap = {
 
             advisor:
 
-                Advisor.name
+                Advisor.name,
+
+            cashflowSync:
+
+                cashflowSyncResult
 
         };
 
