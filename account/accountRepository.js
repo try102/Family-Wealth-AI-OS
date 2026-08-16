@@ -16,57 +16,29 @@
 
  *
 
- * AccountRepository does NOT perform:
-
- * - Transaction calculations
-
- * - Cash Flow calculations
-
- * - Investment calculations
-
- * - Asset calculations
-
- * - Liability calculations
-
- * - Tax calculations
-
- * - Retirement calculations
-
- * - Advisor logic
-
- *
-
  * Architecture:
 
  *
 
- * AccountService
-
- *        ↓
-
  * AccountManager
 
- *        ↓
+ *      ↓
 
  * AccountRepository
 
- *        ↓
+ *      ↓
 
  * DataService
 
- *
-
- * AccountRepository is the persistence boundary.
-
  */
 
-const DataService =
+import DataService
 
-    require("../core/database/dataService");
+    from "../core/database/dataService.js";
 
-const Account =
+import Account
 
-    require("./account");
+    from "./account.js";
 
 const ACCOUNT_KEY =
 
@@ -74,17 +46,11 @@ const ACCOUNT_KEY =
 
 const AccountRepository = {
 
-    /**
+    // =====================================================
 
-     * Load all Accounts.
+    // Load All Accounts
 
-     *
-
-     * Stored plain objects are converted back
-
-     * into Account objects.
-
-     */
+    // =====================================================
 
     getAccounts() {
 
@@ -120,11 +86,11 @@ const AccountRepository = {
 
     },
 
-    /**
+    // =====================================================
 
-     * Get one Account by ID.
+    // Get One Account
 
-     */
+    // =====================================================
 
     getAccount(
 
@@ -156,23 +122,11 @@ const AccountRepository = {
 
     },
 
-    /**
+    // =====================================================
 
-     * Save one Account.
+    // Save One Account
 
-     *
-
-     * Existing Account:
-
-     *   Update
-
-     *
-
-     * New Account:
-
-     *   Insert
-
-     */
+    // =====================================================
 
     saveAccount(
 
@@ -268,11 +222,11 @@ const AccountRepository = {
 
     },
 
-    /**
+    // =====================================================
 
-     * Save multiple Accounts.
+    // Save Multiple Accounts
 
-     */
+    // =====================================================
 
     saveAccounts(
 
@@ -348,25 +302,11 @@ const AccountRepository = {
 
     },
 
-    /**
+    // =====================================================
 
-     * Delete one Account.
+    // Delete One Account
 
-     *
-
-     * Normally Accounts should be closed rather
-
-     * than deleted because Transactions may
-
-     * continue to reference the Account ID.
-
-     *
-
-     * This method exists only for controlled
-
-     * data maintenance.
-
-     */
+    // =====================================================
 
     deleteAccount(
 
@@ -426,23 +366,11 @@ const AccountRepository = {
 
     },
 
-    /**
+    // =====================================================
 
-     * Replace all stored Accounts.
+    // Replace All Accounts
 
-     *
-
-     * Used for:
-
-     * - Import
-
-     * - Migration
-
-     * - Restore
-
-     * - Controlled synchronization
-
-     */
+    // =====================================================
 
     replaceAccounts(
 
@@ -458,17 +386,11 @@ const AccountRepository = {
 
     },
 
-    /**
+    // =====================================================
 
-     * Clear all Account data.
+    // Clear
 
-     *
-
-     * Intended only for controlled
-
-     * development / maintenance operations.
-
-     */
+    // =====================================================
 
     clearAccounts() {
 
@@ -486,22 +408,10 @@ const AccountRepository = {
 
 };
 
-/*
+// =====================================================
 
- * CommonJS export.
+// ES Module Export
 
- */
+// =====================================================
 
-if (
-
-    typeof module !== "undefined" &&
-
-    module.exports
-
-) {
-
-    module.exports =
-
-        AccountRepository;
-
-}
+export default AccountRepository;
