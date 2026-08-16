@@ -1,12 +1,18 @@
 /**
 
+ *
+
  * Family Wealth AI OS V7
+
+ *
 
  * Transaction Model
 
  *
 
  * Responsibility:
+
+ *
 
  * - Define the system-level Transaction structure
 
@@ -26,6 +32,8 @@
 
  * Transaction does NOT perform:
 
+ *
+
  * - Account balance calculation
 
  * - Investment calculations
@@ -41,54 +49,6 @@
  * - Cash Flow calculations
 
  *
-
- * Relationship:
-
- *
-
- * Account
-
- *    ↓
-
- * accountId
-
- *    ↓
-
- * Transaction
-
- *    ├── Financial Lines
-
- *    └── Business Details
-
- *
-
- * Business Details may contain:
-
- * - Investment
-
- * - Liability
-
- * - Income
-
- * - Expense
-
- * - Asset
-
- * - Tax
-
- * - Interest
-
- *
-
- * IMPORTANT:
-
- * One Transaction represents one economic event.
-
- *
-
- * One actual account cash movement is represented by
-
- * one Financial Line.
 
  */
 
@@ -132,49 +92,17 @@ class Transaction {
 
             "";
 
-        /*
-
-         * Identifies how the Transaction entered
-
-         * the system.
-
-         */
-
         this.source =
 
             data.source ||
 
             "Manual";
 
-        /*
-
-         * External transaction identifier.
-
-         *
-
-         * Used primarily for:
-
-         * - Import
-
-         * - Synchronization
-
-         * - Duplicate detection
-
-         */
-
         this.externalId =
 
             data.externalId ||
 
             "";
-
-        /*
-
-         * Financial Lines represent actual
-
-         * account-level financial movement.
-
-         */
 
         this.lines =
 
@@ -190,25 +118,13 @@ class Transaction {
 
                 : [];
 
-        /*
-
-         * Business Details describe what the
-
-         * transaction means from a business
-
-         * perspective.
-
-         *
-
-         * These are not account movements.
-
-         */
-
         this.businessDetails =
 
             data.businessDetails &&
 
-            typeof data.businessDetails === "object"
+            typeof data.businessDetails === "object" &&
+
+            !Array.isArray(data.businessDetails)
 
                 ? Transaction.normalizeBusinessDetails(
 
@@ -232,11 +148,15 @@ class Transaction {
 
     }
 
-    /**
+    // =====================================================
 
-     * Generate a stable unique Transaction ID.
+    //
 
-     */
+    // Generate Transaction ID
+
+    //
+
+    // =====================================================
 
     static generateId() {
 
@@ -258,11 +178,15 @@ class Transaction {
 
     }
 
-    /**
+    // =====================================================
 
-     * Supported Transaction Types.
+    //
 
-     */
+    // Transaction Types
+
+    //
+
+    // =====================================================
 
     static getTransactionTypes() {
 
@@ -298,11 +222,15 @@ class Transaction {
 
     }
 
-    /**
+    // =====================================================
 
-     * Supported Transaction Status values.
+    //
 
-     */
+    // Status
+
+    //
+
+    // =====================================================
 
     static getStatuses() {
 
@@ -318,11 +246,15 @@ class Transaction {
 
     }
 
-    /**
+    // =====================================================
 
-     * Supported Transaction Sources.
+    //
 
-     */
+    // Sources
+
+    //
+
+    // =====================================================
 
     static getSources() {
 
@@ -344,11 +276,15 @@ class Transaction {
 
     }
 
-    /**
+    // =====================================================
 
-     * Supported Financial Line Types.
+    //
 
-     */
+    // Financial Line Types
+
+    //
+
+    // =====================================================
 
     static getLineTypes() {
 
@@ -372,11 +308,15 @@ class Transaction {
 
     }
 
-    /**
+    // =====================================================
 
-     * Supported Line Directions.
+    //
 
-     */
+    // Directions
+
+    //
+
+    // =====================================================
 
     static getDirections() {
 
@@ -390,31 +330,15 @@ class Transaction {
 
     }
 
-    /**
+    // =====================================================
 
-     * Normalize one Financial Line.
+    //
 
-     *
+    // Normalize Financial Line
 
-     * Financial Lines remain simple.
+    //
 
-     *
-
-     * Business-specific calculations such as:
-
-     * - principal
-
-     * - interest
-
-     * - cost basis
-
-     * - capital gain
-
-     *
-
-     * do NOT belong here.
-
-     */
+    // =====================================================
 
     static normalizeLine(line = {}) {
 
@@ -474,11 +398,15 @@ class Transaction {
 
     }
 
-    /**
+    // =====================================================
 
-     * Generate a unique Financial Line ID.
+    //
 
-     */
+    // Generate Financial Line ID
+
+    //
+
+    // =====================================================
 
     static generateLineId() {
 
@@ -500,35 +428,15 @@ class Transaction {
 
     }
 
-    /**
+    // =====================================================
 
-     * Normalize Business Details.
+    //
 
-     *
+    // Normalize Business Details
 
-     * Business Details remain flexible so that
+    //
 
-     * business systems can evolve independently.
-
-     *
-
-     * Supported domains:
-
-     * - investment
-
-     * - liability
-
-     * - income
-
-     * - expense
-
-     * - asset
-
-     * - tax
-
-     * - interest
-
-     */
+    // =====================================================
 
     static normalizeBusinessDetails(
 
@@ -542,7 +450,9 @@ class Transaction {
 
             details.investment &&
 
-            typeof details.investment === "object"
+            typeof details.investment === "object" &&
+
+            !Array.isArray(details.investment)
 
         ) {
 
@@ -558,7 +468,9 @@ class Transaction {
 
             details.liability &&
 
-            typeof details.liability === "object"
+            typeof details.liability === "object" &&
+
+            !Array.isArray(details.liability)
 
         ) {
 
@@ -574,7 +486,9 @@ class Transaction {
 
             details.income &&
 
-            typeof details.income === "object"
+            typeof details.income === "object" &&
+
+            !Array.isArray(details.income)
 
         ) {
 
@@ -590,7 +504,9 @@ class Transaction {
 
             details.expense &&
 
-            typeof details.expense === "object"
+            typeof details.expense === "object" &&
+
+            !Array.isArray(details.expense)
 
         ) {
 
@@ -606,7 +522,9 @@ class Transaction {
 
             details.asset &&
 
-            typeof details.asset === "object"
+            typeof details.asset === "object" &&
+
+            !Array.isArray(details.asset)
 
         ) {
 
@@ -618,25 +536,13 @@ class Transaction {
 
         }
 
-        /*
-
-         * Tax business details.
-
-         *
-
-         * Tax calculations do NOT belong here.
-
-         * This stores the tax-related meaning
-
-         * of an Actual Transaction.
-
-         */
-
         if (
 
             details.tax &&
 
-            typeof details.tax === "object"
+            typeof details.tax === "object" &&
+
+            !Array.isArray(details.tax)
 
         ) {
 
@@ -648,39 +554,13 @@ class Transaction {
 
         }
 
-        /*
-
-         * Interest business details.
-
-         *
-
-         * Interest may originate from:
-
-         * - Bank account
-
-         * - Savings
-
-         * - CD
-
-         * - Bond
-
-         * - Investment
-
-         * - Other financial instruments
-
-         *
-
-         * Interest calculation remains outside
-
-         * Transaction.
-
-         */
-
         if (
 
             details.interest &&
 
-            typeof details.interest === "object"
+            typeof details.interest === "object" &&
+
+            !Array.isArray(details.interest)
 
         ) {
 
@@ -696,21 +576,19 @@ class Transaction {
 
     }
 
-    /**
+    // =====================================================
 
-     * Validate Transaction data.
+    //
 
-     */
+    // Validate
+
+    //
+
+    // =====================================================
 
     validate() {
 
         const errors = [];
-
-        /*
-
-         * Transaction type
-
-         */
 
         if (
 
@@ -744,12 +622,6 @@ class Transaction {
 
         }
 
-        /*
-
-         * Date
-
-         */
-
         if (!this.date) {
 
             errors.push(
@@ -776,12 +648,6 @@ class Transaction {
 
         }
 
-        /*
-
-         * Status
-
-         */
-
         if (
 
             !Transaction
@@ -800,12 +666,6 @@ class Transaction {
 
         }
 
-        /*
-
-         * Currency
-
-         */
-
         if (
 
             !this.currency ||
@@ -821,12 +681,6 @@ class Transaction {
             );
 
         }
-
-        /*
-
-         * Source
-
-         */
 
         if (
 
@@ -845,12 +699,6 @@ class Transaction {
             );
 
         }
-
-        /*
-
-         * Financial Lines
-
-         */
 
         if (!Array.isArray(this.lines)) {
 
@@ -942,12 +790,6 @@ class Transaction {
 
         }
 
-        /*
-
-         * Business Details
-
-         */
-
         if (
 
             this.businessDetails === null ||
@@ -978,11 +820,15 @@ class Transaction {
 
     }
 
-    /**
+    // =====================================================
 
-     * Normalize Transaction values.
+    //
 
-     */
+    // Normalize Transaction
+
+    //
+
+    // =====================================================
 
     normalize() {
 
@@ -1088,13 +934,15 @@ class Transaction {
 
     }
 
-    /**
+    // =====================================================
 
-     * Return the standard Transaction
+    //
 
-     * data structure.
+    // Serialization
 
-     */
+    //
+
+    // =====================================================
 
     toJSON() {
 
@@ -1144,13 +992,11 @@ class Transaction {
 
                 ),
 
-            businessDetails:
+            businessDetails: {
 
-                {
+                ...this.businessDetails
 
-                    ...this.businessDetails
-
-                },
+            },
 
             createdAt:
 
@@ -1166,20 +1012,16 @@ class Transaction {
 
 }
 
-/*
+// =====================================================
 
- * CommonJS export.
+//
 
- */
+// ES Module Export
 
-if (
+//
 
-    typeof module !== "undefined" &&
+// =====================================================
 
-    module.exports
+export default
 
-) {
-
-    module.exports = Transaction;
-
-}
+    Transaction;
