@@ -28,6 +28,8 @@ import cashflowAPI from "../modules/cashflow/api/cashflowAPI.js";
 
 import TaxDataIntegration from "../core/integration/taxDataIntegration.js";
 
+import { computeAdvisorModels } from "./advisorModels.js";
+
 import RetirementAPI from "../modules/retirement/api/retirementAPI.js";
 
 import { t, getLanguage, setLanguage, languageOptions } from "../core/i18n/i18n.js";
@@ -324,6 +326,138 @@ const AdvisorView = {
 
             );
 
+        const positions =
+
+            safe(
+
+                () => InvestmentAPI.getPositions(),
+
+                []
+
+            );
+
+        const portfolioTotal =
+
+            Number(portfolio?.totalValue || 0);
+
+        const largestHoldingWeight =
+
+            portfolioTotal > 0 &&
+
+            positions.length
+
+            ? Math.max(
+
+                ...positions.map(
+
+                    position =>
+
+                        Number(position.marketValue || 0) /
+
+                        portfolioTotal *
+
+                        100
+
+                )
+
+            )
+
+            : 0;
+
+        const profile =
+
+            safe(
+
+                () => RetirementAPI.getProfile(),
+
+                null
+
+            );
+
+        const models =
+
+            computeAdvisorModels({
+
+                accountsTotal,
+
+                investmentsTotal:
+
+                    portfolioTotal,
+
+                assetsTotal:
+
+                    Math.max(
+
+                        0,
+
+                        totalAssets -
+
+                        accountsTotal -
+
+                        portfolioTotal
+
+                    ),
+
+                largestHoldingWeight,
+
+                age:
+
+                    Number(profile?.currentAge || 0),
+
+                annualExpense:
+
+                    Number(
+
+                        retirement?.annualExpenseUsed ||
+
+                        retirement?.recentAnnualExpense ||
+
+                        cashFlowData.expense ||
+
+                        0
+
+                    ),
+
+                liquidityMonths,
+
+                debts:
+
+                    liabilities.map(
+
+                        item => ({
+
+                            name:
+
+                                item.name ||
+
+                                item.type ||
+
+                                "Debt",
+
+                            balance:
+
+                                Number(
+
+                                    item.currentBalance ??
+
+                                    item.balance ??
+
+                                    item.amount ??
+
+                                    0
+
+                                ),
+
+                            rate:
+
+                                Number(item.interestRate || 0)
+
+                        })
+
+                    )
+
+            });
+
         return {
 
             wealthResult,
@@ -340,7 +474,9 @@ const AdvisorView = {
 
             taxData,
 
-            portfolio
+            portfolio,
+
+            models
 
         };
 
@@ -523,6 +659,46 @@ const AdvisorView = {
                         }
 
                     </ul>
+
+                </section>
+
+                <section>
+
+                    <h3>
+
+                        ${t("advisor.modelsTitle")}
+
+                    </h3>
+
+                    ${
+
+                        (data.models || []).map(
+
+                            model => `
+
+                    <div style="border:1px solid #ddd;border-radius:8px;padding:10px;margin:8px 0;">
+
+                        <strong>${model.status === "good" ? "✅" : model.status === "warn" ? "⚠️" : model.status === "alert" ? "🔴" : "ℹ️"} ${t("advisor.model." + model.id + ".name")}</strong>
+
+                        <span> — ${t("advisor.status." + model.status)}</span><br>
+
+                        <small>${t("advisor.model." + model.id + ".theory")}</small><br>
+
+                        ${t("advisor.adv." + model.adviceCode, model.params)}
+
+                    </div>
+
+                            `
+
+                        ).join("")
+
+                    }
+
+                    <p>
+
+                        <small>${t("advisor.behaviorNote")}</small>
+
+                    </p>
 
                 </section>
 
