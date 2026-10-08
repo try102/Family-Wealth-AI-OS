@@ -132,7 +132,8 @@ const DICTIONARY = {
         "taxsum.title": "系统数据汇总（{year}）", "taxsum.wage": "工资/业务收入（Income 模块）：",
         "taxsum.dividends": "股息：", "taxsum.interestSep": "　利息：", "taxsum.gains": "资本利得（资产出售）：",
         "taxsum.mortgage": "房贷利息已付（可抵扣参考）：", "taxsum.paidSep": "　已缴税款：",
-        "taxsum.total": "合计收入（已自动填入 Income）："
+        "taxsum.total": "合计收入（已自动填入 Income）：",
+        "dash.advisorLabel": "顾问", "advisor.productName": "家庭财富顾问 AI V7"
     },
     "zh-TW": {
         "common.back": "← 返回首頁", "common.language": "語言", "common.save": "保存", "common.cancel": "取消",
@@ -251,7 +252,8 @@ const DICTIONARY = {
         "taxsum.title": "系統數據彙總（{year}）", "taxsum.wage": "工資/業務收入（Income 模組）：",
         "taxsum.dividends": "股息：", "taxsum.interestSep": "　利息：", "taxsum.gains": "資本利得（資產出售）：",
         "taxsum.mortgage": "房貸利息已付（可抵扣參考）：", "taxsum.paidSep": "　已繳稅款：",
-        "taxsum.total": "合計收入（已自動填入 Income）："
+        "taxsum.total": "合計收入（已自動填入 Income）：",
+        "dash.advisorLabel": "顧問", "advisor.productName": "家庭財富顧問 AI V7"
     },
     "en-US": {
         "common.back": "← Back to Dashboard", "common.language": "Language", "common.save": "Save", "common.cancel": "Cancel",
@@ -370,7 +372,8 @@ const DICTIONARY = {
         "taxsum.title": "System Data Summary ({year})", "taxsum.wage": "Wages / Business Income (Income module): ",
         "taxsum.dividends": "Dividends: ", "taxsum.interestSep": "  Interest: ", "taxsum.gains": "Capital Gains (Asset Sales): ",
         "taxsum.mortgage": "Mortgage Interest Paid (deductible reference): ", "taxsum.paidSep": "  Tax Paid: ",
-        "taxsum.total": "Total Income (auto-filled into Income): "
+        "taxsum.total": "Total Income (auto-filled into Income): ",
+        "dash.advisorLabel": "Advisor", "advisor.productName": "Family Wealth Advisor AI V7"
     },
     "ja-JP": {
         "common.back": "← ダッシュボードに戻る", "common.language": "言語", "common.save": "保存", "common.cancel": "キャンセル",
@@ -489,7 +492,8 @@ const DICTIONARY = {
         "taxsum.title": "システムデータ集計（{year}）", "taxsum.wage": "給与/事業収入（Incomeモジュール）：",
         "taxsum.dividends": "配当：", "taxsum.interestSep": "　利息：", "taxsum.gains": "キャピタルゲイン（資産売却）：",
         "taxsum.mortgage": "住宅ローン利息（控除参考）：", "taxsum.paidSep": "　納税済み：",
-        "taxsum.total": "合計収入（Incomeに自動入力済み）："
+        "taxsum.total": "合計収入（Incomeに自動入力済み）：",
+        "dash.advisorLabel": "アドバイザー", "advisor.productName": "ファミリーウェルスアドバイザー AI V7"
     }
 };
 
