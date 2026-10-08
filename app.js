@@ -1106,7 +1106,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/investment/ui/investmentView.js"
+                            "./modules/investment/ui/investmentView.js?v=20261008j"
 
                         );
 
