@@ -2588,7 +2588,15 @@ const module =
 
                                 "No tax income data is currently available":
 
-                                    t("taxpage.advNoData")
+                                    t("taxpage.advNoData"),
+
+                                "No Optimization Data":
+
+                                    t("taxpage.noOptData"),
+
+                                "Create a tax plan to begin analysis.":
+
+                                    t("taxpage.noOptDataText")
 
                             };
 
