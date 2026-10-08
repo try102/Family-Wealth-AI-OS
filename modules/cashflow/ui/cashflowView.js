@@ -48,7 +48,9 @@ import TransactionRepository
 
     from "../../../transaction/transactionRepository.js";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008u";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008x";
+
+import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js";
 
 import cashflowAgent
 
@@ -1384,7 +1386,17 @@ const cashflowView = {
 
                         ${accountOptions}
 
+                        <option value="__new_account__">${t("account.newOption")}</option>
+
                     </select>
+
+                    <span id="cashflow-new-account-fields" style="display:none">
+
+                        <input id="cashflow-new-account-name" type="text" placeholder="${t("account.namePlaceholder")}">
+
+                        <input id="cashflow-new-account-balance" type="number" step="0.01" placeholder="${t("account.balancePlaceholder")}">
+
+                    </span>
 
                     ${
 
@@ -1482,6 +1494,26 @@ const cashflowView = {
 
             );
 
+        wireInlineCreate(
+
+            form.querySelector(
+
+                "#cashflow-account"
+
+            ),
+
+            [
+
+                form.querySelector(
+
+                    "#cashflow-new-account-fields"
+
+                )
+
+            ]
+
+        );
+
         form.addEventListener(
 
             "submit",
@@ -1548,15 +1580,23 @@ const cashflowView = {
 
                 const accountId =
 
-                    accountField
+                    resolveAccountId(
 
-                    ?
+                        accountField,
 
-                    accountField.value
+                        form.querySelector(
 
-                    :
+                            "#cashflow-new-account-name"
 
-                    "";
+                        ),
+
+                        form.querySelector(
+
+                            "#cashflow-new-account-balance"
+
+                        )
+
+                    );
 
                 let recorded =
 
