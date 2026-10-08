@@ -258,11 +258,33 @@ const InvestmentRepository = {
 
         }
 
-        data.push(
+        const existingIndex =
 
-            trade
+        data.findIndex(
+
+            item =>
+
+            item.id ===
+
+            trade.id
 
         );
+
+        if(existingIndex >= 0){
+
+            data[existingIndex] =
+
+            trade;
+
+        }else{
+
+            data.push(
+
+                trade
+
+            );
+
+        }
 
         DataService.save(
 
