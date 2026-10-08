@@ -26,7 +26,9 @@ import AccountAPI from "../../account/api/accountAPI.js";
 
 import MemberAPI from "../../member/api/memberAPI.js";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
+import InvestmentAgent from "../../investment/agent/investmentAgent.js";
+
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008m";
 
 const AssetView = {
 
@@ -44,13 +46,231 @@ const AssetView = {
 
     ){
 
-        const assets =
+        const scopeId =
+
+            this.assetScopeMemberId || "";
+
+        const members =
+
+            (() => {
+
+                try {
+
+                    return MemberAPI.getMembers() || [];
+
+                }
+
+                catch (memberError) {
+
+                    return [];
+
+                }
+
+            })();
+
+        const memberNameOf =
+
+            id => {
+
+                const found =
+
+                    members.find(
+
+                        member => member.id === id
+
+                    );
+
+                return found
+
+                    ? found.name || found.id
+
+                    : t("scope.shared");
+
+            };
+
+        const assetOwner =
+
+            asset =>
+
+                asset.memberId ||
+
+                asset.ownerId ||
+
+                "";
+
+        const allAssets =
 
             AssetAPI.getAll();
 
+        const assets =
+
+            !scopeId
+
+                ? allAssets
+
+                : allAssets.filter(
+
+                    asset =>
+
+                        scopeId === "__shared__"
+
+                            ? assetOwner(asset) === ""
+
+                            : assetOwner(asset) === scopeId
+
+                );
+
         const totalValue =
 
-            AssetAPI.getTotalValue();
+            assets.reduce(
+
+                (sum, asset) =>
+
+                    sum +
+
+                    Number(asset.currentValue || 0),
+
+                0
+
+            );
+
+        // Investment holdings, synced read-only from the
+
+        // Investment Center and grouped by member.
+
+        const syncBuckets =
+
+            scopeId
+
+                ? [
+
+                    {
+
+                        label:
+
+                            scopeId === "__shared__"
+
+                                ? t("scope.shared")
+
+                                : memberNameOf(scopeId),
+
+                        positions:
+
+                            InvestmentAgent
+
+                                .deriveMemberPositions(
+
+                                    scopeId
+
+                                )
+
+                    }
+
+                ]
+
+                : [
+
+                    ...members.map(
+
+                        member => ({
+
+                            label:
+
+                                member.name ||
+
+                                member.id,
+
+                            positions:
+
+                                InvestmentAgent
+
+                                    .deriveMemberPositions(
+
+                                        member.id
+
+                                    )
+
+                        })
+
+                    ),
+
+                    {
+
+                        label:
+
+                            t("scope.shared"),
+
+                        positions:
+
+                            InvestmentAgent
+
+                                .deriveMemberPositions(
+
+                                    "__shared__"
+
+                                )
+
+                    }
+
+                ];
+
+        const syncRows =
+
+            syncBuckets.flatMap(
+
+                bucket =>
+
+                    (bucket.positions || [])
+
+                    .filter(
+
+                        position =>
+
+                            Number(position.quantity || 0) !== 0
+
+                    )
+
+                    .map(
+
+                        position => ({
+
+                            label:
+
+                                bucket.label,
+
+                            symbol:
+
+                                position.symbol || "",
+
+                            name:
+
+                                position.name || "",
+
+                            quantity:
+
+                                Number(position.quantity || 0),
+
+                            marketValue:
+
+                                Number(position.marketValue || 0)
+
+                        })
+
+                    )
+
+            );
+
+        const syncTotal =
+
+            syncRows.reduce(
+
+                (sum, row) =>
+
+                    sum + row.marketValue,
+
+                0
+
+            );
 
         container.innerHTML = `
 
@@ -104,6 +324,20 @@ const AssetView = {
 
                 <br>
 
+                <label>${t("scope.label")}</label>
+
+                <select id="asset-scope-select">
+
+                    <option value=""${scopeId === "" ? " selected" : ""}>${t("scope.family")}</option>
+
+                    <option value="__shared__"${scopeId === "__shared__" ? " selected" : ""}>${t("scope.shared")}</option>
+
+                    ${members.map(member => `<option value="${member.id}"${scopeId === member.id ? " selected" : ""}>${member.name || member.id}</option>`).join("")}
+
+                </select>
+
+                <br>
+
                 <!-- ==========================
 
                      Add
@@ -144,7 +378,7 @@ const AssetView = {
 
                         ?
 
-                        "<li>" + t("asset.empty") + "</li>"
+                        "<li>" + t(scopeId ? "asset.emptyScoped" : "asset.empty") + "</li>"
 
                         :
 
@@ -260,6 +494,84 @@ const AssetView = {
 
                 </ul>
 
+                <hr>
+
+                <h3>
+
+                    ${t("asset.investSyncTitle")}
+
+                </h3>
+
+                <ul>
+
+                    ${
+
+                        syncRows.length === 0
+
+                        ?
+
+                        "<li>" + t("asset.emptyScoped") + "</li>"
+
+                        :
+
+                        syncRows.map(
+
+                            row => `
+
+                                <li>
+
+                                    ${row.label}
+
+                                    —
+
+                                    <strong>${row.symbol}</strong>
+
+                                    ${row.name}
+
+                                    -
+
+                                    ${row.quantity}
+
+                                    -
+
+                                    $${row.marketValue.toLocaleString()}
+
+                                </li>
+
+                            `
+
+                        ).join("")
+
+                    }
+
+                </ul>
+
+                <p>
+
+                    ${t("asset.investSyncTotal")}:
+
+                    $${syncTotal.toLocaleString()}
+
+                </p>
+
+                <p>
+
+                    <strong>
+
+                        ${t("asset.combinedTotal")}:
+
+                        $${(totalValue + syncTotal).toLocaleString()}
+
+                    </strong>
+
+                </p>
+
+                <p>
+
+                    <small>${t("asset.investSyncNote")}</small>
+
+                </p>
+
             </div>
 
         `;
@@ -291,6 +603,40 @@ const AssetView = {
                         languageSelect.value
 
                     );
+
+                    this.render(
+
+                        container,
+
+                        onBack
+
+                    );
+
+                }
+
+            );
+
+        }
+
+        const scopeSelect =
+
+            container.querySelector(
+
+                "#asset-scope-select"
+
+            );
+
+        if (scopeSelect) {
+
+            scopeSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    this.assetScopeMemberId =
+
+                        scopeSelect.value;
 
                     this.render(
 
