@@ -26,7 +26,7 @@ import LiabilityAPI from "../modules/liability/api/liabilityAPI.js";
 
 import cashflowAPI from "../modules/cashflow/api/cashflowAPI.js";
 
-import TaxDataIntegration from "../core/integration/taxDataIntegration.js?v=20261008x";
+import TaxDataIntegration from "../core/integration/taxDataIntegration.js?v=20261008z";
 
 import { computeAdvisorModels } from "./advisorModels.js";
 
