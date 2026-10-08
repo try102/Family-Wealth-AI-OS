@@ -250,6 +250,14 @@ const DICTIONARY = {
 
         allocEmpty: "暂无配置数据",
 
+        memberLabel: "成员",
+
+        buyDate: "买入",
+
+        sellDate: "卖出",
+
+        holdingBalance: "持仓余额",
+
         riskNone: "暂无风险提示",
 
         riskHighLevel: "高",
@@ -437,6 +445,14 @@ const DICTIONARY = {
         confirmDelete: "刪除投資",
 
         allocEmpty: "暫無配置數據",
+
+        memberLabel: "成員",
+
+        buyDate: "買入",
+
+        sellDate: "賣出",
+
+        holdingBalance: "持倉餘額",
 
         riskNone: "暫無風險提示",
 
@@ -626,6 +642,14 @@ const DICTIONARY = {
 
         allocEmpty: "No allocation data",
 
+        memberLabel: "Member",
+
+        buyDate: "Buy",
+
+        sellDate: "Sell",
+
+        holdingBalance: "Balance",
+
         riskNone: "No risk warnings",
 
         riskHighLevel: "HIGH",
@@ -813,6 +837,14 @@ const DICTIONARY = {
         confirmDelete: "投資を削除",
 
         allocEmpty: "配分データなし",
+
+        memberLabel: "メンバー",
+
+        buyDate: "買い",
+
+        sellDate: "売り",
+
+        holdingBalance: "保有残高",
 
         riskNone: "リスク警告なし",
 
