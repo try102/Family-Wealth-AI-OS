@@ -1536,6 +1536,104 @@ async function start(){
 
         // ==================================================
 
+        // Transaction → Cashflow Bridge
+
+        //
+
+        // Start the same integration wiring that
+
+        // SystemBootstrap performs, so Transaction
+
+        // events reach Cashflow in the real App:
+
+        //
+
+        // - Connect TransactionIntegration facade
+
+        // - Initialize CashflowIntegration with the
+
+        //   real TransactionManager (subscribes to
+
+        //   TRANSACTION_CREATED and synchronizes
+
+        //   existing Transactions into Cashflow)
+
+        //
+
+        // ==================================================
+
+        try{
+
+            const transactionModuleImport =
+
+                await import(
+
+                    "./transaction/transactionModule.js"
+
+                );
+
+            const TransactionModule =
+
+                transactionModuleImport.default;
+
+            const transactionModule =
+
+                new TransactionModule();
+
+            const transactionIntegrationImport =
+
+                await import(
+
+                    "./core/integration/transactionIntegration.js"
+
+                );
+
+            const TransactionIntegration =
+
+                transactionIntegrationImport.default;
+
+            TransactionIntegration.setFacade(
+
+                transactionModule.getFacade()
+
+            );
+
+            TransactionIntegration.initialize();
+
+            const cashflowIntegrationImport =
+
+                await import(
+
+                    "./core/integration/cashflowIntegration.js"
+
+                );
+
+            const CashflowIntegration =
+
+                cashflowIntegrationImport.default;
+
+            CashflowIntegration.initialize(
+
+                transactionModule.getManager()
+
+            );
+
+        }
+
+        catch(bridgeError){
+
+            console.warn(
+
+                "Transaction-Cashflow bridge unavailable:",
+
+                bridgeError
+
+            );
+
+        }
+
+        // ==================================================
+
         // Assets
 
         // ==================================================
