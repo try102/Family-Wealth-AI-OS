@@ -260,6 +260,12 @@ const DICTIONARY = {
 
         memberNamePlaceholder: "输入成员姓名",
 
+        accountNewOption: "+ 新增账户（输入名称）",
+
+        accountNamePlaceholder: "输入账户名称",
+
+        accountBalancePlaceholder: "初始余额（可选）",
+
         buyDate: "买入",
 
         sellDate: "卖出",
@@ -463,6 +469,12 @@ const DICTIONARY = {
         memberNewOption: "+ 新增成員（輸入姓名）",
 
         memberNamePlaceholder: "輸入成員姓名",
+
+        accountNewOption: "+ 新增帳戶（輸入名稱）",
+
+        accountNamePlaceholder: "輸入帳戶名稱",
+
+        accountBalancePlaceholder: "初始餘額（可選）",
 
         buyDate: "買入",
 
@@ -668,6 +680,12 @@ const DICTIONARY = {
 
         memberNamePlaceholder: "Member name",
 
+        accountNewOption: "+ New account (type name)",
+
+        accountNamePlaceholder: "Account name",
+
+        accountBalancePlaceholder: "Opening balance (optional)",
+
         buyDate: "Buy",
 
         sellDate: "Sell",
@@ -871,6 +889,12 @@ const DICTIONARY = {
         memberNewOption: "+ メンバー追加（名前を入力）",
 
         memberNamePlaceholder: "メンバー名",
+
+        accountNewOption: "+ 口座を追加（名前を入力）",
+
+        accountNamePlaceholder: "口座名",
+
+        accountBalancePlaceholder: "初期残高（任意）",
 
         buyDate: "買い",
 
