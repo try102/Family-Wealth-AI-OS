@@ -28,6 +28,12 @@ const app =
 
 // ==================================================
 
+function localizeDashName(prefix, raw) {
+    const key = prefix + String(raw).toLowerCase();
+    const translated = t(key);
+    return translated === key ? raw : translated;
+}
+
 function formatCurrency(
 
     value
@@ -150,7 +156,7 @@ function renderDashboard(
 
                         <h3>
 
-                            ${category}
+                            ${localizeDashName("dash.alloc.", category)}
 
                         </h3>
 
@@ -510,7 +516,7 @@ function renderDashboard(
 
                         <h3>
 
-                            资产数量
+                            ${t("dash.assetCount")}
 
                         </h3>
 
@@ -536,7 +542,7 @@ function renderDashboard(
 
                         <h3>
 
-                            投资数量
+                            ${t("dash.investmentCount")}
 
                         </h3>
 
@@ -562,7 +568,7 @@ function renderDashboard(
 
                         <h3>
 
-                            负债数量
+                            ${t("dash.liabilityCount")}
 
                         </h3>
 
@@ -596,7 +602,7 @@ function renderDashboard(
 
                 <h2>
 
-                    📊 资产配置
+                    📊 ${t("dash.allocation")}
 
                 </h2>
 
@@ -614,7 +620,7 @@ function renderDashboard(
 
                         <p>
 
-                            暂无资产配置数据
+                            ${t("dash.noAllocation")}
 
                         </p>
 
@@ -640,7 +646,7 @@ function renderDashboard(
 
                 <h2>
 
-                    Wealth Modules
+                    ${t("dash.wealthModules")}
 
                 </h2>
 
@@ -666,13 +672,13 @@ function renderDashboard(
 
                                     <h3>
 
-                                        ${module}
+                                        ${localizeDashName("dash.module.", module)}
 
                                     </h3>
 
                                     <p>
 
-                                        ACTIVE
+                                        ${t("dash.statusActive")}
 
                                     </p>
 
@@ -704,7 +710,7 @@ function renderDashboard(
 
                 <h2>
 
-                    AI Agents
+                    ${t("dash.aiAgents")}
 
                 </h2>
 
@@ -730,13 +736,13 @@ function renderDashboard(
 
                                     <h3>
 
-                                        🤖 ${agent}
+                                        🤖 ${localizeDashName("dash.agent.", agent)}
 
                                     </h3>
 
                                     <p>
 
-                                        READY
+                                        ${t("dash.statusReady")}
 
                                     </p>
 
@@ -2040,45 +2046,55 @@ const module =
 
                             panel.innerHTML =
 
-                                "<h4>系统数据汇总（" +
+                                "<h4>" +
 
-                                taxData.year +
+                                t("taxsum.title", { year: taxData.year }) +
 
-                                "）</h4>" +
+                                "</h4>" +
 
-                                "<p>工资/业务收入（Income 模块）：" +
+                                "<p>" +
+
+                                t("taxsum.wage") +
 
                                 fmt(taxData.wageIncome) +
 
                                 "</p>" +
 
-                                "<p>股息：" +
+                                "<p>" +
+
+                                t("taxsum.dividends") +
 
                                 fmt(taxData.dividendIncome) +
 
-                                "　利息：" +
+                                t("taxsum.interestSep") +
 
                                 fmt(taxData.interestIncome) +
 
                                 "</p>" +
 
-                                "<p>资本利得（资产出售）：" +
+                                "<p>" +
+
+                                t("taxsum.gains") +
 
                                 fmt(taxData.capitalGains) +
 
                                 "</p>" +
 
-                                "<p>房贷利息已付（可抵扣参考）：" +
+                                "<p>" +
+
+                                t("taxsum.mortgage") +
 
                                 fmt(taxData.mortgageInterestPaid) +
 
-                                "　已缴税款：" +
+                                t("taxsum.paidSep") +
 
                                 fmt(taxData.taxPaid) +
 
                                 "</p>" +
 
-                                "<p>合计收入（已自动填入 Income）：" +
+                                "<p>" +
+
+                                t("taxsum.total") +
 
                                 fmt(taxData.totalIncome) +
 
