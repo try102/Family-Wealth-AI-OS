@@ -918,6 +918,20 @@ function renderDashboard(
 
                     </button>
 
+                    <!-- Family Members -->
+
+                    <button
+
+                        id="quick-members-button"
+
+                        type="button"
+
+                    >
+
+                        ${t("dash.members")}
+
+                    </button>
+
                 </div>
 
             </section>
@@ -1673,6 +1687,80 @@ function renderDashboard(
                     renderError(
 
                         "Retirement Module Error",
+
+                        error
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+    // ==================================================
+
+    // ==================================================
+
+    // Quick Access - Family Members
+
+    // ==================================================
+
+    const membersButton =
+
+        document.getElementById(
+
+            "quick-members-button"
+
+        );
+
+    if(
+
+        membersButton
+
+    ){
+
+        membersButton.addEventListener(
+
+            "click",
+
+            async () => {
+
+                try{
+
+                    const module =
+
+                        await import(
+
+                            "./modules/member/ui/memberView.js"
+
+                        );
+
+                    const MemberView =
+
+                        module.default;
+
+                    MemberView.render(
+
+                        app,
+
+                        () => {
+
+                            start();
+
+                        }
+
+                    );
+
+                }
+
+                catch(error){
+
+                    renderError(
+
+                        "Member Module Error",
 
                         error
 
