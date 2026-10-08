@@ -4206,9 +4206,109 @@ async function start(){
 
         // ==================================================
 
+        // Account cash is part of total assets:
+
+        // after a sale the proceeds sit in the
+
+        // account, next to the remaining holding
+
+        // market value, and together they form
+
+        // the Dashboard asset value.
+
+        let dashAccounts = [];
+
+        try {
+
+            const accountModuleForAssets =
+
+                await import(
+
+                    "./modules/account/api/accountAPI.js?v=20261008s"
+
+                );
+
+            const allAccounts =
+
+                accountModuleForAssets.default.getAll() || [];
+
+            dashAccounts =
+
+                dashScopeId
+
+                    ? allAccounts.filter(
+
+                        account => {
+
+                            const owner =
+
+                                account.memberId ||
+
+                                account.ownerId ||
+
+                                "";
+
+                            return dashScopeId === "__shared__"
+
+                                ? owner === ""
+
+                                : owner === dashScopeId;
+
+                        }
+
+                    )
+
+                    : allAccounts;
+
+        }
+
+        catch (accountError) {
+
+            dashAccounts = [];
+
+        }
+
         const dashboardAssets = [
 
             ...dashAssets,
+
+            ...dashAccounts.map(
+
+                account => ({
+
+                    id:
+
+                        "account-" +
+
+                        account.id,
+
+                    name:
+
+                        account.name ||
+
+                        "Account",
+
+                    category:
+
+                        "Cash",
+
+                    value:
+
+                        Number(
+
+                            account.balance ||
+
+                            0
+
+                        ),
+
+                    type:
+
+                        "Account"
+
+                })
+
+            ),
 
             ...dashInvestments.map(
 
