@@ -18,9 +18,9 @@ Delete Investment
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js?v=20261008s";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261008u";
 
-import InvestmentAgent from "../agent/investmentAgent.js?v=20261008s";
+import InvestmentAgent from "../agent/investmentAgent.js?v=20261008u";
 
 import AccountAPI from "../../account/api/accountAPI.js";
 
@@ -36,7 +36,7 @@ import {
 
     t
 
-} from "../i18n/investmentLocales.js?v=20261008s";
+} from "../i18n/investmentLocales.js?v=20261008u";
 
 const InvestmentView = {
 
@@ -2798,7 +2798,9 @@ const InvestmentView = {
 
                 (investment.name || t("unnamed")) +
 
-                "?"
+                "? " +
+
+                t("confirmDeleteScope")
 
             );
 
