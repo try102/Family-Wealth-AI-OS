@@ -1132,6 +1132,14 @@ const InvestmentService = {
 
                 .toISOString();
 
+        if (trade.memberId) {
+
+            position.memberId =
+
+                trade.memberId;
+
+        }
+
         const savedPosition =
 
             this.updatePosition(
@@ -1223,6 +1231,22 @@ const InvestmentService = {
                     existing
 
                     ? existing.accountId
+
+                    : ""
+
+                ) ||
+
+                "",
+
+            memberId:
+
+                position.memberId ||
+
+                (
+
+                    existing
+
+                    ? existing.memberId
 
                     : ""
 
