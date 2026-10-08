@@ -8,11 +8,11 @@ Investment Center UI
 
 第二阶段：
 
-Add Investment
+${t("formAddTitle")}
 
 View Investment
 
-Edit Investment
+${t("formEditTitle")}
 
 Delete Investment
 
@@ -550,7 +550,7 @@ const InvestmentView = {
 
                     <h3>
 
-                        Portfolio Value
+                        ${t("portfolioValue")}
 
                     </h3>
 
@@ -570,7 +570,7 @@ const InvestmentView = {
 
                     <h3>
 
-                        Portfolio Allocation
+                        ${t("allocation")}
 
                     </h3>
 
@@ -594,7 +594,7 @@ ${JSON.stringify(
 
                     <h3>
 
-                        Performance
+                        ${t("performanceLabel")}
 
                     </h3>
 
@@ -618,7 +618,7 @@ ${JSON.stringify(
 
                     <h3>
 
-                        Risk
+                        ${t("riskLabel")}
 
                     </h3>
 
@@ -654,7 +654,7 @@ ${JSON.stringify(
 
                             ?
 
-                            "<li>No holdings</li>"
+                            `<li>${t("noHoldings")}</li>`
 
                             :
 
@@ -674,19 +674,19 @@ ${JSON.stringify(
 
                                         -
 
-                                        ${Number(position.quantity || 0)} 股
+                                        ${Number(position.quantity || 0)} ${t("sharesUnit")}
 
                                         -
 
-                                        成本 $${Number(position.costBasis || 0).toLocaleString()}
+                                        ${t("posCost")} $${Number(position.costBasis || 0).toLocaleString()}
 
                                         -
 
-                                        市值 $${Number(position.marketValue || 0).toLocaleString()}
+                                        ${t("colMarketValue")} $${Number(position.marketValue || 0).toLocaleString()}
 
                                         -
 
-                                        未实现盈亏 $${Number(position.unrealizedGainLoss || 0).toLocaleString()}
+                                        ${t("unrealized")} $${Number(position.unrealizedGainLoss || 0).toLocaleString()}
 
                                     </li>
 
@@ -740,7 +740,7 @@ ${JSON.stringify(
 
                 <h3>
 
-                    Investments
+                    ${t("investmentsTitle")}
 
                 </h3>
 
@@ -752,7 +752,7 @@ ${JSON.stringify(
 
                         ?
 
-                        "<li>No investments</li>"
+                        `<li>${t("noInvestments")}</li>`
 
                         :
 
@@ -768,7 +768,7 @@ ${JSON.stringify(
 
                                     <strong>
 
-                                        ${investment.name || "Unnamed"}
+                                        ${investment.name || t("unnamed")}
 
                                     </strong>
 
@@ -794,7 +794,7 @@ ${JSON.stringify(
 
                                     >
 
-                                        Edit
+                                        ${t("edit")}
 
                                     </button>
 
@@ -808,7 +808,7 @@ ${JSON.stringify(
 
                                     >
 
-                                        Delete
+                                        ${t("delete")}
 
                                     </button>
 
@@ -836,7 +836,7 @@ ${JSON.stringify(
 
                         ?
 
-                        "<li>No trades recorded</li>"
+                        `<li>${t("noTrades")}</li>`
 
                         :
 
@@ -972,7 +972,7 @@ ${JSON.stringify(
 
         // ==========================================
 
-        // Record Trade Button
+        // ${t("formTradeTitle")} Button
 
         // ==========================================
 
@@ -1240,7 +1240,7 @@ ${JSON.stringify(
 
     // ==========================================
 
-    // Record Trade Form
+    // ${t("formTradeTitle")} Form
 
     // ==========================================
 
@@ -1316,7 +1316,7 @@ ${JSON.stringify(
 
                 <h3>
 
-                    Record Trade
+                    ${t("formTradeTitle")}
 
                 </h3>
 
@@ -1328,7 +1328,7 @@ ${JSON.stringify(
 
                     <label>
 
-                        Action
+                        ${t("actionLabel")}
 
                     </label>
 
@@ -1344,25 +1344,25 @@ ${JSON.stringify(
 
                         <option value="BUY">
 
-                            BUY 买入
+                            ${t("optBuy")}
 
                         </option>
 
                         <option value="SELL">
 
-                            SELL 卖出
+                            ${t("optSell")}
 
                         </option>
 
                         <option value="DIVIDEND">
 
-                            DIVIDEND 股息
+                            ${t("optDividend")}
 
                         </option>
 
                         <option value="INTEREST">
 
-                            INTEREST 利息
+                            ${t("optInterest")}
 
                         </option>
 
@@ -1372,7 +1372,7 @@ ${JSON.stringify(
 
                     <label>
 
-                        Symbol
+                        ${t("symbolLabel")}
 
                     </label>
 
@@ -1390,7 +1390,7 @@ ${JSON.stringify(
 
                     <label>
 
-                        Name
+                        ${t("nameLabel")}
 
                     </label>
 
@@ -1408,7 +1408,7 @@ ${JSON.stringify(
 
                     <label>
 
-                        Quantity（股息/利息可留空）
+                        ${t("quantityLabel")}（${t("quantityHint")}）
 
                     </label>
 
@@ -1430,7 +1430,7 @@ ${JSON.stringify(
 
                     <label>
 
-                        Price（股息/利息可留空）
+                        ${t("priceLabel")}（${t("priceHint")}）
 
                     </label>
 
@@ -1452,7 +1452,7 @@ ${JSON.stringify(
 
                     <label>
 
-                        Amount（留空则按 数量×价格 计算；股息/利息直接填金额）
+                        ${t("amountLabel")}（${t("amountHint")}）
 
                     </label>
 
@@ -1474,7 +1474,7 @@ ${JSON.stringify(
 
                     <label>
 
-                        Date
+                        ${t("dateLabel")}
 
                     </label>
 
@@ -1492,7 +1492,7 @@ ${JSON.stringify(
 
                     <label>
 
-                        Account（不选也会记入 Cash Flow，只是不影响账户余额）
+                        ${t("accountLabel")}（${t("accountHintTrade")}）
 
                     </label>
 
@@ -1506,7 +1506,7 @@ ${JSON.stringify(
 
                         <option value="">
 
-                            Select Account
+                            ${t("selectAccount")}
 
                         </option>
 
@@ -1524,7 +1524,7 @@ ${JSON.stringify(
 
                     >
 
-                        Save Trade
+                        ${t("saveTrade")}
 
                     </button>
 
@@ -1536,7 +1536,7 @@ ${JSON.stringify(
 
                     >
 
-                        Cancel
+                        ${t("cancel")}
 
                     </button>
 
@@ -1752,7 +1752,7 @@ ${JSON.stringify(
 
                 <h3>
 
-                    Add Investment
+                    ${t("formAddTitle")}
 
                 </h3>
 
@@ -1766,7 +1766,7 @@ ${JSON.stringify(
 
                         <label>
 
-                            Investment Name
+                            ${t("invName")}
 
                         </label>
 
@@ -1790,7 +1790,7 @@ ${JSON.stringify(
 
                         <label>
 
-                            Symbol
+                            ${t("symbolLabel")}
 
                         </label>
 
@@ -1812,7 +1812,7 @@ ${JSON.stringify(
 
                         <label>
 
-                            Type
+                            ${t("typeLabel")}
 
                         </label>
 
@@ -1828,37 +1828,37 @@ ${JSON.stringify(
 
                             <option value="">
 
-                                Select Type
+                                ${t("selectType")}
 
                             </option>
 
                             <option value="Stock">
 
-                                Stock
+                                ${t("typeStock")}
 
                             </option>
 
                             <option value="ETF">
 
-                                ETF
+                                ${t("typeETF")}
 
                             </option>
 
                             <option value="Bond">
 
-                                Bond
+                                ${t("typeBond")}
 
                             </option>
 
                             <option value="Fund">
 
-                                Fund
+                                ${t("typeFund")}
 
                             </option>
 
                             <option value="Other">
 
-                                Other
+                                ${t("typeOther")}
 
                             </option>
 
@@ -1872,7 +1872,7 @@ ${JSON.stringify(
 
                         <label>
 
-                            Current Value
+                            ${t("currentValueLabel")}
 
                         </label>
 
@@ -1902,7 +1902,7 @@ ${JSON.stringify(
 
                     >
 
-                        Save Investment
+                        ${t("saveInvestment")}
 
                     </button>
 
@@ -1914,7 +1914,7 @@ ${JSON.stringify(
 
                     >
 
-                        Cancel
+                        ${t("cancel")}
 
                     </button>
 
@@ -2024,7 +2024,7 @@ ${JSON.stringify(
 
     // ==========================================
 
-    // Edit Investment Form
+    // ${t("formEditTitle")} Form
 
     // ==========================================
 
@@ -2084,7 +2084,7 @@ ${JSON.stringify(
 
                 <h3>
 
-                    Edit Investment
+                    ${t("formEditTitle")}
 
                 </h3>
 
@@ -2098,7 +2098,7 @@ ${JSON.stringify(
 
                         <label>
 
-                            Investment Name
+                            ${t("invName")}
 
                         </label>
 
@@ -2124,7 +2124,7 @@ ${JSON.stringify(
 
                         <label>
 
-                            Symbol
+                            ${t("symbolLabel")}
 
                         </label>
 
@@ -2148,7 +2148,7 @@ ${JSON.stringify(
 
                         <label>
 
-                            Type
+                            ${t("typeLabel")}
 
                         </label>
 
@@ -2164,31 +2164,31 @@ ${JSON.stringify(
 
                             <option value="Stock">
 
-                                Stock
+                                ${t("typeStock")}
 
                             </option>
 
                             <option value="ETF">
 
-                                ETF
+                                ${t("typeETF")}
 
                             </option>
 
                             <option value="Bond">
 
-                                Bond
+                                ${t("typeBond")}
 
                             </option>
 
                             <option value="Fund">
 
-                                Fund
+                                ${t("typeFund")}
 
                             </option>
 
                             <option value="Other">
 
-                                Other
+                                ${t("typeOther")}
 
                             </option>
 
@@ -2202,7 +2202,7 @@ ${JSON.stringify(
 
                         <label>
 
-                            Current Value
+                            ${t("currentValueLabel")}
 
                         </label>
 
@@ -2238,7 +2238,7 @@ ${JSON.stringify(
 
                     >
 
-                        Update Investment
+                        ${t("updateInvestment")}
 
                     </button>
 
@@ -2250,7 +2250,7 @@ ${JSON.stringify(
 
                     >
 
-                        Cancel
+                        ${t("cancel")}
 
                     </button>
 
@@ -2420,9 +2420,9 @@ ${JSON.stringify(
 
             window.confirm(
 
-                "Delete investment: " +
+                t("confirmDelete") + ": " +
 
-                (investment.name || "Unnamed") +
+                (investment.name || t("unnamed")) +
 
                 "?"
 
