@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261008p";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261008q";
 
 const app =
 
@@ -1078,7 +1078,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./core/modules/assetsModule.js?v=20261008p"
+                            "./core/modules/assetsModule.js?v=20261008q"
 
                         );
 
@@ -1166,7 +1166,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/investment/ui/investmentView.js?v=20261008p"
+                            "./modules/investment/ui/investmentView.js?v=20261008q"
 
                         );
 
@@ -1638,7 +1638,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./core/modules/cashflowModule.js?v=20261008p"
+                            "./core/modules/cashflowModule.js?v=20261008q"
 
                         );
 
@@ -3516,7 +3516,7 @@ async function start(){
 
             await import(
 
-                "./core/modules/assetsModule.js?v=20261008p"
+                "./core/modules/assetsModule.js?v=20261008q"
 
             );
 
@@ -3744,6 +3744,110 @@ async function start(){
 
                     investments.filter(inScope);
 
+                try {
+
+                    const agentModule =
+
+                        await import(
+
+                            "./modules/investment/agent/investmentAgent.js"
+
+                        );
+
+                    const scopedPositions =
+
+                        agentModule.default
+
+                            .deriveMemberPositions(
+
+                                dashScopeId
+
+                            );
+
+                    const coveredSymbols =
+
+                        scopedPositions.map(
+
+                            position =>
+
+                                String(
+
+                                    position.symbol || ""
+
+                                ).toUpperCase()
+
+                        );
+
+                    dashInvestments = [
+
+                        ...scopedPositions.map(
+
+                            position => ({
+
+                                id:
+
+                                    "position-" +
+
+                                    position.symbol,
+
+                                name:
+
+                                    position.name ||
+
+                                    position.symbol,
+
+                                symbol:
+
+                                    position.symbol,
+
+                                quantity:
+
+                                    position.quantity,
+
+                                currentValue:
+
+                                    position.marketValue,
+
+                                marketValue:
+
+                                    position.marketValue,
+
+                                memberId:
+
+                                    dashScopeId === "__shared__"
+
+                                        ? ""
+
+                                        : dashScopeId
+
+                            })
+
+                        ),
+
+                        ...investments.filter(
+
+                            record =>
+
+                                inScope(record) &&
+
+                                !coveredSymbols.includes(
+
+                                    String(
+
+                                        record.symbol || ""
+
+                                    ).toUpperCase()
+
+                                )
+
+                        )
+
+                    ];
+
+                }
+
+                catch (agentError) {}
+
                 dashLiabilities =
 
                     liabilities.filter(inScope);
@@ -3872,7 +3976,7 @@ async function start(){
 
                 await import(
 
-                    "./core/modules/cashflowModule.js?v=20261008p"
+                    "./core/modules/cashflowModule.js?v=20261008q"
 
                 );
 
