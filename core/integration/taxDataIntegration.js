@@ -282,6 +282,32 @@ const TaxDataIntegration = {
 
                     transaction.type ===
 
+                    "INVESTMENT_SELL"
+
+                ) {
+
+                    capitalGains +=
+
+                        Number(
+
+                            transaction
+
+                                .businessDetails
+
+                                ?.investment
+
+                                ?.capitalGain ||
+
+                            0
+
+                        );
+
+                }
+
+                if (
+
+                    transaction.type ===
+
                     "TAX_PAYMENT"
 
                 ) {
