@@ -894,6 +894,20 @@ function renderDashboard(
 
                     </button>
 
+                    <!-- Advisor -->
+
+                    <button
+
+                        id="quick-advisor-button"
+
+                        type="button"
+
+                    >
+
+                        🤖 Advisor
+
+                    </button>
+
                 </div>
 
             </section>
@@ -1609,6 +1623,78 @@ function renderDashboard(
                     renderError(
 
                         "Retirement Module Error",
+
+                        error
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Quick Access - Advisor
+
+    // ==================================================
+
+    const advisorButton =
+
+        document.getElementById(
+
+            "quick-advisor-button"
+
+        );
+
+    if(
+
+        advisorButton
+
+    ){
+
+        advisorButton.addEventListener(
+
+            "click",
+
+            async () => {
+
+                try{
+
+                    const module =
+
+                        await import(
+
+                            "./ai/advisorView.js"
+
+                        );
+
+                    const AdvisorView =
+
+                        module.default;
+
+                    AdvisorView.render(
+
+                        app,
+
+                        () => {
+
+                            start();
+
+                        }
+
+                    );
+
+                }
+
+                catch(error){
+
+                    renderError(
+
+                        "Advisor Module Error",
 
                         error
 
