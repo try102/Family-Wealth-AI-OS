@@ -36,7 +36,7 @@
 
 import InvestmentRepository
 
-    from "../repository/investmentRepository.js";
+    from "../repository/investmentRepository.js?v=20261008r";
 
 import EventBus
 
@@ -264,6 +264,44 @@ const InvestmentService = {
 
         /*
 
+         * Keep the holding (Position) in
+
+         * sync first: BUY increases the position,
+
+         * SELL decreases it and computes the
+
+         * realized capital gain, which the
+
+         * Transaction payload below then carries.
+
+         * No manual re-entry on the asset side.
+
+         */
+
+        this.applyTradeToPosition(
+
+            result
+
+        );
+
+        if (
+
+            result.realizedGainLoss !== undefined
+
+        ) {
+
+            InvestmentRepository
+
+                .saveTrade(
+
+                    result
+
+                );
+
+        }
+
+        /*
+
          * Record the corresponding Actual
 
          * economic event in Transaction.
@@ -297,24 +335,6 @@ const InvestmentService = {
             );
 
         }
-
-        /*
-
-         * Keep the holding (Position) in
-
-         * sync: BUY increases the position,
-
-         * SELL decreases it. No manual
-
-         * re-entry on the asset side.
-
-         */
-
-        this.applyTradeToPosition(
-
-            result
-
-        );
 
         /*
 
@@ -527,6 +547,14 @@ const InvestmentService = {
                     Number(
 
                         trade.tax || 0
+
+                    ),
+
+                capitalGain:
+
+                    Number(
+
+                        trade.realizedGainLoss || 0
 
                     ),
 
@@ -1065,6 +1093,20 @@ const InvestmentService = {
                     held
 
                 : 0;
+
+            // Realized capital gain on this sale:
+
+            // proceeds minus the average cost of
+
+            // the shares sold.
+
+            trade.realizedGainLoss =
+
+                amount -
+
+                averageCostHeld *
+
+                    sellQuantity;
 
             position.quantity =
 
