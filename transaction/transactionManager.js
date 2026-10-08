@@ -36,6 +36,14 @@ import TransactionRepository
 
     from "./transactionRepository.js";
 
+import EventBus
+
+    from "../core/events/eventBus.js";
+
+import EventTypes
+
+    from "../core/events/eventTypes.js";
+
 class TransactionManager {
 
     constructor(
@@ -246,11 +254,23 @@ class TransactionManager {
 
         }
 
-        return this.persistTransaction(
+        const saved =
 
-            transaction
+            this.persistTransaction(
+
+                transaction
+
+            );
+
+        EventBus.publish(
+
+            EventTypes.TRANSACTION_CREATED,
+
+            saved
 
         );
+
+        return saved;
 
     }
 
