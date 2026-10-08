@@ -18,9 +18,11 @@ Delete Investment
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js?v=20261008u";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261008x";
 
-import InvestmentAgent from "../agent/investmentAgent.js?v=20261008u";
+import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js";
+
+import InvestmentAgent from "../agent/investmentAgent.js?v=20261008x";
 
 import AccountAPI from "../../account/api/accountAPI.js";
 
@@ -36,7 +38,7 @@ import {
 
     t
 
-} from "../i18n/investmentLocales.js?v=20261008u";
+} from "../i18n/investmentLocales.js?v=20261008x";
 
 const InvestmentView = {
 
@@ -1820,7 +1822,17 @@ const InvestmentView = {
 
                         ${accountOptions}
 
+                        <option value="__new_account__">${t("accountNewOption")}</option>
+
                     </select>
+
+                    <span id="trade-new-account-fields" style="display:none">
+
+                        <input id="trade-new-account-name" type="text" placeholder="${t("accountNamePlaceholder")}">
+
+                        <input id="trade-new-account-balance" type="number" step="0.01" placeholder="${t("accountBalancePlaceholder")}">
+
+                    </span>
 
                     ${accountHint}
 
@@ -1897,6 +1909,26 @@ const InvestmentView = {
                 "#trade-create-form"
 
             );
+
+        wireInlineCreate(
+
+            form.querySelector(
+
+                "#trade-account"
+
+            ),
+
+            [
+
+                form.querySelector(
+
+                    "#trade-new-account-fields"
+
+                )
+
+            ]
+
+        );
 
         const memberSelect =
 
@@ -2034,15 +2066,23 @@ const InvestmentView = {
 
                 const accountId =
 
-                    accountField
+                    resolveAccountId(
 
-                    ?
+                        accountField,
 
-                    accountField.value
+                        form.querySelector(
 
-                    :
+                            "#trade-new-account-name"
 
-                    "";
+                        ),
+
+                        form.querySelector(
+
+                            "#trade-new-account-balance"
+
+                        )
+
+                    );
 
                 const memberField =
 
