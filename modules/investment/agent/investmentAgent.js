@@ -436,6 +436,234 @@ const InvestmentAgent = {
 
     },
 
+    /**
+
+     * 已实现资本利得（按范围）：重放范围内的买卖交易，
+
+     * 卖出时按当时平均成本扣减，利得 = 卖出金额 − 平均成本 × 卖出数量。
+
+     * memberId: "" = 合并（全部交易）；"__shared__" = 家庭共同；成员 id = 该成员。
+
+     */
+
+    getRealizedGains(memberId = "") {
+
+        let accountMember = {};
+
+        try {
+
+            AccountAPI
+
+            .getAll()
+
+            .forEach(
+
+                account => {
+
+                    accountMember[account.id] =
+
+                        account.memberId ||
+
+                        account.ownerId ||
+
+                        "";
+
+                }
+
+            );
+
+        } catch (error) {
+
+            accountMember = {};
+
+        }
+
+        let trades = [];
+
+        try {
+
+            trades =
+
+            InvestmentAPI
+
+            .getTrades() || [];
+
+        } catch (error) {
+
+            trades = [];
+
+        }
+
+        const costBySymbol = {};
+
+        const byTrade = {};
+
+        let total = 0;
+
+        trades
+
+        .filter(
+
+            trade =>
+
+                trade.action === "BUY" ||
+
+                trade.action === "SELL"
+
+        )
+
+        .filter(
+
+            trade => {
+
+                if (memberId === "") {
+
+                    return true;
+
+                }
+
+                const owner =
+
+                    typeof trade.memberId === "string"
+
+                        ? trade.memberId
+
+                        : accountMember[trade.accountId] || "";
+
+                return memberId === "__shared__"
+
+                    ? owner === ""
+
+                    : owner === memberId;
+
+            }
+
+        )
+
+        .forEach(
+
+            trade => {
+
+                const symbol =
+
+                    String(trade.symbol || "")
+
+                        .toUpperCase();
+
+                if (!symbol) {
+
+                    return;
+
+                }
+
+                if (!costBySymbol[symbol]) {
+
+                    costBySymbol[symbol] = {
+
+                        quantity: 0,
+
+                        costBasis: 0
+
+                    };
+
+                }
+
+                const book =
+
+                    costBySymbol[symbol];
+
+                const quantity =
+
+                    Number(trade.quantity || 0);
+
+                const amount =
+
+                    Number(
+
+                        trade.amount ||
+
+                        quantity *
+
+                            Number(trade.price || 0) ||
+
+                        0
+
+                    );
+
+                if (trade.action === "BUY") {
+
+                    book.quantity += quantity;
+
+                    book.costBasis += amount;
+
+                    return;
+
+                }
+
+                const held =
+
+                    book.quantity;
+
+                const sellQuantity =
+
+                    Math.min(quantity, held);
+
+                if (sellQuantity <= 0) {
+
+                    byTrade[trade.id] = 0;
+
+                    return;
+
+                }
+
+                const averageCost =
+
+                    held > 0
+
+                        ? book.costBasis / held
+
+                        : 0;
+
+                const gain =
+
+                    amount -
+
+                    averageCost * sellQuantity;
+
+                byTrade[trade.id] = gain;
+
+                total += gain;
+
+                book.quantity =
+
+                    held - sellQuantity;
+
+                book.costBasis =
+
+                    Math.max(
+
+                        book.costBasis -
+
+                            averageCost * sellQuantity,
+
+                        0
+
+                    );
+
+            }
+
+        );
+
+        return {
+
+            total,
+
+            byTrade
+
+        };
+
+    },
+
     getMembers() {
 
         try {
