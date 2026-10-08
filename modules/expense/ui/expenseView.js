@@ -994,6 +994,36 @@ const ExpenseView = {
 
                     ).value;
 
+                const memberField =
+
+                    form.querySelector(
+
+                        "#expense-member"
+
+                    );
+
+                const memberId =
+
+                    memberField
+
+                    ?
+
+                    resolveMemberId(
+
+                        memberField,
+
+                        form.querySelector(
+
+                            "#expense-new-member-name"
+
+                        )
+
+                    )
+
+                    :
+
+                    "";
+
                 const accountField =
 
                     form.querySelector(
@@ -1022,38 +1052,9 @@ const ExpenseView = {
 
                             "#expense-new-account-balance"
 
-                        )
+                        ),
 
-                    )
-
-                    :
-
-                    "";
-
-
-                const memberField =
-
-                    form.querySelector(
-
-                        "#expense-member"
-
-                    );
-
-                const memberId =
-
-                    memberField
-
-                    ?
-
-                    resolveMemberId(
-
-                        memberField,
-
-                        form.querySelector(
-
-                            "#expense-new-member-name"
-
-                        )
+                        memberId
 
                     )
 
