@@ -796,6 +796,20 @@ function renderDashboard(
 
                     </button>
 
+                    <!-- Account -->
+
+                    <button
+
+                        id="quick-account-button"
+
+                        type="button"
+
+                    >
+
+                        🏦 Accounts
+
+                    </button>
+
                     <!-- Income -->
 
                     <button
@@ -1025,6 +1039,92 @@ function renderDashboard(
                     renderError(
 
                         "Investment Module Error",
+
+                        error
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Quick Access - Account
+
+    // ==================================================
+
+    const accountButton =
+
+        document.getElementById(
+
+            "quick-account-button"
+
+        );
+
+    if(
+
+        accountButton
+
+    ){
+
+        accountButton.addEventListener(
+
+            "click",
+
+            async () => {
+
+                try{
+
+                    const module =
+
+                        await import(
+
+                            "./modules/account/ui/accountView.js"
+
+                        );
+
+                    const AccountView =
+
+                        module.default;
+
+                    if(
+
+                        !AccountView
+
+                    ){
+
+                        throw new Error(
+
+                            "AccountView not found"
+
+                        );
+
+                    }
+
+                    AccountView.render(
+
+                        app,
+
+                        () => {
+
+                            start();
+
+                        }
+
+                    );
+
+                }
+
+                catch(error){
+
+                    renderError(
+
+                        "Account Module Error",
 
                         error
 
