@@ -38,7 +38,15 @@ class Account {
 
         this.accountType =
 
-            data.accountType || "";
+            data.accountType ||
+
+            Account.mapLegacyAccountType(
+
+                data.type
+
+            ) ||
+
+            "";
 
         this.institution =
 
@@ -147,6 +155,36 @@ class Account {
             "Other"
 
         ];
+
+    }
+
+    // =====================================================
+
+    // Legacy Type Mapping (records saved with "type")
+
+    // =====================================================
+
+    static mapLegacyAccountType(type) {
+
+        const legacyTypeMap = {
+
+            "Saving": "Savings",
+
+            "Investment": "Brokerage"
+
+        };
+
+        if (
+
+            typeof type !== "string"
+
+        ) {
+
+            return "";
+
+        }
+
+        return legacyTypeMap[type] || type;
 
     }
 

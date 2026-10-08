@@ -784,6 +784,8 @@ class AccountManager {
 
             data => {
 
+                try {
+
                 const account =
 
                     data instanceof Account
@@ -837,6 +839,18 @@ class AccountManager {
                     account
 
                 );
+
+                } catch (loadError) {
+
+                    console.warn(
+
+                        "Skipped invalid account record:",
+
+                        loadError.message
+
+                    );
+
+                }
 
             }
 

@@ -386,9 +386,9 @@ const AccountView = {
 
                         </option>
 
-                        <option value="Saving">
+                        <option value="Savings">
 
-                            Saving
+                            Savings
 
                         </option>
 
@@ -398,9 +398,9 @@ const AccountView = {
 
                         </option>
 
-                        <option value="Investment">
+                        <option value="Brokerage">
 
-                            Investment
+                            Brokerage
 
                         </option>
 
@@ -545,6 +545,8 @@ const AccountView = {
                     name,
 
                     type,
+
+                    accountType: type,
 
                     institution,
 
