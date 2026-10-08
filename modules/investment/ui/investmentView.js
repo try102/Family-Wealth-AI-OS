@@ -20,7 +20,7 @@ Delete Investment
 
 import InvestmentAPI from "../api/investmentAPI.js";
 
-import InvestmentAgent from "../agent/investmentAgent.js";
+import InvestmentAgent from "../agent/investmentAgent.js?v=20261008m";
 
 import AccountAPI from "../../account/api/accountAPI.js";
 
@@ -36,7 +36,7 @@ import {
 
     t
 
-} from "../i18n/investmentLocales.js?v=20261008j";
+} from "../i18n/investmentLocales.js?v=20261008m";
 
 const InvestmentView = {
 
@@ -149,6 +149,94 @@ const InvestmentView = {
                 }
 
             })();
+
+        const accountMemberMap =
+
+            (() => {
+
+                const map = {};
+
+                try {
+
+                    (AccountAPI.getAll() || []).forEach(
+
+                        account => {
+
+                            map[account.id] =
+
+                                account.memberId ||
+
+                                account.ownerId ||
+
+                                "";
+
+                        }
+
+                    );
+
+                } catch (error) {}
+
+                return map;
+
+            })();
+
+        const tradeOwner =
+
+            trade =>
+
+                typeof trade.memberId === "string"
+
+                    ? trade.memberId
+
+                    : accountMemberMap[trade.accountId] || "";
+
+        const positionTradeLines =
+
+            symbol => {
+
+                const wanted =
+
+                    String(symbol || "").toUpperCase();
+
+                const lines =
+
+                    (trades || [])
+
+                    .filter(
+
+                        trade =>
+
+                            (trade.action === "BUY" ||
+
+                                trade.action === "SELL") &&
+
+                            String(trade.symbol || "").toUpperCase() === wanted &&
+
+                            (
+
+                                !scopeMemberId
+
+                                    ? true
+
+                                    : scopeMemberId === "__shared__"
+
+                                        ? tradeOwner(trade) === ""
+
+                                        : tradeOwner(trade) === scopeMemberId
+
+                            )
+
+                    )
+
+                    .map(
+
+                        trade => `<br><small>${trade.tradeDate || trade.date || ""} ${trade.action === "BUY" ? t("buyDate") : t("sellDate")} ${Number(trade.quantity || 0)} ${t("sharesUnit")} @ $${Number(trade.price || 0).toLocaleString()}</small>`
+
+                    );
+
+                return lines.join("");
+
+            };
 
         const language =
 
@@ -754,6 +842,12 @@ const InvestmentView = {
 
                                         ${t("unrealized")} $${Number(position.unrealizedGainLoss || 0).toLocaleString()}
 
+                                        -
+
+                                        ${t("holdingBalance")} ${Number(position.quantity || 0)} ${t("sharesUnit")} / $${Number(position.marketValue || 0).toLocaleString()}
+
+                                        ${positionTradeLines(position.symbol)}
+
                                     </li>
 
                                 `
@@ -1340,6 +1434,42 @@ const InvestmentView = {
 
             this.buildAccountOptions();
 
+        const tradeMembers =
+
+            (() => {
+
+                try {
+
+                    return MemberAPI.getMembers() || [];
+
+                }
+
+                catch (memberError) {
+
+                    return [];
+
+                }
+
+            })();
+
+        const tradeMemberId =
+
+            this.scopeMemberId &&
+
+            this.scopeMemberId !== "__shared__"
+
+                ? this.scopeMemberId
+
+                : "";
+
+        const memberOptions =
+
+            tradeMembers.map(
+
+                member => `<option value="${member.id}"${member.id === tradeMemberId ? " selected" : ""}>${member.name || member.id}</option>`
+
+            ).join("");
+
         const accountHint =
 
             accounts.length === 0
@@ -1584,6 +1714,28 @@ const InvestmentView = {
 
                     <br><br>
 
+                    <label>
+
+                        ${t("memberLabel")}
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="trade-member"
+
+                    >
+
+                        <option value=""${tradeMemberId === "" ? " selected" : ""}>${t("scopeShared")}</option>
+
+                        ${memberOptions}
+
+                    </select>
+
+                    <br><br>
+
                     <button
 
                         type="submit"
@@ -1728,7 +1880,29 @@ const InvestmentView = {
 
                     "";
 
+                const memberField =
+
+                    form.querySelector(
+
+                        "#trade-member"
+
+                    );
+
+                const memberId =
+
+                    memberField
+
+                    ?
+
+                    memberField.value
+
+                    :
+
+                    "";
+
                 InvestmentAPI.recordTrade({
+
+                    memberId,
 
                     action,
 
