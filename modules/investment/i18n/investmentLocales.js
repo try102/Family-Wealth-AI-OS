@@ -86,6 +86,8 @@ const DICTIONARY = {
 
         totalGainLoss: "总盈亏",
 
+        realizedGainLoss: "已实现利得",
+
         totalReturn: "总收益率",
 
         holdingsCount: "持仓数量",
@@ -285,6 +287,8 @@ const DICTIONARY = {
         totalCost: "總成本",
 
         totalGainLoss: "總盈虧",
+
+        realizedGainLoss: "已實現利得",
 
         totalReturn: "總收益率",
 
@@ -486,6 +490,8 @@ const DICTIONARY = {
 
         totalGainLoss: "Total Gain/Loss",
 
+        realizedGainLoss: "Realized Gain/Loss",
+
         totalReturn: "Total Return",
 
         holdingsCount: "Holdings",
@@ -685,6 +691,8 @@ const DICTIONARY = {
         totalCost: "総コスト",
 
         totalGainLoss: "総損益",
+
+        realizedGainLoss: "実現損益",
 
         totalReturn: "総リターン",
 
