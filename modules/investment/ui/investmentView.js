@@ -20,7 +20,7 @@ Delete Investment
 
 import InvestmentAPI from "../api/investmentAPI.js";
 
-import InvestmentAgent from "../agent/investmentAgent.js?v=20261008m";
+import InvestmentAgent from "../agent/investmentAgent.js?v=20261008n";
 
 import AccountAPI from "../../account/api/accountAPI.js";
 
@@ -36,7 +36,7 @@ import {
 
     t
 
-} from "../i18n/investmentLocales.js?v=20261008m";
+} from "../i18n/investmentLocales.js?v=20261008n";
 
 const InvestmentView = {
 
@@ -1732,7 +1732,21 @@ const InvestmentView = {
 
                         ${memberOptions}
 
+                        <option value="__new__">${t("memberNewOption")}</option>
+
                     </select>
+
+                    <input
+
+                        id="trade-member-name"
+
+                        type="text"
+
+                        placeholder="${t("memberNamePlaceholder")}"
+
+                        style="display:none;margin-top:8px;"
+
+                    >
 
                     <br><br>
 
@@ -1771,6 +1785,44 @@ const InvestmentView = {
                 "#trade-create-form"
 
             );
+
+        const memberSelect =
+
+            form.querySelector(
+
+                "#trade-member"
+
+            );
+
+        const memberNameInput =
+
+            form.querySelector(
+
+                "#trade-member-name"
+
+            );
+
+        if (memberSelect && memberNameInput) {
+
+            memberSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    memberNameInput.style.display =
+
+                        memberSelect.value === "__new__"
+
+                            ? "block"
+
+                            : "none";
+
+                }
+
+            );
+
+        }
 
         form.addEventListener(
 
@@ -1888,7 +1940,7 @@ const InvestmentView = {
 
                     );
 
-                const memberId =
+                let memberId =
 
                     memberField
 
@@ -1899,6 +1951,62 @@ const InvestmentView = {
                     :
 
                     "";
+
+                if (memberId === "__new__") {
+
+                    const nameField =
+
+                        form.querySelector(
+
+                            "#trade-member-name"
+
+                        );
+
+                    const newName =
+
+                        nameField
+
+                        ?
+
+                        nameField.value.trim()
+
+                        :
+
+                        "";
+
+                    memberId = "";
+
+                    if (newName) {
+
+                        try {
+
+                            const created =
+
+                                MemberAPI.saveMember({
+
+                                    name: newName
+
+                                });
+
+                            memberId =
+
+                                created && created.id
+
+                                    ? created.id
+
+                                    : "";
+
+                        }
+
+                        catch (createError) {
+
+                            memberId = "";
+
+                        }
+
+                    }
+
+                }
 
                 InvestmentAPI.recordTrade({
 
