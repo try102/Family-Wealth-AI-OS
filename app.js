@@ -2248,6 +2248,106 @@ const module =
 
                         renderTaxSupport();
 
+                        // Language switcher for the Tax page
+
+                        // (the Tax V7.7 view itself has none;
+
+                        // injected here at page level).
+
+                        try {
+
+                            let taxLangBar =
+
+                                document.getElementById(
+
+                                    "tax-language-bar"
+
+                                );
+
+                            if(
+
+                                !taxLangBar
+
+                            ){
+
+                                taxLangBar =
+
+                                    document.createElement(
+
+                                        "div"
+
+                                    );
+
+                                taxLangBar.id =
+
+                                    "tax-language-bar";
+
+                                taxLangBar.style.cssText =
+
+                                    "display:flex;justify-content:flex-end;align-items:center;padding:8px 0;";
+
+                                app.insertBefore(
+
+                                    taxLangBar,
+
+                                    app.firstChild
+
+                                );
+
+                            }
+
+                            taxLangBar.innerHTML =
+
+                                `<label>${t("common.language")} <select id="tax-language-select">${languageOptions(getLanguage())}</select></label>`;
+
+                            const taxLangSelect =
+
+                                document.getElementById(
+
+                                    "tax-language-select"
+
+                                );
+
+                            if(
+
+                                taxLangSelect
+
+                            ){
+
+                                taxLangSelect.addEventListener(
+
+                                    "change",
+
+                                    event => {
+
+                                        setLanguage(
+
+                                            event.target.value
+
+                                        );
+
+                                        taxButton.click();
+
+                                    }
+
+                                );
+
+                            }
+
+                        }
+
+                        catch(taxLangError){
+
+                            console.warn(
+
+                                "Tax language switcher unavailable:",
+
+                                taxLangError
+
+                            );
+
+                        }
+
                         // Small-scope DOM label translation
 
                         // for the Tax page (exact matches only;
@@ -2408,7 +2508,87 @@ const module =
 
                                 "Name":
 
-                                    t("common.name")
+                                    t("common.name"),
+
+                                "Deduction":
+
+                                    t("taxpage.deductionType"),
+
+                                "Strategy":
+
+                                    t("taxpage.strategyType"),
+
+                                "Tax Reduction":
+
+                                    t("taxpage.taxReductionType"),
+
+                                "Status":
+
+                                    t("taxpage.statusType"),
+
+                                "HIGH":
+
+                                    t("taxpage.priorityHigh"),
+
+                                "MEDIUM":
+
+                                    t("taxpage.priorityMedium"),
+
+                                "LOW":
+
+                                    t("taxpage.priorityLow"),
+
+                                "Potential deduction optimization opportunity":
+
+                                    t("taxpage.msgDeduction"),
+
+                                "Existing strategies can be reviewed":
+
+                                    t("taxpage.msgStrategies"),
+
+                                "Review tax reduction strategies":
+
+                                    t("taxpage.msgReview"),
+
+                                "No major tax optimization opportunity identified":
+
+                                    t("taxpage.msgNone"),
+
+                                "Taxable income remains relatively high after deductions":
+
+                                    t("taxpage.msgHighTaxable"),
+
+                                "Review tax optimization opportunities":
+
+                                    t("taxpage.advReviewOpt"),
+
+                                "Consider increasing eligible deductions":
+
+                                    t("taxpage.advIncreaseDeductions"),
+
+                                "Review deduction documentation and eligibility":
+
+                                    t("taxpage.advReviewDocs"),
+
+                                "Review taxable income calculation":
+
+                                    t("taxpage.advReviewCalc"),
+
+                                "Estimated tax is currently zero; verify deductions and tax assumptions":
+
+                                    t("taxpage.advZeroTax"),
+
+                                "Existing tax strategies detected":
+
+                                    t("taxpage.advStrategies"),
+
+                                "No immediate tax optimization opportunities identified":
+
+                                    t("taxpage.advNoOpt"),
+
+                                "No tax income data is currently available":
+
+                                    t("taxpage.advNoData")
 
                             };
 
@@ -2475,6 +2655,28 @@ const module =
                                 }
 
                             );
+
+                            const taxPlanNameInput =
+
+                                document.getElementById(
+
+                                    "tax-plan-name"
+
+                                );
+
+                            if(
+
+                                taxPlanNameInput &&
+
+                                taxPlanNameInput.value === "Tax Plan"
+
+                            ){
+
+                                taxPlanNameInput.value =
+
+                                    t("taxpage.defaultPlanName");
+
+                            }
 
                             // The Tax view may re-render some
 
