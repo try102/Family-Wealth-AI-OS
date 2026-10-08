@@ -22,6 +22,8 @@ const AssetSchema = {
 
     ownerId:"",
 
+    memberId:"",
+
     familyId:"",
 
     // 账户关联

@@ -62,6 +62,12 @@ const ExpenseSchema = {
 
             "",
 
+            memberId:
+
+            data.memberId ||
+
+            "",
+
             linkedAccount:
 
             data.linkedAccount ||

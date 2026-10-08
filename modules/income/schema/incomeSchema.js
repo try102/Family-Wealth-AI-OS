@@ -110,6 +110,12 @@ const IncomeSchema = {
 
             "",
 
+            memberId:
+
+            data.memberId ||
+
+            "",
+
             note:
 
             data.note ||

@@ -48,6 +48,10 @@ const LiabilitySchema = {
 
             data.owner || "",
 
+            memberId:
+
+            data.memberId || "",
+
             currency:
 
             data.currency ||
