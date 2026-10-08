@@ -8,6 +8,8 @@ Account View
 
 import AccountAPI from "../api/accountAPI.js";
 
+import MemberAPI from "../../member/api/memberAPI.js";
+
 import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
 
 const AccountView = {
@@ -23,6 +25,26 @@ const AccountView = {
         const accounts =
 
         AccountAPI.getAll();
+
+                const memberOptions =
+
+            (() => {
+
+                try {
+
+                    return MemberAPI.getMembers().map(
+
+                        member => `<option value="${member.id}">${member.name || member.id}</option>`
+
+                    ).join("");
+
+                } catch (error) {
+
+                    return "";
+
+                }
+
+            })();
 
         container.innerHTML =
 
@@ -510,6 +532,28 @@ const AccountView = {
 
                     <br><br>
 
+                    <label>
+
+                        ${t("member.owner")}
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="account-member"
+
+                    >
+
+                        <option value="">${t("member.familyShared")}</option>
+
+                        ${memberOptions}
+
+                    </select>
+
+                    <br><br>
+
                     <button
 
                         type="submit"
@@ -590,6 +634,14 @@ const AccountView = {
 
                     );
 
+                const memberId =
+
+                    form.querySelector(
+
+                        "#account-member"
+
+                    )?.value || "";
+
                 AccountAPI.create({
 
                     name,
@@ -597,6 +649,10 @@ const AccountView = {
                     type,
 
                     accountType: type,
+
+                    memberId,
+
+                    ownerId: memberId,
 
                     institution,
 

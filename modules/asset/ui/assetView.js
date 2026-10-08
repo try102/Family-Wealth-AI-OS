@@ -24,6 +24,8 @@ import AssetAPI from "../api/assetAPI.js";
 
 import AccountAPI from "../../account/api/accountAPI.js";
 
+import MemberAPI from "../../member/api/memberAPI.js";
+
 import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
 
 const AssetView = {
@@ -988,6 +990,26 @@ const AssetView = {
 
             );
 
+        const memberOptions =
+
+            (() => {
+
+                try {
+
+                    return MemberAPI.getMembers().map(
+
+                        member => `<option value="${member.id}">${member.name || member.id}</option>`
+
+                    ).join("");
+
+                } catch (error) {
+
+                    return "";
+
+                }
+
+            })();
+
         formContainer.innerHTML = `
 
             <div class="asset-form">
@@ -1164,6 +1186,28 @@ const AssetView = {
 
                         </select>
 
+                    <br><br>
+
+                    <label>
+
+                        ${t("member.owner")}
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="asset-member"
+
+                    >
+
+                        <option value="">${t("member.familyShared")}</option>
+
+                        ${memberOptions}
+
+                    </select>
+
                     </div>
 
                     <br>
@@ -1254,7 +1298,15 @@ const AssetView = {
 
                             "#asset-liquidity"
 
-                        ).value
+                        ).value,
+
+                    memberId:
+
+                        form.querySelector(
+
+                            "#asset-member"
+
+                        )?.value || ""
 
                 };
 
