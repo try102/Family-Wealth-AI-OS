@@ -246,7 +246,15 @@ const DICTIONARY = {
 
         saveTrade: "保存交易",
 
-        confirmDelete: "删除投资"
+        confirmDelete: "删除投资",
+
+        allocEmpty: "暂无配置数据",
+
+        riskNone: "暂无风险提示",
+
+        riskHighLevel: "高",
+
+        noAccountHint: "暂无账户。可先到账户页新建；不选账户也会记入现金流与交易流水，只是不影响账户余额。"
 
     },
 
@@ -426,7 +434,15 @@ const DICTIONARY = {
 
         saveTrade: "儲存交易",
 
-        confirmDelete: "刪除投資"
+        confirmDelete: "刪除投資",
+
+        allocEmpty: "暫無配置數據",
+
+        riskNone: "暫無風險提示",
+
+        riskHighLevel: "高",
+
+        noAccountHint: "暫無帳戶。可先到帳戶頁新增；不選帳戶也會記入現金流與交易流水，只是不影響帳戶餘額。"
 
     },
 
@@ -606,7 +622,15 @@ const DICTIONARY = {
 
         saveTrade: "Save Trade",
 
-        confirmDelete: "Delete investment"
+        confirmDelete: "Delete investment",
+
+        allocEmpty: "No allocation data",
+
+        riskNone: "No risk warnings",
+
+        riskHighLevel: "HIGH",
+
+        noAccountHint: "No account yet. You can create one on the Accounts page; without an account the trade still enters Cash Flow and transactions, it just does not change any balance."
 
     },
 
@@ -786,7 +810,15 @@ const DICTIONARY = {
 
         saveTrade: "取引を保存",
 
-        confirmDelete: "投資を削除"
+        confirmDelete: "投資を削除",
+
+        allocEmpty: "配分データなし",
+
+        riskNone: "リスク警告なし",
+
+        riskHighLevel: "高",
+
+        noAccountHint: "口座がありません。口座ページで作成できます。口座なしでもキャッシュフローと取引履歴に記録されます（残高は変わりません）。"
 
     }
 
