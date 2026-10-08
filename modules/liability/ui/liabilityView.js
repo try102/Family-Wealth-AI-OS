@@ -1532,6 +1532,40 @@ const LiabilityView = {
 
                     ).value;
 
+                const ownerMemberId =
+
+                    (() => {
+
+                        try {
+
+                            const liab =
+
+                                LiabilityAPI.getLiabilities().find(
+
+                                    item =>
+
+                                        item.id === id
+
+                                );
+
+                            return liab
+
+                                ? liab.memberId ||
+
+                                    liab.ownerId ||
+
+                                    ""
+
+                                : "";
+
+                        } catch (error) {
+
+                            return "";
+
+                        }
+
+                    })();
+
                 const accountField =
 
                     form.querySelector(
@@ -1556,7 +1590,9 @@ const LiabilityView = {
 
                             "#payment-new-account-balance"
 
-                        )
+                        ),
+
+                        ownerMemberId
 
                     );
 
