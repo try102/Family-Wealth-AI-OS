@@ -12,6 +12,8 @@ import IncomeAgent from "../agent/incomeAgent.js";
 
 import AccountAPI from "../../account/api/accountAPI.js";
 
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
+
 const IncomeView = {
 
     name: "Income View V7",
@@ -34,7 +36,7 @@ const IncomeView = {
 
                 <h1>
 
-                    💵 Income Center
+                    💵 ${t("income.title")}
 
                 </h1>
 
@@ -46,9 +48,15 @@ const IncomeView = {
 
                 >
 
-                    ← Back to Dashboard
+                    ${t("common.back")}
 
                 </button>
+
+                <br><br>
+
+                <label>${t("common.language")}</label>
+
+                <select id="income-language-select">${languageOptions(getLanguage())}</select>
 
                 <hr>
 
@@ -56,13 +64,13 @@ const IncomeView = {
 
                     <h2>
 
-                        Income Summary
+                        ${t("income.summary")}
 
                     </h2>
 
                     <p>
 
-                        <strong>Total Income:</strong>
+                        <strong>${t("income.total")}:</strong>
 
                         $${Number(
 
@@ -74,7 +82,7 @@ const IncomeView = {
 
                     <p>
 
-                        <strong>Income Count:</strong>
+                        <strong>${t("income.count")}:</strong>
 
                         ${Number(
 
@@ -96,7 +104,7 @@ const IncomeView = {
 
                 >
 
-                    + Add Income
+                    ${t("income.add")}
 
                 </button>
 
@@ -112,7 +120,7 @@ const IncomeView = {
 
                     <h2>
 
-                        Income
+                        ${t("income.records")}
 
                     </h2>
 
@@ -128,7 +136,7 @@ const IncomeView = {
 
                             <p>
 
-                                No income records.
+                                ${t("income.empty")}
 
                             </p>
 
@@ -170,7 +178,7 @@ const IncomeView = {
 
                                             <br>
 
-                                            Source:
+                                            ${t("income.source")}:
 
                                             ${
 
@@ -182,7 +190,7 @@ const IncomeView = {
 
                                             <br>
 
-                                            Type:
+                                            ${t("income.type")}:
 
                                             ${
 
@@ -194,7 +202,7 @@ const IncomeView = {
 
                                             <br>
 
-                                            Amount:
+                                            ${t("income.amount")}:
 
                                             $${Number(
 
@@ -218,7 +226,7 @@ const IncomeView = {
 
                                             >
 
-                                                Edit
+                                                ${t("common.edit")}
 
                                             </button>
 
@@ -232,7 +240,7 @@ const IncomeView = {
 
                                             >
 
-                                                Delete
+                                                ${t("common.delete")}
 
                                             </button>
 
@@ -291,6 +299,48 @@ const IncomeView = {
                         onBack();
 
                     }
+
+                }
+
+            );
+
+        }
+
+        // ==================================================
+
+        // Language Switch
+
+        // ==================================================
+
+        const languageSelect =
+
+            container.querySelector(
+
+                "#income-language-select"
+
+            );
+
+        if (languageSelect) {
+
+            languageSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    setLanguage(
+
+                        languageSelect.value
+
+                    );
+
+                    this.render(
+
+                        container,
+
+                        onBack
+
+                    );
 
                 }
 
@@ -590,7 +640,7 @@ const IncomeView = {
 
             <p style="color:#c00;">
 
-                No account found. 请先到 Accounts 页面新建账户，否则这笔收入不会进入 Cash Flow。
+                ${t("common.noAccountWarn")}
 
             </p>
 
@@ -622,7 +672,7 @@ const IncomeView = {
 
                 <h3>
 
-                    Add Income
+                    ${t("income.add")}
 
                 </h3>
 
@@ -634,7 +684,7 @@ const IncomeView = {
 
                     <label>
 
-                        Income Name
+                        ${t("common.name")}
 
                     </label>
 
@@ -654,7 +704,7 @@ const IncomeView = {
 
                     <label>
 
-                        Source
+                        ${t("income.source")}
 
                     </label>
 
@@ -674,7 +724,7 @@ const IncomeView = {
 
                     <label>
 
-                        Type
+                        ${t("income.type")}
 
                     </label>
 
@@ -736,7 +786,7 @@ const IncomeView = {
 
                     <label>
 
-                        Amount
+                        ${t("income.amount")}
 
                     </label>
 
@@ -760,7 +810,7 @@ const IncomeView = {
 
                     <label>
 
-                        Account（选了才会进入 Cash Flow）
+                        ${t("common.account")}（${t("common.accountHint")}）
 
                     </label>
 
@@ -774,7 +824,7 @@ const IncomeView = {
 
                         <option value="">
 
-                            Select Account
+                            ${t("common.selectAccount")}
 
                         </option>
 
@@ -792,7 +842,7 @@ const IncomeView = {
 
                     >
 
-                        Save Income
+                        ${t("income.save")}
 
                     </button>
 
@@ -804,7 +854,7 @@ const IncomeView = {
 
                     >
 
-                        Cancel
+                        ${t("common.cancel")}
 
                     </button>
 
@@ -1020,7 +1070,7 @@ const IncomeView = {
 
                 <h3>
 
-                    Edit Income
+                    ${t("income.edit")}
 
                 </h3>
 
@@ -1032,7 +1082,7 @@ const IncomeView = {
 
                     <label>
 
-                        Income Name
+                        ${t("common.name")}
 
                     </label>
 
@@ -1054,7 +1104,7 @@ const IncomeView = {
 
                     <label>
 
-                        Source
+                        ${t("income.source")}
 
                     </label>
 
@@ -1076,7 +1126,7 @@ const IncomeView = {
 
                     <label>
 
-                        Type
+                        ${t("income.type")}
 
                     </label>
 
@@ -1132,7 +1182,7 @@ const IncomeView = {
 
                     <label>
 
-                        Amount
+                        ${t("income.amount")}
 
                     </label>
 
@@ -1158,7 +1208,7 @@ const IncomeView = {
 
                     <label>
 
-                        Account（选了才会进入 Cash Flow）
+                        ${t("common.account")}（${t("common.accountHint")}）
 
                     </label>
 
@@ -1172,7 +1222,7 @@ const IncomeView = {
 
                         <option value="">
 
-                            Select Account
+                            ${t("common.selectAccount")}
 
                         </option>
 
@@ -1188,7 +1238,7 @@ const IncomeView = {
 
                     >
 
-                        Update Income
+                        ${t("common.save")}
 
                     </button>
 
@@ -1200,7 +1250,7 @@ const IncomeView = {
 
                     >
 
-                        Cancel
+                        ${t("common.cancel")}
 
                     </button>
 

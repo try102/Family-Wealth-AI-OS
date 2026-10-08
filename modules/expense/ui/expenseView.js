@@ -12,6 +12,8 @@ import ExpenseAgent from "../agent/expenseAgent.js";
 
 import AccountAPI from "../../account/api/accountAPI.js";
 
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
+
 const ExpenseView = {
 
     name: "Expense View V7",
@@ -34,7 +36,7 @@ const ExpenseView = {
 
                 <h1>
 
-                    🧾 Expense Center
+                    🧾 ${t("expense.title")}
 
                 </h1>
 
@@ -46,9 +48,15 @@ const ExpenseView = {
 
                 >
 
-                    ← Back to Dashboard
+                    ${t("common.back")}
 
                 </button>
+
+                <br><br>
+
+                <label>${t("common.language")}</label>
+
+                <select id="expense-language-select">${languageOptions(getLanguage())}</select>
 
                 <hr>
 
@@ -56,13 +64,13 @@ const ExpenseView = {
 
                     <h2>
 
-                        Expense Summary
+                        ${t("expense.summary")}
 
                     </h2>
 
                     <p>
 
-                        <strong>Total Expense:</strong>
+                        <strong>${t("expense.total")}:</strong>
 
                         $${Number(
 
@@ -74,7 +82,7 @@ const ExpenseView = {
 
                     <p>
 
-                        <strong>Expense Count:</strong>
+                        <strong>${t("expense.count")}:</strong>
 
                         ${Number(
 
@@ -96,7 +104,7 @@ const ExpenseView = {
 
                 >
 
-                    + Add Expense
+                    ${t("expense.add")}
 
                 </button>
 
@@ -112,7 +120,7 @@ const ExpenseView = {
 
                     <h2>
 
-                        Expense
+                        ${t("expense.records")}
 
                     </h2>
 
@@ -128,7 +136,7 @@ const ExpenseView = {
 
                             <p>
 
-                                No expense records.
+                                ${t("expense.empty")}
 
                             </p>
 
@@ -168,7 +176,7 @@ const ExpenseView = {
 
                                             <br>
 
-                                            Category:
+                                            ${t("common.category")}:
 
                                             ${
 
@@ -180,7 +188,7 @@ const ExpenseView = {
 
                                             <br>
 
-                                            Amount:
+                                            ${t("common.amount")}:
 
                                             $${Number(
 
@@ -202,7 +210,7 @@ const ExpenseView = {
 
                                             >
 
-                                                Edit
+                                                ${t("common.edit")}
 
                                             </button>
 
@@ -216,7 +224,7 @@ const ExpenseView = {
 
                                             >
 
-                                                Delete
+                                                ${t("common.delete")}
 
                                             </button>
 
@@ -275,6 +283,48 @@ const ExpenseView = {
                         onBack();
 
                     }
+
+                }
+
+            );
+
+        }
+
+        // ==================================================
+
+        // Language Switch
+
+        // ==================================================
+
+        const languageSelect =
+
+            container.querySelector(
+
+                "#expense-language-select"
+
+            );
+
+        if (languageSelect) {
+
+            languageSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    setLanguage(
+
+                        languageSelect.value
+
+                    );
+
+                    this.render(
+
+                        container,
+
+                        onBack
+
+                    );
 
                 }
 
@@ -570,7 +620,7 @@ const ExpenseView = {
 
             <p style="color:#c00;">
 
-                No account found. 请先到 Accounts 页面新建账户，否则这笔支出不会进入 Cash Flow。
+                ${t("common.noAccountWarn")}
 
             </p>
 
@@ -602,7 +652,7 @@ const ExpenseView = {
 
                 <h3>
 
-                    Add Expense
+                    ${t("expense.add")}
 
                 </h3>
 
@@ -614,7 +664,7 @@ const ExpenseView = {
 
                     <label>
 
-                        Expense Name
+                        ${t("common.name")}
 
                     </label>
 
@@ -634,7 +684,7 @@ const ExpenseView = {
 
                     <label>
 
-                        Category
+                        ${t("common.category")}
 
                     </label>
 
@@ -656,7 +706,7 @@ const ExpenseView = {
 
                     <label>
 
-                        Amount
+                        ${t("common.amount")}
 
                     </label>
 
@@ -680,7 +730,7 @@ const ExpenseView = {
 
                     <label>
 
-                        Date
+                        ${t("common.date")}
 
                     </label>
 
@@ -698,7 +748,7 @@ const ExpenseView = {
 
                     <label>
 
-                        Account（选了才会进入 Cash Flow）
+                        ${t("common.account")}（${t("common.accountHint")}）
 
                     </label>
 
@@ -712,7 +762,7 @@ const ExpenseView = {
 
                         <option value="">
 
-                            Select Account
+                            ${t("common.selectAccount")}
 
                         </option>
 
@@ -730,7 +780,7 @@ const ExpenseView = {
 
                     >
 
-                        Save Expense
+                        ${t("expense.save")}
 
                     </button>
 
@@ -742,7 +792,7 @@ const ExpenseView = {
 
                     >
 
-                        Cancel
+                        ${t("common.cancel")}
 
                     </button>
 
@@ -954,7 +1004,7 @@ const ExpenseView = {
 
                 <h3>
 
-                    Edit Expense
+                    ${t("expense.edit")}
 
                 </h3>
 
@@ -966,7 +1016,7 @@ const ExpenseView = {
 
                     <label>
 
-                        Expense Name
+                        ${t("common.name")}
 
                     </label>
 
@@ -988,7 +1038,7 @@ const ExpenseView = {
 
                     <label>
 
-                        Category
+                        ${t("common.category")}
 
                     </label>
 
@@ -1010,7 +1060,7 @@ const ExpenseView = {
 
                     <label>
 
-                        Amount
+                        ${t("common.amount")}
 
                     </label>
 
@@ -1036,7 +1086,7 @@ const ExpenseView = {
 
                     <label>
 
-                        Date
+                        ${t("common.date")}
 
                     </label>
 
@@ -1056,7 +1106,7 @@ const ExpenseView = {
 
                     <label>
 
-                        Account（选了才会进入 Cash Flow）
+                        ${t("common.account")}（${t("common.accountHint")}）
 
                     </label>
 
@@ -1070,7 +1120,7 @@ const ExpenseView = {
 
                         <option value="">
 
-                            Select Account
+                            ${t("common.selectAccount")}
 
                         </option>
 
@@ -1086,7 +1136,7 @@ const ExpenseView = {
 
                     >
 
-                        Update Expense
+                        ${t("common.save")}
 
                     </button>
 
@@ -1098,7 +1148,7 @@ const ExpenseView = {
 
                     >
 
-                        Cancel
+                        ${t("common.cancel")}
 
                     </button>
 
