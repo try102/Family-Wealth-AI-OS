@@ -36,7 +36,7 @@
 
 import InvestmentRepository
 
-    from "../repository/investmentRepository.js?v=20261008r";
+    from "../repository/investmentRepository.js?v=20261008s";
 
 import EventBus
 
