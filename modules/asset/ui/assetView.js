@@ -28,7 +28,7 @@ import MemberAPI from "../../member/api/memberAPI.js";
 
 import InvestmentAgent from "../../investment/agent/investmentAgent.js";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008x";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008z";
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js";
 
@@ -1264,6 +1264,40 @@ const AssetView = {
 
                     );
 
+                const ownerMemberId =
+
+                    (() => {
+
+                        try {
+
+                            const assetRecord =
+
+                                AssetAPI.getAll().find(
+
+                                    item =>
+
+                                        item.id === id
+
+                                );
+
+                            return assetRecord
+
+                                ? assetRecord.memberId ||
+
+                                    assetRecord.ownerId ||
+
+                                    ""
+
+                                : "";
+
+                        } catch (error) {
+
+                            return "";
+
+                        }
+
+                    })();
+
                 const accountId =
 
                     resolveAccountId(
@@ -1280,7 +1314,9 @@ const AssetView = {
 
                             "#asset-event-new-account-balance"
 
-                        )
+                        ),
+
+                        ownerMemberId
 
                     );
 
