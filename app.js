@@ -2200,6 +2200,20 @@ async function start(){
 
             );
 
+            const accountBalanceIntegrationImport =
+
+                await import(
+
+                    "./core/integration/accountBalanceIntegration.js"
+
+                );
+
+            const AccountBalanceIntegration =
+
+                accountBalanceIntegrationImport.default;
+
+            AccountBalanceIntegration.initialize();
+
         }
 
         catch(bridgeError){
