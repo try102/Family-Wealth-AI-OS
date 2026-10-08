@@ -68,6 +68,12 @@ const InvestmentView = {
 
             .getTrades();
 
+        const positions =
+
+            InvestmentAPI
+
+            .getPositions();
+
         container.innerHTML = `
 
             <div
@@ -185,6 +191,68 @@ ${JSON.stringify(
 )}
 
                     </pre>
+
+                </section>
+
+                <section>
+
+                    <h3>
+
+                        Holdings 持仓（买卖自动更新）
+
+                    </h3>
+
+                    <ul>
+
+                        ${
+
+                            positions.length === 0
+
+                            ?
+
+                            "<li>No holdings</li>"
+
+                            :
+
+                            positions.map(
+
+                                position => `
+
+                                    <li>
+
+                                        <strong>
+
+                                            ${position.symbol || position.name || ""}
+
+                                        </strong>
+
+                                        ${position.name || ""}
+
+                                        -
+
+                                        ${Number(position.quantity || 0)} 股
+
+                                        -
+
+                                        成本 $${Number(position.costBasis || 0).toLocaleString()}
+
+                                        -
+
+                                        市值 $${Number(position.marketValue || 0).toLocaleString()}
+
+                                        -
+
+                                        未实现盈亏 $${Number(position.unrealizedGainLoss || 0).toLocaleString()}
+
+                                    </li>
+
+                                `
+
+                            ).join("")
+
+                        }
+
+                    </ul>
 
                 </section>
 

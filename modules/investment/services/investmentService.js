@@ -300,6 +300,24 @@ const InvestmentService = {
 
         /*
 
+         * Keep the holding (Position) in
+
+         * sync: BUY increases the position,
+
+         * SELL decreases it. No manual
+
+         * re-entry on the asset side.
+
+         */
+
+        this.applyTradeToPosition(
+
+            result
+
+        );
+
+        /*
+
          * Investment event.
 
          */
@@ -627,6 +645,478 @@ const InvestmentService = {
          */
 
         return null;
+
+    },
+
+    // =====================================================
+
+    // Trade -> Position Sync
+
+    // =====================================================
+
+    applyTradeToPosition(
+
+        trade
+
+    ){
+
+        if (!trade) {
+
+            return null;
+
+        }
+
+        const action =
+
+            String(
+
+                trade.action || ""
+
+            )
+
+                .trim()
+
+                .toUpperCase();
+
+        if (
+
+            action !== "BUY" &&
+
+            action !== "SELL"
+
+        ) {
+
+            return null;
+
+        }
+
+        const symbol =
+
+            String(
+
+                trade.symbol || ""
+
+            )
+
+                .trim();
+
+        if (!symbol) {
+
+            return null;
+
+        }
+
+        const quantity =
+
+            Number(
+
+                trade.quantity || 0
+
+            );
+
+        const price =
+
+            Number(
+
+                trade.price || 0
+
+            );
+
+        const amount =
+
+            Number(
+
+                trade.amount ||
+
+                quantity * price ||
+
+                0
+
+            );
+
+        if (
+
+            quantity <= 0 ||
+
+            amount <= 0
+
+        ) {
+
+            return null;
+
+        }
+
+        const positions =
+
+            this.getPositions();
+
+        let position =
+
+            positions.find(
+
+                item =>
+
+                    String(
+
+                        item.symbol || ""
+
+                    )
+
+                        .toUpperCase() ===
+
+                    symbol.toUpperCase()
+
+            );
+
+        if (action === "BUY") {
+
+            if (!position) {
+
+                position = {
+
+                    symbol,
+
+                    name:
+
+                        trade.name ||
+
+                        symbol,
+
+                    quantity:
+
+                        0,
+
+                    averageCost:
+
+                        0,
+
+                    costBasis:
+
+                        0,
+
+                    currentPrice:
+
+                        price,
+
+                    marketValue:
+
+                        0,
+
+                    unrealizedGainLoss:
+
+                        0,
+
+                    accountId:
+
+                        trade.accountId ||
+
+                        "",
+
+                    currency:
+
+                        trade.currency ||
+
+                        "USD"
+
+                };
+
+            }
+
+            position.quantity =
+
+                Number(
+
+                    position.quantity || 0
+
+                ) +
+
+                quantity;
+
+            position.costBasis =
+
+                Number(
+
+                    position.costBasis || 0
+
+                ) +
+
+                amount;
+
+            position.averageCost =
+
+                position.quantity > 0
+
+                ? position.costBasis /
+
+                    position.quantity
+
+                : 0;
+
+            position.currentPrice =
+
+                price;
+
+            position.marketValue =
+
+                position.quantity *
+
+                price;
+
+            if (trade.name) {
+
+                position.name =
+
+                    trade.name;
+
+            }
+
+            if (trade.accountId) {
+
+                position.accountId =
+
+                    trade.accountId;
+
+            }
+
+        } else {
+
+            if (!position) {
+
+                return null;
+
+            }
+
+            const held =
+
+                Number(
+
+                    position.quantity || 0
+
+                );
+
+            const sellQuantity =
+
+                Math.min(
+
+                    quantity,
+
+                    held
+
+                );
+
+            if (sellQuantity <= 0) {
+
+                return null;
+
+            }
+
+            const averageCostHeld =
+
+                held > 0
+
+                ? Number(
+
+                    position.costBasis || 0
+
+                ) /
+
+                    held
+
+                : 0;
+
+            position.quantity =
+
+                held -
+
+                sellQuantity;
+
+            position.costBasis =
+
+                Math.max(
+
+                    Number(
+
+                        position.costBasis || 0
+
+                    ) -
+
+                    averageCostHeld *
+
+                        sellQuantity,
+
+                    0
+
+                );
+
+            position.averageCost =
+
+                position.quantity > 0
+
+                ? position.costBasis /
+
+                    position.quantity
+
+                : 0;
+
+            position.currentPrice =
+
+                price;
+
+            position.marketValue =
+
+                position.quantity *
+
+                price;
+
+        }
+
+        position.unrealizedGainLoss =
+
+            Number(
+
+                position.marketValue || 0
+
+            ) -
+
+            Number(
+
+                position.costBasis || 0
+
+            );
+
+        position.updatedAt =
+
+            new Date()
+
+                .toISOString();
+
+        const savedPosition =
+
+            this.updatePosition(
+
+                position
+
+            );
+
+        /*
+
+         * Mirror the holding into the
+
+         * Investments list, so Dashboard /
+
+         * Advisor (which read Investment
+
+         * records) stay in sync with trades
+
+         * without manual re-entry.
+
+         */
+
+        const investments =
+
+            this.getInvestments();
+
+        const existing =
+
+            investments.find(
+
+                item =>
+
+                    String(
+
+                        item.symbol || ""
+
+                    )
+
+                        .toUpperCase() ===
+
+                    symbol.toUpperCase()
+
+            );
+
+        const record = {
+
+            ...(
+
+                existing ||
+
+                {}
+
+            ),
+
+            name:
+
+                position.name ||
+
+                symbol,
+
+            symbol,
+
+            quantity:
+
+                position.quantity,
+
+            costBasis:
+
+                position.costBasis,
+
+            currentPrice:
+
+                position.currentPrice,
+
+            marketValue:
+
+                position.marketValue,
+
+            currentValue:
+
+                position.marketValue,
+
+            accountId:
+
+                position.accountId ||
+
+                (
+
+                    existing
+
+                    ? existing.accountId
+
+                    : ""
+
+                ) ||
+
+                "",
+
+            currency:
+
+                position.currency ||
+
+                "USD"
+
+        };
+
+        if (
+
+            !existing
+
+        ) {
+
+            record.type =
+
+                "STOCK";
+
+        }
+
+        InvestmentRepository
+
+            .saveInvestment(
+
+                record
+
+            );
+
+        return savedPosition;
 
     },
 

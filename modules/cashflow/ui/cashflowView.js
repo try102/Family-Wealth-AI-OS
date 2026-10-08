@@ -12,6 +12,14 @@ import cashflowAPI
 
     from "../api/cashflowAPI.js";
 
+import TransactionIntegration
+
+    from "../../../core/integration/transactionIntegration.js";
+
+import AccountAPI
+
+    from "../../account/api/accountAPI.js";
+
 import cashflowAgent
 
     from "../agent/cashflowAgent.js";
@@ -808,6 +816,14 @@ const cashflowView = {
 
         }
 
+        const accountOptions =
+
+            this.buildAccountOptions();
+
+        const hasAccounts =
+
+            this.getAccounts().length > 0;
+
         formContainer.innerHTML = `
 
             <div
@@ -929,6 +945,46 @@ const cashflowView = {
                         required
 
                     >
+
+                    <br><br>
+
+                    <label>
+
+                        Account（选账户走 Transaction，现金余额自动同步）
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="cashflow-account"
+
+                    >
+
+                        <option value="">
+
+                            Select Account
+
+                        </option>
+
+                        ${accountOptions}
+
+                    </select>
+
+                    ${
+
+                        hasAccounts
+
+                        ?
+
+                        ""
+
+                        :
+
+                        `<p style="color:#c00;">No account found. 请先到 Accounts 页面新建账户。</p>`
+
+                    }
 
                     <br><br>
 
@@ -1068,19 +1124,159 @@ const cashflowView = {
 
                     ).value;
 
-                cashflowAPI.createCashflow({
+                const accountField =
 
-                    type,
+                    form.querySelector(
 
-                    category,
+                        "#cashflow-account"
 
-                    description,
+                    );
 
-                    amount,
+                const accountId =
 
-                    frequency
+                    accountField
 
-                });
+                    ?
+
+                    accountField.value
+
+                    :
+
+                    "";
+
+                let recorded =
+
+                    false;
+
+                if(
+
+                    accountId
+
+                ){
+
+                    try{
+
+                        const payload = {
+
+                            date:
+
+                                new Date()
+
+                                    .toISOString()
+
+                                    .slice(0, 10),
+
+                            accountId,
+
+                            amount,
+
+                            currency:
+
+                                "USD",
+
+                            description:
+
+                                description ||
+
+                                category,
+
+                            source:
+
+                                "BusinessModule"
+
+                        };
+
+                        if(
+
+                            type ===
+
+                            "INCOME"
+
+                        ){
+
+                            TransactionIntegration
+
+                                .recordIncome(
+
+                                    {
+
+                                        ...payload,
+
+                                        income:
+
+                                            {
+
+                                                category
+
+                                            }
+
+                                    }
+
+                                );
+
+                        }else{
+
+                            TransactionIntegration
+
+                                .recordExpense(
+
+                                    {
+
+                                        ...payload,
+
+                                        expense:
+
+                                            {
+
+                                                category
+
+                                            }
+
+                                    }
+
+                                );
+
+                        }
+
+                        recorded =
+
+                            true;
+
+                    }catch(txError){
+
+                        console.warn(
+
+                            "Cash flow transaction not recorded:",
+
+                            txError.message
+
+                        );
+
+                    }
+
+                }
+
+                if(
+
+                    !recorded
+
+                ){
+
+                    cashflowAPI.createCashflow({
+
+                        type,
+
+                        category,
+
+                        description,
+
+                        amount,
+
+                        frequency
+
+                    });
+
+                }
 
                 this.render(
 
@@ -1119,6 +1315,70 @@ const cashflowView = {
             );
 
         }
+
+    },
+
+    // ==================================================
+
+    // Accounts
+
+    // ==================================================
+
+    getAccounts() {
+
+        try {
+
+            return AccountAPI.getAll() || [];
+
+        } catch (accountError) {
+
+            return [];
+
+        }
+
+    },
+
+    buildAccountOptions(selectedId = "") {
+
+        return this.getAccounts().map(
+
+            account => `
+
+                <option
+
+                    value="${account.id}"
+
+                    ${
+
+                        String(account.id) ===
+
+                        String(selectedId)
+
+                        ?
+
+                        "selected"
+
+                        :
+
+                        ""
+
+                    }
+
+                >
+
+                    ${
+
+                        account.name ||
+
+                        account.id
+
+                    }
+
+                </option>
+
+            `
+
+        ).join("");
 
     },
 
