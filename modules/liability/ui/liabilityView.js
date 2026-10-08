@@ -20,6 +20,8 @@ import LiabilityAgent
 
 import AccountAPI
 
+import MemberAPI from "../../member/api/memberAPI.js";
+
 import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
 
     from "../../account/api/accountAPI.js";
@@ -1746,6 +1748,26 @@ const LiabilityView = {
 
         }
 
+        const memberOptions =
+
+            (() => {
+
+                try {
+
+                    return MemberAPI.getMembers().map(
+
+                        member => `<option value="${member.id}">${member.name || member.id}</option>`
+
+                    ).join("");
+
+                } catch (error) {
+
+                    return "";
+
+                }
+
+            })();
+
         formContainer.innerHTML = `
 
             <div
@@ -1864,6 +1886,28 @@ const LiabilityView = {
 
                     <br><br>
 
+                    <label>
+
+                        ${t("member.owner")}
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="liability-member"
+
+                    >
+
+                        <option value="">${t("member.familyShared")}</option>
+
+                        ${memberOptions}
+
+                    </select>
+
+                    <br><br>
+
                     <button
 
                         type="submit"
@@ -1979,6 +2023,14 @@ const LiabilityView = {
                     interestRate:
 
                         rate,
+
+                    memberId:
+
+                        form.querySelector(
+
+                            "#liability-member"
+
+                        )?.value || "",
 
                     status:
 
