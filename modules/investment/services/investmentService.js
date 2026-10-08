@@ -876,7 +876,155 @@ const InvestmentService = {
 
             if (!position) {
 
-                return null;
+                // No trade-derived position yet. The holding may
+
+                // exist only as a manually added Investments
+
+                // record (the Dashboard reads those records), so
+
+                // bootstrap from it instead of dropping the sale.
+
+                const manualRecord =
+
+                    this.getInvestments().find(
+
+                        item =>
+
+                            String(
+
+                                item.symbol || ""
+
+                            )
+
+                                .toUpperCase() ===
+
+                            symbol.toUpperCase()
+
+                    );
+
+                if (!manualRecord) {
+
+                    return null;
+
+                }
+
+                const recordQuantity =
+
+                    Number(manualRecord.quantity || 0);
+
+                if (recordQuantity <= 0) {
+
+                    // Value-only manual record: reduce its
+
+                    // value by the sale amount so the
+
+                    // Dashboard reflects the sale immediately.
+
+                    const remainingValue =
+
+                        Math.max(
+
+                            Number(manualRecord.currentValue || 0) -
+
+                                amount,
+
+                            0
+
+                        );
+
+                    manualRecord.currentValue =
+
+                        remainingValue;
+
+                    manualRecord.marketValue =
+
+                        remainingValue;
+
+                    InvestmentRepository
+
+                        .saveInvestment(
+
+                            manualRecord
+
+                        );
+
+                    return null;
+
+                }
+
+                position = {
+
+                    symbol,
+
+                    name:
+
+                        manualRecord.name ||
+
+                        symbol,
+
+                    quantity:
+
+                        recordQuantity,
+
+                    averageCost:
+
+                        recordQuantity > 0
+
+                            ? Number(
+
+                                manualRecord.costBasis ??
+
+                                manualRecord.currentValue ??
+
+                                0
+
+                            ) / recordQuantity
+
+                            : 0,
+
+                    costBasis:
+
+                        Number(
+
+                            manualRecord.costBasis ??
+
+                            manualRecord.currentValue ??
+
+                            0
+
+                        ),
+
+                    currentPrice:
+
+                        price ||
+
+                        Number(manualRecord.currentPrice || 0),
+
+                    marketValue:
+
+                        Number(manualRecord.currentValue || 0),
+
+                    unrealizedGainLoss:
+
+                        0,
+
+                    accountId:
+
+                        manualRecord.accountId ||
+
+                        trade.accountId ||
+
+                        "",
+
+                    currency:
+
+                        manualRecord.currency ||
+
+                        trade.currency ||
+
+                        "USD"
+
+                };
 
             }
 
