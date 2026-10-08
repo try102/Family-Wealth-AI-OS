@@ -170,23 +170,19 @@ class TransactionService {
 
         /*
 
-         *
+         * TRANSACTION_CREATED is published
 
-         * Publish system-level
+         * once by TransactionManager
 
-         * Transaction Created event.
+         * .createTransaction (Step 2 fix).
 
-         *
+         * Do not publish again here, or
+
+         * subscribers would process every
+
+         * Transaction twice.
 
          */
-
-        EventBus.publish(
-
-            EventTypes.TRANSACTION_CREATED,
-
-            result
-
-        );
 
         return result;
 
