@@ -880,6 +880,20 @@ function renderDashboard(
 
                     </button>
 
+                    <!-- Retirement -->
+
+                    <button
+
+                        id="quick-retirement-button"
+
+                        type="button"
+
+                    >
+
+                        🏖️ Retirement
+
+                    </button>
+
                 </div>
 
             </section>
@@ -1523,6 +1537,78 @@ function renderDashboard(
                     renderError(
 
                         "Cash Flow Module Error",
+
+                        error
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Quick Access - Retirement
+
+    // ==================================================
+
+    const retirementButton =
+
+        document.getElementById(
+
+            "quick-retirement-button"
+
+        );
+
+    if(
+
+        retirementButton
+
+    ){
+
+        retirementButton.addEventListener(
+
+            "click",
+
+            async () => {
+
+                try{
+
+                    const module =
+
+                        await import(
+
+                            "./modules/retirement/retirementModule.js"
+
+                        );
+
+                    const RetirementModule =
+
+                        module.default;
+
+                    RetirementModule.view.render(
+
+                        app,
+
+                        () => {
+
+                            start();
+
+                        }
+
+                    );
+
+                }
+
+                catch(error){
+
+                    renderError(
+
+                        "Retirement Module Error",
 
                         error
 
