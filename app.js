@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261008x";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261008z";
 
 const app =
 
@@ -1078,7 +1078,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./core/modules/assetsModule.js?v=20261008x"
+                            "./core/modules/assetsModule.js?v=20261008z"
 
                         );
 
@@ -1166,7 +1166,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/investment/ui/investmentView.js?v=20261008x"
+                            "./modules/investment/ui/investmentView.js?v=20261008z"
 
                         );
 
@@ -1256,7 +1256,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/account/ui/accountView.js?v=20261008y"
+                            "./modules/account/ui/accountView.js?v=20261008z"
 
                         );
 
@@ -1638,7 +1638,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./core/modules/cashflowModule.js?v=20261008x"
+                            "./core/modules/cashflowModule.js?v=20261008z"
 
                         );
 
@@ -3516,7 +3516,7 @@ async function start(){
 
             await import(
 
-                "./core/modules/assetsModule.js?v=20261008x"
+                "./core/modules/assetsModule.js?v=20261008z"
 
             );
 
@@ -3976,7 +3976,7 @@ async function start(){
 
                 await import(
 
-                    "./core/modules/cashflowModule.js?v=20261008x"
+                    "./core/modules/cashflowModule.js?v=20261008z"
 
                 );
 
@@ -4224,7 +4224,7 @@ async function start(){
 
                 await import(
 
-                    "./modules/account/api/accountAPI.js?v=20261008x"
+                    "./modules/account/api/accountAPI.js?v=20261008z"
 
                 );
 
