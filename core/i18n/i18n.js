@@ -144,7 +144,16 @@ const DICTIONARY = {
         "taxpage.noAdvisorData": "暂无顾问数据", "taxpage.noAdvisorText": "创建税务计划后将生成税务建议。",
         "taxpage.noRecommendations": "暂无建议", "taxpage.noRecommendationsText": "目前没有即时税务建议。",
         "taxpage.recommendation": "💡 建议", "taxpage.quickAccess": "快捷入口", "taxpage.createPlanBtn": "➕ 新建税务计划",
-        "taxpage.refresh": "🔄 刷新", "taxpage.back": "⬅️ 返回"
+        "taxpage.refresh": "🔄 刷新", "taxpage.back": "⬅️ 返回",
+        "taxpage.noPlan": "暂无税务计划", "taxpage.noPlanText": "尚未创建税务计划。",
+        "advisor.health.good": "良好", "advisor.health.warning": "注意", "advisor.health.risk": "风险",
+        "advisor.risk.low": "低", "advisor.risk.medium": "中", "advisor.risk.high": "高",
+        "advisor.rec.cashflow": "增加正向现金流", "advisor.rec.debt": "降低债务敞口",
+        "advisor.rec.liquidity": "提高应急流动性", "advisor.rec.structure": "改善整体财富结构",
+        "advisor.rec.maintain": "保持当前财富策略", "advisor.alert.score": "财富评分需要关注",
+        "advisor.alert.cashflow": "净现金流为负", "advisor.alert.debt": "负债率偏高",
+        "advisor.alert.liquidity": "流动性覆盖不足", "advisor.alert.engine": "财富引擎数据不可用",
+        "advisor.alert.tax": "税务数据不可用"
     },
     "zh-TW": {
         "common.back": "← 返回首頁", "common.language": "語言", "common.save": "保存", "common.cancel": "取消",
@@ -275,7 +284,16 @@ const DICTIONARY = {
         "taxpage.noAdvisorData": "暫無顧問數據", "taxpage.noAdvisorText": "建立稅務計劃後將產生稅務建議。",
         "taxpage.noRecommendations": "暫無建議", "taxpage.noRecommendationsText": "目前沒有即時稅務建議。",
         "taxpage.recommendation": "💡 建議", "taxpage.quickAccess": "快捷入口", "taxpage.createPlanBtn": "➕ 新建稅務計劃",
-        "taxpage.refresh": "🔄 刷新", "taxpage.back": "⬅️ 返回"
+        "taxpage.refresh": "🔄 刷新", "taxpage.back": "⬅️ 返回",
+        "taxpage.noPlan": "暫無稅務計劃", "taxpage.noPlanText": "尚未建立稅務計劃。",
+        "advisor.health.good": "良好", "advisor.health.warning": "注意", "advisor.health.risk": "風險",
+        "advisor.risk.low": "低", "advisor.risk.medium": "中", "advisor.risk.high": "高",
+        "advisor.rec.cashflow": "增加正向現金流", "advisor.rec.debt": "降低債務敞口",
+        "advisor.rec.liquidity": "提高應急流動性", "advisor.rec.structure": "改善整體財富結構",
+        "advisor.rec.maintain": "保持當前財富策略", "advisor.alert.score": "財富評分需要關注",
+        "advisor.alert.cashflow": "淨現金流為負", "advisor.alert.debt": "負債率偏高",
+        "advisor.alert.liquidity": "流動性覆蓋不足", "advisor.alert.engine": "財富引擎數據不可用",
+        "advisor.alert.tax": "稅務數據不可用"
     },
     "en-US": {
         "common.back": "← Back to Dashboard", "common.language": "Language", "common.save": "Save", "common.cancel": "Cancel",
@@ -406,7 +424,16 @@ const DICTIONARY = {
         "taxpage.noAdvisorData": "No Advisor Data", "taxpage.noAdvisorText": "Create a tax plan to generate tax advice.",
         "taxpage.noRecommendations": "No Recommendations", "taxpage.noRecommendationsText": "No immediate tax recommendations.",
         "taxpage.recommendation": "💡 Recommendation", "taxpage.quickAccess": "Quick Access", "taxpage.createPlanBtn": "➕ Create Tax Plan",
-        "taxpage.refresh": "🔄 Refresh", "taxpage.back": "⬅️ Back"
+        "taxpage.refresh": "🔄 Refresh", "taxpage.back": "⬅️ Back",
+        "taxpage.noPlan": "No Tax Plan", "taxpage.noPlanText": "No tax plan has been created yet.",
+        "advisor.health.good": "Good", "advisor.health.warning": "Warning", "advisor.health.risk": "Risk",
+        "advisor.risk.low": "Low", "advisor.risk.medium": "Medium", "advisor.risk.high": "High",
+        "advisor.rec.cashflow": "Increase positive cash flow", "advisor.rec.debt": "Reduce debt exposure",
+        "advisor.rec.liquidity": "Increase emergency liquidity", "advisor.rec.structure": "Improve overall wealth structure",
+        "advisor.rec.maintain": "Maintain current wealth strategy", "advisor.alert.score": "Wealth score requires attention",
+        "advisor.alert.cashflow": "Negative net cash flow", "advisor.alert.debt": "High debt ratio",
+        "advisor.alert.liquidity": "Low liquidity coverage", "advisor.alert.engine": "Wealth Engine data unavailable",
+        "advisor.alert.tax": "Tax data unavailable"
     },
     "ja-JP": {
         "common.back": "← ダッシュボードに戻る", "common.language": "言語", "common.save": "保存", "common.cancel": "キャンセル",
@@ -537,7 +564,16 @@ const DICTIONARY = {
         "taxpage.noAdvisorData": "アドバイザーデータなし", "taxpage.noAdvisorText": "税務プランを作成すると税務アドバイスが生成されます。",
         "taxpage.noRecommendations": "推奨なし", "taxpage.noRecommendationsText": "当面の税務推奨はありません。",
         "taxpage.recommendation": "💡 推奨", "taxpage.quickAccess": "クイックアクセス", "taxpage.createPlanBtn": "➕ 税務プラン作成",
-        "taxpage.refresh": "🔄 更新", "taxpage.back": "⬅️ 戻る"
+        "taxpage.refresh": "🔄 更新", "taxpage.back": "⬅️ 戻る",
+        "taxpage.noPlan": "税務プランなし", "taxpage.noPlanText": "税務プランはまだ作成されていません。",
+        "advisor.health.good": "良好", "advisor.health.warning": "注意", "advisor.health.risk": "リスク",
+        "advisor.risk.low": "低", "advisor.risk.medium": "中", "advisor.risk.high": "高",
+        "advisor.rec.cashflow": "プラスのキャッシュフローを増やす", "advisor.rec.debt": "債務エクスポージャーを減らす",
+        "advisor.rec.liquidity": "緊急流動性を高める", "advisor.rec.structure": "資産構造全体を改善する",
+        "advisor.rec.maintain": "現在の資産戦略を維持する", "advisor.alert.score": "資産スコアに注意が必要です",
+        "advisor.alert.cashflow": "ネットキャッシュフローがマイナス", "advisor.alert.debt": "負債比率が高い",
+        "advisor.alert.liquidity": "流動性カバレッジが不足", "advisor.alert.engine": "ウェルスエンジンのデータが利用できません",
+        "advisor.alert.tax": "税務データが利用できません"
     }
 };
 
