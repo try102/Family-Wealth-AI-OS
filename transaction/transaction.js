@@ -716,15 +716,13 @@ class Transaction {
 
                     if (
 
-                        !line.accountId ||
-
                         typeof line.accountId !== "string"
 
                     ) {
 
                         errors.push(
 
-                            `Line ${index + 1}: accountId is required.`
+                            `Line ${index + 1}: accountId must be a string (empty allowed for manual entries without an account).`
 
                         );
 

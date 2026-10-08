@@ -192,8 +192,6 @@ const AssetService = {
 
         if (
 
-            data.accountId &&
-
             amount > 0
 
         ){
@@ -367,8 +365,6 @@ const AssetService = {
             costBasis;
 
         if (
-
-            data.accountId &&
 
             amount > 0
 

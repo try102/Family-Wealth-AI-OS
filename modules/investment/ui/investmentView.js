@@ -1492,7 +1492,7 @@ ${JSON.stringify(
 
                     <label>
 
-                        Account（选了才会记入 Transaction）
+                        Account（不选也会记入 Cash Flow，只是不影响账户余额）
 
                     </label>
 

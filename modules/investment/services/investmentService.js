@@ -430,12 +430,6 @@ const InvestmentService = {
 
          */
 
-        if (!trade.accountId) {
-
-            return null;
-
-        }
-
         const action =
 
             String(

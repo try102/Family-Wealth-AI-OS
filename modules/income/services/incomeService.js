@@ -198,9 +198,7 @@ const IncomeService = {
 
         if (
 
-            savedIncome &&
-
-            savedIncome.accountId
+            savedIncome
 
         ){
 

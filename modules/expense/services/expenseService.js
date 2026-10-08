@@ -94,9 +94,7 @@ const ExpenseService = {
 
         if (
 
-            savedExpense &&
-
-            savedExpense.accountId
+            savedExpense
 
         ){
 

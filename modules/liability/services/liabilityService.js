@@ -204,8 +204,6 @@ const LiabilityService = {
 
         if (
 
-            data.accountId &&
-
             amount > 0
 
         ){
