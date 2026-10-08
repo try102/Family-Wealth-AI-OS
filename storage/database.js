@@ -24,6 +24,8 @@ const Database = {
 
         incomes:[],
 
+        expenses:[],
+
         goals:[],
 
         reports:[],
@@ -50,7 +52,13 @@ const Database = {
 
             this.tables =
 
-            saved;
+            {
+
+                ...this.tables,
+
+                ...saved
+
+            };
 
         }
 
@@ -145,6 +153,8 @@ const Database = {
             liabilities:[],
 
             incomes:[],
+
+            expenses:[],
 
             goals:[],
 

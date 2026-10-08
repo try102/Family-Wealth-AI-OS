@@ -824,6 +824,20 @@ function renderDashboard(
 
                     </button>
 
+                    <!-- Expense -->
+
+                    <button
+
+                        id="quick-expense-button"
+
+                        type="button"
+
+                    >
+
+                        🧾 Expense
+
+                    </button>
+
                     <!-- Liability -->
 
                     <button
@@ -1225,6 +1239,106 @@ function renderDashboard(
                     renderError(
 
                         "Income Module Error",
+
+                        error
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+    // ==================================================
+
+    // Quick Access - Expense
+
+    // ==================================================
+
+    const expenseButton =
+
+        document.getElementById(
+
+            "quick-expense-button"
+
+        );
+
+    if(
+
+        expenseButton
+
+    ){
+
+        expenseButton.addEventListener(
+
+            "click",
+
+            async () => {
+
+                try{
+
+                    const module =
+
+                        await import(
+
+                            "./modules/expense/expenseModule.js"
+
+                        );
+
+                    const ExpenseModule =
+
+                        module.default;
+
+                    if(
+
+                        !ExpenseModule
+
+                    ){
+
+                        throw new Error(
+
+                            "ExpenseModule not found"
+
+                        );
+
+                    }
+
+                    if(
+
+                        !ExpenseModule.view
+
+                    ){
+
+                        throw new Error(
+
+                            "ExpenseModule.view not found"
+
+                        );
+
+                    }
+
+                    ExpenseModule.view.render(
+
+                        app,
+
+                        () => {
+
+                            start();
+
+                        }
+
+                    );
+
+                }
+
+                catch(error){
+
+                    renderError(
+
+                        "Expense Module Error",
 
                         error
 
