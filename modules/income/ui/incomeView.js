@@ -1056,6 +1056,28 @@ const IncomeView = {
 
                     );
 
+                const memberField =
+
+                    form.querySelector(
+
+                        "#income-member"
+
+                    );
+
+                const memberId =
+
+                    resolveMemberId(
+
+                        memberField,
+
+                        form.querySelector(
+
+                            "#income-new-member-name"
+
+                        )
+
+                    );
+
                 const accountField =
 
                     form.querySelector(
@@ -1080,30 +1102,9 @@ const IncomeView = {
 
                             "#income-new-account-balance"
 
-                        )
+                        ),
 
-                    );
-
-
-                const memberField =
-
-                    form.querySelector(
-
-                        "#income-member"
-
-                    );
-
-                const memberId =
-
-                    resolveMemberId(
-
-                        memberField,
-
-                        form.querySelector(
-
-                            "#income-new-member-name"
-
-                        )
+                        memberId
 
                     );
 
