@@ -42,7 +42,7 @@ from "../../modules/asset/services/assetService.js";
 
 import assetView
 
-from "../../modules/asset/ui/assetView.js?v=20261008u";
+from "../../modules/asset/ui/assetView.js?v=20261008x";
 
 const AssetsModule = {
 
