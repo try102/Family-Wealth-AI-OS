@@ -120,7 +120,19 @@ const DICTIONARY = {
         "member.taxTitle": "税务（{year}年）", "member.wage": "工资/业务收入", "member.dividends": "股息",
         "member.interest": "利息", "member.gains": "资本利得", "member.mortgageInterest": "房贷利息已付",
         "member.taxPaid": "已缴税款", "member.totalIncome": "合计收入", "member.cashflowTitle": "收入与现金流",
-        "member.balanceTitle": "资产与负债", "member.memberShare": "成员构成"
+        "member.balanceTitle": "资产与负债", "member.memberShare": "成员构成",
+        "member.backLabel": "返回", "dash.allocation": "资产配置", "dash.noAllocation": "暂无资产配置数据",
+        "dash.wealthModules": "财富模块", "dash.aiAgents": "AI 智能体", "dash.statusActive": "启用中",
+        "dash.statusReady": "就绪", "dash.module.investment": "投资", "dash.module.tax": "税务",
+        "dash.module.liability": "负债", "dash.module.income": "收入", "dash.module.cashflow": "现金流",
+        "dash.module.assets": "资产", "dash.module.account": "账户", "dash.module.transaction": "交易",
+        "dash.agent.investment": "投资智能体", "dash.alloc.cash": "现金", "dash.alloc.investment": "投资",
+        "dash.alloc.other": "其他", "dash.alloc.real estate": "房产", "dash.alloc.retirement": "退休金",
+        "dash.assetCount": "资产数量", "dash.investmentCount": "投资数量", "dash.liabilityCount": "负债数量",
+        "taxsum.title": "系统数据汇总（{year}）", "taxsum.wage": "工资/业务收入（Income 模块）：",
+        "taxsum.dividends": "股息：", "taxsum.interestSep": "　利息：", "taxsum.gains": "资本利得（资产出售）：",
+        "taxsum.mortgage": "房贷利息已付（可抵扣参考）：", "taxsum.paidSep": "　已缴税款：",
+        "taxsum.total": "合计收入（已自动填入 Income）："
     },
     "zh-TW": {
         "common.back": "← 返回首頁", "common.language": "語言", "common.save": "保存", "common.cancel": "取消",
@@ -227,7 +239,19 @@ const DICTIONARY = {
         "member.taxTitle": "稅務（{year}年）", "member.wage": "薪資/業務收入", "member.dividends": "股息",
         "member.interest": "利息", "member.gains": "資本利得", "member.mortgageInterest": "房貸利息已付",
         "member.taxPaid": "已繳稅款", "member.totalIncome": "合計收入", "member.cashflowTitle": "收入與現金流",
-        "member.balanceTitle": "資產與負債", "member.memberShare": "成員構成"
+        "member.balanceTitle": "資產與負債", "member.memberShare": "成員構成",
+        "member.backLabel": "返回", "dash.allocation": "資產配置", "dash.noAllocation": "暫無資產配置數據",
+        "dash.wealthModules": "財富模組", "dash.aiAgents": "AI 智能體", "dash.statusActive": "啟用中",
+        "dash.statusReady": "就緒", "dash.module.investment": "投資", "dash.module.tax": "稅務",
+        "dash.module.liability": "負債", "dash.module.income": "收入", "dash.module.cashflow": "現金流",
+        "dash.module.assets": "資產", "dash.module.account": "帳戶", "dash.module.transaction": "交易",
+        "dash.agent.investment": "投資智能體", "dash.alloc.cash": "現金", "dash.alloc.investment": "投資",
+        "dash.alloc.other": "其他", "dash.alloc.real estate": "房產", "dash.alloc.retirement": "退休金",
+        "dash.assetCount": "資產數量", "dash.investmentCount": "投資數量", "dash.liabilityCount": "負債數量",
+        "taxsum.title": "系統數據彙總（{year}）", "taxsum.wage": "工資/業務收入（Income 模組）：",
+        "taxsum.dividends": "股息：", "taxsum.interestSep": "　利息：", "taxsum.gains": "資本利得（資產出售）：",
+        "taxsum.mortgage": "房貸利息已付（可抵扣參考）：", "taxsum.paidSep": "　已繳稅款：",
+        "taxsum.total": "合計收入（已自動填入 Income）："
     },
     "en-US": {
         "common.back": "← Back to Dashboard", "common.language": "Language", "common.save": "Save", "common.cancel": "Cancel",
@@ -334,7 +358,19 @@ const DICTIONARY = {
         "member.taxTitle": "Tax ({year})", "member.wage": "Wages / Business", "member.dividends": "Dividends",
         "member.interest": "Interest", "member.gains": "Capital Gains", "member.mortgageInterest": "Mortgage Interest Paid",
         "member.taxPaid": "Tax Paid", "member.totalIncome": "Total Income", "member.cashflowTitle": "Income & Cash Flow",
-        "member.balanceTitle": "Assets & Liabilities", "member.memberShare": "Member Breakdown"
+        "member.balanceTitle": "Assets & Liabilities", "member.memberShare": "Member Breakdown",
+        "member.backLabel": "Back", "dash.allocation": "Asset Allocation", "dash.noAllocation": "No asset allocation data",
+        "dash.wealthModules": "Wealth Modules", "dash.aiAgents": "AI Agents", "dash.statusActive": "Active",
+        "dash.statusReady": "Ready", "dash.module.investment": "Investment", "dash.module.tax": "Tax",
+        "dash.module.liability": "Liability", "dash.module.income": "Income", "dash.module.cashflow": "Cash Flow",
+        "dash.module.assets": "Assets", "dash.module.account": "Account", "dash.module.transaction": "Transaction",
+        "dash.agent.investment": "Investment Agent", "dash.alloc.cash": "Cash", "dash.alloc.investment": "Investment",
+        "dash.alloc.other": "Other", "dash.alloc.real estate": "Real Estate", "dash.alloc.retirement": "Retirement",
+        "dash.assetCount": "Assets", "dash.investmentCount": "Investments", "dash.liabilityCount": "Liabilities",
+        "taxsum.title": "System Data Summary ({year})", "taxsum.wage": "Wages / Business Income (Income module): ",
+        "taxsum.dividends": "Dividends: ", "taxsum.interestSep": "  Interest: ", "taxsum.gains": "Capital Gains (Asset Sales): ",
+        "taxsum.mortgage": "Mortgage Interest Paid (deductible reference): ", "taxsum.paidSep": "  Tax Paid: ",
+        "taxsum.total": "Total Income (auto-filled into Income): "
     },
     "ja-JP": {
         "common.back": "← ダッシュボードに戻る", "common.language": "言語", "common.save": "保存", "common.cancel": "キャンセル",
@@ -441,7 +477,19 @@ const DICTIONARY = {
         "member.taxTitle": "税金（{year}年）", "member.wage": "給与/事業収入", "member.dividends": "配当",
         "member.interest": "利息", "member.gains": "譲渡益", "member.mortgageInterest": "住宅ローン利息（支払済）",
         "member.taxPaid": "納税済額", "member.totalIncome": "総収入", "member.cashflowTitle": "収入とキャッシュフロー",
-        "member.balanceTitle": "資産と負債", "member.memberShare": "メンバー内訳"
+        "member.balanceTitle": "資産と負債", "member.memberShare": "メンバー内訳",
+        "member.backLabel": "戻る", "dash.allocation": "資産配分", "dash.noAllocation": "資産配分データがありません",
+        "dash.wealthModules": "モジュール", "dash.aiAgents": "AIエージェント", "dash.statusActive": "有効",
+        "dash.statusReady": "準備完了", "dash.module.investment": "投資", "dash.module.tax": "税務",
+        "dash.module.liability": "負債", "dash.module.income": "収入", "dash.module.cashflow": "キャッシュフロー",
+        "dash.module.assets": "資産", "dash.module.account": "口座", "dash.module.transaction": "取引",
+        "dash.agent.investment": "投資エージェント", "dash.alloc.cash": "現金", "dash.alloc.investment": "投資",
+        "dash.alloc.other": "その他", "dash.alloc.real estate": "不動産", "dash.alloc.retirement": "退職金",
+        "dash.assetCount": "資産数", "dash.investmentCount": "投資数", "dash.liabilityCount": "負債数",
+        "taxsum.title": "システムデータ集計（{year}）", "taxsum.wage": "給与/事業収入（Incomeモジュール）：",
+        "taxsum.dividends": "配当：", "taxsum.interestSep": "　利息：", "taxsum.gains": "キャピタルゲイン（資産売却）：",
+        "taxsum.mortgage": "住宅ローン利息（控除参考）：", "taxsum.paidSep": "　納税済み：",
+        "taxsum.total": "合計収入（Incomeに自動入力済み）："
     }
 };
 
