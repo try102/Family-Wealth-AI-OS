@@ -2280,7 +2280,123 @@ const module =
 
                                 "Save Tax Plan":
 
-                                    t("tax.savePlan")
+                                    t("tax.savePlan"),
+
+                                "🧾 Tax Center":
+
+                                    t("taxpage.center"),
+
+                                "Tax Module Status":
+
+                                    t("taxpage.moduleStatus"),
+
+                                "✅ TAX SYSTEM READY":
+
+                                    t("taxpage.systemReady"),
+
+                                "Tax Plans:":
+
+                                    t("taxpage.plansColon"),
+
+                                "📊 Tax Dashboard":
+
+                                    t("taxpage.dashboard"),
+
+                                "Tax Plans":
+
+                                    t("taxpage.plans"),
+
+                                "Total Deductions":
+
+                                    t("taxpage.totalDeductions"),
+
+                                "Estimated Tax":
+
+                                    t("taxpage.estimatedTax"),
+
+                                "Effective Tax Rate":
+
+                                    t("taxpage.effectiveRate"),
+
+                                "📋 Latest Tax Plan":
+
+                                    t("taxpage.latestPlan"),
+
+                                "Tax Year:":
+
+                                    t("taxpage.yearColon"),
+
+                                "Income:":
+
+                                    t("taxpage.incomeColon"),
+
+                                "Deductions:":
+
+                                    t("taxpage.deductionsColon"),
+
+                                "Taxable Income:":
+
+                                    t("taxpage.taxableColon"),
+
+                                "🧾 Create Tax Plan":
+
+                                    t("taxpage.createPlan"),
+
+                                "Tax Plan Information":
+
+                                    t("taxpage.planInfo"),
+
+                                "🎯 Tax Optimization":
+
+                                    t("taxpage.optimization"),
+
+                                "No Opportunities":
+
+                                    t("taxpage.noOpportunities"),
+
+                                "No tax optimization opportunities identified.":
+
+                                    t("taxpage.noOpportunitiesText"),
+
+                                "🤖 Tax Advisor":
+
+                                    t("taxpage.advisor"),
+
+                                "No Advisor Data":
+
+                                    t("taxpage.noAdvisorData"),
+
+                                "Create a tax plan to generate tax advice.":
+
+                                    t("taxpage.noAdvisorText"),
+
+                                "No Recommendations":
+
+                                    t("taxpage.noRecommendations"),
+
+                                "No immediate tax recommendations.":
+
+                                    t("taxpage.noRecommendationsText"),
+
+                                "💡 Recommendation":
+
+                                    t("taxpage.recommendation"),
+
+                                "Quick Access":
+
+                                    t("taxpage.quickAccess"),
+
+                                "➕ Create Tax Plan":
+
+                                    t("taxpage.createPlanBtn"),
+
+                                "🔄 Refresh":
+
+                                    t("taxpage.refresh"),
+
+                                "⬅️ Back":
+
+                                    t("taxpage.back")
 
                             };
 
