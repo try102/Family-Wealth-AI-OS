@@ -16,6 +16,8 @@ Liability Interest Integration
 
 */
 
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js";
+
 const app =
 
     document.getElementById("app");
@@ -212,6 +214,14 @@ function renderDashboard(
 
             </header>
 
+            <div style="padding:10px 20px;">
+
+                <label>${t("common.language")}</label>
+
+                <select id="dash-language-select">${languageOptions(getLanguage())}</select>
+
+            </div>
+
             <!-- ================================== -->
 
             <!-- System Status -->
@@ -226,7 +236,7 @@ function renderDashboard(
 
                 <h2>
 
-                    System Status
+                    ${t("dash.systemStatus")}
 
                 </h2>
 
@@ -236,7 +246,7 @@ function renderDashboard(
 
                 >
 
-                    ✅ SYSTEM READY
+                    ${t("dash.systemReady")}
 
                 </div>
 
@@ -268,7 +278,7 @@ function renderDashboard(
 
                 <h2>
 
-                    📊 财富驾驶舱
+                    📊 ${t("dash.title")}
 
                 </h2>
 
@@ -288,7 +298,7 @@ function renderDashboard(
 
                         <h3>
 
-                            总资产
+                            ${t("dash.totalAssets")}
 
                         </h3>
 
@@ -318,7 +328,7 @@ function renderDashboard(
 
                         <h3>
 
-                            总负债
+                            ${t("dash.totalLiabilities")}
 
                         </h3>
 
@@ -348,7 +358,7 @@ function renderDashboard(
 
                         <h3>
 
-                            净资产
+                            ${t("dash.netWorth")}
 
                         </h3>
 
@@ -378,7 +388,7 @@ function renderDashboard(
 
                         <h3>
 
-                            现金流收入
+                            ${t("dash.income")}
 
                         </h3>
 
@@ -408,7 +418,7 @@ function renderDashboard(
 
                         <h3>
 
-                            现金流支出
+                            ${t("dash.expense")}
 
                         </h3>
 
@@ -438,7 +448,7 @@ function renderDashboard(
 
                         <h3>
 
-                            净现金流
+                            ${t("dash.netCashFlow")}
 
                         </h3>
 
@@ -468,7 +478,7 @@ function renderDashboard(
 
                         <h3>
 
-                            财富评分
+                            ${t("dash.wealthScore")}
 
                         </h3>
 
@@ -758,7 +768,7 @@ function renderDashboard(
 
                 <h2>
 
-                    Quick Access
+                    ${t("dash.quickAccess")}
 
                 </h2>
 
@@ -778,7 +788,7 @@ function renderDashboard(
 
                     >
 
-                        💰 Assets
+                        ${t("dash.assets")}
 
                     </button>
 
@@ -792,7 +802,7 @@ function renderDashboard(
 
                     >
 
-                        📈 Investment
+                        ${t("dash.investment")}
 
                     </button>
 
@@ -806,7 +816,7 @@ function renderDashboard(
 
                     >
 
-                        🏦 Accounts
+                        ${t("dash.accounts")}
 
                     </button>
 
@@ -820,7 +830,7 @@ function renderDashboard(
 
                     >
 
-                        💵 Income
+                        ${t("dash.incomeBtn")}
 
                     </button>
 
@@ -834,7 +844,7 @@ function renderDashboard(
 
                     >
 
-                        🧾 Expense
+                        ${t("dash.expenseBtn")}
 
                     </button>
 
@@ -848,7 +858,7 @@ function renderDashboard(
 
                     >
 
-                        💳 Liability
+                        ${t("dash.liability")}
 
                     </button>
 
@@ -862,7 +872,7 @@ function renderDashboard(
 
                     >
 
-                        💸 Cash Flow
+                        ${t("dash.cashflow")}
 
                     </button>
 
@@ -876,7 +886,7 @@ function renderDashboard(
 
                     >
 
-                        🧾 Tax
+                        ${t("dash.tax")}
 
                     </button>
 
@@ -890,7 +900,7 @@ function renderDashboard(
 
                     >
 
-                        🏖️ Retirement
+                        ${t("dash.retirement")}
 
                     </button>
 
@@ -904,7 +914,7 @@ function renderDashboard(
 
                     >
 
-                        🤖 Advisor
+                        ${t("dash.advisor")}
 
                     </button>
 
@@ -915,6 +925,46 @@ function renderDashboard(
         </div>
 
     `;
+
+    // ==================================================
+
+    // Dashboard Language Switch
+
+    // ==================================================
+
+    const dashLanguageSelect =
+
+        document.getElementById(
+
+            "dash-language-select"
+
+        );
+
+    if(
+
+        dashLanguageSelect
+
+    ){
+
+        dashLanguageSelect.addEventListener(
+
+            "change",
+
+            () => {
+
+                setLanguage(
+
+                    dashLanguageSelect.value
+
+                );
+
+                start();
+
+            }
+
+        );
+
+    }
 
     // ==================================================
 
@@ -1967,6 +2017,256 @@ const module =
                             "Tax data prefill unavailable:",
 
                             taxDataError
+
+                        );
+
+                    }
+
+                    // External Support Center (Tax):
+
+                    // injected at page level; the Tax V7.7
+
+                    // module itself is not modified.
+
+                    try {
+
+                        const supportModule =
+
+                            await import(
+
+                                "./modules/support/supportCenter.js"
+
+                            );
+
+                        const SupportCenter =
+
+                            supportModule.default;
+
+                        const renderTaxSupport =
+
+                            () => {
+
+                                let slot =
+
+                                    document
+
+                                        .getElementById(
+
+                                            "tax-support-center-slot"
+
+                                        );
+
+                                if(
+
+                                    !slot
+
+                                ){
+
+                                    slot =
+
+                                        document
+
+                                            .createElement(
+
+                                                "div"
+
+                                            );
+
+                                    slot.id =
+
+                                        "tax-support-center-slot";
+
+                                    const form =
+
+                                        document
+
+                                            .getElementById(
+
+                                                "tax-plan-form"
+
+                                            );
+
+                                    if(
+
+                                        form &&
+
+                                        form.parentNode
+
+                                    ){
+
+                                        form.parentNode
+
+                                            .insertBefore(
+
+                                                slot,
+
+                                                form.nextSibling
+
+                                            );
+
+                                    }
+
+                                    else{
+
+                                        app.appendChild(
+
+                                            slot
+
+                                        );
+
+                                    }
+
+                                }
+
+                                slot.innerHTML =
+
+                                    SupportCenter
+
+                                        .renderSupportCenter(
+
+                                            "tax"
+
+                                        );
+
+                                SupportCenter
+
+                                    .bindSupportCenter(
+
+                                        slot,
+
+                                        "tax",
+
+                                        renderTaxSupport
+
+                                    );
+
+                            };
+
+                        renderTaxSupport();
+
+                        // Small-scope DOM label translation
+
+                        // for the Tax page (exact matches only;
+
+                        // anything unknown stays in English).
+
+                        try {
+
+                            const labelMap = {
+
+                                "Total Income":
+
+                                    t("income.total"),
+
+                                "Taxable Income":
+
+                                    t("tax.taxableIncome"),
+
+                                "Income":
+
+                                    t("cashflow.income"),
+
+                                "Deductions":
+
+                                    t("tax.deductions"),
+
+                                "Tax Year":
+
+                                    t("tax.year"),
+
+                                "Save Tax Plan":
+
+                                    t("tax.savePlan")
+
+                            };
+
+                            const walker =
+
+                                document
+
+                                    .createTreeWalker(
+
+                                        app,
+
+                                        NodeFilter
+
+                                            .SHOW_TEXT
+
+                                    );
+
+                            const textNodes = [];
+
+                            while(
+
+                                walker.nextNode()
+
+                            ){
+
+                                textNodes.push(
+
+                                    walker.currentNode
+
+                                );
+
+                            }
+
+                            textNodes.forEach(
+
+                                node => {
+
+                                    const trimmed =
+
+                                        node.nodeValue
+
+                                            .trim();
+
+                                    if(
+
+                                        labelMap[trimmed]
+
+                                    ){
+
+                                        node.nodeValue =
+
+                                            node.nodeValue
+
+                                                .replace(
+
+                                                    trimmed,
+
+                                                    labelMap[trimmed]
+
+                                                );
+
+                                    }
+
+                                }
+
+                            );
+
+                        }
+
+                        catch(translateError){
+
+                            console.warn(
+
+                                "Tax label translation unavailable:",
+
+                                translateError
+
+                            );
+
+                        }
+
+                    }
+
+                    catch(supportError){
+
+                        console.warn(
+
+                            "Tax support center unavailable:",
+
+                            supportError
 
                         );
 
