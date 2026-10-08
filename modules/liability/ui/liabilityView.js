@@ -1280,7 +1280,7 @@ const LiabilityView = {
 
             <p style="color:#c00;">
 
-                No account found. 请先到 Accounts 页面新建账户，否则这笔还款不会进入 Cash Flow。
+                No account yet. 没有账户也可以记录还款，会进入 Cash Flow（不影响账户余额）。
 
             </p>
 
