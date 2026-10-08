@@ -18,9 +18,9 @@ Delete Investment
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js?v=20261008q";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261008r";
 
-import InvestmentAgent from "../agent/investmentAgent.js?v=20261008n";
+import InvestmentAgent from "../agent/investmentAgent.js?v=20261008r";
 
 import AccountAPI from "../../account/api/accountAPI.js";
 
@@ -230,7 +230,31 @@ const InvestmentView = {
 
                     .map(
 
-                        trade => `<br><small>${trade.tradeDate || trade.date || ""} ${trade.action === "BUY" ? t("buyDate") : t("sellDate")} ${Number(trade.quantity || 0)} ${t("sharesUnit")} @ $${Number(trade.price || 0).toLocaleString()}</small>`
+                        trade => {
+
+                            const gain =
+
+                                trade.action === "SELL"
+
+                                    ? InvestmentAgent
+
+                                        .getRealizedGains(scopeMemberId)
+
+                                        .byTrade[trade.id]
+
+                                    : undefined;
+
+                            const gainText =
+
+                                gain === undefined
+
+                                    ? ""
+
+                                    : ` · ${t("realizedGainLoss")} $${Number(gain || 0).toLocaleString()}`;
+
+                            return `<br><small>${trade.tradeDate || trade.date || ""} ${trade.action === "BUY" ? t("buyDate") : t("sellDate")} ${Number(trade.quantity || 0)} ${t("sharesUnit")} @ $${Number(trade.price || 0).toLocaleString()}${gainText}</small>`;
+
+                        }
 
                     );
 
@@ -529,6 +553,8 @@ const InvestmentView = {
                         ${t("holdingsCount")}：${decision.holdings.length}
 
                         ｜ ${t("riskWarnings")}：${decision.warnings.length}
+
+                        ｜ ${t("realizedGainLoss")}：$${Number(InvestmentAgent.getRealizedGains(scopeMemberId).total || 0).toLocaleString()}
 
                     </p>
 
