@@ -2150,9 +2150,7 @@ async function start(){
 
         cashFlowExpense =
 
-            directCashflowExpense +
-
-            liabilityAnnualInterest;
+            directCashflowExpense;
 
         // ==================================================
 

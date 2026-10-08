@@ -12,6 +12,8 @@ import LiabilityRepository from "../repository/liabilityRepository.js";
 
 import LiabilitySchema from "../schema/liabilitySchema.js";
 
+import TransactionIntegration from "../../../core/integration/transactionIntegration.js";
+
 const LiabilityService = {
 
     name:
@@ -125,6 +127,212 @@ const LiabilityService = {
         .remove(
 
             id
+
+        );
+
+    },
+
+    // =====================
+
+    // Record Payment
+
+    // =====================
+
+    makePayment(
+
+        id,
+
+        data = {}
+
+    ){
+
+        const liability =
+
+            LiabilityRepository.findById(
+
+                id
+
+            );
+
+        if (!liability) {
+
+            return null;
+
+        }
+
+        const amount =
+
+            Number(
+
+                data.amount || 0
+
+            );
+
+        const interestPortion =
+
+            Number(
+
+                data.interestPortion || 0
+
+            );
+
+        const principalPortion =
+
+            Math.max(
+
+                amount -
+
+                interestPortion,
+
+                0
+
+            );
+
+        /*
+
+         * Record the Actual cash event in
+
+         * Transaction when a real Account
+
+         * is selected (same policy as
+
+         * Income / Expense / Investment).
+
+         * Never create a fake Account ID.
+
+         */
+
+        if (
+
+            data.accountId &&
+
+            amount > 0
+
+        ){
+
+            try {
+
+                TransactionIntegration
+
+                    .recordLoanPayment({
+
+                        date:
+
+                            data.date ||
+
+                            undefined,
+
+                        accountId:
+
+                            data.accountId,
+
+                        amount,
+
+                        currency:
+
+                            liability.currency ||
+
+                            "USD",
+
+                        description:
+
+                            data.description ||
+
+                            (
+
+                                "Loan payment: " +
+
+                                (
+
+                                    liability.name ||
+
+                                    "Liability"
+
+                                )
+
+                            ),
+
+                        liability: {
+
+                            liabilityId:
+
+                                liability.id,
+
+                            name:
+
+                                liability.name ||
+
+                                "",
+
+                            category:
+
+                                liability.category ||
+
+                                "",
+
+                            interestPortion,
+
+                            principalPortion
+
+                        },
+
+                        source:
+
+                            "BusinessModule"
+
+                    });
+
+            } catch (paymentError) {
+
+                console.warn(
+
+                    "Loan payment transaction not recorded:",
+
+                    paymentError.message
+
+                );
+
+            }
+
+        }
+
+        /*
+
+         * Reduce the outstanding balance by
+
+         * the principal portion.
+
+         */
+
+        const newBalance =
+
+            Math.max(
+
+                Number(
+
+                    liability.currentBalance ||
+
+                    0
+
+                ) -
+
+                principalPortion,
+
+                0
+
+            );
+
+        return LiabilityRepository.update(
+
+            id,
+
+            {
+
+                currentBalance:
+
+                    newBalance
+
+            }
 
         );
 

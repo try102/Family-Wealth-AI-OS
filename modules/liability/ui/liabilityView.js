@@ -18,6 +18,10 @@ import LiabilityAgent
 
     from "../agent/liabilityAgent.js";
 
+import AccountAPI
+
+    from "../../account/api/accountAPI.js";
+
 const LiabilityView = {
 
     name:
@@ -790,6 +794,24 @@ const LiabilityView = {
 
                                                                         type="button"
 
+                                                                        class="pay-liability-button"
+
+                                                                        data-id="${
+
+                                                                            item.id
+
+                                                                        }"
+
+                                                                    >
+
+                                                                        Pay
+
+                                                                    </button>
+
+                                                                    <button
+
+                                                                        type="button"
+
                                                                         class="edit-liability-button"
 
                                                                         data-id="${
@@ -1033,6 +1055,466 @@ const LiabilityView = {
                 }
 
             );
+
+        // ==================================================
+
+        // Record Payment
+
+        // ==================================================
+
+        container
+
+            .querySelectorAll(
+
+                ".pay-liability-button"
+
+            )
+
+            .forEach(
+
+                button => {
+
+                    button.addEventListener(
+
+                        "click",
+
+                        () => {
+
+                            this.showPaymentForm(
+
+                                container,
+
+                                button.dataset.id,
+
+                                onBack
+
+                            );
+
+                        }
+
+                    );
+
+                }
+
+            );
+
+    },
+
+    // ==================================================
+
+    // Accounts
+
+    // ==================================================
+
+    getAccounts() {
+
+        try {
+
+            return AccountAPI.getAll() || [];
+
+        } catch (accountError) {
+
+            return [];
+
+        }
+
+    },
+
+    buildAccountOptions(selectedId = "") {
+
+        return this.getAccounts().map(
+
+            account => `
+
+                <option
+
+                    value="${account.id}"
+
+                    ${
+
+                        String(account.id) ===
+
+                        String(selectedId)
+
+                        ?
+
+                        "selected"
+
+                        :
+
+                        ""
+
+                    }
+
+                >
+
+                    ${
+
+                        account.name ||
+
+                        account.id
+
+                    }
+
+                </option>
+
+            `
+
+        ).join("");
+
+    },
+
+    // ==================================================
+
+    // Payment Form
+
+    // ==================================================
+
+    showPaymentForm(
+
+        container,
+
+        id,
+
+        onBack
+
+    ) {
+
+        const liability =
+
+            LiabilityAPI.getLiability(
+
+                id
+
+            );
+
+        if (!liability) {
+
+            return;
+
+        }
+
+        const formContainer =
+
+            container.querySelector(
+
+                "#liability-form-container"
+
+            );
+
+        if (!formContainer) {
+
+            return;
+
+        }
+
+        const accounts =
+
+            this.getAccounts();
+
+        const accountOptions =
+
+            this.buildAccountOptions();
+
+        const accountHint =
+
+            accounts.length === 0
+
+            ?
+
+            `
+
+            <p style="color:#c00;">
+
+                No account found. 请先到 Accounts 页面新建账户，否则这笔还款不会进入 Cash Flow。
+
+            </p>
+
+            `
+
+            :
+
+            "";
+
+        formContainer.innerHTML = `
+
+            <div
+
+                class="liability-form"
+
+                style="
+
+                    margin-top:20px;
+
+                    padding:20px;
+
+                    border:1px solid #ddd;
+
+                    border-radius:10px;
+
+                "
+
+            >
+
+                <h3>
+
+                    Record Payment — ${liability.name || "Liability"}
+
+                </h3>
+
+                <p>
+
+                    Current Balance: $${Number(liability.currentBalance || 0).toLocaleString()}
+
+                </p>
+
+                <form
+
+                    id="liability-payment-form"
+
+                >
+
+                    <label>
+
+                        Payment Amount
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="payment-amount"
+
+                        type="number"
+
+                        min="0"
+
+                        step="0.01"
+
+                        required
+
+                        value="${liability.monthlyPayment || ""}"
+
+                    >
+
+                    <br><br>
+
+                    <label>
+
+                        Interest Portion（其中利息部分，可留 0）
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="payment-interest"
+
+                        type="number"
+
+                        min="0"
+
+                        step="0.01"
+
+                        value="0"
+
+                    >
+
+                    <br><br>
+
+                    <label>
+
+                        Date
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="payment-date"
+
+                        type="date"
+
+                    >
+
+                    <br><br>
+
+                    <label>
+
+                        Account（选了才会进入 Cash Flow）
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="payment-account"
+
+                    >
+
+                        <option value="">
+
+                            Select Account
+
+                        </option>
+
+                        ${accountOptions}
+
+                    </select>
+
+                    ${accountHint}
+
+                    <br><br>
+
+                    <button
+
+                        type="submit"
+
+                    >
+
+                        Save Payment
+
+                    </button>
+
+                    <button
+
+                        type="button"
+
+                        id="cancel-payment-button"
+
+                    >
+
+                        Cancel
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        `;
+
+        const form =
+
+            formContainer.querySelector(
+
+                "#liability-payment-form"
+
+            );
+
+        form.addEventListener(
+
+            "submit",
+
+            event => {
+
+                event.preventDefault();
+
+                const amount =
+
+                    Number(
+
+                        form.querySelector(
+
+                            "#payment-amount"
+
+                        ).value || 0
+
+                    );
+
+                const interestPortion =
+
+                    Number(
+
+                        form.querySelector(
+
+                            "#payment-interest"
+
+                        ).value || 0
+
+                    );
+
+                const date =
+
+                    form.querySelector(
+
+                        "#payment-date"
+
+                    ).value;
+
+                const accountField =
+
+                    form.querySelector(
+
+                        "#payment-account"
+
+                    );
+
+                const accountId =
+
+                    accountField
+
+                    ?
+
+                    accountField.value
+
+                    :
+
+                    "";
+
+                LiabilityAPI.makePayment(
+
+                    id,
+
+                    {
+
+                        amount,
+
+                        interestPortion,
+
+                        date,
+
+                        accountId
+
+                    }
+
+                );
+
+                this.render(
+
+                    container,
+
+                    onBack
+
+                );
+
+            }
+
+        );
+
+        const cancelButton =
+
+            formContainer.querySelector(
+
+                "#cancel-payment-button"
+
+            );
+
+        cancelButton.addEventListener(
+
+            "click",
+
+            () => {
+
+                formContainer.innerHTML = "";
+
+            }
+
+        );
 
     },
 

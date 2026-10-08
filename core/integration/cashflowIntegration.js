@@ -518,6 +518,30 @@ const CashflowIntegration = {
 
         }
 
+        /*
+
+         * Loan payments are real cash out:
+
+         * count them as Cashflow expense.
+
+         */
+
+        if(
+
+            transaction.type ===
+
+            "LOAN_PAYMENT"
+
+        ){
+
+            return this.recordExpense(
+
+                transaction
+
+            );
+
+        }
+
         return {
 
             created:

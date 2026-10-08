@@ -124,6 +124,32 @@ const LiabilityAPI = {
 
     // =====================
 
+    // Record Payment
+
+    // =====================
+
+    makePayment(
+
+        id,
+
+        data
+
+    ){
+
+        return LiabilityService
+
+        .makePayment(
+
+            id,
+
+            data
+
+        );
+
+    },
+
+    // =====================
+
     // Summary
 
     // =====================
