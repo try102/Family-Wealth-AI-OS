@@ -36,7 +36,7 @@
 
 import InvestmentRepository
 
-    from "../repository/investmentRepository.js?v=20261008s";
+    from "../repository/investmentRepository.js?v=20261008u";
 
 import EventBus
 
@@ -166,13 +166,59 @@ const InvestmentService = {
 
     ){
 
-        return InvestmentRepository
+        const record =
+
+            this.getInvestments().find(
+
+                item =>
+
+                    item.id === id
+
+            );
+
+        const result =
+
+            InvestmentRepository
 
             .deleteInvestment(
 
                 id
 
             );
+
+        // Removing an investment also removes
+
+        // its holding and trade records, so the
+
+        // Investment Center, Asset page and
+
+        // Dashboard stop showing it. Historical
+
+        // Transactions / Cash Flow / Tax records
+
+        // are kept as the financial ledger.
+
+        if (record && record.symbol) {
+
+            InvestmentRepository
+
+                .deletePosition(
+
+                    record.symbol
+
+                );
+
+            InvestmentRepository
+
+                .deleteTradesBySymbol(
+
+                    record.symbol
+
+                );
+
+        }
+
+        return result;
 
     },
 
