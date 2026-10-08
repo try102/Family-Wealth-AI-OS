@@ -364,6 +364,26 @@ const AccountView = {
 
     showCreateForm(container, onBack) {
 
+        const memberOptions =
+
+            (() => {
+
+                try {
+
+                    return MemberAPI.getMembers().map(
+
+                        member => `<option value="${member.id}">${member.name || member.id}</option>`
+
+                    ).join("");
+
+                } catch (error) {
+
+                    return "";
+
+                }
+
+            })();
+
         const formContainer =
 
             container.querySelector(
