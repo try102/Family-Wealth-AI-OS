@@ -34,6 +34,31 @@ import RetirementAPI from "../modules/retirement/api/retirementAPI.js";
 
 import { t, getLanguage, setLanguage, languageOptions } from "../core/i18n/i18n.js";
 
+const ADVISOR_TEXT_KEYS = {
+    "GOOD": "advisor.health.good",
+    "WARNING": "advisor.health.warning",
+    "RISK": "advisor.health.risk",
+    "LOW": "advisor.risk.low",
+    "MEDIUM": "advisor.risk.medium",
+    "HIGH": "advisor.risk.high",
+    "Increase positive cash flow": "advisor.rec.cashflow",
+    "Reduce debt exposure": "advisor.rec.debt",
+    "Increase emergency liquidity": "advisor.rec.liquidity",
+    "Improve overall wealth structure": "advisor.rec.structure",
+    "Maintain current wealth strategy": "advisor.rec.maintain",
+    "Wealth score requires attention": "advisor.alert.score",
+    "Negative net cash flow": "advisor.alert.cashflow",
+    "High debt ratio": "advisor.alert.debt",
+    "Low liquidity coverage": "advisor.alert.liquidity",
+    "Wealth Engine data unavailable": "advisor.alert.engine",
+    "Tax data unavailable": "advisor.alert.tax"
+};
+
+function advisorText(text) {
+    const key = ADVISOR_TEXT_KEYS[text];
+    return key ? t(key) : text;
+}
+
 function money(value) {
 
     return "$" +
@@ -614,7 +639,7 @@ const AdvisorView = {
 
                     <p>
 
-                        ${t("advisor.healthStatus")}：${report.wealthHealth}　${t("advisor.riskLevel")}：${report.riskLevel}
+                        ${t("advisor.healthStatus")}：${advisorText(report.wealthHealth)}　${t("advisor.riskLevel")}：${advisorText(report.riskLevel)}
 
                     </p>
 
@@ -652,7 +677,7 @@ const AdvisorView = {
 
                             report.recommendations.map(
 
-                                item => `<li>${item}</li>`
+                                item => `<li>${advisorText(item)}</li>`
 
                             ).join("")
 
@@ -724,7 +749,7 @@ const AdvisorView = {
 
                             report.alerts.map(
 
-                                item => `<li>${item}</li>`
+                                item => `<li>${advisorText(item)}</li>`
 
                             ).join("")
 
