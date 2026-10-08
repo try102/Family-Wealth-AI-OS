@@ -26,6 +26,184 @@ const AccountView = {
 
         AccountAPI.getAll();
 
+                const memberList =
+
+            (() => {
+
+                try {
+
+                    return MemberAPI.getMembers();
+
+                } catch (error) {
+
+                    return [];
+
+                }
+
+            })();
+
+        const accountItemHTML =
+
+            account => `
+
+                        <li style="margin-bottom:15px;">
+
+                        <strong>${account.name || "Unnamed Account"}</strong>
+
+                        <br>
+
+                        ${t("account.type")}: ${account.type || "N/A"}
+
+                        <br>
+
+                        ${t("account.balance")}: $${Number(account.balance || 0).toLocaleString()}
+
+                        <br><br>
+
+                        <button
+
+                            type="button"
+
+                            class="delete-account-button"
+
+                            data-id="${account.id}"
+
+                        >
+
+                            ${t("common.delete")}
+
+                        </button>
+
+                        </li>
+
+                        `;
+
+        const accountGroupsHTML =
+
+            (() => {
+
+                const byOwner = {};
+
+                accounts.forEach(
+
+                    account => {
+
+                        const owner =
+
+                            account.memberId ||
+
+                            account.ownerId ||
+
+                            "";
+
+                        if (!byOwner[owner]) {
+
+                            byOwner[owner] = [];
+
+                        }
+
+                        byOwner[owner].push(
+
+                            account
+
+                        );
+
+                    }
+
+                );
+
+                const groups = [];
+
+                memberList.forEach(
+
+                    member => {
+
+                        if (byOwner[member.id]) {
+
+                            groups.push({
+
+                                label:
+
+                                    member.name ||
+
+                                    member.id,
+
+                                items:
+
+                                    byOwner[member.id]
+
+                            });
+
+                            delete byOwner[member.id];
+
+                        }
+
+                    }
+
+                );
+
+                Object.keys(byOwner).forEach(
+
+                    owner => {
+
+                        groups.push({
+
+                            label:
+
+                                owner === ""
+
+                                    ? t("scope.shared")
+
+                                    : owner,
+
+                            items:
+
+                                byOwner[owner]
+
+                        });
+
+                    }
+
+                );
+
+                return groups.map(
+
+                    group => {
+
+                        const subtotal =
+
+                            group.items.reduce(
+
+                                (sum, account) =>
+
+                                    sum +
+
+                                    Number(account.balance || 0),
+
+                                0
+
+                            );
+
+                        return `
+
+                <h3>${group.label}</h3>
+
+                <p>${t("account.totalBalance")}: $${subtotal.toLocaleString()}</p>
+
+                <ul>
+
+                ${group.items.map(accountItemHTML).join("")}
+
+                </ul>
+
+                `;
+
+                    }
+
+                ).join("");
+
+            })();
+
                 const memberOptions =
 
             (() => {
@@ -138,51 +316,7 @@ const AccountView = {
 
                 `
 
-                <ul>
-
-                ${
-
-                    accounts.map(
-
-                        account=>`
-
-                        <li style="margin-bottom:15px;">
-
-                        <strong>${account.name || "Unnamed Account"}</strong>
-
-                        <br>
-
-                        ${t("account.type")}: ${account.type || "N/A"}
-
-                        <br>
-
-                        ${t("account.balance")}: $${Number(account.balance || 0).toLocaleString()}
-
-                        <br><br>
-
-                        <button
-
-                            type="button"
-
-                            class="delete-account-button"
-
-                            data-id="${account.id}"
-
-                        >
-
-                            ${t("common.delete")}
-
-                        </button>
-
-                        </li>
-
-                        `
-
-                    ).join("")
-
-                }
-
-                </ul>
+                ${accountGroupsHTML}
 
                 `
 
