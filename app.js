@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261008q";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261008s";
 
 const app =
 
@@ -1078,7 +1078,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./core/modules/assetsModule.js?v=20261008q"
+                            "./core/modules/assetsModule.js?v=20261008s"
 
                         );
 
@@ -1166,7 +1166,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/investment/ui/investmentView.js?v=20261008q"
+                            "./modules/investment/ui/investmentView.js?v=20261008s"
 
                         );
 
@@ -1256,7 +1256,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/account/ui/accountView.js?v=20261008r"
+                            "./modules/account/ui/accountView.js?v=20261008s"
 
                         );
 
@@ -1638,7 +1638,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./core/modules/cashflowModule.js?v=20261008q"
+                            "./core/modules/cashflowModule.js?v=20261008s"
 
                         );
 
@@ -3516,7 +3516,7 @@ async function start(){
 
             await import(
 
-                "./core/modules/assetsModule.js?v=20261008q"
+                "./core/modules/assetsModule.js?v=20261008s"
 
             );
 
@@ -3976,7 +3976,7 @@ async function start(){
 
                 await import(
 
-                    "./core/modules/cashflowModule.js?v=20261008q"
+                    "./core/modules/cashflowModule.js?v=20261008s"
 
                 );
 
