@@ -24,6 +24,8 @@ import AssetAPI from "../api/assetAPI.js";
 
 import AccountAPI from "../../account/api/accountAPI.js";
 
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
+
 const AssetView = {
 
     // ==========================================
@@ -54,13 +56,13 @@ const AssetView = {
 
                 <h2>
 
-                    Asset Center
+                    ${t("asset.title")}
 
                 </h2>
 
                 <p>
 
-                    Total Assets:
+                    ${t("asset.totalValue")}:
 
                     $${Number(
 
@@ -86,11 +88,17 @@ const AssetView = {
 
                     >
 
-                        🏠 Back to Dashboard
+                        ${t("common.back")}
 
                     </button>
 
                 </div>
+
+                <br>
+
+                <label>${t("common.language")}</label>
+
+                <select id="asset-language-select">${languageOptions(getLanguage())}</select>
 
                 <br>
 
@@ -108,7 +116,7 @@ const AssetView = {
 
                 >
 
-                    + Add Asset
+                    ${t("asset.add")}
 
                 </button>
 
@@ -122,7 +130,7 @@ const AssetView = {
 
                 <h3>
 
-                    Assets
+                    ${t("asset.list")}
 
                 </h3>
 
@@ -134,7 +142,7 @@ const AssetView = {
 
                         ?
 
-                        "<li>No assets</li>"
+                        "<li>${t("asset.empty")}</li>"
 
                         :
 
@@ -176,7 +184,7 @@ const AssetView = {
 
                                         -
 
-                                        Liquidity:
+                                        ${t("asset.liquidity")}:
 
                                         ${asset.liquidity ||
 
@@ -194,7 +202,7 @@ const AssetView = {
 
                                     >
 
-                                        记录购买
+                                        ${t("asset.recordPurchase")}
 
                                     </button>
 
@@ -208,7 +216,7 @@ const AssetView = {
 
                                     >
 
-                                        记录出售
+                                        ${t("asset.recordSale")}
 
                                     </button>
 
@@ -222,7 +230,7 @@ const AssetView = {
 
                                     >
 
-                                        Edit
+                                        ${t("common.edit")}
 
                                     </button>
 
@@ -236,7 +244,7 @@ const AssetView = {
 
                                     >
 
-                                        Delete
+                                        ${t("common.delete")}
 
                                     </button>
 
@@ -253,6 +261,48 @@ const AssetView = {
             </div>
 
         `;
+
+        // ==========================================
+
+        // Language Switch
+
+        // ==========================================
+
+        const languageSelect =
+
+            container.querySelector(
+
+                "#asset-language-select"
+
+            );
+
+        if (languageSelect) {
+
+            languageSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    setLanguage(
+
+                        languageSelect.value
+
+                    );
+
+                    this.render(
+
+                        container,
+
+                        onBack
+
+                    );
+
+                }
+
+            );
+
+        }
 
         // ==========================================
 
@@ -636,7 +686,7 @@ const AssetView = {
 
             <p style="color:#c00;">
 
-                No account found. 请先到 Accounts 页面新建账户，否则这笔资产交易不会记入 Transaction。
+                ${t("common.noAccountWarn")}
 
             </p>
 
@@ -668,7 +718,7 @@ const AssetView = {
 
                 <h3>
 
-                    ${isBuy ? "记录购买" : "记录出售"} — ${asset.name || "Asset"}
+                    ${isBuy ? t("asset.recordPurchase") : t("asset.recordSale")} — ${asset.name || "Asset"}
 
                 </h3>
 
@@ -680,7 +730,7 @@ const AssetView = {
 
                     <label>
 
-                        ${isBuy ? "Purchase Amount 购买金额" : "Sale Amount 出售金额"}
+                        ${isBuy ? t("asset.purchaseAmount") : t("asset.saleAmount")}
 
                     </label>
 
@@ -718,7 +768,7 @@ const AssetView = {
 
                     <label>
 
-                        Date
+                        ${t("common.date")}
 
                     </label>
 
@@ -736,7 +786,7 @@ const AssetView = {
 
                     <label>
 
-                        Account（付款/收款账户，选了才会记入 Transaction）
+                        ${t("asset.payAccount")}
 
                     </label>
 
@@ -750,7 +800,7 @@ const AssetView = {
 
                         <option value="">
 
-                            Select Account
+                            ${t("common.selectAccount")}
 
                         </option>
 
@@ -768,7 +818,7 @@ const AssetView = {
 
                     >
 
-                        Save
+                        ${t("common.save")}
 
                     </button>
 
@@ -780,7 +830,7 @@ const AssetView = {
 
                     >
 
-                        Cancel
+                        ${t("common.cancel")}
 
                     </button>
 
@@ -944,7 +994,7 @@ const AssetView = {
 
                 <h3>
 
-                    Add Asset
+                    ${t("asset.add")}
 
                 </h3>
 
@@ -958,7 +1008,7 @@ const AssetView = {
 
                         <label>
 
-                            Asset Name
+                            ${t("common.name")}
 
                         </label>
 
@@ -982,7 +1032,7 @@ const AssetView = {
 
                         <label>
 
-                            Category
+                            ${t("common.category")}
 
                         </label>
 
@@ -1054,7 +1104,7 @@ const AssetView = {
 
                         <label>
 
-                            Current Value
+                            ${t("asset.currentValue")}
 
                         </label>
 
@@ -1082,7 +1132,7 @@ const AssetView = {
 
                         <label>
 
-                            Liquidity
+                            ${t("asset.liquidity")}
 
                         </label>
 
@@ -1124,7 +1174,7 @@ const AssetView = {
 
                     >
 
-                        Save Asset
+                        ${t("common.save")}
 
                     </button>
 
@@ -1136,7 +1186,7 @@ const AssetView = {
 
                     >
 
-                        Cancel
+                        ${t("common.cancel")}
 
                     </button>
 
@@ -1302,7 +1352,7 @@ const AssetView = {
 
                 <h3>
 
-                    Edit Asset
+                    ${t("asset.edit")}
 
                 </h3>
 
@@ -1316,7 +1366,7 @@ const AssetView = {
 
                         <label>
 
-                            Asset Name
+                            ${t("common.name")}
 
                         </label>
 
@@ -1342,7 +1392,7 @@ const AssetView = {
 
                         <label>
 
-                            Category
+                            ${t("common.category")}
 
                         </label>
 
@@ -1408,7 +1458,7 @@ const AssetView = {
 
                         <label>
 
-                            Current Value
+                            ${t("asset.currentValue")}
 
                         </label>
 
@@ -1444,7 +1494,7 @@ const AssetView = {
 
                         <label>
 
-                            Liquidity
+                            ${t("asset.liquidity")}
 
                         </label>
 
@@ -1486,7 +1536,7 @@ const AssetView = {
 
                     >
 
-                        Update Asset
+                        ${t("common.save")}
 
                     </button>
 
@@ -1498,7 +1548,7 @@ const AssetView = {
 
                     >
 
-                        Cancel
+                        ${t("common.cancel")}
 
                     </button>
 
