@@ -2890,6 +2890,166 @@ const module =
 
                             );
 
+                            // Some Tax sections re-render even
+
+                            // later (after data analysis). Keep
+
+                            // re-applying the translation while
+
+                            // this page is shown.
+
+                            try {
+
+                                const applyTaxLabelsAgain = () => {
+
+                                    const w =
+
+                                        document
+
+                                            .createTreeWalker(
+
+                                                app,
+
+                                                NodeFilter
+
+                                                    .SHOW_TEXT
+
+                                            );
+
+                                    const ns = [];
+
+                                    while(
+
+                                        w.nextNode()
+
+                                    ){
+
+                                        ns.push(
+
+                                            w.currentNode
+
+                                        );
+
+                                    }
+
+                                    ns.forEach(
+
+                                        node => {
+
+                                            const trimmed =
+
+                                                node.nodeValue
+
+                                                    .trim();
+
+                                            if(
+
+                                                labelMap[trimmed]
+
+                                            ){
+
+                                                node.nodeValue =
+
+                                                    node.nodeValue
+
+                                                        .replace(
+
+                                                            trimmed,
+
+                                                            labelMap[trimmed]
+
+                                                        );
+
+                                            }
+
+                                        }
+
+                                    );
+
+                                };
+
+                                if(
+
+                                    window.__taxI18nObserver
+
+                                ){
+
+                                    window.__taxI18nObserver
+
+                                        .disconnect();
+
+                                }
+
+                                window.__taxI18nObserver =
+
+                                    new MutationObserver(
+
+                                        () => {
+
+                                            clearTimeout(
+
+                                                window.__taxI18nTimer
+
+                                            );
+
+                                            window.__taxI18nTimer =
+
+                                                setTimeout(
+
+                                                    applyTaxLabelsAgain,
+
+                                                    150
+
+                                                );
+
+                                        }
+
+                                    );
+
+                                window.__taxI18nObserver.observe(
+
+                                    app,
+
+                                    {
+
+                                        childList:
+
+                                            true,
+
+                                        subtree:
+
+                                            true
+
+                                    }
+
+                                );
+
+                                setTimeout(
+
+                                    () => {
+
+                                        if(
+
+                                            window.__taxI18nObserver
+
+                                        ){
+
+                                            window.__taxI18nObserver
+
+                                                .disconnect();
+
+                                        }
+
+                                    },
+
+                                    60000
+
+                                );
+
+                            }
+
+                            catch(observeError){}
+
                         }
 
                         catch(translateError){
