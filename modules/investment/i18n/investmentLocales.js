@@ -250,6 +250,8 @@ const DICTIONARY = {
 
         confirmDelete: "删除投资",
 
+        confirmDeleteScope: "连同持仓与买卖记录一并删除，历史现金流与税务记录保留。",
+
         allocEmpty: "暂无配置数据",
 
         memberLabel: "成员",
@@ -451,6 +453,8 @@ const DICTIONARY = {
         saveTrade: "儲存交易",
 
         confirmDelete: "刪除投資",
+
+        confirmDeleteScope: "連同持倉與買賣記錄一併刪除，歷史現金流與稅務記錄保留。",
 
         allocEmpty: "暫無配置數據",
 
@@ -654,6 +658,8 @@ const DICTIONARY = {
 
         confirmDelete: "Delete investment",
 
+        confirmDeleteScope: "Its holdings and trade records will also be removed. Past cash-flow and tax records are kept.",
+
         allocEmpty: "No allocation data",
 
         memberLabel: "Member",
@@ -855,6 +861,8 @@ const DICTIONARY = {
         saveTrade: "取引を保存",
 
         confirmDelete: "投資を削除",
+
+        confirmDeleteScope: "保有株と売買記録も削除されます。過去のキャッシュフローと税務記録は残ります。",
 
         allocEmpty: "配分データなし",
 
