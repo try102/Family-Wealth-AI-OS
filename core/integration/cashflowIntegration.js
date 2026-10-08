@@ -542,6 +542,48 @@ const CashflowIntegration = {
 
         }
 
+        /*
+
+         * Investment trades are real cash
+
+         * movement: BUY is cash out,
+
+         * SELL is cash in (becomes cash).
+
+         */
+
+        if(
+
+            transaction.type ===
+
+            "INVESTMENT_BUY"
+
+        ){
+
+            return this.recordExpense(
+
+                transaction
+
+            );
+
+        }
+
+        if(
+
+            transaction.type ===
+
+            "INVESTMENT_SELL"
+
+        ){
+
+            return this.recordIncome(
+
+                transaction
+
+            );
+
+        }
+
         return {
 
             created:
