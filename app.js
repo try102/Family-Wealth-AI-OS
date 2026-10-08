@@ -1604,6 +1604,202 @@ const module =
 
                     );
 
+                    // Prefill the Tax Plan from the
+
+                    // base data layer (read-only;
+
+                    // Tax V7.7 engine untouched).
+
+                    try {
+
+                        const taxDataModule =
+
+                            await import(
+
+                                "./core/integration/taxDataIntegration.js"
+
+                            );
+
+                        const TaxDataIntegration =
+
+                            taxDataModule.default;
+
+                        const taxData =
+
+                            TaxDataIntegration
+
+                                .getTaxDataSummary(
+
+                                    new Date()
+
+                                        .getFullYear()
+
+                                );
+
+                        const incomeInput =
+
+                            document
+
+                                .getElementById(
+
+                                    "tax-plan-income"
+
+                                );
+
+                        if(
+
+                            incomeInput &&
+
+                            Number(
+
+                                incomeInput.value ||
+
+                                0
+
+                            ) === 0 &&
+
+                            taxData.totalIncome > 0
+
+                        ){
+
+                            incomeInput.value =
+
+                                taxData.totalIncome;
+
+                        }
+
+                        const taxForm =
+
+                            document
+
+                                .getElementById(
+
+                                    "tax-plan-form"
+
+                                );
+
+                        if(
+
+                            taxForm &&
+
+                            taxForm.parentNode &&
+
+                            !document
+
+                                .getElementById(
+
+                                    "tax-data-panel"
+
+                                )
+
+                        ){
+
+                            const panel =
+
+                                document
+
+                                    .createElement(
+
+                                        "div"
+
+                                    );
+
+                            panel.id =
+
+                                "tax-data-panel";
+
+                            panel.style.cssText =
+
+                                "margin:12px 0;padding:12px;border:1px solid #ddd;border-radius:10px;";
+
+                            const fmt =
+
+                                value =>
+
+                                    "$" +
+
+                                    Number(
+
+                                        value ||
+
+                                        0
+
+                                    )
+
+                                        .toLocaleString();
+
+                            panel.innerHTML =
+
+                                "<h4>系统数据汇总（" +
+
+                                taxData.year +
+
+                                "）</h4>" +
+
+                                "<p>工资/业务收入（Income 模块）：" +
+
+                                fmt(taxData.wageIncome) +
+
+                                "</p>" +
+
+                                "<p>股息：" +
+
+                                fmt(taxData.dividendIncome) +
+
+                                "　利息：" +
+
+                                fmt(taxData.interestIncome) +
+
+                                "</p>" +
+
+                                "<p>资本利得（资产出售）：" +
+
+                                fmt(taxData.capitalGains) +
+
+                                "</p>" +
+
+                                "<p>房贷利息已付（可抵扣参考）：" +
+
+                                fmt(taxData.mortgageInterestPaid) +
+
+                                "　已缴税款：" +
+
+                                fmt(taxData.taxPaid) +
+
+                                "</p>" +
+
+                                "<p>合计收入（已自动填入 Income）：" +
+
+                                fmt(taxData.totalIncome) +
+
+                                "</p>";
+
+                            taxForm.parentNode
+
+                                .insertBefore(
+
+                                    panel,
+
+                                    taxForm
+
+                                );
+
+                        }
+
+                    }
+
+                    catch(taxDataError){
+
+                        console.warn(
+
+                            "Tax data prefill unavailable:",
+
+                            taxDataError
+
+                        );
+
+                    }
+
                 }
 
                 catch(error){
