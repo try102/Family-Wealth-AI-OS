@@ -2148,6 +2148,8 @@ const module =
 
                         const renderTaxSupport =
 
+                            window.__renderTaxSupport =
+
                             () => {
 
                                 let slot =
@@ -2946,31 +2948,65 @@ const module =
 
                                     // wipes the injected language
 
-                                    // switcher; put it back while
+                                    // switcher and support center;
 
-                                    // the Tax page is shown.
+                                    // put them back while the Tax
+
+                                    // page is shown.
 
                                     try {
 
-                                        if(
+                                        const onTaxPage =
 
-                                            !document.getElementById(
+                                            document.getElementById(
 
-                                                "tax-language-bar"
+                                                "tax-create-plan-button"
 
-                                            ) &&
+                                            ) ||
 
                                             document.getElementById(
 
                                                 "tax-plan-form"
 
-                                            ) &&
+                                            );
 
-                                            window.__ensureTaxLanguageBar
+                                        if(
+
+                                            onTaxPage
 
                                         ){
 
-                                            window.__ensureTaxLanguageBar();
+                                            if(
+
+                                                !document.getElementById(
+
+                                                    "tax-language-bar"
+
+                                                ) &&
+
+                                                window.__ensureTaxLanguageBar
+
+                                            ){
+
+                                                window.__ensureTaxLanguageBar();
+
+                                            }
+
+                                            if(
+
+                                                !document.getElementById(
+
+                                                    "tax-support-center-slot"
+
+                                                ) &&
+
+                                                window.__renderTaxSupport
+
+                                            ){
+
+                                                window.__renderTaxSupport();
+
+                                            }
 
                                         }
 
@@ -3118,7 +3154,7 @@ const module =
 
                                     },
 
-                                    60000
+                                    600000
 
                                 );
 
