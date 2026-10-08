@@ -12,6 +12,8 @@ import IncomeAgent from "../agent/incomeAgent.js";
 
 import AccountAPI from "../../account/api/accountAPI.js";
 
+import MemberAPI from "../../member/api/memberAPI.js";
+
 import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
 
 const IncomeView = {
@@ -606,6 +608,58 @@ const IncomeView = {
 
     // ==================================================
 
+    getMembers() {
+
+        try {
+
+            return MemberAPI.getMembers();
+
+        } catch (error) {
+
+            return [];
+
+        }
+
+    },
+
+    buildMemberOptions(selectedId = "") {
+
+        return this.getMembers().map(
+
+            member => `
+
+                <option
+
+                    value="${member.id}"
+
+                    ${
+
+                        String(member.id) ===
+
+                        String(selectedId)
+
+                        ?
+
+                        "selected"
+
+                        :
+
+                        ""
+
+                    }
+
+                >
+
+                    ${member.name || member.id}
+
+                </option>
+
+            `
+
+        ).join("");
+
+    },
+
     showCreateForm(container, onBack) {
 
         const formContainer =
@@ -625,6 +679,10 @@ const IncomeView = {
         const accounts =
 
             this.getAccounts();
+
+        const memberOptions =
+
+            this.buildMemberOptions();
 
         const accountOptions =
 
@@ -836,6 +894,32 @@ const IncomeView = {
 
                     <br><br>
 
+                    <label>
+
+                        ${t("member.owner")}
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="income-member"
+
+                    >
+
+                        <option value="">
+
+                            ${t("member.familyShared")}
+
+                        </option>
+
+                        ${memberOptions}
+
+                    </select>
+
+                    <br><br>
+
                     <button
 
                         type="submit"
@@ -936,6 +1020,27 @@ const IncomeView = {
 
                     "";
 
+
+                const memberField =
+
+                    form.querySelector(
+
+                        "#income-member"
+
+                    );
+
+                const memberId =
+
+                    memberField
+
+                    ?
+
+                    memberField.value
+
+                    :
+
+                    "";
+
                 IncomeAgent.addIncome({
 
                     name,
@@ -948,7 +1053,9 @@ const IncomeView = {
 
                     value: amount,
 
-                    accountId
+                    accountId,
+
+                    memberId
 
                 });
 
@@ -1232,6 +1339,33 @@ const IncomeView = {
 
                     <br><br>
 
+                    <label>
+
+                        ${t("member.owner")}
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="edit-income-member"
+
+                    >
+
+                        <option value="">
+
+                            ${t("member.familyShared")}
+
+                        </option>
+
+                        ${this.buildMemberOptions(income.memberId || "")}
+
+                    </select>
+
+
+                    <br><br>
+
                     <button
 
                         type="submit"
@@ -1357,6 +1491,34 @@ const IncomeView = {
                         ""
 
                     );
+
+
+                const editMemberField =
+
+                    form.querySelector(
+
+                        "#edit-income-member"
+
+                    );
+
+                updatedIncome.memberId =
+
+                    editMemberField
+
+                    ?
+
+                    editMemberField.value
+
+                    :
+
+                    (
+
+                        income.memberId ||
+
+                        ""
+
+                    );
+
 
                 IncomeAgent.updateIncome(
 

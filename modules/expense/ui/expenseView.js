@@ -12,6 +12,8 @@ import ExpenseAgent from "../agent/expenseAgent.js";
 
 import AccountAPI from "../../account/api/accountAPI.js";
 
+import MemberAPI from "../../member/api/memberAPI.js";
+
 import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
 
 const ExpenseView = {
@@ -586,6 +588,58 @@ const ExpenseView = {
 
     // ==================================================
 
+    getMembers() {
+
+        try {
+
+            return MemberAPI.getMembers();
+
+        } catch (error) {
+
+            return [];
+
+        }
+
+    },
+
+    buildMemberOptions(selectedId = "") {
+
+        return this.getMembers().map(
+
+            member => `
+
+                <option
+
+                    value="${member.id}"
+
+                    ${
+
+                        String(member.id) ===
+
+                        String(selectedId)
+
+                        ?
+
+                        "selected"
+
+                        :
+
+                        ""
+
+                    }
+
+                >
+
+                    ${member.name || member.id}
+
+                </option>
+
+            `
+
+        ).join("");
+
+    },
+
     showCreateForm(container, onBack) {
 
         const formContainer =
@@ -605,6 +659,10 @@ const ExpenseView = {
         const accounts =
 
             this.getAccounts();
+
+        const memberOptions =
+
+            this.buildMemberOptions();
 
         const accountOptions =
 
@@ -774,6 +832,32 @@ const ExpenseView = {
 
                     <br><br>
 
+                    <label>
+
+                        ${t("member.owner")}
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="expense-member"
+
+                    >
+
+                        <option value="">
+
+                            ${t("member.familyShared")}
+
+                        </option>
+
+                        ${memberOptions}
+
+                    </select>
+
+                    <br><br>
+
                     <button
 
                         type="submit"
@@ -874,6 +958,27 @@ const ExpenseView = {
 
                     "";
 
+
+                const memberField =
+
+                    form.querySelector(
+
+                        "#expense-member"
+
+                    );
+
+                const memberId =
+
+                    memberField
+
+                    ?
+
+                    memberField.value
+
+                    :
+
+                    "";
+
                 ExpenseAgent.addExpense({
 
                     name,
@@ -884,7 +989,9 @@ const ExpenseView = {
 
                     date,
 
-                    accountId
+                    accountId,
+
+                    memberId
 
                 });
 
@@ -1130,6 +1237,33 @@ const ExpenseView = {
 
                     <br><br>
 
+                    <label>
+
+                        ${t("member.owner")}
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="edit-expense-member"
+
+                    >
+
+                        <option value="">
+
+                            ${t("member.familyShared")}
+
+                        </option>
+
+                        ${this.buildMemberOptions(expense.memberId || "")}
+
+                    </select>
+
+
+                    <br><br>
+
                     <button
 
                         type="submit"
@@ -1239,6 +1373,34 @@ const ExpenseView = {
                         ""
 
                     );
+
+
+                const editMemberField =
+
+                    form.querySelector(
+
+                        "#edit-expense-member"
+
+                    );
+
+                updatedExpense.memberId =
+
+                    editMemberField
+
+                    ?
+
+                    editMemberField.value
+
+                    :
+
+                    (
+
+                        expense.memberId ||
+
+                        ""
+
+                    );
+
 
                 ExpenseAgent.updateExpense(
 
