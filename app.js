@@ -2396,7 +2396,19 @@ const module =
 
                                 "⬅️ Back":
 
-                                    t("taxpage.back")
+                                    t("taxpage.back"),
+
+                                "No Tax Plan":
+
+                                    t("taxpage.noPlan"),
+
+                                "No tax plan has been created yet.":
+
+                                    t("taxpage.noPlanText"),
+
+                                "Name":
+
+                                    t("common.name")
 
                             };
 
@@ -2461,6 +2473,172 @@ const module =
                                     }
 
                                 }
+
+                            );
+
+                            // The Tax view may re-render some
+
+                            // sections asynchronously; re-apply
+
+                            // the label translation shortly after.
+
+                            setTimeout(
+
+                                () => {
+
+                                    try {
+
+                                        const walker2 =
+
+                                            document
+
+                                                .createTreeWalker(
+
+                                                    app,
+
+                                                    NodeFilter
+
+                                                        .SHOW_TEXT
+
+                                                );
+
+                                        const nodes2 = [];
+
+                                        while(
+
+                                            walker2.nextNode()
+
+                                        ){
+
+                                            nodes2.push(
+
+                                                walker2.currentNode
+
+                                            );
+
+                                        }
+
+                                        nodes2.forEach(
+
+                                            node => {
+
+                                                const trimmed =
+
+                                                    node.nodeValue
+
+                                                        .trim();
+
+                                                if(
+
+                                                    labelMap[trimmed]
+
+                                                ){
+
+                                                    node.nodeValue =
+
+                                                        node.nodeValue
+
+                                                            .replace(
+
+                                                                trimmed,
+
+                                                                labelMap[trimmed]
+
+                                                            );
+
+                                                }
+
+                                            }
+
+                                        );
+
+                                    }
+
+                                    catch(retryError){}
+
+                                },
+
+                                600
+
+                            );
+
+                            setTimeout(
+
+                                () => {
+
+                                    try {
+
+                                        const walker3 =
+
+                                            document
+
+                                                .createTreeWalker(
+
+                                                    app,
+
+                                                    NodeFilter
+
+                                                        .SHOW_TEXT
+
+                                                );
+
+                                        const nodes3 = [];
+
+                                        while(
+
+                                            walker3.nextNode()
+
+                                        ){
+
+                                            nodes3.push(
+
+                                                walker3.currentNode
+
+                                            );
+
+                                        }
+
+                                        nodes3.forEach(
+
+                                            node => {
+
+                                                const trimmed =
+
+                                                    node.nodeValue
+
+                                                        .trim();
+
+                                                if(
+
+                                                    labelMap[trimmed]
+
+                                                ){
+
+                                                    node.nodeValue =
+
+                                                        node.nodeValue
+
+                                                            .replace(
+
+                                                                trimmed,
+
+                                                                labelMap[trimmed]
+
+                                                            );
+
+                                                }
+
+                                            }
+
+                                        );
+
+                                    }
+
+                                    catch(retryError){}
+
+                                },
+
+                                1800
 
                             );
 
