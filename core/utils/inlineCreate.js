@@ -215,7 +215,9 @@ export function resolveAccountId(
 
     nameInput,
 
-    balanceInput
+    balanceInput,
+
+    ownerMemberId = ""
 
 ) {
 
@@ -275,7 +277,11 @@ export function resolveAccountId(
 
                         ? balance
 
-                        : 0
+                        : 0,
+
+                memberId:
+
+                    ownerMemberId || ""
 
             });
 
