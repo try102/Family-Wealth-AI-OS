@@ -2284,15 +2284,53 @@ const module =
 
                                 taxLangBar.style.cssText =
 
-                                    "display:flex;justify-content:flex-end;align-items:center;padding:8px 0;";
+                                    "display:flex;justify-content:center;align-items:center;padding:8px 0 4px;";
 
-                                app.insertBefore(
+                                const taxHeader =
 
-                                    taxLangBar,
+                                    app.querySelector(
 
-                                    app.firstChild
+                                        "header.app-header"
 
-                                );
+                                    ) ||
+
+                                    app.querySelector(
+
+                                        "header"
+
+                                    );
+
+                                if(
+
+                                    taxHeader &&
+
+                                    taxHeader.parentNode
+
+                                ){
+
+                                    taxHeader.parentNode
+
+                                        .insertBefore(
+
+                                            taxLangBar,
+
+                                            taxHeader.nextSibling
+
+                                        );
+
+                                }
+
+                                else{
+
+                                    app.insertBefore(
+
+                                        taxLangBar,
+
+                                        app.firstChild
+
+                                    );
+
+                                }
 
                             }
 
