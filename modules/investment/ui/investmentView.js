@@ -18,7 +18,7 @@ Delete Investment
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261008p";
 
 import InvestmentAgent from "../agent/investmentAgent.js?v=20261008n";
 
