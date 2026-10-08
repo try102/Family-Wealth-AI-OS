@@ -16,6 +16,8 @@ import MemberAPI from "../../member/api/memberAPI.js";
 
 import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
 
+import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js";
+
 const IncomeView = {
 
     name: "Income View V7",
@@ -888,7 +890,17 @@ const IncomeView = {
 
                         ${accountOptions}
 
+                        <option value="__new_account__">${t("account.newOption")}</option>
+
                     </select>
+
+                    <span id="income-new-account-fields" style="display:none">
+
+                        <input id="income-new-account-name" type="text" placeholder="${t("account.namePlaceholder")}">
+
+                        <input id="income-new-account-balance" type="number" step="0.01" placeholder="${t("account.balancePlaceholder")}">
+
+                    </span>
 
                     ${accountHint}
 
@@ -916,7 +928,11 @@ const IncomeView = {
 
                         ${memberOptions}
 
+                        <option value="__new__">${t("member.newOption")}</option>
+
                     </select>
+
+                    <input id="income-new-member-name" type="text" placeholder="${t("member.namePlaceholder")}" style="display:none">
 
                     <br><br>
 
@@ -955,6 +971,46 @@ const IncomeView = {
                 "#income-create-form"
 
             );
+
+        wireInlineCreate(
+
+            form.querySelector(
+
+                "#income-account"
+
+            ),
+
+            [
+
+                form.querySelector(
+
+                    "#income-new-account-fields"
+
+                )
+
+            ]
+
+        );
+
+        wireInlineCreate(
+
+            form.querySelector(
+
+                "#income-member"
+
+            ),
+
+            [
+
+                form.querySelector(
+
+                    "#income-new-member-name"
+
+                )
+
+            ]
+
+        );
 
         form.addEventListener(
 
@@ -1010,15 +1066,23 @@ const IncomeView = {
 
                 const accountId =
 
-                    accountField
+                    resolveAccountId(
 
-                    ?
+                        accountField,
 
-                    accountField.value
+                        form.querySelector(
 
-                    :
+                            "#income-new-account-name"
 
-                    "";
+                        ),
+
+                        form.querySelector(
+
+                            "#income-new-account-balance"
+
+                        )
+
+                    );
 
 
                 const memberField =
@@ -1031,15 +1095,17 @@ const IncomeView = {
 
                 const memberId =
 
-                    memberField
+                    resolveMemberId(
 
-                    ?
+                        memberField,
 
-                    memberField.value
+                        form.querySelector(
 
-                    :
+                            "#income-new-member-name"
 
-                    "";
+                        )
+
+                    );
 
                 IncomeAgent.addIncome({
 
