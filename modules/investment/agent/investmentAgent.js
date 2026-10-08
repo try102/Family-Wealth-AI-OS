@@ -38,6 +38,30 @@ const InvestmentAgent = {
 
     },
 
+    recordTrade(
+
+        trade
+
+    ){
+
+        return InvestmentAPI
+
+        .recordTrade(
+
+            trade
+
+        );
+
+    },
+
+    getTrades(){
+
+        return InvestmentAPI
+
+        .getTrades();
+
+    },
+
     generateInvestmentReview(){
 
         const portfolio =

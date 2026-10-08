@@ -46,85 +46,47 @@ import EventTypes
 
     from "../../../core/events/eventTypes.js";
 
-/*
+import TransactionIntegration
 
- * Transaction Service
-
- *
-
- * Transaction is located at the
-
- * root-level transaction directory.
-
- *
-
- * Because this Investment module is
-
- * ES Module based while Transaction
-
- * currently uses CommonJS, use the
-
- * browser/global integration boundary
-
- * rather than changing the Transaction
-
- * architecture here.
-
- */
-
-let TransactionService = null;
+    from "../../../core/integration/transactionIntegration.js";
 
 /*
 
- * Resolve TransactionService when available.
+ * Resolve the Transaction integration
+
+ * when available.
 
  *
 
- * This keeps Investment independent
+ * The application bridge registers the
 
- * from the Transaction implementation.
+ * Transaction facade on
+
+ * TransactionIntegration (same mechanism
+
+ * as Income / Expense). When no facade
+
+ * is registered, Investment trades are
+
+ * kept as Investment records only.
 
  */
 
 function getTransactionService() {
 
-    if (TransactionService) {
+    try {
 
-        return TransactionService;
+        TransactionIntegration
 
-    }
+            .requireFacade();
 
-    /*
+        return TransactionIntegration;
 
-     * Future application bootstrap may
+    } catch (serviceError) {
 
-     * inject TransactionService here.
-
-     */
-
-    if (
-
-        typeof window !== "undefined" &&
-
-        window.FamilyWealthAI &&
-
-        window.FamilyWealthAI
-
-            .TransactionService
-
-    ) {
-
-        TransactionService =
-
-            window.FamilyWealthAI
-
-                .TransactionService;
-
-        return TransactionService;
+        return null;
 
     }
-
-    return null;
 
 }
 
@@ -316,11 +278,25 @@ const InvestmentService = {
 
          */
 
-        this.recordTradeTransaction(
+        try {
 
-            result
+            this.recordTradeTransaction(
 
-        );
+                result
+
+            );
+
+        } catch (transactionError) {
+
+            console.warn(
+
+                "Investment transaction not recorded:",
+
+                transactionError.message
+
+            );
+
+        }
 
         /*
 
@@ -419,6 +395,24 @@ const InvestmentService = {
          */
 
         if (!trade.action) {
+
+            return null;
+
+        }
+
+        /*
+
+         * A Transaction requires a real
+
+         * Account. Never create a fake
+
+         * Account ID (same policy as
+
+         * Income / Expense).
+
+         */
+
+        if (!trade.accountId) {
 
             return null;
 

@@ -20,6 +20,8 @@ Delete Investment
 
 import InvestmentAPI from "../api/investmentAPI.js";
 
+import AccountAPI from "../../account/api/accountAPI.js";
+
 const InvestmentView = {
 
     // ==========================================
@@ -59,6 +61,12 @@ const InvestmentView = {
             InvestmentAPI
 
             .getRiskReport();
+
+        const trades =
+
+            InvestmentAPI
+
+            .getTrades();
 
         container.innerHTML = `
 
@@ -194,9 +202,27 @@ ${JSON.stringify(
 
                 </button>
 
+                <button
+
+                    id="record-trade-button"
+
+                    type="button"
+
+                >
+
+                    ⇄ Record Trade
+
+                </button>
+
                 <div
 
                     id="investment-form-container"
+
+                ></div>
+
+                <div
+
+                    id="trade-form-container"
 
                 ></div>
 
@@ -273,6 +299,74 @@ ${JSON.stringify(
                                         Delete
 
                                     </button>
+
+                                </li>
+
+                            `
+
+                        ).join("")
+
+                    }
+
+                </ul>
+
+                <h3>
+
+                    Recent Trades
+
+                </h3>
+
+                <ul>
+
+                    ${
+
+                        trades.length === 0
+
+                        ?
+
+                        "<li>No trades recorded</li>"
+
+                        :
+
+                        trades.slice(-10).reverse().map(
+
+                            trade => `
+
+                                <li>
+
+                                    ${trade.action || ""}
+
+                                    ${trade.symbol || trade.name || ""}
+
+                                    -
+
+                                    $${Number(
+
+                                        trade.amount ||
+
+                                        (
+
+                                            Number(trade.quantity || 0) *
+
+                                            Number(trade.price || 0)
+
+                                        )
+
+                                    ).toLocaleString()}
+
+                                    ${
+
+                                        trade.accountId
+
+                                        ?
+
+                                        "(已记账)"
+
+                                        :
+
+                                        ""
+
+                                    }
 
                                 </li>
 
@@ -366,6 +460,42 @@ ${JSON.stringify(
 
         // ==========================================
 
+        // Record Trade Button
+
+        // ==========================================
+
+        const tradeButton =
+
+            container.querySelector(
+
+                "#record-trade-button"
+
+            );
+
+        if(tradeButton){
+
+            tradeButton.addEventListener(
+
+                "click",
+
+                () => {
+
+                    this.showTradeForm(
+
+                        container,
+
+                        onBack
+
+                    );
+
+                }
+
+            );
+
+        }
+
+        // ==========================================
+
         // Edit Buttons
 
         // ==========================================
@@ -443,6 +573,552 @@ ${JSON.stringify(
                     }
 
                 );
+
+            }
+
+        );
+
+    },
+
+    // ==========================================
+
+    // Accounts
+
+    // ==========================================
+
+    getAccounts() {
+
+        try {
+
+            return AccountAPI.getAll() || [];
+
+        } catch (accountError) {
+
+            return [];
+
+        }
+
+    },
+
+    buildAccountOptions(selectedId = "") {
+
+        return this.getAccounts().map(
+
+            account => `
+
+                <option
+
+                    value="${account.id}"
+
+                    ${
+
+                        String(account.id) ===
+
+                        String(selectedId)
+
+                        ?
+
+                        "selected"
+
+                        :
+
+                        ""
+
+                    }
+
+                >
+
+                    ${
+
+                        account.name ||
+
+                        account.id
+
+                    }
+
+                </option>
+
+            `
+
+        ).join("");
+
+    },
+
+    // ==========================================
+
+    // Record Trade Form
+
+    // ==========================================
+
+    showTradeForm(
+
+        container,
+
+        onBack
+
+    ){
+
+        const formContainer =
+
+            container.querySelector(
+
+                "#trade-form-container"
+
+            );
+
+        if (!formContainer) {
+
+            return;
+
+        }
+
+        const accounts =
+
+            this.getAccounts();
+
+        const accountOptions =
+
+            this.buildAccountOptions();
+
+        const accountHint =
+
+            accounts.length === 0
+
+            ?
+
+            `
+
+            <p style="color:#c00;">
+
+                No account found. 请先到 Accounts 页面新建账户，否则这笔交易不会记入 Transaction。
+
+            </p>
+
+            `
+
+            :
+
+            "";
+
+        formContainer.innerHTML = `
+
+            <div
+
+                class="trade-form"
+
+                style="
+
+                    margin-top:20px;
+
+                    padding:20px;
+
+                    border:1px solid #ddd;
+
+                    border-radius:10px;
+
+                "
+
+            >
+
+                <h3>
+
+                    Record Trade
+
+                </h3>
+
+                <form
+
+                    id="trade-create-form"
+
+                >
+
+                    <label>
+
+                        Action
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="trade-action"
+
+                        required
+
+                    >
+
+                        <option value="BUY">
+
+                            BUY 买入
+
+                        </option>
+
+                        <option value="SELL">
+
+                            SELL 卖出
+
+                        </option>
+
+                        <option value="DIVIDEND">
+
+                            DIVIDEND 股息
+
+                        </option>
+
+                        <option value="INTEREST">
+
+                            INTEREST 利息
+
+                        </option>
+
+                    </select>
+
+                    <br><br>
+
+                    <label>
+
+                        Symbol
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="trade-symbol"
+
+                        type="text"
+
+                    >
+
+                    <br><br>
+
+                    <label>
+
+                        Name
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="trade-name"
+
+                        type="text"
+
+                    >
+
+                    <br><br>
+
+                    <label>
+
+                        Quantity（股息/利息可留空）
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="trade-quantity"
+
+                        type="number"
+
+                        min="0"
+
+                        step="any"
+
+                    >
+
+                    <br><br>
+
+                    <label>
+
+                        Price（股息/利息可留空）
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="trade-price"
+
+                        type="number"
+
+                        min="0"
+
+                        step="any"
+
+                    >
+
+                    <br><br>
+
+                    <label>
+
+                        Amount（留空则按 数量×价格 计算；股息/利息直接填金额）
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="trade-amount"
+
+                        type="number"
+
+                        min="0"
+
+                        step="0.01"
+
+                    >
+
+                    <br><br>
+
+                    <label>
+
+                        Date
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="trade-date"
+
+                        type="date"
+
+                    >
+
+                    <br><br>
+
+                    <label>
+
+                        Account（选了才会记入 Transaction）
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="trade-account"
+
+                    >
+
+                        <option value="">
+
+                            Select Account
+
+                        </option>
+
+                        ${accountOptions}
+
+                    </select>
+
+                    ${accountHint}
+
+                    <br><br>
+
+                    <button
+
+                        type="submit"
+
+                    >
+
+                        Save Trade
+
+                    </button>
+
+                    <button
+
+                        type="button"
+
+                        id="cancel-trade-button"
+
+                    >
+
+                        Cancel
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        `;
+
+        const form =
+
+            formContainer.querySelector(
+
+                "#trade-create-form"
+
+            );
+
+        form.addEventListener(
+
+            "submit",
+
+            event => {
+
+                event.preventDefault();
+
+                const action =
+
+                    form.querySelector(
+
+                        "#trade-action"
+
+                    ).value;
+
+                const symbol =
+
+                    form.querySelector(
+
+                        "#trade-symbol"
+
+                    ).value.trim();
+
+                const name =
+
+                    form.querySelector(
+
+                        "#trade-name"
+
+                    ).value.trim();
+
+                const quantity =
+
+                    Number(
+
+                        form.querySelector(
+
+                            "#trade-quantity"
+
+                        ).value || 0
+
+                    );
+
+                const price =
+
+                    Number(
+
+                        form.querySelector(
+
+                            "#trade-price"
+
+                        ).value || 0
+
+                    );
+
+                const amountInput =
+
+                    Number(
+
+                        form.querySelector(
+
+                            "#trade-amount"
+
+                        ).value || 0
+
+                    );
+
+                const amount =
+
+                    amountInput > 0
+
+                    ?
+
+                    amountInput
+
+                    :
+
+                    quantity * price;
+
+                const tradeDate =
+
+                    form.querySelector(
+
+                        "#trade-date"
+
+                    ).value;
+
+                const accountField =
+
+                    form.querySelector(
+
+                        "#trade-account"
+
+                    );
+
+                const accountId =
+
+                    accountField
+
+                    ?
+
+                    accountField.value
+
+                    :
+
+                    "";
+
+                InvestmentAPI.recordTrade({
+
+                    action,
+
+                    symbol,
+
+                    name,
+
+                    quantity,
+
+                    price,
+
+                    amount,
+
+                    tradeDate,
+
+                    accountId,
+
+                    currency:
+
+                    "USD"
+
+                });
+
+                this.render(
+
+                    container,
+
+                    onBack
+
+                );
+
+            }
+
+        );
+
+        const cancelButton =
+
+            formContainer.querySelector(
+
+                "#cancel-trade-button"
+
+            );
+
+        cancelButton.addEventListener(
+
+            "click",
+
+            () => {
+
+                formContainer.innerHTML = "";
 
             }
 
