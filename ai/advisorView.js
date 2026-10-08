@@ -30,6 +30,8 @@ import TaxDataIntegration from "../core/integration/taxDataIntegration.js";
 
 import RetirementAPI from "../modules/retirement/api/retirementAPI.js";
 
+import { t, getLanguage, setLanguage, languageOptions } from "../core/i18n/i18n.js";
+
 function money(value) {
 
     return "$" +
@@ -442,7 +444,7 @@ const AdvisorView = {
 
                 <h2>
 
-                    🤖 AI Advisor
+                    ${t("advisor.title")}
 
                 </h2>
 
@@ -454,9 +456,15 @@ const AdvisorView = {
 
                 >
 
-                    ← Back to Dashboard
+                    ${t("common.back")}
 
                 </button>
+
+                <br><br>
+
+                <label>${t("common.language")}</label>
+
+                <select id="advisor-language-select">${languageOptions(getLanguage())}</select>
 
                 <hr>
 
@@ -464,31 +472,31 @@ const AdvisorView = {
 
                     <h3>
 
-                        财富健康 Wealth Health
+                        ${t("advisor.health")}
 
                     </h3>
 
                     <p>
 
-                        健康状态：${report.wealthHealth}　风险等级：${report.riskLevel}
+                        ${t("advisor.healthStatus")}：${report.wealthHealth}　${t("advisor.riskLevel")}：${report.riskLevel}
 
                     </p>
 
                     <p>
 
-                        净资产 Net Worth：${money(report.metrics.netWorth)}　财富评分：${Number(report.metrics.wealthScore || 0).toFixed(0)}
+                        ${t("advisor.netWorth")}：${money(report.metrics.netWorth)}　${t("advisor.wealthScore")}：${Number(report.metrics.wealthScore || 0).toFixed(0)}
 
                     </p>
 
                     <p>
 
-                        负债率：${Number(report.metrics.debtRatio || 0).toFixed(1)}%　流动性覆盖：${Number(report.metrics.liquidityMonths || 0).toFixed(1)} 个月
+                        ${t("advisor.debtRatio")}：${Number(report.metrics.debtRatio || 0).toFixed(1)}%　${t("advisor.liquidity")}：${Number(report.metrics.liquidityMonths || 0).toFixed(1)} ${t("advisor.months")}
 
                     </p>
 
                     <p>
 
-                        净现金流（系统记录）：${money(report.metrics.netCashFlow)}
+                        ${t("advisor.netCashFlow")}：${money(report.metrics.netCashFlow)}
 
                     </p>
 
@@ -498,7 +506,7 @@ const AdvisorView = {
 
                     <h3>
 
-                        建议 Recommendations
+                        ${t("advisor.recommendations")}
 
                     </h3>
 
@@ -530,7 +538,7 @@ const AdvisorView = {
 
                     <h3>
 
-                        提醒 Alerts
+                        ${t("advisor.alerts")}
 
                     </h3>
 
@@ -570,15 +578,15 @@ const AdvisorView = {
 
                     <h3>
 
-                        退休 Retirement
+                        ${t("advisor.retirement")}
 
                     </h3>
 
                     <p>
 
-                        覆盖率：${(retirement.fundedRatio * 100).toFixed(0)}%
+                        ${t("advisor.coverage")}：${(retirement.fundedRatio * 100).toFixed(0)}%
 
-                        （退休时预计 ${money(retirement.projectedAssets)} / 需求 ${money(retirement.required)}）
+                        （${t("retire.projected")} ${money(retirement.projectedAssets)} / ${t("retire.required")} ${money(retirement.required)}）
 
                     </p>
 
@@ -590,11 +598,11 @@ const AdvisorView = {
 
                             ?
 
-                            "退休缺口：" + money(retirement.gap)
+                            t("advisor.gap") + "：" + money(retirement.gap)
 
                             :
 
-                            "退休已覆盖，富余：" + money(-retirement.gap)
+                            t("advisor.surplus") + "：" + money(-retirement.gap)
 
                         }
 
@@ -622,21 +630,21 @@ const AdvisorView = {
 
                     <h3>
 
-                        税务 Tax（${taxData.year}）
+                        ${t("advisor.tax")}（${taxData.year}）
 
                     </h3>
 
                     <p>
 
-                        合计收入：${money(taxData.totalIncome)}
+                        ${t("advisor.totalIncome")}：${money(taxData.totalIncome)}
 
-                        （工资/业务 ${money(taxData.wageIncome)}、股息 ${money(taxData.dividendIncome)}、利息 ${money(taxData.interestIncome)}、资本利得 ${money(taxData.capitalGains)}）
+                        （${t("advisor.wage")} ${money(taxData.wageIncome)}、${t("advisor.dividends")} ${money(taxData.dividendIncome)}、${t("advisor.interest")} ${money(taxData.interestIncome)}、${t("advisor.gains")} ${money(taxData.capitalGains)}）
 
                     </p>
 
                     <p>
 
-                        房贷利息已付：${money(taxData.mortgageInterestPaid)}　已缴税款：${money(taxData.taxPaid)}
+                        ${t("advisor.mortgageInterest")}：${money(taxData.mortgageInterestPaid)}　${t("advisor.taxPaid")}：${money(taxData.taxPaid)}
 
                     </p>
 
@@ -681,6 +689,42 @@ const AdvisorView = {
                         onBack();
 
                     }
+
+                }
+
+            );
+
+        }
+
+        const languageSelect =
+
+            container.querySelector(
+
+                "#advisor-language-select"
+
+            );
+
+        if (languageSelect) {
+
+            languageSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    setLanguage(
+
+                        languageSelect.value
+
+                    );
+
+                    this.render(
+
+                        container,
+
+                        onBack
+
+                    );
 
                 }
 

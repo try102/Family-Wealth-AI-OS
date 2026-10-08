@@ -10,6 +10,10 @@ Retirement View
 
 import RetirementAPI from "../api/retirementAPI.js";
 
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
+
+import { renderSupportCenter, bindSupportCenter } from "../../support/supportCenter.js";
+
 function money(value) {
 
     return "$" +
@@ -56,7 +60,7 @@ const RetirementView = {
 
                 <h2>
 
-                    🏖️ Retirement Center
+                    ${t("retire.title")}
 
                 </h2>
 
@@ -68,9 +72,15 @@ const RetirementView = {
 
                 >
 
-                    ← Back to Dashboard
+                    ${t("common.back")}
 
                 </button>
+
+                <br><br>
+
+                <label>${t("common.language")}</label>
+
+                <select id="retirement-language-select">${languageOptions(getLanguage())}</select>
 
                 <hr>
 
@@ -78,25 +88,25 @@ const RetirementView = {
 
                     <h3>
 
-                        当前净资产（系统汇总）
+                        ${t("retire.netWorthNow")}
 
                     </h3>
 
                     <p>
 
-                        Net Worth：${money(projection.netWorth)}
+                        ${t("dash.netWorth")}：${money(projection.netWorth)}
 
                     </p>
 
                     <p>
 
-                        账户 ${money(projection.accountsTotal)}
+                        ${t("retire.accountsPart")} ${money(projection.accountsTotal)}
 
-                        ＋ 投资 ${money(projection.investmentsTotal)}
+                        ＋ ${t("retire.investmentsPart")} ${money(projection.investmentsTotal)}
 
-                        ＋ 资产 ${money(projection.assetsTotal)}
+                        ＋ ${t("retire.assetsPart")} ${money(projection.assetsTotal)}
 
-                        － 负债 ${money(projection.liabilitiesTotal)}
+                        － ${t("retire.liabilitiesPart")} ${money(projection.liabilitiesTotal)}
 
                     </p>
 
@@ -106,27 +116,27 @@ const RetirementView = {
 
                     <h3>
 
-                        退休测算
+                        ${t("retire.projection")}
 
                     </h3>
 
                     <p>
 
-                        距退休 ${projection.yearsToRetirement} 年，
+                        ${t("retire.yearsTo")} ${projection.yearsToRetirement} ${t("retire.yearsUnit")}，
 
-                        退休期 ${projection.yearsInRetirement} 年
-
-                    </p>
-
-                    <p>
-
-                        退休时预计资产：${money(projection.projectedAssets)}
+                        ${t("retire.yearsIn")} ${projection.yearsInRetirement} ${t("retire.yearsUnit")}
 
                     </p>
 
                     <p>
 
-                        退休总需求（年支出 ${money(projection.annualExpenseUsed)} × ${projection.yearsInRetirement} 年）：${money(projection.required)}
+                        ${t("retire.projected")}：${money(projection.projectedAssets)}
+
+                    </p>
+
+                    <p>
+
+                        ${t("retire.required")}（${money(projection.annualExpenseUsed)} × ${projection.yearsInRetirement} ${t("retire.yearsUnit")}）：${money(projection.required)}
 
                     </p>
 
@@ -138,21 +148,21 @@ const RetirementView = {
 
                             ?
 
-                            "还差：" + money(projection.gap)
+                            t("retire.gap") + "：" + money(projection.gap)
 
                             :
 
-                            "已覆盖，富余：" + money(-projection.gap)
+                            t("retire.surplus") + "：" + money(-projection.gap)
 
                         }
 
-                        （覆盖率 ${(projection.fundedRatio * 100).toFixed(0)}%）
+                        （${t("retire.coverage")} ${(projection.fundedRatio * 100).toFixed(0)}%）
 
                     </p>
 
                     <p>
 
-                        最近 12 个月支出（Expense 模块）：${money(projection.recentAnnualExpense)}
+                        ${t("retire.recentExpense")}：${money(projection.recentAnnualExpense)}
 
                     </p>
 
@@ -164,7 +174,7 @@ const RetirementView = {
 
                     <h3>
 
-                        规划参数
+                        ${t("retire.profile")}
 
                     </h3>
 
@@ -172,7 +182,7 @@ const RetirementView = {
 
                         <label>
 
-                            Current Age 现在年龄
+                            ${t("retire.currentAge")}
 
                         </label>
 
@@ -196,7 +206,7 @@ const RetirementView = {
 
                         <label>
 
-                            Retirement Age 退休年龄
+                            ${t("retire.retirementAge")}
 
                         </label>
 
@@ -220,7 +230,7 @@ const RetirementView = {
 
                         <label>
 
-                            Life Expectancy 预期寿命
+                            ${t("retire.lifeExpectancy")}
 
                         </label>
 
@@ -244,7 +254,7 @@ const RetirementView = {
 
                         <label>
 
-                            Annual Expense 退休后年支出（留 0 则用最近 12 个月支出）
+                            ${t("retire.annualExpense")}
 
                         </label>
 
@@ -268,7 +278,7 @@ const RetirementView = {
 
                         <label>
 
-                            Annual Savings 退休前每年储蓄
+                            ${t("retire.annualSavings")}
 
                         </label>
 
@@ -292,7 +302,7 @@ const RetirementView = {
 
                         <label>
 
-                            Expected Return 预期年回报 %
+                            ${t("retire.expectedReturn")}
 
                         </label>
 
@@ -314,13 +324,15 @@ const RetirementView = {
 
                         <button type="submit">
 
-                            Save & Recalculate 保存并重算
+                            ${t("retire.saveRecalc")}
 
                         </button>
 
                     </form>
 
                 </section>
+
+                ${renderSupportCenter("retirement")}
 
             </div>
 
@@ -359,6 +371,60 @@ const RetirementView = {
             );
 
         }
+
+        const languageSelect =
+
+            container.querySelector(
+
+                "#retirement-language-select"
+
+            );
+
+        if (languageSelect) {
+
+            languageSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    setLanguage(
+
+                        languageSelect.value
+
+                    );
+
+                    this.render(
+
+                        container,
+
+                        onBack
+
+                    );
+
+                }
+
+            );
+
+        }
+
+        bindSupportCenter(
+
+            container,
+
+            "retirement",
+
+            () =>
+
+                this.render(
+
+                    container,
+
+                    onBack
+
+                )
+
+        );
 
         const form =
 

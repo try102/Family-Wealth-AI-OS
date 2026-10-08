@@ -8,6 +8,8 @@ Account View
 
 import AccountAPI from "../api/accountAPI.js";
 
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
+
 const AccountView = {
 
     render(
@@ -30,7 +32,7 @@ const AccountView = {
 
             <h2>
 
-            🏦 Account Center
+            🏦 ${t("account.title")}
 
             </h2>
 
@@ -42,15 +44,21 @@ const AccountView = {
 
             >
 
-                ← Back to Dashboard
+                ${t("common.back")}
 
             </button>
+
+            <br><br>
+
+            <label>${t("common.language")}</label>
+
+            <select id="account-language-select">${languageOptions(getLanguage())}</select>
 
             <hr>
 
             <p>
 
-            Total Balance:
+            ${t("account.totalBalance")}:
 
             $${
 
@@ -74,7 +82,7 @@ const AccountView = {
 
             >
 
-                + Add Account
+                ${t("account.add")}
 
             </button>
 
@@ -98,7 +106,7 @@ const AccountView = {
 
                 <p>
 
-                    No accounts yet.
+                    ${t("account.empty")}
 
                 </p>
 
@@ -122,11 +130,11 @@ const AccountView = {
 
                         <br>
 
-                        Type: ${account.type || "N/A"}
+                        ${t("account.type")}: ${account.type || "N/A"}
 
                         <br>
 
-                        Balance: $${Number(account.balance || 0).toLocaleString()}
+                        ${t("account.balance")}: $${Number(account.balance || 0).toLocaleString()}
 
                         <br><br>
 
@@ -140,7 +148,7 @@ const AccountView = {
 
                         >
 
-                            Delete
+                            ${t("common.delete")}
 
                         </button>
 
@@ -197,6 +205,48 @@ const AccountView = {
                         onBack();
 
                     }
+
+                }
+
+            );
+
+        }
+
+        // ==================================================
+
+        // Language Switch
+
+        // ==================================================
+
+        const languageSelect =
+
+            container.querySelector(
+
+                "#account-language-select"
+
+            );
+
+        if (languageSelect) {
+
+            languageSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    setLanguage(
+
+                        languageSelect.value
+
+                    );
+
+                    this.render(
+
+                        container,
+
+                        onBack
+
+                    );
 
                 }
 
@@ -328,7 +378,7 @@ const AccountView = {
 
                 <h3>
 
-                    Add Account
+                    ${t("account.add")}
 
                 </h3>
 
@@ -340,7 +390,7 @@ const AccountView = {
 
                     <label>
 
-                        Account Name
+                        ${t("common.name")}
 
                     </label>
 
@@ -360,7 +410,7 @@ const AccountView = {
 
                     <label>
 
-                        Type
+                        ${t("account.type")}
 
                     </label>
 
@@ -422,7 +472,7 @@ const AccountView = {
 
                     <label>
 
-                        Institution
+                        ${t("account.institution")}
 
                     </label>
 
@@ -440,7 +490,7 @@ const AccountView = {
 
                     <label>
 
-                        Balance
+                        ${t("account.balance")}
 
                     </label>
 
@@ -466,7 +516,7 @@ const AccountView = {
 
                     >
 
-                        Save Account
+                        ${t("common.save")}
 
                     </button>
 
@@ -478,7 +528,7 @@ const AccountView = {
 
                     >
 
-                        Cancel
+                        ${t("common.cancel")}
 
                     </button>
 
