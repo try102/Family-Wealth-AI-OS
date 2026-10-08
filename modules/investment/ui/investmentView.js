@@ -18,9 +18,9 @@ Delete Investment
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js?v=20261008r";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261008s";
 
-import InvestmentAgent from "../agent/investmentAgent.js?v=20261008r";
+import InvestmentAgent from "../agent/investmentAgent.js?v=20261008s";
 
 import AccountAPI from "../../account/api/accountAPI.js";
 
@@ -36,7 +36,7 @@ import {
 
     t
 
-} from "../i18n/investmentLocales.js?v=20261008n";
+} from "../i18n/investmentLocales.js?v=20261008s";
 
 const InvestmentView = {
 
