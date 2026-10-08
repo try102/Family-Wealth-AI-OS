@@ -252,6 +252,10 @@ const DICTIONARY = {
 
         memberLabel: "成员",
 
+        memberNewOption: "+ 新增成员（输入姓名）",
+
+        memberNamePlaceholder: "输入成员姓名",
+
         buyDate: "买入",
 
         sellDate: "卖出",
@@ -447,6 +451,10 @@ const DICTIONARY = {
         allocEmpty: "暫無配置數據",
 
         memberLabel: "成員",
+
+        memberNewOption: "+ 新增成員（輸入姓名）",
+
+        memberNamePlaceholder: "輸入成員姓名",
 
         buyDate: "買入",
 
@@ -644,6 +652,10 @@ const DICTIONARY = {
 
         memberLabel: "Member",
 
+        memberNewOption: "+ New member (type name)",
+
+        memberNamePlaceholder: "Member name",
+
         buyDate: "Buy",
 
         sellDate: "Sell",
@@ -839,6 +851,10 @@ const DICTIONARY = {
         allocEmpty: "配分データなし",
 
         memberLabel: "メンバー",
+
+        memberNewOption: "+ メンバー追加（名前を入力）",
+
+        memberNamePlaceholder: "メンバー名",
 
         buyDate: "買い",
 
