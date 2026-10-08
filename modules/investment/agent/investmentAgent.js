@@ -714,6 +714,194 @@ const InvestmentAgent = {
 
             .getPositions();
 
+        const unionRecords =
+
+        (
+
+            InvestmentAPI.getInvestments
+
+            ? InvestmentAPI.getInvestments()
+
+            : []
+
+        ) || [];
+
+        const coveredSymbols =
+
+        new Set(
+
+            positions.map(
+
+                position =>
+
+                    String(
+
+                        position.symbol ||
+
+                            position.name ||
+
+                            ""
+
+                    ).toUpperCase()
+
+            )
+
+        );
+
+        const extraPositions =
+
+        unionRecords
+
+            .filter(
+
+                record =>
+
+                    !coveredSymbols.has(
+
+                        String(
+
+                            record.symbol ||
+
+                                record.name ||
+
+                                ""
+
+                        ).toUpperCase()
+
+                    )
+
+            )
+
+            .filter(
+
+                record => {
+
+                    if (!scoped) {
+
+                        return true;
+
+                    }
+
+                    const owner =
+
+                        record.memberId ||
+
+                        record.ownerId ||
+
+                        "";
+
+                    return scopeMemberId === "__shared__"
+
+                        ? owner === ""
+
+                        : owner === scopeMemberId;
+
+                }
+
+            )
+
+            .map(
+
+                record => {
+
+                    const quantity =
+
+                    Number(record.quantity || 0);
+
+                    const marketValue =
+
+                    Number(
+
+                        record.currentValue ??
+
+                            record.marketValue ??
+
+                            0
+
+                    );
+
+                    const costBasis =
+
+                    Number(
+
+                        record.costBasis ??
+
+                            record.totalCost ??
+
+                            marketValue
+
+                    );
+
+                    return {
+
+                        symbol:
+
+                        record.symbol ||
+
+                            record.name ||
+
+                            "",
+
+                        name:
+
+                        record.name || "",
+
+                        quantity,
+
+                        averageCost:
+
+                        Number(
+
+                            record.averageCost ||
+
+                                (
+
+                                    quantity > 0
+
+                                        ? costBasis / quantity
+
+                                        : 0
+
+                                )
+
+                        ),
+
+                        currentPrice:
+
+                        Number(
+
+                            record.currentPrice || 0
+
+                        ),
+
+                        costBasis,
+
+                        marketValue,
+
+                        memberId:
+
+                        record.memberId ||
+
+                            record.ownerId ||
+
+                            ""
+
+                    };
+
+                }
+
+            );
+
+        const effectivePositions =
+
+        [
+
+            ...positions,
+
+            ...extraPositions
+
+        ];
+
         const summary =
 
         InvestmentAPI
@@ -722,9 +910,7 @@ const InvestmentAgent = {
 
         const totalValue =
 
-        scoped
-
-        ? positions.reduce(
+        effectivePositions.reduce(
 
             (sum, position) =>
 
@@ -734,12 +920,6 @@ const InvestmentAgent = {
 
             0
 
-        )
-
-        : Number(
-
-            summary.totalValue || 0
-
         );
 
         let totalCost = 0;
@@ -748,7 +928,7 @@ const InvestmentAgent = {
 
         const holdings =
 
-        positions.map(
+        effectivePositions.map(
 
             position => {
 
@@ -880,7 +1060,7 @@ const InvestmentAgent = {
 
         .concentrationRisk(
 
-            positions.map(
+            effectivePositions.map(
 
                 position => ({
 
