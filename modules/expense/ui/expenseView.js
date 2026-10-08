@@ -16,6 +16,8 @@ import MemberAPI from "../../member/api/memberAPI.js";
 
 import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
 
+import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js";
+
 const ExpenseView = {
 
     name: "Expense View V7",
@@ -826,7 +828,17 @@ const ExpenseView = {
 
                         ${accountOptions}
 
+                        <option value="__new_account__">${t("account.newOption")}</option>
+
                     </select>
+
+                    <span id="expense-new-account-fields" style="display:none">
+
+                        <input id="expense-new-account-name" type="text" placeholder="${t("account.namePlaceholder")}">
+
+                        <input id="expense-new-account-balance" type="number" step="0.01" placeholder="${t("account.balancePlaceholder")}">
+
+                    </span>
 
                     ${accountHint}
 
@@ -854,7 +866,11 @@ const ExpenseView = {
 
                         ${memberOptions}
 
+                        <option value="__new__">${t("member.newOption")}</option>
+
                     </select>
+
+                    <input id="expense-new-member-name" type="text" placeholder="${t("member.namePlaceholder")}" style="display:none">
 
                     <br><br>
 
@@ -893,6 +909,46 @@ const ExpenseView = {
                 "#expense-create-form"
 
             );
+
+        wireInlineCreate(
+
+            form.querySelector(
+
+                "#expense-account"
+
+            ),
+
+            [
+
+                form.querySelector(
+
+                    "#expense-new-account-fields"
+
+                )
+
+            ]
+
+        );
+
+        wireInlineCreate(
+
+            form.querySelector(
+
+                "#expense-member"
+
+            ),
+
+            [
+
+                form.querySelector(
+
+                    "#expense-new-member-name"
+
+                )
+
+            ]
+
+        );
 
         form.addEventListener(
 
@@ -952,7 +1008,23 @@ const ExpenseView = {
 
                     ?
 
-                    accountField.value
+                    resolveAccountId(
+
+                        accountField,
+
+                        form.querySelector(
+
+                            "#expense-new-account-name"
+
+                        ),
+
+                        form.querySelector(
+
+                            "#expense-new-account-balance"
+
+                        )
+
+                    )
 
                     :
 
@@ -973,7 +1045,17 @@ const ExpenseView = {
 
                     ?
 
-                    memberField.value
+                    resolveMemberId(
+
+                        memberField,
+
+                        form.querySelector(
+
+                            "#expense-new-member-name"
+
+                        )
+
+                    )
 
                     :
 
