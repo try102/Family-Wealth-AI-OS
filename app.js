@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261008n";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261008p";
 
 const app =
 
@@ -105,6 +105,10 @@ function formatPercent(
 // Dashboard
 
 // ==================================================
+
+let dashboardScopeId = "";
+
+let dashboardScopeMembers = [];
 
 function renderDashboard(
 
@@ -225,6 +229,18 @@ function renderDashboard(
                 <label>${t("common.language")}</label>
 
                 <select id="dash-language-select">${languageOptions(getLanguage())}</select>
+
+                <label>${t("scope.label")}</label>
+
+                <select id="dash-scope-select">
+
+                    <option value=""${dashboardScopeId === "" ? " selected" : ""}>${t("scope.family")}</option>
+
+                    <option value="__shared__"${dashboardScopeId === "__shared__" ? " selected" : ""}>${t("scope.shared")}</option>
+
+                    ${dashboardScopeMembers.map(member => `<option value="${member.id}"${dashboardScopeId === member.id ? " selected" : ""}>${member.name || member.id}</option>`).join("")}
+
+                </select>
 
             </div>
 
@@ -986,6 +1002,50 @@ function renderDashboard(
 
     }
 
+    const dashScopeSelect =
+
+        document.getElementById(
+
+            "dash-scope-select"
+
+        );
+
+    if(
+
+        dashScopeSelect
+
+    ){
+
+        dashScopeSelect.addEventListener(
+
+            "change",
+
+            () => {
+
+                try {
+
+                    globalThis.localStorage
+
+                        ?.setItem(
+
+                            "fw_dash_scope",
+
+                            dashScopeSelect.value
+
+                        );
+
+                }
+
+                catch (scopeError) {}
+
+                start();
+
+            }
+
+        );
+
+    }
+
     // ==================================================
 
     // Quick Access - Assets
@@ -1018,7 +1078,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./core/modules/assetsModule.js?v=20261008n"
+                            "./core/modules/assetsModule.js?v=20261008p"
 
                         );
 
@@ -1106,7 +1166,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/investment/ui/investmentView.js?v=20261008n"
+                            "./modules/investment/ui/investmentView.js?v=20261008p"
 
                         );
 
@@ -1578,7 +1638,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./core/modules/cashflowModule.js?v=20261008n"
+                            "./core/modules/cashflowModule.js?v=20261008p"
 
                         );
 
@@ -3456,7 +3516,7 @@ async function start(){
 
             await import(
 
-                "./core/modules/assetsModule.js?v=20261008n"
+                "./core/modules/assetsModule.js?v=20261008p"
 
             );
 
@@ -3513,6 +3573,196 @@ async function start(){
             LiabilityModule.api
 
                 .getLiabilities();
+
+        // ==================================================
+
+        // Dashboard member scope
+
+        //
+
+        // "" = whole family; "__shared__" = family shared;
+
+        // otherwise a member id. Persisted per device.
+
+        // ==================================================
+
+        let dashAssets =
+
+            assets;
+
+        let dashInvestments =
+
+            investments;
+
+        let dashLiabilities =
+
+            liabilities;
+
+        let dashScopeBucket =
+
+            null;
+
+        const dashScopeId =
+
+            (() => {
+
+                try {
+
+                    return globalThis.localStorage
+
+                        ?.getItem(
+
+                            "fw_dash_scope"
+
+                        ) || "";
+
+                }
+
+                catch (scopeError) {
+
+                    return "";
+
+                }
+
+            })();
+
+        dashboardScopeId =
+
+            dashScopeId;
+
+        try {
+
+            const memberModule =
+
+                await import(
+
+                    "./modules/member/api/memberAPI.js"
+
+                );
+
+            const MemberAPI =
+
+                memberModule.default;
+
+            dashboardScopeMembers =
+
+                MemberAPI.getMembers() || [];
+
+            if (dashScopeId) {
+
+                const stats =
+
+                    MemberAPI.getMemberStats();
+
+                dashScopeBucket =
+
+                    dashScopeId === "__shared__"
+
+                        ? stats.unassigned
+
+                        : (
+
+                            stats.members.find(
+
+                                item =>
+
+                                    item.member &&
+
+                                    item.member.id ===
+
+                                        dashScopeId
+
+                            ) || null
+
+                        );
+
+                const accountModule =
+
+                    await import(
+
+                        "./modules/account/api/accountAPI.js"
+
+                    );
+
+                const accountMember = {};
+
+                (
+
+                    accountModule.default.getAll() || []
+
+                ).forEach(
+
+                    account => {
+
+                        accountMember[account.id] =
+
+                            account.memberId ||
+
+                            account.ownerId ||
+
+                            "";
+
+                    }
+
+                );
+
+                const ownerOf =
+
+                    record =>
+
+                        record.memberId ||
+
+                        record.ownerId ||
+
+                        (
+
+                            record.accountId
+
+                                ? accountMember[record.accountId] || ""
+
+                                : ""
+
+                        ) ||
+
+                        "";
+
+                const inScope =
+
+                    record =>
+
+                        dashScopeId === "__shared__"
+
+                            ? ownerOf(record) === ""
+
+                            : ownerOf(record) === dashScopeId;
+
+                dashAssets =
+
+                    assets.filter(inScope);
+
+                dashInvestments =
+
+                    investments.filter(inScope);
+
+                dashLiabilities =
+
+                    liabilities.filter(inScope);
+
+            }
+
+        }
+
+        catch (scopeError) {
+
+            console.warn(
+
+                "Dashboard member scope unavailable:",
+
+                scopeError
+
+            );
+
+        }
 
         // ==================================================
 
@@ -3622,7 +3872,7 @@ async function start(){
 
                 await import(
 
-                    "./core/modules/cashflowModule.js?v=20261008n"
+                    "./core/modules/cashflowModule.js?v=20261008p"
 
                 );
 
@@ -3686,7 +3936,7 @@ async function start(){
 
         liabilityAnnualInterest =
 
-            liabilities.reduce(
+            dashLiabilities.reduce(
 
                 (
 
@@ -3802,6 +4052,26 @@ async function start(){
 
         };
 
+        if (dashScopeBucket) {
+
+            cashFlowData.income =
+
+                dashScopeBucket.income;
+
+            cashFlowData.expense =
+
+                dashScopeBucket.expense;
+
+            cashFlowData.net =
+
+                dashScopeBucket.netFlow;
+
+            cashFlowData.netCashFlow =
+
+                dashScopeBucket.netFlow;
+
+        }
+
         // ==================================================
 
         // Wealth Engine
@@ -3834,9 +4104,9 @@ async function start(){
 
         const dashboardAssets = [
 
-            ...assets,
+            ...dashAssets,
 
-            ...investments.map(
+            ...dashInvestments.map(
 
                 investment => ({
 
@@ -3930,11 +4200,11 @@ async function start(){
 
             dashboardAssets,
 
-            liabilities,
+            dashLiabilities,
 
             cashFlowData,
 
-            investments
+            dashInvestments
 
         );
 
