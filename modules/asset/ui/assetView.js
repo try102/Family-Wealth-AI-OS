@@ -28,7 +28,7 @@ import MemberAPI from "../../member/api/memberAPI.js";
 
 import InvestmentAgent from "../../investment/agent/investmentAgent.js";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008s";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008u";
 
 const AssetView = {
 
