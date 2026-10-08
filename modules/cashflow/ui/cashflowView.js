@@ -1034,7 +1034,7 @@ const cashflowView = {
 
                         :
 
-                        `<p style="color:#c00;">No account found. 请先到 Accounts 页面新建账户。</p>`
+                        `<p style="color:#c00;">No account yet. 没有账户也可以直接记录，会进入 Cash Flow（不影响账户余额）。</p>`
 
                     }
 
@@ -1200,11 +1200,7 @@ const cashflowView = {
 
                     false;
 
-                if(
-
-                    accountId
-
-                ){
+                {
 
                     try{
 
