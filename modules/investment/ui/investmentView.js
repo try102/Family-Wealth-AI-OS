@@ -78,6 +78,32 @@ const InvestmentView = {
 
             .getRiskReport();
 
+        const typeLabel =
+
+            type => {
+
+                const key = {
+
+                    STOCK: "typeStock",
+
+                    ETF: "typeETF",
+
+                    BOND: "typeBond",
+
+                    FUND: "typeFund",
+
+                    OTHER: "typeOther"
+
+                }[String(type || "").toUpperCase()];
+
+                return key
+
+                    ? t(key)
+
+                    : String(type || "");
+
+            };
+
         const trades =
 
             InvestmentAPI
@@ -574,19 +600,45 @@ const InvestmentView = {
 
                     </h3>
 
-                    <pre>
+                    <ul>
 
-${JSON.stringify(
+                        ${
 
-    portfolio.allocation,
+                            Object.keys(
 
-    null,
+                                portfolio.allocation ||
 
-    2
+                                {}
 
-)}
+                            ).length === 0
 
-                    </pre>
+                            ?
+
+                            `<li>${t("allocEmpty")}</li>`
+
+                            :
+
+                            Object.entries(
+
+                                portfolio.allocation
+
+                            ).map(
+
+                                ([type, item]) => `
+
+                                    <li>
+
+                                        ${typeLabel(type)}：$${Number(item.value || 0).toLocaleString()}（${Number(item.ratio || 0)}%）
+
+                                    </li>
+
+                                `
+
+                            ).join("")
+
+                        }
+
+                    </ul>
 
                 </section>
 
@@ -598,19 +650,17 @@ ${JSON.stringify(
 
                     </h3>
 
-                    <pre>
+                    <ul>
 
-${JSON.stringify(
+                        <li>${t("totalCost")}：$${Number(performance.cost || 0).toLocaleString()}</li>
 
-    performance,
+                        <li>${t("portfolioValue")}：$${Number(performance.value || 0).toLocaleString()}</li>
 
-    null,
+                        <li>${t("totalGainLoss")}：$${Number(performance.gain || 0).toLocaleString()}</li>
 
-    2
+                        <li>${t("totalReturn")}：${Number(performance.returnRate || 0)}%</li>
 
-)}
-
-                    </pre>
+                    </ul>
 
                 </section>
 
@@ -622,19 +672,35 @@ ${JSON.stringify(
 
                     </h3>
 
-                    <pre>
+                    <ul>
 
-${JSON.stringify(
+                        ${
 
-    risk,
+                            (risk.concentration || []).length === 0
 
-    null,
+                            ?
 
-    2
+                            `<li>${t("riskNone")}</li>`
 
-)}
+                            :
 
-                    </pre>
+                            risk.concentration.map(
+
+                                item => `
+
+                                    <li>
+
+                                        ${item.symbol || ""} — ${t("colWeight")} ${Number(item.ratio || 0)}%（${item.level === "HIGH" ? t("riskHighLevel") : item.level || ""}）
+
+                                    </li>
+
+                                `
+
+                            ).join("")
+
+                        }
+
+                    </ul>
 
                 </section>
 
@@ -1284,7 +1350,7 @@ ${JSON.stringify(
 
             <p style="color:#c00;">
 
-                No account found. 请先到 Accounts 页面新建账户，否则这笔交易不会记入 Transaction。
+                ${t("noAccountHint")}
 
             </p>
 
