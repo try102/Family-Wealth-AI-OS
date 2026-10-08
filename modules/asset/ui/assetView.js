@@ -28,7 +28,9 @@ import MemberAPI from "../../member/api/memberAPI.js";
 
 import InvestmentAgent from "../../investment/agent/investmentAgent.js";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008u";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008x";
+
+import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js";
 
 const AssetView = {
 
@@ -1154,7 +1156,17 @@ const AssetView = {
 
                         ${accountOptions}
 
+                        <option value="__new_account__">${t("account.newOption")}</option>
+
                     </select>
+
+                    <span id="asset-event-new-account-fields" style="display:none">
+
+                        <input id="asset-event-new-account-name" type="text" placeholder="${t("account.namePlaceholder")}">
+
+                        <input id="asset-event-new-account-balance" type="number" step="0.01" placeholder="${t("account.balancePlaceholder")}">
+
+                    </span>
 
                     ${accountHint}
 
@@ -1196,6 +1208,26 @@ const AssetView = {
 
             );
 
+        wireInlineCreate(
+
+            form.querySelector(
+
+                "#asset-event-account"
+
+            ),
+
+            [
+
+                form.querySelector(
+
+                    "#asset-event-new-account-fields"
+
+                )
+
+            ]
+
+        );
+
         form.addEventListener(
 
             "submit",
@@ -1234,15 +1266,23 @@ const AssetView = {
 
                 const accountId =
 
-                    accountField
+                    resolveAccountId(
 
-                    ?
+                        accountField,
 
-                    accountField.value
+                        form.querySelector(
 
-                    :
+                            "#asset-event-new-account-name"
 
-                    "";
+                        ),
+
+                        form.querySelector(
+
+                            "#asset-event-new-account-balance"
+
+                        )
+
+                    );
 
                 if (isBuy) {
 
@@ -1552,7 +1592,11 @@ const AssetView = {
 
                         ${memberOptions}
 
+                        <option value="__new__">${t("member.newOption")}</option>
+
                     </select>
+
+                    <input id="asset-new-member-name" type="text" placeholder="${t("member.namePlaceholder")}" style="display:none">
 
                     </div>
 
@@ -1599,6 +1643,26 @@ const AssetView = {
                 "#asset-create-form"
 
             );
+
+        wireInlineCreate(
+
+            form.querySelector(
+
+                "#asset-member"
+
+            ),
+
+            [
+
+                form.querySelector(
+
+                    "#asset-new-member-name"
+
+                )
+
+            ]
+
+        );
 
         form.addEventListener(
 
@@ -1648,11 +1712,21 @@ const AssetView = {
 
                     memberId:
 
-                        form.querySelector(
+                        resolveMemberId(
 
-                            "#asset-member"
+                            form.querySelector(
 
-                        )?.value || ""
+                                "#asset-member"
+
+                            ),
+
+                            form.querySelector(
+
+                                "#asset-new-member-name"
+
+                            )
+
+                        )
 
                 };
 
