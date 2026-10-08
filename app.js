@@ -2256,149 +2256,159 @@ const module =
 
                         try {
 
-                            let taxLangBar =
+                            const buildTaxLanguageBar = () => {
 
-                                document.getElementById(
+                                let bar =
 
-                                    "tax-language-bar"
+                                    document.getElementById(
 
-                                );
-
-                            if(
-
-                                !taxLangBar
-
-                            ){
-
-                                taxLangBar =
-
-                                    document.createElement(
-
-                                        "div"
-
-                                    );
-
-                                taxLangBar.id =
-
-                                    "tax-language-bar";
-
-                                taxLangBar.style.cssText =
-
-                                    "display:flex;justify-content:center;align-items:center;padding:8px 0 4px;";
-
-                                const taxHeader =
-
-                                    app.querySelector(
-
-                                        "header.app-header"
-
-                                    ) ||
-
-                                    app.querySelector(
-
-                                        "header"
+                                        "tax-language-bar"
 
                                     );
 
                                 if(
 
-                                    taxHeader &&
-
-                                    taxHeader.parentNode
+                                    !bar
 
                                 ){
 
-                                    taxHeader.parentNode
+                                    bar =
 
-                                        .insertBefore(
+                                        document.createElement(
 
-                                            taxLangBar,
-
-                                            taxHeader.nextSibling
+                                            "div"
 
                                         );
 
+                                    bar.id =
+
+                                        "tax-language-bar";
+
+                                    bar.style.cssText =
+
+                                        "display:flex;justify-content:center;align-items:center;padding:8px 0 4px;";
+
+                                    const taxHeader =
+
+                                        app.querySelector(
+
+                                            "header.app-header"
+
+                                        ) ||
+
+                                        app.querySelector(
+
+                                            "header"
+
+                                        );
+
+                                    if(
+
+                                        taxHeader &&
+
+                                        taxHeader.parentNode
+
+                                    ){
+
+                                        taxHeader.parentNode
+
+                                            .insertBefore(
+
+                                                bar,
+
+                                                taxHeader.nextSibling
+
+                                            );
+
+                                    }
+
+                                    else{
+
+                                        app.insertBefore(
+
+                                            bar,
+
+                                            app.firstChild
+
+                                        );
+
+                                    }
+
                                 }
 
-                                else{
+                                bar.innerHTML =
 
-                                    app.insertBefore(
+                                    `<label>${t("common.language")} <select id="tax-language-select">${languageOptions(getLanguage())}</select></label>`;
 
-                                        taxLangBar,
+                                const taxLangSelect =
 
-                                        app.firstChild
+                                    document.getElementById(
+
+                                        "tax-language-select"
+
+                                    );
+
+                                if(
+
+                                    taxLangSelect
+
+                                ){
+
+                                    taxLangSelect.addEventListener(
+
+                                        "change",
+
+                                        event => {
+
+                                            setLanguage(
+
+                                                event.target.value
+
+                                            );
+
+                                            // Reload the whole app so
+
+                                            // every part of the Tax page
+
+                                            // (body + support center)
+
+                                            // renders in the new language;
+
+                                            // the tax page re-opens
+
+                                            // automatically after reload.
+
+                                            try {
+
+                                                globalThis.localStorage
+
+                                                    ?.setItem(
+
+                                                        "fw_reopen_tax",
+
+                                                        "1"
+
+                                                    );
+
+                                            }
+
+                                            catch(reopenError){}
+
+                                            location.reload();
+
+                                        }
 
                                     );
 
                                 }
 
-                            }
+                            };
 
-                            taxLangBar.innerHTML =
+                            window.__ensureTaxLanguageBar =
 
-                                `<label>${t("common.language")} <select id="tax-language-select">${languageOptions(getLanguage())}</select></label>`;
+                                buildTaxLanguageBar;
 
-                            const taxLangSelect =
-
-                                document.getElementById(
-
-                                    "tax-language-select"
-
-                                );
-
-                            if(
-
-                                taxLangSelect
-
-                            ){
-
-                                taxLangSelect.addEventListener(
-
-                                    "change",
-
-                                    event => {
-
-                                        setLanguage(
-
-                                            event.target.value
-
-                                        );
-
-                                        // Reload the whole app so
-
-                                        // every part of the Tax page
-
-                                        // (body + support center)
-
-                                        // renders in the new language;
-
-                                        // the tax page re-opens
-
-                                        // automatically after reload.
-
-                                        try {
-
-                                            globalThis.localStorage
-
-                                                ?.setItem(
-
-                                                    "fw_reopen_tax",
-
-                                                    "1"
-
-                                                );
-
-                                        }
-
-                                        catch(reopenError){}
-
-                                        location.reload();
-
-                                    }
-
-                                );
-
-                            }
+                            buildTaxLanguageBar();
 
                         }
 
@@ -2414,7 +2424,7 @@ const module =
 
                         }
 
-                        // Small-scope DOM label translation
+                        // // Small-scope DOM label translation
 
                         // for the Tax page (exact matches only;
 
@@ -2929,6 +2939,44 @@ const module =
                             try {
 
                                 const applyTaxLabelsAgain = () => {
+
+                                    // The Tax view's own Refresh
+
+                                    // button re-renders the page and
+
+                                    // wipes the injected language
+
+                                    // switcher; put it back while
+
+                                    // the Tax page is shown.
+
+                                    try {
+
+                                        if(
+
+                                            !document.getElementById(
+
+                                                "tax-language-bar"
+
+                                            ) &&
+
+                                            document.getElementById(
+
+                                                "tax-plan-form"
+
+                                            ) &&
+
+                                            window.__ensureTaxLanguageBar
+
+                                        ){
+
+                                            window.__ensureTaxLanguageBar();
+
+                                        }
+
+                                    }
+
+                                    catch(barError){}
 
                                     const w =
 
