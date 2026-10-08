@@ -20,7 +20,35 @@ import AccountAPI
 
     from "../../account/api/accountAPI.js";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
+import MemberAPI
+
+    from "../../member/api/memberAPI.js";
+
+import IncomeAPI
+
+    from "../../income/api/incomeAPI.js";
+
+import ExpenseAPI
+
+    from "../../expense/api/expenseAPI.js";
+
+import LiabilityAPI
+
+    from "../../liability/api/liabilityAPI.js";
+
+import AssetAPI
+
+    from "../../asset/api/assetAPI.js";
+
+import InvestmentAPI
+
+    from "../../investment/api/investmentAPI.js";
+
+import TransactionRepository
+
+    from "../../../transaction/transactionRepository.js";
+
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008m";
 
 import cashflowAgent
 
@@ -50,17 +78,305 @@ const cashflowView = {
 
     ){
 
-        const cashflows =
+        const scopeId =
+
+            this.cashflowScopeMemberId || "";
+
+        const members =
+
+            (() => {
+
+                try {
+
+                    return MemberAPI.getMembers() || [];
+
+                }
+
+                catch (memberError) {
+
+                    return [];
+
+                }
+
+            })();
+
+        // Member attribution for cash flow entries:
+
+        // source business record -> its account -> shared.
+
+        const accountMemberMap = {};
+
+        try {
+
+            (AccountAPI.getAll() || []).forEach(
+
+                account => {
+
+                    accountMemberMap[account.id] =
+
+                        account.memberId ||
+
+                        account.ownerId ||
+
+                        "";
+
+                }
+
+            );
+
+        } catch (mapError) {}
+
+        const recordMember = {};
+
+        const collectRecords =
+
+            list => {
+
+                (list || []).forEach(
+
+                    record => {
+
+                        if (record && record.id) {
+
+                            recordMember[record.id] =
+
+                                record.memberId ||
+
+                                record.ownerId ||
+
+                                "";
+
+                        }
+
+                    }
+
+                );
+
+            };
+
+        try { collectRecords(IncomeAPI.getAllIncome()); } catch (e) {}
+
+        try { collectRecords(ExpenseAPI.getAllExpense()); } catch (e) {}
+
+        try { collectRecords(LiabilityAPI.getLiabilities()); } catch (e) {}
+
+        try { collectRecords(AssetAPI.getAll()); } catch (e) {}
+
+        try { collectRecords(InvestmentAPI.getTrades()); } catch (e) {}
+
+        const transactionById = {};
+
+        try {
+
+            TransactionRepository
+
+                .getTransactions()
+
+                .forEach(
+
+                    transaction => {
+
+                        transactionById[transaction.id] =
+
+                            transaction;
+
+                    }
+
+                );
+
+        } catch (mapError) {}
+
+        const entryOwner =
+
+            entry => {
+
+                const transaction =
+
+                    transactionById[entry.transactionId];
+
+                const details =
+
+                    (transaction && transaction.businessDetails) || {};
+
+                const nested =
+
+                    details.income ||
+
+                    details.expense ||
+
+                    details.liability ||
+
+                    details.asset ||
+
+                    details.investment ||
+
+                    null;
+
+                if (nested) {
+
+                    if (
+
+                        typeof nested.memberId === "string" &&
+
+                        nested.memberId
+
+                    ) {
+
+                        return nested.memberId;
+
+                    }
+
+                    const recordId =
+
+                        nested.incomeId ||
+
+                        nested.expenseId ||
+
+                        nested.liabilityId ||
+
+                        nested.assetId ||
+
+                        nested.tradeId ||
+
+                        nested.investmentId ||
+
+                        nested.id ||
+
+                        "";
+
+                    if (
+
+                        recordId &&
+
+                        recordMember[recordId]
+
+                    ) {
+
+                        return recordMember[recordId];
+
+                    }
+
+                }
+
+                if (
+
+                    entry.accountId &&
+
+                    accountMemberMap[entry.accountId]
+
+                ) {
+
+                    return accountMemberMap[entry.accountId];
+
+                }
+
+                return "";
+
+            };
+
+        const inScope =
+
+            owner =>
+
+                !scopeId
+
+                    ? true
+
+                    : scopeId === "__shared__"
+
+                        ? owner === ""
+
+                        : owner === scopeId;
+
+        const allCashflows =
 
             cashflowAPI
 
                 .getCashflows();
 
+        const cashflows =
+
+            scopeId
+
+                ? allCashflows.filter(
+
+                    entry => inScope(entryOwner(entry))
+
+                )
+
+                : allCashflows;
+
+        const annualizeEntry =
+
+            item => {
+
+                const value =
+
+                    Number(item.amount || 0);
+
+                switch (item.frequency) {
+
+                    case "MONTHLY":
+
+                        return value * 12;
+
+                    case "QUARTERLY":
+
+                        return value * 4;
+
+                    default:
+
+                        return value;
+
+                }
+
+            };
+
         const summary =
 
-            cashflowAPI
+            scopeId
 
-                .getSummary();
+                ? (() => {
+
+                    let income = 0;
+
+                    let expense = 0;
+
+                    cashflows.forEach(
+
+                        item => {
+
+                            if (item.type === "INCOME") {
+
+                                income += annualizeEntry(item);
+
+                            }
+
+                            if (item.type === "EXPENSE") {
+
+                                expense += annualizeEntry(item);
+
+                            }
+
+                        }
+
+                    );
+
+                    return {
+
+                        income,
+
+                        expense,
+
+                        net: income - expense
+
+                    };
+
+                })()
+
+                : cashflowAPI
+
+                    .getSummary();
 
         let report = null;
 
@@ -149,6 +465,18 @@ const cashflowView = {
                     <label>${t("common.language")}</label>
 
                     <select id="cashflow-language-select">${languageOptions(getLanguage())}</select>
+
+                    <label>${t("scope.label")}</label>
+
+                    <select id="cashflow-scope-select">
+
+                        <option value=""${scopeId === "" ? " selected" : ""}>${t("scope.family")}</option>
+
+                        <option value="__shared__"${scopeId === "__shared__" ? " selected" : ""}>${t("scope.shared")}</option>
+
+                        ${members.map(member => `<option value="${member.id}"${scopeId === member.id ? " selected" : ""}>${member.name || member.id}</option>`).join("")}
+
+                    </select>
 
                 </div>
 
@@ -739,6 +1067,40 @@ const cashflowView = {
                         languageSelect.value
 
                     );
+
+                    this.render(
+
+                        container,
+
+                        onBack
+
+                    );
+
+                }
+
+            );
+
+        }
+
+        const scopeSelect =
+
+            container.querySelector(
+
+                "#cashflow-scope-select"
+
+            );
+
+        if (scopeSelect) {
+
+            scopeSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    this.cashflowScopeMemberId =
+
+                        scopeSelect.value;
 
                     this.render(
 
