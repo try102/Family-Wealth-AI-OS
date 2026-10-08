@@ -18,6 +18,8 @@ import TransactionIntegration
 
 import AccountAPI
 
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
+
     from "../../account/api/accountAPI.js";
 
 import cashflowAgent
@@ -130,7 +132,7 @@ const cashflowView = {
 
                     <h1>
 
-                        💸 Cash Flow
+                        💸 ${t("cashflow.title")}
 
                     </h1>
 
@@ -141,6 +143,14 @@ const cashflowView = {
                     </p>
 
                 </header>
+
+                <div style="padding:10px 20px;">
+
+                    <label>${t("common.language")}</label>
+
+                    <select id="cashflow-language-select">${languageOptions(getLanguage())}</select>
+
+                </div>
 
                 <!-- ================================== -->
 
@@ -156,7 +166,7 @@ const cashflowView = {
 
                     <h2>
 
-                        Cashflow Dashboard
+                        ${t("cashflow.dashboard")}
 
                     </h2>
 
@@ -174,7 +184,7 @@ const cashflowView = {
 
                             <h3>
 
-                                Income
+                                ${t("cashflow.income")}
 
                             </h3>
 
@@ -204,7 +214,7 @@ const cashflowView = {
 
                             <h3>
 
-                                Expense
+                                ${t("cashflow.expense")}
 
                             </h3>
 
@@ -234,7 +244,7 @@ const cashflowView = {
 
                             <h3>
 
-                                Net Cashflow
+                                ${t("cashflow.net")}
 
                             </h3>
 
@@ -280,7 +290,7 @@ const cashflowView = {
 
                     >
 
-                        + Add Cash Flow
+                        ${t("cashflow.add")}
 
                     </button>
 
@@ -326,7 +336,7 @@ const cashflowView = {
 
                             <p>
 
-                                No cash flow data.
+                                ${t("cashflow.empty")}
 
                             </p>
 
@@ -362,19 +372,19 @@ const cashflowView = {
 
                                         <tr>
 
-                                            <th>Type</th>
+                                            <th>${t("cashflow.type")}</th>
 
-                                            <th>Category</th>
+                                            <th>${t("common.category")}</th>
 
-                                            <th>Description</th>
+                                            <th>${t("common.description")}</th>
 
-                                            <th>Amount</th>
+                                            <th>${t("common.amount")}</th>
 
-                                            <th>Frequency</th>
+                                            <th>${t("cashflow.frequency")}</th>
 
-                                            <th>Annualized</th>
+                                            <th>${t("cashflow.annualized")}</th>
 
-                                            <th>Actions</th>
+                                            <th>${t("common.actions")}</th>
 
                                         </tr>
 
@@ -482,7 +492,7 @@ const cashflowView = {
 
                                                         >
 
-                                                            Edit
+                                                            ${t("common.edit")}
 
                                                         </button>
 
@@ -496,7 +506,7 @@ const cashflowView = {
 
                                                         >
 
-                                                            Delete
+                                                            ${t("common.delete")}
 
                                                         </button>
 
@@ -618,7 +628,7 @@ const cashflowView = {
 
                 >
 
-                    ← Back to Dashboard
+                    ${t("common.back")}
 
                 </button>
 
@@ -689,6 +699,48 @@ const cashflowView = {
                 () => {
 
                     this.showCreateForm(
+
+                        container,
+
+                        onBack
+
+                    );
+
+                }
+
+            );
+
+        }
+
+        // ==================================================
+
+        // Language Switch
+
+        // ==================================================
+
+        const languageSelect =
+
+            container.querySelector(
+
+                "#cashflow-language-select"
+
+            );
+
+        if (languageSelect) {
+
+            languageSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    setLanguage(
+
+                        languageSelect.value
+
+                    );
+
+                    this.render(
 
                         container,
 
@@ -844,7 +896,7 @@ const cashflowView = {
 
                 <h3>
 
-                    Add Cash Flow
+                    ${t("cashflow.add")}
 
                 </h3>
 
@@ -856,7 +908,7 @@ const cashflowView = {
 
                     <label>
 
-                        Type
+                        ${t("cashflow.type")}
 
                     </label>
 
@@ -888,7 +940,7 @@ const cashflowView = {
 
                     <label>
 
-                        Category
+                        ${t("common.category")}
 
                     </label>
 
@@ -908,7 +960,7 @@ const cashflowView = {
 
                     <label>
 
-                        Description
+                        ${t("common.description")}
 
                     </label>
 
@@ -926,7 +978,7 @@ const cashflowView = {
 
                     <label>
 
-                        Amount
+                        ${t("common.amount")}
 
                     </label>
 
@@ -950,7 +1002,7 @@ const cashflowView = {
 
                     <label>
 
-                        Account（选账户走 Transaction，现金余额自动同步）
+                        ${t("common.account")}（${t("cashflow.accountHint")}）
 
                     </label>
 
@@ -964,7 +1016,7 @@ const cashflowView = {
 
                         <option value="">
 
-                            Select Account
+                            ${t("common.selectAccount")}
 
                         </option>
 
@@ -990,7 +1042,7 @@ const cashflowView = {
 
                     <label>
 
-                        Frequency
+                        ${t("cashflow.frequency")}
 
                     </label>
 
@@ -1038,7 +1090,7 @@ const cashflowView = {
 
                     >
 
-                        Save Cash Flow
+                        ${t("common.save")}
 
                     </button>
 
@@ -1050,7 +1102,7 @@ const cashflowView = {
 
                     >
 
-                        Cancel
+                        ${t("common.cancel")}
 
                     </button>
 
@@ -1446,7 +1498,7 @@ const cashflowView = {
 
                 <h3>
 
-                    Edit Cash Flow
+                    ${t("cashflow.editTitle")}
 
                 </h3>
 
@@ -1458,7 +1510,7 @@ const cashflowView = {
 
                     <label>
 
-                        Type
+                        ${t("cashflow.type")}
 
                     </label>
 
@@ -1488,7 +1540,7 @@ const cashflowView = {
 
                     <label>
 
-                        Category
+                        ${t("common.category")}
 
                     </label>
 
@@ -1508,7 +1560,7 @@ const cashflowView = {
 
                     <label>
 
-                        Description
+                        ${t("common.description")}
 
                     </label>
 
@@ -1528,7 +1580,7 @@ const cashflowView = {
 
                     <label>
 
-                        Amount
+                        ${t("common.amount")}
 
                     </label>
 
@@ -1554,7 +1606,7 @@ const cashflowView = {
 
                     <label>
 
-                        Frequency
+                        ${t("cashflow.frequency")}
 
                     </label>
 
@@ -1600,7 +1652,7 @@ const cashflowView = {
 
                     >
 
-                        Update Cash Flow
+                        ${t("common.save")}
 
                     </button>
 
@@ -1612,7 +1664,7 @@ const cashflowView = {
 
                     >
 
-                        Cancel
+                        ${t("common.cancel")}
 
                     </button>
 
