@@ -22,7 +22,7 @@ import cashflowAI
 
 import cashflowView
 
-    from "../../modules/cashflow/ui/cashflowView.js?v=20261008m";
+    from "../../modules/cashflow/ui/cashflowView.js?v=20261008s";
 
 const cashflowModule = {
 
