@@ -20,7 +20,21 @@ Delete Investment
 
 import InvestmentAPI from "../api/investmentAPI.js";
 
+import InvestmentAgent from "../agent/investmentAgent.js";
+
 import AccountAPI from "../../account/api/accountAPI.js";
+
+import {
+
+    SUPPORTED_LANGUAGES,
+
+    getLanguage,
+
+    setLanguage,
+
+    t
+
+} from "../i18n/investmentLocales.js";
 
 const InvestmentView = {
 
@@ -74,6 +88,166 @@ const InvestmentView = {
 
             .getPositions();
 
+        const decision =
+
+            InvestmentAgent
+
+            .getDecisionCenter();
+
+        const language =
+
+            getLanguage();
+
+        const fmtPct =
+
+            value =>
+
+                Number(value || 0)
+
+                    .toFixed(1) +
+
+                "%";
+
+        const signalReason =
+
+            holding => {
+
+                const params = {
+
+                    weight:
+
+                        Number(holding.weight || 0)
+
+                            .toFixed(1),
+
+                    rate:
+
+                        Number(holding.returnRate || 0)
+
+                            .toFixed(1)
+
+                };
+
+                if (
+
+                    holding.signalReason ===
+
+                    "concentration"
+
+                ) {
+
+                    return t(
+
+                        "reasonConcentration",
+
+                        params
+
+                    );
+
+                }
+
+                if (
+
+                    holding.signalReason ===
+
+                    "loss"
+
+                ) {
+
+                    return t(
+
+                        "reasonLoss",
+
+                        params
+
+                    );
+
+                }
+
+                if (
+
+                    holding.signalReason ===
+
+                    "profit"
+
+                ) {
+
+                    return t(
+
+                        "reasonProfit",
+
+                        params
+
+                    );
+
+                }
+
+                if (
+
+                    holding.signalReason ===
+
+                    "small"
+
+                ) {
+
+                    return t("reasonSmall");
+
+                }
+
+                return t("reasonHold");
+
+            };
+
+        const adviceItems = [
+
+            ...decision.warnings.map(
+
+                warning =>
+
+                    t(
+
+                        "concentrationWarn",
+
+                        {
+
+                            symbol:
+
+                                warning.symbol || "",
+
+                            weight:
+
+                                Number(warning.ratio || 0)
+
+                                    .toFixed(1)
+
+                        }
+
+                    )
+
+            ),
+
+            ...decision.holdings
+
+                .filter(
+
+                    holding =>
+
+                        holding.signalCode !==
+
+                        "HOLD"
+
+                )
+
+                .map(
+
+                    holding =>
+
+                        `${holding.symbol}: ${t("signal" + holding.signalCode)} — ${signalReason(holding)}`
+
+                )
+
+        ];
+
         container.innerHTML = `
 
             <div
@@ -84,9 +258,63 @@ const InvestmentView = {
 
                 <h2>
 
-                    Investment Center
+                    ${t("title")}
 
                 </h2>
+
+                <label>
+
+                    ${t("language")}
+
+                </label>
+
+                <select
+
+                    id="inv-language-select"
+
+                >
+
+                    ${
+
+                        SUPPORTED_LANGUAGES.map(
+
+                            item => `
+
+                                <option
+
+                                    value="${item.code}"
+
+                                    ${
+
+                                        item.code ===
+
+                                        language
+
+                                        ?
+
+                                        "selected"
+
+                                        :
+
+                                        ""
+
+                                    }
+
+                                >
+
+                                    ${item.label}
+
+                                </option>
+
+                            `
+
+                        ).join("")
+
+                    }
+
+                </select>
+
+                <br><br>
 
                 <button
 
@@ -96,9 +324,165 @@ const InvestmentView = {
 
                 >
 
-                    ← Back to Dashboard
+                    ${t("back")}
 
                 </button>
+
+                <hr>
+
+                <section>
+
+                    <h3>
+
+                        ${t("overview")}
+
+                    </h3>
+
+                    <p>
+
+                        ${t("portfolioValue")}：$${Number(decision.totalValue || 0).toLocaleString()}
+
+                        ｜ ${t("totalCost")}：$${Number(decision.totalCost || 0).toLocaleString()}
+
+                        ｜ ${t("totalGainLoss")}：$${Number(decision.totalGainLoss || 0).toLocaleString()}
+
+                        （${t("totalReturn")} ${fmtPct(decision.totalReturnRate)}）
+
+                    </p>
+
+                    <p>
+
+                        ${t("holdingsCount")}：${decision.holdings.length}
+
+                        ｜ ${t("riskWarnings")}：${decision.warnings.length}
+
+                    </p>
+
+                </section>
+
+                <section>
+
+                    <h3>
+
+                        ${t("decisionTable")}
+
+                    </h3>
+
+                    ${
+
+                        decision.holdings.length === 0
+
+                        ?
+
+                        `<p>${t("noHoldings")}</p>`
+
+                        :
+
+                        `
+
+                    <table style="border-collapse:collapse;">
+
+                        <tr>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colSymbol")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colQty")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colAvgCost")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colPrice")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colMarketValue")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colWeight")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colGainLoss")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colReturn")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colDecision")}</th>
+
+                        </tr>
+
+                        ${
+
+                            decision.holdings.map(
+
+                                holding => `
+
+                        <tr>
+
+                            <td style="padding:6px;border:1px solid #ccc;">${holding.symbol}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">${holding.quantity}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">$${Number(holding.averageCost || 0).toFixed(2)}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">$${Number(holding.currentPrice || 0).toFixed(2)}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">$${Number(holding.marketValue || 0).toLocaleString()}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">${fmtPct(holding.weight)}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">$${Number(holding.gainLoss || 0).toLocaleString()}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">${fmtPct(holding.returnRate)}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">${t("signal" + holding.signalCode)}<br><small>${signalReason(holding)}</small></td>
+
+                        </tr>
+
+                                `
+
+                            ).join("")
+
+                        }
+
+                    </table>
+
+                        `
+
+                    }
+
+                </section>
+
+                <section>
+
+                    <h3>
+
+                        ${t("adviceTitle")}
+
+                    </h3>
+
+                    <ul>
+
+                        ${
+
+                            adviceItems.length === 0
+
+                            ?
+
+                            `<li>${t("adviceNone")}</li>`
+
+                            :
+
+                            adviceItems.map(
+
+                                item => `<li>${item}</li>`
+
+                            ).join("")
+
+                        }
+
+                    </ul>
+
+                    <p>
+
+                        <small>${t("disclaimer")}</small>
+
+                    </p>
+
+                </section>
 
                 <hr>
 
@@ -198,7 +582,7 @@ ${JSON.stringify(
 
                     <h3>
 
-                        Holdings 持仓（买卖自动更新）
+                        ${t("holdingsAuto")}
 
                     </h3>
 
@@ -266,7 +650,7 @@ ${JSON.stringify(
 
                 >
 
-                    + Add Investment
+                    ${t("addInvestment")}
 
                 </button>
 
@@ -278,7 +662,7 @@ ${JSON.stringify(
 
                 >
 
-                    ⇄ Record Trade
+                    ${t("recordTrade")}
 
                 </button>
 
@@ -380,7 +764,7 @@ ${JSON.stringify(
 
                 <h3>
 
-                    Recent Trades
+                    ${t("recentTrades")}
 
                 </h3>
 
@@ -549,6 +933,48 @@ ${JSON.stringify(
                 () => {
 
                     this.showTradeForm(
+
+                        container,
+
+                        onBack
+
+                    );
+
+                }
+
+            );
+
+        }
+
+        // ==========================================
+
+        // Language Switch
+
+        // ==========================================
+
+        const languageSelect =
+
+            container.querySelector(
+
+                "#inv-language-select"
+
+            );
+
+        if(languageSelect){
+
+            languageSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    setLanguage(
+
+                        languageSelect.value
+
+                    );
+
+                    this.render(
 
                         container,
 

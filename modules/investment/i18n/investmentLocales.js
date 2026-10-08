@@ -1,0 +1,535 @@
+/*
+
+Family Wealth AI OS V7
+
+Investment Locales
+
+投资决策中心多语言支持。
+
+语言选择保存在 localStorage（fw_language），
+
+其他模块可复用同一机制扩展。
+
+*/
+
+const STORAGE_KEY =
+
+    "fw_language";
+
+export const SUPPORTED_LANGUAGES = [
+
+    {
+
+        code:
+
+            "zh-CN",
+
+        label:
+
+            "简体中文"
+
+    },
+
+    {
+
+        code:
+
+            "zh-TW",
+
+        label:
+
+            "繁體中文"
+
+    },
+
+    {
+
+        code:
+
+            "en-US",
+
+        label:
+
+            "English"
+
+    },
+
+    {
+
+        code:
+
+            "ja-JP",
+
+        label:
+
+            "日本語"
+
+    }
+
+];
+
+const DICTIONARY = {
+
+    "zh-CN": {
+
+        title: "投资决策中心",
+
+        back: "← 返回首页",
+
+        language: "语言",
+
+        overview: "决策总览",
+
+        portfolioValue: "组合市值",
+
+        totalCost: "总成本",
+
+        totalGainLoss: "总盈亏",
+
+        totalReturn: "总收益率",
+
+        holdingsCount: "持仓数量",
+
+        riskWarnings: "风险提示",
+
+        decisionTable: "持仓决策",
+
+        colSymbol: "代码",
+
+        colName: "名称",
+
+        colQty: "数量",
+
+        colAvgCost: "单位成本",
+
+        colPrice: "现价",
+
+        colMarketValue: "市值",
+
+        colWeight: "权重",
+
+        colGainLoss: "盈亏",
+
+        colReturn: "收益率",
+
+        colDecision: "决策信号",
+
+        signalHOLD: "持有",
+
+        signalREDUCE: "减仓",
+
+        signalREVIEW: "复核",
+
+        signalTAKE_PROFIT: "考虑止盈",
+
+        reasonHold: "仓位与盈亏处于正常区间",
+
+        reasonConcentration: "单只权重 {weight}%，集中度过高",
+
+        reasonLoss: "收益率 {rate}%，亏损较大，请复核基本面",
+
+        reasonProfit: "收益率 {rate}%，可考虑部分止盈",
+
+        reasonSmall: "小仓位，继续观察",
+
+        adviceTitle: "决策建议",
+
+        adviceNone: "当前无特别建议，保持现有策略",
+
+        concentrationWarn: "{symbol} 权重 {weight}%，注意集中度风险",
+
+        disclaimer: "决策信号由本地规则生成（权重/盈亏阈值），仅供参考，不构成投资建议。",
+
+        noHoldings: "暂无持仓，先记录一笔买入",
+
+        recordTrade: "⇄ 记录交易",
+
+        holdingsAuto: "持仓（买卖自动更新）",
+
+        recentTrades: "最近交易",
+
+        investmentsTitle: "投资列表",
+
+        addInvestment: "+ 新增投资"
+
+    },
+
+    "zh-TW": {
+
+        title: "投資決策中心",
+
+        back: "← 返回首頁",
+
+        language: "語言",
+
+        overview: "決策總覽",
+
+        portfolioValue: "組合市值",
+
+        totalCost: "總成本",
+
+        totalGainLoss: "總盈虧",
+
+        totalReturn: "總收益率",
+
+        holdingsCount: "持倉數量",
+
+        riskWarnings: "風險提示",
+
+        decisionTable: "持倉決策",
+
+        colSymbol: "代碼",
+
+        colName: "名稱",
+
+        colQty: "數量",
+
+        colAvgCost: "單位成本",
+
+        colPrice: "現價",
+
+        colMarketValue: "市值",
+
+        colWeight: "權重",
+
+        colGainLoss: "盈虧",
+
+        colReturn: "收益率",
+
+        colDecision: "決策信號",
+
+        signalHOLD: "持有",
+
+        signalREDUCE: "減倉",
+
+        signalREVIEW: "復核",
+
+        signalTAKE_PROFIT: "考慮止盈",
+
+        reasonHold: "倉位與盈虧處於正常區間",
+
+        reasonConcentration: "單隻權重 {weight}%，集中度過高",
+
+        reasonLoss: "收益率 {rate}%，虧損較大，請復核基本面",
+
+        reasonProfit: "收益率 {rate}%，可考慮部分止盈",
+
+        reasonSmall: "小倉位，繼續觀察",
+
+        adviceTitle: "決策建議",
+
+        adviceNone: "目前無特別建議，保持現有策略",
+
+        concentrationWarn: "{symbol} 權重 {weight}%，注意集中度風險",
+
+        disclaimer: "決策信號由本地規則生成（權重/盈虧閾值），僅供參考，不構成投資建議。",
+
+        noHoldings: "暫無持倉，先記錄一筆買入",
+
+        recordTrade: "⇄ 記錄交易",
+
+        holdingsAuto: "持倉（買賣自動更新）",
+
+        recentTrades: "最近交易",
+
+        investmentsTitle: "投資列表",
+
+        addInvestment: "+ 新增投資"
+
+    },
+
+    "en-US": {
+
+        title: "Investment Decision Center",
+
+        back: "← Back to Dashboard",
+
+        language: "Language",
+
+        overview: "Decision Overview",
+
+        portfolioValue: "Portfolio Value",
+
+        totalCost: "Total Cost",
+
+        totalGainLoss: "Total Gain/Loss",
+
+        totalReturn: "Total Return",
+
+        holdingsCount: "Holdings",
+
+        riskWarnings: "Risk Warnings",
+
+        decisionTable: "Holdings Decisions",
+
+        colSymbol: "Symbol",
+
+        colName: "Name",
+
+        colQty: "Qty",
+
+        colAvgCost: "Avg Cost",
+
+        colPrice: "Price",
+
+        colMarketValue: "Market Value",
+
+        colWeight: "Weight",
+
+        colGainLoss: "Gain/Loss",
+
+        colReturn: "Return",
+
+        colDecision: "Signal",
+
+        signalHOLD: "HOLD",
+
+        signalREDUCE: "REDUCE",
+
+        signalREVIEW: "REVIEW",
+
+        signalTAKE_PROFIT: "TAKE PROFIT",
+
+        reasonHold: "Weight and return within normal range",
+
+        reasonConcentration: "Single position is {weight}% of portfolio — concentration too high",
+
+        reasonLoss: "Return {rate}% — sizable loss, review fundamentals",
+
+        reasonProfit: "Return {rate}% — consider taking partial profit",
+
+        reasonSmall: "Small position — keep observing",
+
+        adviceTitle: "Decision Advice",
+
+        adviceNone: "No special actions — maintain current strategy",
+
+        concentrationWarn: "{symbol} is {weight}% of the portfolio — concentration risk",
+
+        disclaimer: "Signals are generated by local rules (weight/return thresholds) for reference only — not investment advice.",
+
+        noHoldings: "No holdings yet — record a buy first",
+
+        recordTrade: "⇄ Record Trade",
+
+        holdingsAuto: "Holdings (auto-updated by trades)",
+
+        recentTrades: "Recent Trades",
+
+        investmentsTitle: "Investments",
+
+        addInvestment: "+ Add Investment"
+
+    },
+
+    "ja-JP": {
+
+        title: "投資意思決定センター",
+
+        back: "← ダッシュボードに戻る",
+
+        language: "言語",
+
+        overview: "意思決定の概要",
+
+        portfolioValue: "ポートフォリオ評価額",
+
+        totalCost: "総コスト",
+
+        totalGainLoss: "総損益",
+
+        totalReturn: "総リターン",
+
+        holdingsCount: "保有銘柄数",
+
+        riskWarnings: "リスク警告",
+
+        decisionTable: "保有銘柄の判断",
+
+        colSymbol: "銘柄",
+
+        colName: "名称",
+
+        colQty: "数量",
+
+        colAvgCost: "平均コスト",
+
+        colPrice: "現在価格",
+
+        colMarketValue: "評価額",
+
+        colWeight: "比重",
+
+        colGainLoss: "損益",
+
+        colReturn: "収益率",
+
+        colDecision: "シグナル",
+
+        signalHOLD: "保有",
+
+        signalREDUCE: "縮小",
+
+        signalREVIEW: "見直し",
+
+        signalTAKE_PROFIT: "利確検討",
+
+        reasonHold: "比重と収益は正常範囲です",
+
+        reasonConcentration: "単一銘柄が {weight}% — 集中しすぎです",
+
+        reasonLoss: "収益率 {rate}% — 損失が大きいため見直しを",
+
+        reasonProfit: "収益率 {rate}% — 一部利確を検討",
+
+        reasonSmall: "小口のため様子見",
+
+        adviceTitle: "意思決定アドバイス",
+
+        adviceNone: "特別な対応は不要、現戦略を維持",
+
+        concentrationWarn: "{symbol} は {weight}% — 集中リスクに注意",
+
+        disclaimer: "シグナルはローカルルール（比重・収益の閾値）で生成された参考情報であり、投資助言ではありません。",
+
+        noHoldings: "保有銘柄なし — まず買いを記録してください",
+
+        recordTrade: "⇄ 取引を記録",
+
+        holdingsAuto: "保有銘柄（取引で自動更新）",
+
+        recentTrades: "最近の取引",
+
+        investmentsTitle: "投資リスト",
+
+        addInvestment: "+ 投資を追加"
+
+    }
+
+};
+
+function isSupported(code) {
+
+    return SUPPORTED_LANGUAGES.some(
+
+        item => item.code === code
+
+    );
+
+}
+
+export function getLanguage() {
+
+    try {
+
+        const saved =
+
+            globalThis.localStorage
+
+                ?.getItem(
+
+                    STORAGE_KEY
+
+                );
+
+        if (
+
+            saved &&
+
+            isSupported(saved)
+
+        ) {
+
+            return saved;
+
+        }
+
+    } catch (error) {
+
+        // Storage unavailable: fall through.
+
+    }
+
+    return "zh-CN";
+
+}
+
+export function setLanguage(code) {
+
+    if (
+
+        !isSupported(code)
+
+    ) {
+
+        return getLanguage();
+
+    }
+
+    try {
+
+        globalThis.localStorage
+
+            ?.setItem(
+
+                STORAGE_KEY,
+
+                code
+
+            );
+
+    } catch (error) {
+
+        // Storage unavailable: language applies to this render only.
+
+    }
+
+    return code;
+
+}
+
+export function t(key, params = {}) {
+
+    const language =
+
+        getLanguage();
+
+    const template =
+
+        DICTIONARY[language]?.[key] ??
+
+        DICTIONARY["en-US"]?.[key] ??
+
+        key;
+
+    return Object.keys(params)
+
+        .reduce(
+
+            (text, name) =>
+
+                text.replaceAll(
+
+                    `{${name}}`,
+
+                    String(params[name])
+
+                ),
+
+            template
+
+        );
+
+}
+
+export default {
+
+    SUPPORTED_LANGUAGES,
+
+    getLanguage,
+
+    setLanguage,
+
+    t
+
+};
