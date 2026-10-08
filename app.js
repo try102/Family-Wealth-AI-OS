@@ -2364,45 +2364,35 @@ const module =
 
                                         );
 
-                                        // Re-open the Tax page from
+                                        // Reload the whole app so
 
-                                        // the dashboard so the whole
+                                        // every part of the Tax page
 
-                                        // page (not just the support
+                                        // (body + support center)
 
-                                        // center) re-renders in the
+                                        // renders in the new language;
 
-                                        // newly selected language.
+                                        // the tax page re-opens
 
-                                        start();
+                                        // automatically after reload.
 
-                                        setTimeout(
+                                        try {
 
-                                            () => {
+                                            globalThis.localStorage
 
-                                                const freshTaxButton =
+                                                ?.setItem(
 
-                                                    document.getElementById(
+                                                    "fw_reopen_tax",
 
-                                                        "quick-tax-button"
+                                                    "1"
 
-                                                    );
+                                                );
 
-                                                if(
+                                        }
 
-                                                    freshTaxButton
+                                        catch(reopenError){}
 
-                                                ){
-
-                                                    freshTaxButton.click();
-
-                                                }
-
-                                            },
-
-                                            60
-
-                                        );
+                                        location.reload();
 
                                     }
 
@@ -3863,6 +3853,56 @@ async function start(){
             investments
 
         );
+
+        // After a Tax-page language switch the app
+
+        // reloads; re-open the Tax page automatically.
+
+        try {
+
+            if(
+
+                globalThis.localStorage
+
+                    ?.getItem(
+
+                        "fw_reopen_tax"
+
+                    )
+
+            ){
+
+                globalThis.localStorage
+
+                    .removeItem(
+
+                        "fw_reopen_tax"
+
+                    );
+
+                const reopenTaxButton =
+
+                    document.getElementById(
+
+                        "quick-tax-button"
+
+                    );
+
+                if(
+
+                    reopenTaxButton
+
+                ){
+
+                    reopenTaxButton.click();
+
+                }
+
+            }
+
+        }
+
+        catch(reopenTaxError){}
 
     }
 
