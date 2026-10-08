@@ -36,7 +36,7 @@ import {
 
     t
 
-} from "../i18n/investmentLocales.js";
+} from "../i18n/investmentLocales.js?v=20261008j";
 
 const InvestmentView = {
 
