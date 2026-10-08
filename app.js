@@ -2364,7 +2364,45 @@ const module =
 
                                         );
 
-                                        taxButton.click();
+                                        // Re-open the Tax page from
+
+                                        // the dashboard so the whole
+
+                                        // page (not just the support
+
+                                        // center) re-renders in the
+
+                                        // newly selected language.
+
+                                        start();
+
+                                        setTimeout(
+
+                                            () => {
+
+                                                const freshTaxButton =
+
+                                                    document.getElementById(
+
+                                                        "quick-tax-button"
+
+                                                    );
+
+                                                if(
+
+                                                    freshTaxButton
+
+                                                ){
+
+                                                    freshTaxButton.click();
+
+                                                }
+
+                                            },
+
+                                            60
+
+                                        );
 
                                     }
 
