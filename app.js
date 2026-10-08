@@ -258,11 +258,11 @@ function renderDashboard(
 
                 <p>
 
-                    Advisor:
+                    ${t("dash.advisorLabel")}:
 
                     <strong>
 
-                        ${result.advisor}
+                        ${t("advisor.productName")}
 
                     </strong>
 
