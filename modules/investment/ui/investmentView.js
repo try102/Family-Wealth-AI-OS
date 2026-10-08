@@ -970,6 +970,50 @@ const InvestmentView = {
 
                                     ).toLocaleString()}
 
+                                    ${
+
+                                        this.pendingDeleteId === investment.id
+
+                                        ?
+
+                                        `
+
+                                    <button
+
+                                        type="button"
+
+                                        class="delete-investment-button"
+
+                                        data-id="${investment.id}"
+
+                                    >
+
+                                        ${t("confirmDelete")}
+
+                                    </button>
+
+                                    <button
+
+                                        type="button"
+
+                                        class="cancel-delete-button"
+
+                                        data-id="${investment.id}"
+
+                                    >
+
+                                        ${t("cancel")}
+
+                                    </button>
+
+                                    <br><small>${t("confirmDeleteScope")}</small>
+
+                                        `
+
+                                        :
+
+                                        `
+
                                     <button
 
                                         type="button"
@@ -997,6 +1041,10 @@ const InvestmentView = {
                                         ${t("delete")}
 
                                     </button>
+
+                                        `
+
+                                    }
 
                                 </li>
 
@@ -1345,6 +1393,44 @@ const InvestmentView = {
                             container,
 
                             button.dataset.id,
+
+                            onBack
+
+                        );
+
+                    }
+
+                );
+
+            }
+
+        );
+
+        const cancelDeleteButtons =
+
+            container.querySelectorAll(
+
+                ".cancel-delete-button"
+
+            );
+
+        cancelDeleteButtons.forEach(
+
+            button => {
+
+                button.addEventListener(
+
+                    "click",
+
+                    () => {
+
+                        this.pendingDeleteId =
+
+                            null;
+
+                        this.render(
+
+                            container,
 
                             onBack
 
@@ -2790,25 +2876,33 @@ const InvestmentView = {
 
         }
 
-        const confirmed =
+        // Two-step inline confirm (no native
 
-            window.confirm(
+        // dialog): the first click arms the row,
 
-                t("confirmDelete") + ": " +
+        // the second click performs the delete.
 
-                (investment.name || t("unnamed")) +
+        if (this.pendingDeleteId !== id) {
 
-                "? " +
+            this.pendingDeleteId =
 
-                t("confirmDeleteScope")
+                id;
+
+            this.render(
+
+                container,
+
+                onBack
 
             );
-
-        if(!confirmed){
 
             return;
 
         }
+
+        this.pendingDeleteId =
+
+            null;
 
         InvestmentAPI
 
