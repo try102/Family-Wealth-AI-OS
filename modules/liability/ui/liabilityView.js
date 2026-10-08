@@ -20,6 +20,8 @@ import LiabilityAgent
 
 import AccountAPI
 
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
+
     from "../../account/api/accountAPI.js";
 
 const LiabilityView = {
@@ -126,7 +128,7 @@ const LiabilityView = {
 
                     <h1>
 
-                        💳 Liability
+                        💳 ${t("liability.title")}
 
                     </h1>
 
@@ -137,6 +139,14 @@ const LiabilityView = {
                     </p>
 
                 </header>
+
+                <div style="padding:10px 20px;">
+
+                    <label>${t("common.language")}</label>
+
+                    <select id="liability-language-select">${languageOptions(getLanguage())}</select>
+
+                </div>
 
                 <!-- ================================== -->
 
@@ -152,7 +162,7 @@ const LiabilityView = {
 
                     <h2>
 
-                        Debt Dashboard
+                        ${t("liability.dashboard")}
 
                     </h2>
 
@@ -172,7 +182,7 @@ const LiabilityView = {
 
                             <h3>
 
-                                Liability Count
+                                ${t("liability.count")}
 
                             </h3>
 
@@ -202,7 +212,7 @@ const LiabilityView = {
 
                             <h3>
 
-                                Total Liability
+                                ${t("liability.total")}
 
                             </h3>
 
@@ -246,7 +256,7 @@ const LiabilityView = {
 
                             <h3>
 
-                                Annual Interest
+                                ${t("liability.annualInterest")}
 
                             </h3>
 
@@ -284,7 +294,7 @@ const LiabilityView = {
 
                             <h3>
 
-                                Monthly Interest
+                                ${t("liability.monthlyInterest")}
 
                             </h3>
 
@@ -326,7 +336,7 @@ const LiabilityView = {
 
                             <h3>
 
-                                Average Interest Rate
+                                ${t("liability.avgRate")}
 
                             </h3>
 
@@ -356,7 +366,7 @@ const LiabilityView = {
 
                             <h3>
 
-                                Debt Status
+                                ${t("liability.debtStatus")}
 
                             </h3>
 
@@ -402,7 +412,7 @@ const LiabilityView = {
 
                     >
 
-                        + Add Liability
+                        ${t("liability.add")}
 
                     </button>
 
@@ -448,7 +458,7 @@ const LiabilityView = {
 
                             <p>
 
-                                No liability data.
+                                ${t("liability.empty")}
 
                             </p>
 
@@ -496,7 +506,7 @@ const LiabilityView = {
 
                                             >
 
-                                                Name
+                                                ${t("common.name")}
 
                                             </th>
 
@@ -512,7 +522,7 @@ const LiabilityView = {
 
                                             >
 
-                                                Category
+                                                ${t("common.category")}
 
                                             </th>
 
@@ -528,7 +538,7 @@ const LiabilityView = {
 
                                             >
 
-                                                Balance
+                                                ${t("account.balance")}
 
                                             </th>
 
@@ -544,7 +554,7 @@ const LiabilityView = {
 
                                             >
 
-                                                Interest
+                                                ${t("liability.interest")}
 
                                             </th>
 
@@ -560,7 +570,7 @@ const LiabilityView = {
 
                                             >
 
-                                                Annual Interest
+                                                ${t("liability.annualInterest")}
 
                                             </th>
 
@@ -576,7 +586,7 @@ const LiabilityView = {
 
                                             >
 
-                                                Status
+                                                ${t("liability.status")}
 
                                             </th>
 
@@ -592,7 +602,7 @@ const LiabilityView = {
 
                                             >
 
-                                                Actions
+                                                ${t("common.actions")}
 
                                             </th>
 
@@ -804,7 +814,7 @@ const LiabilityView = {
 
                                                                     >
 
-                                                                        Pay
+                                                                        ${t("liability.pay")}
 
                                                                     </button>
 
@@ -822,7 +832,7 @@ const LiabilityView = {
 
                                                                     >
 
-                                                                        Edit
+                                                                        ${t("common.edit")}
 
                                                                     </button>
 
@@ -840,7 +850,7 @@ const LiabilityView = {
 
                                                                     >
 
-                                                                        Delete
+                                                                        ${t("common.delete")}
 
                                                                     </button>
 
@@ -888,13 +898,55 @@ const LiabilityView = {
 
                 >
 
-                    ← Back to Dashboard
+                    ${t("common.back")}
 
                 </button>
 
             </div>
 
         `;
+
+        // ==================================================
+
+        // Language Switch
+
+        // ==================================================
+
+        const languageSelect =
+
+            container.querySelector(
+
+                "#liability-language-select"
+
+            );
+
+        if (languageSelect) {
+
+            languageSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    setLanguage(
+
+                        languageSelect.value
+
+                    );
+
+                    this.render(
+
+                        container,
+
+                        onBack
+
+                    );
+
+                }
+
+            );
+
+        }
 
         // ==================================================
 
@@ -1258,13 +1310,13 @@ const LiabilityView = {
 
                 <h3>
 
-                    Record Payment — ${liability.name || "Liability"}
+                    ${t("liability.recordPayment")} — ${liability.name || "Liability"}
 
                 </h3>
 
                 <p>
 
-                    Current Balance: $${Number(liability.currentBalance || 0).toLocaleString()}
+                    ${t("liability.currentBalance")}: $${Number(liability.currentBalance || 0).toLocaleString()}
 
                 </p>
 
@@ -1276,7 +1328,7 @@ const LiabilityView = {
 
                     <label>
 
-                        Payment Amount
+                        ${t("liability.paymentAmount")}
 
                     </label>
 
@@ -1302,7 +1354,7 @@ const LiabilityView = {
 
                     <label>
 
-                        Interest Portion（其中利息部分，可留 0）
+                        ${t("liability.interestPortion")}
 
                     </label>
 
@@ -1344,7 +1396,7 @@ const LiabilityView = {
 
                     <label>
 
-                        Account（选了才会进入 Cash Flow）
+                        ${t("common.account")}（${t("liability.accountHint")}）
 
                     </label>
 
@@ -1358,7 +1410,7 @@ const LiabilityView = {
 
                         <option value="">
 
-                            Select Account
+                            ${t("common.selectAccount")}
 
                         </option>
 
@@ -1376,7 +1428,7 @@ const LiabilityView = {
 
                     >
 
-                        Save Payment
+                        ${t("common.save")}
 
                     </button>
 
@@ -1388,7 +1440,7 @@ const LiabilityView = {
 
                     >
 
-                        Cancel
+                        ${t("common.cancel")}
 
                     </button>
 
@@ -1714,7 +1766,7 @@ const LiabilityView = {
 
                 <h3>
 
-                    Add Liability
+                    ${t("liability.add")}
 
                 </h3>
 
@@ -1726,7 +1778,7 @@ const LiabilityView = {
 
                     <label>
 
-                        Liability Name
+                        ${t("common.name")}
 
                     </label>
 
@@ -1746,7 +1798,7 @@ const LiabilityView = {
 
                     <label>
 
-                        Category
+                        ${t("common.category")}
 
                     </label>
 
@@ -1766,7 +1818,7 @@ const LiabilityView = {
 
                     <label>
 
-                        Current Balance
+                        ${t("liability.currentBalance")}
 
                     </label>
 
@@ -1790,7 +1842,7 @@ const LiabilityView = {
 
                     <label>
 
-                        Interest Rate %
+                        ${t("liability.rate")}
 
                     </label>
 
@@ -1818,7 +1870,7 @@ const LiabilityView = {
 
                     >
 
-                        Save Liability
+                        ${t("common.save")}
 
                     </button>
 
@@ -1830,7 +1882,7 @@ const LiabilityView = {
 
                     >
 
-                        Cancel
+                        ${t("common.cancel")}
 
                     </button>
 
@@ -2078,7 +2130,7 @@ const LiabilityView = {
 
                 <h3>
 
-                    Edit Liability
+                    ${t("liability.edit")}
 
                 </h3>
 
@@ -2090,7 +2142,7 @@ const LiabilityView = {
 
                     <label>
 
-                        Liability Name
+                        ${t("common.name")}
 
                     </label>
 
@@ -2116,7 +2168,7 @@ const LiabilityView = {
 
                     <label>
 
-                        Category
+                        ${t("common.category")}
 
                     </label>
 
@@ -2142,7 +2194,7 @@ const LiabilityView = {
 
                     <label>
 
-                        Current Balance
+                        ${t("liability.currentBalance")}
 
                     </label>
 
@@ -2172,7 +2224,7 @@ const LiabilityView = {
 
                     <label>
 
-                        Interest Rate %
+                        ${t("liability.rate")}
 
                     </label>
 
@@ -2204,7 +2256,7 @@ const LiabilityView = {
 
                     >
 
-                        Update Liability
+                        ${t("common.save")}
 
                     </button>
 
@@ -2216,7 +2268,7 @@ const LiabilityView = {
 
                     >
 
-                        Cancel
+                        ${t("common.cancel")}
 
                     </button>
 
