@@ -280,6 +280,50 @@ class TransactionFacade {
 
     // =====================================================
 
+    // Create - Asset Purchase
+
+    // =====================================================
+
+    createAssetPurchase(
+
+        data = {}
+
+    ) {
+
+        return this.controller
+
+            .createAssetPurchase(
+
+                data
+
+            );
+
+    }
+
+    // =====================================================
+
+    // Create - Asset Sale
+
+    // =====================================================
+
+    createAssetSale(
+
+        data = {}
+
+    ) {
+
+        return this.controller
+
+            .createAssetSale(
+
+                data
+
+            );
+
+    }
+
+    // =====================================================
+
     // Create - Dividend
 
     // =====================================================

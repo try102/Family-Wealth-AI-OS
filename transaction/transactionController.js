@@ -288,6 +288,50 @@ class TransactionController {
 
     // =====================================================
 
+    // Asset Purchase
+
+    // =====================================================
+
+    createAssetPurchase(
+
+        data = {}
+
+    ) {
+
+        return this.transactionService
+
+            .recordAssetPurchase(
+
+                data
+
+            );
+
+    }
+
+    // =====================================================
+
+    // Asset Sale
+
+    // =====================================================
+
+    createAssetSale(
+
+        data = {}
+
+    ) {
+
+        return this.transactionService
+
+            .recordAssetSale(
+
+                data
+
+            );
+
+    }
+
+    // =====================================================
+
     // Dividend
 
     // =====================================================

@@ -78,6 +78,42 @@ const AssetAPI = {
 
         return AssetService.getTotalValue();
 
+    },
+
+    recordPurchase(
+
+        id,
+
+        data
+
+    ){
+
+        return AssetService.recordPurchase(
+
+            id,
+
+            data
+
+        );
+
+    },
+
+    recordSale(
+
+        id,
+
+        data
+
+    ){
+
+        return AssetService.recordSale(
+
+            id,
+
+            data
+
+        );
+
     }
 
 };

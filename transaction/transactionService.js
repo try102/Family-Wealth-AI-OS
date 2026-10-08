@@ -764,6 +764,190 @@ class TransactionService {
 
     // =====================================================
 
+    // Asset Purchase
+
+    // =====================================================
+
+    recordAssetPurchase(
+
+        data = {}
+
+    ) {
+
+        const {
+
+            date,
+
+            accountId,
+
+            amount,
+
+            currency = "USD",
+
+            description = "",
+
+            asset = {},
+
+            source = "BusinessModule"
+
+        } = data;
+
+        return this.recordTransaction({
+
+            date,
+
+            type:
+
+                "ASSET_PURCHASE",
+
+            currency,
+
+            description,
+
+            source,
+
+            lines: [
+
+                {
+
+                    accountId,
+
+                    type:
+
+                        "EXPENSE",
+
+                    amount,
+
+                    direction:
+
+                        "OUT",
+
+                    cashEffect:
+
+                        true,
+
+                    category:
+
+                        "Asset Purchase",
+
+                    description
+
+                }
+
+            ],
+
+            businessDetails: {
+
+                asset: {
+
+                    ...asset,
+
+                    purchaseAmount:
+
+                        amount
+
+                }
+
+            }
+
+        });
+
+    }
+
+    // =====================================================
+
+    // Asset Sale
+
+    // =====================================================
+
+    recordAssetSale(
+
+        data = {}
+
+    ) {
+
+        const {
+
+            date,
+
+            accountId,
+
+            amount,
+
+            currency = "USD",
+
+            description = "",
+
+            asset = {},
+
+            source = "BusinessModule"
+
+        } = data;
+
+        return this.recordTransaction({
+
+            date,
+
+            type:
+
+                "ASSET_SALE",
+
+            currency,
+
+            description,
+
+            source,
+
+            lines: [
+
+                {
+
+                    accountId,
+
+                    type:
+
+                        "INCOME",
+
+                    amount,
+
+                    direction:
+
+                        "IN",
+
+                    cashEffect:
+
+                        true,
+
+                    category:
+
+                        "Asset Sale",
+
+                    description
+
+                }
+
+            ],
+
+            businessDetails: {
+
+                asset: {
+
+                    ...asset,
+
+                    saleAmount:
+
+                        amount
+
+                }
+
+            }
+
+        });
+
+    }
+
+    // =====================================================
+
     // Dividend
 
     // =====================================================

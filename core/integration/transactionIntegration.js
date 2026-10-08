@@ -340,6 +340,62 @@ class TransactionIntegrationService {
 
     //
 
+    // Asset Purchase
+
+    //
+
+    // =====================================================
+
+    recordAssetPurchase(
+
+        data = {}
+
+    ) {
+
+        return this
+
+            .requireFacade()
+
+            .createAssetPurchase(
+
+                data
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
+    // Asset Sale
+
+    //
+
+    // =====================================================
+
+    recordAssetSale(
+
+        data = {}
+
+    ) {
+
+        return this
+
+            .requireFacade()
+
+            .createAssetSale(
+
+                data
+
+            );
+
+    }
+
+    // =====================================================
+
+    //
+
     // Dividend
 
     //

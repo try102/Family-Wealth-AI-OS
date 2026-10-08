@@ -22,6 +22,8 @@ Return To Dashboard
 
 import AssetAPI from "../api/assetAPI.js";
 
+import AccountAPI from "../../account/api/accountAPI.js";
+
 const AssetView = {
 
     // ==========================================
@@ -181,6 +183,34 @@ const AssetView = {
                                         "N/A"}
 
                                     </span>
+
+                                    <button
+
+                                        type="button"
+
+                                        class="buy-asset-button"
+
+                                        data-id="${asset.id}"
+
+                                    >
+
+                                        记录购买
+
+                                    </button>
+
+                                    <button
+
+                                        type="button"
+
+                                        class="sell-asset-button"
+
+                                        data-id="${asset.id}"
+
+                                    >
+
+                                        记录出售
+
+                                    </button>
 
                                     <button
 
@@ -381,6 +411,506 @@ const AssetView = {
                     }
 
                 );
+
+            }
+
+        );
+
+        // ==========================================
+
+        // Buy / Sell Buttons
+
+        // ==========================================
+
+        const buyButtons =
+
+            container.querySelectorAll(
+
+                ".buy-asset-button"
+
+            );
+
+        buyButtons.forEach(
+
+            button => {
+
+                button.addEventListener(
+
+                    "click",
+
+                    () => {
+
+                        this.showAssetEventForm(
+
+                            container,
+
+                            button.dataset.id,
+
+                            "BUY",
+
+                            onBack
+
+                        );
+
+                    }
+
+                );
+
+            }
+
+        );
+
+        const sellButtons =
+
+            container.querySelectorAll(
+
+                ".sell-asset-button"
+
+            );
+
+        sellButtons.forEach(
+
+            button => {
+
+                button.addEventListener(
+
+                    "click",
+
+                    () => {
+
+                        this.showAssetEventForm(
+
+                            container,
+
+                            button.dataset.id,
+
+                            "SELL",
+
+                            onBack
+
+                        );
+
+                    }
+
+                );
+
+            }
+
+        );
+
+    },
+
+    // ==========================================
+
+    // Accounts
+
+    // ==========================================
+
+    getAccounts() {
+
+        try {
+
+            return AccountAPI.getAll() || [];
+
+        } catch (accountError) {
+
+            return [];
+
+        }
+
+    },
+
+    buildAccountOptions(selectedId = "") {
+
+        return this.getAccounts().map(
+
+            account => `
+
+                <option
+
+                    value="${account.id}"
+
+                    ${
+
+                        String(account.id) ===
+
+                        String(selectedId)
+
+                        ?
+
+                        "selected"
+
+                        :
+
+                        ""
+
+                    }
+
+                >
+
+                    ${
+
+                        account.name ||
+
+                        account.id
+
+                    }
+
+                </option>
+
+            `
+
+        ).join("");
+
+    },
+
+    // ==========================================
+
+    // Asset Purchase / Sale Form
+
+    // ==========================================
+
+    showAssetEventForm(
+
+        container,
+
+        id,
+
+        mode,
+
+        onBack
+
+    ){
+
+        const asset =
+
+            AssetAPI.getById(
+
+                id
+
+            );
+
+        if (!asset) {
+
+            return;
+
+        }
+
+        const formContainer =
+
+            container.querySelector(
+
+                "#asset-form-container"
+
+            );
+
+        if (!formContainer) {
+
+            return;
+
+        }
+
+        const isBuy =
+
+            mode === "BUY";
+
+        const accounts =
+
+            this.getAccounts();
+
+        const accountOptions =
+
+            this.buildAccountOptions(
+
+                asset.accountId || ""
+
+            );
+
+        const accountHint =
+
+            accounts.length === 0
+
+            ?
+
+            `
+
+            <p style="color:#c00;">
+
+                No account found. 请先到 Accounts 页面新建账户，否则这笔资产交易不会记入 Transaction。
+
+            </p>
+
+            `
+
+            :
+
+            "";
+
+        formContainer.innerHTML = `
+
+            <div
+
+                class="asset-form"
+
+                style="
+
+                    margin-top:20px;
+
+                    padding:20px;
+
+                    border:1px solid #ddd;
+
+                    border-radius:10px;
+
+                "
+
+            >
+
+                <h3>
+
+                    ${isBuy ? "记录购买" : "记录出售"} — ${asset.name || "Asset"}
+
+                </h3>
+
+                <form
+
+                    id="asset-event-form"
+
+                >
+
+                    <label>
+
+                        ${isBuy ? "Purchase Amount 购买金额" : "Sale Amount 出售金额"}
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="asset-event-amount"
+
+                        type="number"
+
+                        min="0"
+
+                        step="0.01"
+
+                        required
+
+                        value="${
+
+                            isBuy
+
+                            ?
+
+                            (asset.purchaseValue || "")
+
+                            :
+
+                            (asset.currentValue || "")
+
+                        }"
+
+                    >
+
+                    <br><br>
+
+                    <label>
+
+                        Date
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="asset-event-date"
+
+                        type="date"
+
+                    >
+
+                    <br><br>
+
+                    <label>
+
+                        Account（付款/收款账户，选了才会记入 Transaction）
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="asset-event-account"
+
+                    >
+
+                        <option value="">
+
+                            Select Account
+
+                        </option>
+
+                        ${accountOptions}
+
+                    </select>
+
+                    ${accountHint}
+
+                    <br><br>
+
+                    <button
+
+                        type="submit"
+
+                    >
+
+                        Save
+
+                    </button>
+
+                    <button
+
+                        type="button"
+
+                        id="cancel-asset-event-button"
+
+                    >
+
+                        Cancel
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        `;
+
+        const form =
+
+            formContainer.querySelector(
+
+                "#asset-event-form"
+
+            );
+
+        form.addEventListener(
+
+            "submit",
+
+            event => {
+
+                event.preventDefault();
+
+                const amount =
+
+                    Number(
+
+                        form.querySelector(
+
+                            "#asset-event-amount"
+
+                        ).value || 0
+
+                    );
+
+                const date =
+
+                    form.querySelector(
+
+                        "#asset-event-date"
+
+                    ).value;
+
+                const accountField =
+
+                    form.querySelector(
+
+                        "#asset-event-account"
+
+                    );
+
+                const accountId =
+
+                    accountField
+
+                    ?
+
+                    accountField.value
+
+                    :
+
+                    "";
+
+                if (isBuy) {
+
+                    AssetAPI.recordPurchase(
+
+                        id,
+
+                        {
+
+                            amount,
+
+                            date,
+
+                            accountId
+
+                        }
+
+                    );
+
+                } else {
+
+                    AssetAPI.recordSale(
+
+                        id,
+
+                        {
+
+                            amount,
+
+                            date,
+
+                            accountId
+
+                        }
+
+                    );
+
+                }
+
+                this.render(
+
+                    container,
+
+                    onBack
+
+                );
+
+            }
+
+        );
+
+        const cancelButton =
+
+            formContainer.querySelector(
+
+                "#cancel-asset-event-button"
+
+            );
+
+        cancelButton.addEventListener(
+
+            "click",
+
+            () => {
+
+                formContainer.innerHTML = "";
 
             }
 
