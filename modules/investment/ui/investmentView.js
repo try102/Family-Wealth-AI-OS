@@ -24,6 +24,8 @@ import InvestmentAgent from "../agent/investmentAgent.js";
 
 import AccountAPI from "../../account/api/accountAPI.js";
 
+import MemberAPI from "../../member/api/memberAPI.js";
+
 import {
 
     SUPPORTED_LANGUAGES,
@@ -82,17 +84,45 @@ const InvestmentView = {
 
             .getTrades();
 
-        const positions =
+        const scopeMemberId =
 
-            InvestmentAPI
-
-            .getPositions();
+            this.scopeMemberId || "";
 
         const decision =
 
             InvestmentAgent
 
-            .getDecisionCenter();
+            .getDecisionCenter(
+
+                scopeMemberId
+
+            );
+
+        const positions =
+
+            scopeMemberId
+
+            ? decision.scopedPositions
+
+            : InvestmentAPI
+
+                .getPositions();
+
+        const members =
+
+            (() => {
+
+                try {
+
+                    return MemberAPI.getMembers();
+
+                } catch (error) {
+
+                    return [];
+
+                }
+
+            })();
 
         const language =
 
@@ -311,6 +341,36 @@ const InvestmentView = {
                         ).join("")
 
                     }
+
+                </select>
+
+                <br><br>
+
+                <label>
+
+                    ${t("scopeLabel")}
+
+                </label>
+
+                <select
+
+                    id="inv-scope-select"
+
+                >
+
+                    <option value="" ${scopeMemberId === "" ? "selected" : ""}>${t("scopeMerged")}</option>
+
+                    ${
+
+                        members.map(
+
+                            member => `<option value="${member.id}" ${scopeMemberId === member.id ? "selected" : ""}>${member.name || member.id}</option>`
+
+                        ).join("")
+
+                    }
+
+                    <option value="__shared__" ${scopeMemberId === "__shared__" ? "selected" : ""}>${t("scopeShared")}</option>
 
                 </select>
 
@@ -973,6 +1033,46 @@ ${JSON.stringify(
                         languageSelect.value
 
                     );
+
+                    this.render(
+
+                        container,
+
+                        onBack
+
+                    );
+
+                }
+
+            );
+
+        }
+
+        // ==========================================
+
+        // Holdings Scope Switch
+
+        // ==========================================
+
+        const scopeSelect =
+
+            container.querySelector(
+
+                "#inv-scope-select"
+
+            );
+
+        if(scopeSelect){
+
+            scopeSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    this.scopeMemberId =
+
+                        scopeSelect.value;
 
                     this.render(
 

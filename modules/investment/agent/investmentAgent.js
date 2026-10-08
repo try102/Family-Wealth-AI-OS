@@ -10,6 +10,10 @@ import InvestmentAPI from "../api/investmentAPI.js";
 
 import RiskEngine from "../risk/riskEngine.js";
 
+import AccountAPI from "../../account/api/accountAPI.js";
+
+import MemberAPI from "../../member/api/memberAPI.js";
+
 function decideSignal(weight, returnRate) {
 
     if (
@@ -174,6 +178,270 @@ const InvestmentAgent = {
 
     /*
 
+     * 按成员推导持仓：从交易流水（BUY/SELL）按所属账户的成员
+
+     * 用平均成本法重算。memberId 为 "__shared__" 时表示家庭共同
+
+     * （无成员归属的交易）。合并视图仍用全局持仓，不走这里。
+
+     */
+
+    deriveMemberPositions(memberId) {
+
+        let accountMember = {};
+
+        try {
+
+            AccountAPI
+
+            .getAll()
+
+            .forEach(
+
+                account => {
+
+                    accountMember[account.id] =
+
+                        account.memberId ||
+
+                        account.ownerId ||
+
+                        "";
+
+                }
+
+            );
+
+        } catch (error) {
+
+            accountMember = {};
+
+        }
+
+        let trades = [];
+
+        try {
+
+            trades =
+
+            InvestmentAPI
+
+            .getTrades() || [];
+
+        } catch (error) {
+
+            trades = [];
+
+        }
+
+        const bySymbol = {};
+
+        trades
+
+        .filter(
+
+            trade =>
+
+                trade.action === "BUY" ||
+
+                trade.action === "SELL"
+
+        )
+
+        .filter(
+
+            trade => {
+
+                const owner =
+
+                    accountMember[trade.accountId] || "";
+
+                return memberId === "__shared__"
+
+                    ? owner === ""
+
+                    : owner === memberId;
+
+            }
+
+        )
+
+        .forEach(
+
+            trade => {
+
+                const symbol =
+
+                    String(trade.symbol || "")
+
+                        .toUpperCase();
+
+                if (!symbol) {
+
+                    return;
+
+                }
+
+                if (!bySymbol[symbol]) {
+
+                    bySymbol[symbol] = {
+
+                        symbol,
+
+                        name:
+
+                        trade.name || symbol,
+
+                        quantity: 0,
+
+                        costBasis: 0,
+
+                        averageCost: 0,
+
+                        currentPrice: 0,
+
+                        marketValue: 0,
+
+                        unrealizedGainLoss: 0
+
+                    };
+
+                }
+
+                const position =
+
+                    bySymbol[symbol];
+
+                const quantity =
+
+                    Number(trade.quantity || 0);
+
+                const amount =
+
+                    Number(trade.amount || 0);
+
+                const price =
+
+                    Number(trade.price || 0);
+
+                if (
+
+                    trade.action === "BUY"
+
+                ) {
+
+                    position.quantity +=
+
+                        quantity;
+
+                    position.costBasis +=
+
+                        amount;
+
+                } else {
+
+                    const sellQuantity =
+
+                        Math.min(
+
+                            quantity,
+
+                            position.quantity
+
+                        );
+
+                    const averageCost =
+
+                        position.quantity > 0
+
+                        ? position.costBasis /
+
+                            position.quantity
+
+                        : 0;
+
+                    position.costBasis -=
+
+                        averageCost *
+
+                        sellQuantity;
+
+                    position.quantity -=
+
+                        sellQuantity;
+
+                }
+
+                if (price > 0) {
+
+                    position.currentPrice =
+
+                        price;
+
+                }
+
+                if (trade.name) {
+
+                    position.name =
+
+                        trade.name;
+
+                }
+
+                position.averageCost =
+
+                    position.quantity > 0
+
+                    ? position.costBasis /
+
+                        position.quantity
+
+                    : 0;
+
+                position.marketValue =
+
+                    position.quantity *
+
+                    position.currentPrice;
+
+                position.unrealizedGainLoss =
+
+                    position.marketValue -
+
+                    position.costBasis;
+
+            }
+
+        );
+
+        return Object.values(bySymbol)
+
+            .filter(
+
+                position =>
+
+                    position.quantity > 0
+
+            );
+
+    },
+
+    getMembers() {
+
+        try {
+
+            return MemberAPI.getMembers();
+
+        } catch (error) {
+
+            return [];
+
+        }
+
+    },
+
+    /*
+
      * 投资决策中心数据：
 
      * 持仓 + 权重 + 盈亏 + 决策信号 + 风险提示。
@@ -182,15 +450,31 @@ const InvestmentAgent = {
 
      * 不使用任何外部行情数据。
 
+     * scopeMemberId 为空 = 合并视图（全部成员）；
+
+     * 传入成员 id 或 "__shared__" = 按成员视图（交易推导）。
+
      */
 
-    getDecisionCenter(){
+    getDecisionCenter(scopeMemberId = ""){
+
+        const scoped =
+
+            Boolean(scopeMemberId);
 
         const positions =
 
-        InvestmentAPI
+        scoped
 
-        .getPositions();
+        ? this.deriveMemberPositions(
+
+            scopeMemberId
+
+        )
+
+        : InvestmentAPI
+
+            .getPositions();
 
         const summary =
 
@@ -200,7 +484,21 @@ const InvestmentAgent = {
 
         const totalValue =
 
-        Number(
+        scoped
+
+        ? positions.reduce(
+
+            (sum, position) =>
+
+                sum +
+
+                Number(position.marketValue || 0),
+
+            0
+
+        )
+
+        : Number(
 
             summary.totalValue || 0
 
@@ -398,13 +696,27 @@ const InvestmentAgent = {
 
             warnings,
 
+            scopedPositions:
+
+            positions,
+
+            scopeMemberId,
+
             allocation:
 
-            summary.allocation || {},
+            scoped
+
+            ? {}
+
+            : summary.allocation || {},
 
             concentration:
 
-            summary.concentration || {}
+            scoped
+
+            ? {}
+
+            : summary.concentration || {}
 
         };
 

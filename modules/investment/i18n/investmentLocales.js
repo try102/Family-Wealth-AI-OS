@@ -150,7 +150,13 @@ const DICTIONARY = {
 
         investmentsTitle: "投资列表",
 
-        addInvestment: "+ 新增投资"
+        addInvestment: "+ 新增投资",
+
+        scopeLabel: "持仓范围",
+
+        scopeMerged: "合并（全部成员）",
+
+        scopeShared: "家庭共同"
 
     },
 
@@ -234,7 +240,13 @@ const DICTIONARY = {
 
         investmentsTitle: "投資列表",
 
-        addInvestment: "+ 新增投資"
+        addInvestment: "+ 新增投資",
+
+        scopeLabel: "持倉範圍",
+
+        scopeMerged: "合併（全部成員）",
+
+        scopeShared: "家庭共同"
 
     },
 
@@ -318,7 +330,13 @@ const DICTIONARY = {
 
         investmentsTitle: "Investments",
 
-        addInvestment: "+ Add Investment"
+        addInvestment: "+ Add Investment",
+
+        scopeLabel: "Holdings Scope",
+
+        scopeMerged: "Merged (all members)",
+
+        scopeShared: "Family / Unassigned"
 
     },
 
@@ -402,7 +420,13 @@ const DICTIONARY = {
 
         investmentsTitle: "投資リスト",
 
-        addInvestment: "+ 投資を追加"
+        addInvestment: "+ 投資を追加",
+
+        scopeLabel: "保有範囲",
+
+        scopeMerged: "合算（全メンバー）",
+
+        scopeShared: "家族共通"
 
     }
 
