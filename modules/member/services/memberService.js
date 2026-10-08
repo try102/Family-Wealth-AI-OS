@@ -262,6 +262,8 @@ const MemberService = {
                 });
             } else if (transaction.type === "ASSET_SALE") {
                 capitalGains += num(transaction.businessDetails?.asset?.capitalGain);
+            } else if (transaction.type === "INVESTMENT_SELL") {
+                capitalGains += num(transaction.businessDetails?.investment?.capitalGain);
             } else if (transaction.type === "LOAN_PAYMENT") {
                 mortgageInterest += num(transaction.businessDetails?.liability?.interestPortion);
             } else if (transaction.type === "TAX_PAYMENT") {
