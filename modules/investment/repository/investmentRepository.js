@@ -140,6 +140,78 @@ const InvestmentRepository = {
 
     },
 
+    deletePosition(
+
+        symbol
+
+    ){
+
+        const wanted =
+
+        String(symbol || "")
+
+        .toUpperCase();
+
+        const data =
+
+        this.getPositions()
+
+        .filter(
+
+            item =>
+
+            String(item.symbol || "")
+
+            .toUpperCase() !== wanted
+
+        );
+
+        DataService.save(
+
+            POSITION_KEY,
+
+            data
+
+        );
+
+    },
+
+    deleteTradesBySymbol(
+
+        symbol
+
+    ){
+
+        const wanted =
+
+        String(symbol || "")
+
+        .toUpperCase();
+
+        const data =
+
+        this.getTrades()
+
+        .filter(
+
+            item =>
+
+            String(item.symbol || "")
+
+            .toUpperCase() !== wanted
+
+        );
+
+        DataService.save(
+
+            TRADE_KEY,
+
+            data
+
+        );
+
+    },
+
     // =====================
 
     // Position
