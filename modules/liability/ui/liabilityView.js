@@ -20,11 +20,11 @@ import LiabilityAgent
 
 import AccountAPI
 
+    from "../../account/api/accountAPI.js";
+
 import MemberAPI from "../../member/api/memberAPI.js";
 
 import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
-
-    from "../../account/api/accountAPI.js";
 
 const LiabilityView = {
 

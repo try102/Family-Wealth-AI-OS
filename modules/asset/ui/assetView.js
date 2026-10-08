@@ -144,7 +144,7 @@ const AssetView = {
 
                         ?
 
-                        "<li>${t("asset.empty")}</li>"
+                        "<li>" + t("asset.empty") + "</li>"
 
                         :
 

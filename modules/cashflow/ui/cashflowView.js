@@ -18,9 +18,9 @@ import TransactionIntegration
 
 import AccountAPI
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
-
     from "../../account/api/accountAPI.js";
+
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
 
 import cashflowAgent
 
