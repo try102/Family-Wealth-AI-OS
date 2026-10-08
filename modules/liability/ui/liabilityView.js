@@ -26,6 +26,8 @@ import MemberAPI from "../../member/api/memberAPI.js";
 
 import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
 
+import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js";
+
 const LiabilityView = {
 
     name:
@@ -1418,7 +1420,17 @@ const LiabilityView = {
 
                         ${accountOptions}
 
+                        <option value="__new_account__">${t("account.newOption")}</option>
+
                     </select>
+
+                    <span id="payment-new-account-fields" style="display:none">
+
+                        <input id="payment-new-account-name" type="text" placeholder="${t("account.namePlaceholder")}">
+
+                        <input id="payment-new-account-balance" type="number" step="0.01" placeholder="${t("account.balancePlaceholder")}">
+
+                    </span>
 
                     ${accountHint}
 
@@ -1459,6 +1471,26 @@ const LiabilityView = {
                 "#liability-payment-form"
 
             );
+
+        wireInlineCreate(
+
+            form.querySelector(
+
+                "#payment-account"
+
+            ),
+
+            [
+
+                form.querySelector(
+
+                    "#payment-new-account-fields"
+
+                )
+
+            ]
+
+        );
 
         form.addEventListener(
 
@@ -1510,15 +1542,23 @@ const LiabilityView = {
 
                 const accountId =
 
-                    accountField
+                    resolveAccountId(
 
-                    ?
+                        accountField,
 
-                    accountField.value
+                        form.querySelector(
 
-                    :
+                            "#payment-new-account-name"
 
-                    "";
+                        ),
+
+                        form.querySelector(
+
+                            "#payment-new-account-balance"
+
+                        )
+
+                    );
 
                 LiabilityAPI.makePayment(
 
@@ -1904,7 +1944,11 @@ const LiabilityView = {
 
                         ${memberOptions}
 
+                        <option value="__new__">${t("member.newOption")}</option>
+
                     </select>
+
+                    <input id="liability-new-member-name" type="text" placeholder="${t("member.namePlaceholder")}" style="display:none">
 
                     <br><br>
 
@@ -1943,6 +1987,26 @@ const LiabilityView = {
                 "#liability-create-form"
 
             );
+
+        wireInlineCreate(
+
+            form.querySelector(
+
+                "#liability-member"
+
+            ),
+
+            [
+
+                form.querySelector(
+
+                    "#liability-new-member-name"
+
+                )
+
+            ]
+
+        );
 
         form.addEventListener(
 
@@ -2026,11 +2090,21 @@ const LiabilityView = {
 
                     memberId:
 
-                        form.querySelector(
+                        resolveMemberId(
 
-                            "#liability-member"
+                            form.querySelector(
 
-                        )?.value || "",
+                                "#liability-member"
+
+                            ),
+
+                            form.querySelector(
+
+                                "#liability-new-member-name"
+
+                            )
+
+                        ),
 
                     status:
 
