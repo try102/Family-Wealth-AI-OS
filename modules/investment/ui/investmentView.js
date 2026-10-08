@@ -18,11 +18,11 @@ Delete Investment
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js?v=20261008x";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261008z";
 
 import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js";
 
-import InvestmentAgent from "../agent/investmentAgent.js?v=20261008x";
+import InvestmentAgent from "../agent/investmentAgent.js?v=20261008z";
 
 import AccountAPI from "../../account/api/accountAPI.js";
 
@@ -38,7 +38,7 @@ import {
 
     t
 
-} from "../i18n/investmentLocales.js?v=20261008x";
+} from "../i18n/investmentLocales.js?v=20261008z";
 
 const InvestmentView = {
 
@@ -2056,34 +2056,6 @@ const InvestmentView = {
 
                     ).value;
 
-                const accountField =
-
-                    form.querySelector(
-
-                        "#trade-account"
-
-                    );
-
-                const accountId =
-
-                    resolveAccountId(
-
-                        accountField,
-
-                        form.querySelector(
-
-                            "#trade-new-account-name"
-
-                        ),
-
-                        form.querySelector(
-
-                            "#trade-new-account-balance"
-
-                        )
-
-                    );
-
                 const memberField =
 
                     form.querySelector(
@@ -2159,6 +2131,36 @@ const InvestmentView = {
                     }
 
                 }
+
+                const accountField =
+
+                    form.querySelector(
+
+                        "#trade-account"
+
+                    );
+
+                const accountId =
+
+                    resolveAccountId(
+
+                        accountField,
+
+                        form.querySelector(
+
+                            "#trade-new-account-name"
+
+                        ),
+
+                        form.querySelector(
+
+                            "#trade-new-account-balance"
+
+                        ),
+
+                        memberId
+
+                    );
 
                 InvestmentAPI.recordTrade({
 
