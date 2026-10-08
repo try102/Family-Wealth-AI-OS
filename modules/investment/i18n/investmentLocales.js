@@ -156,7 +156,97 @@ const DICTIONARY = {
 
         scopeMerged: "合并（全部成员）",
 
-        scopeShared: "家庭共同"
+        scopeShared: "家庭共同",
+
+        allocation: "组合配置",
+
+        performanceLabel: "表现",
+
+        riskLabel: "风险",
+
+        noInvestments: "暂无投资",
+
+        noTrades: "暂无交易记录",
+
+        edit: "编辑",
+
+        delete: "删除",
+
+        unnamed: "未命名",
+
+        sharesUnit: "股",
+
+        posCost: "成本",
+
+        unrealized: "未实现盈亏",
+
+        formAddTitle: "新增投资",
+
+        formEditTitle: "编辑投资",
+
+        invName: "投资名称",
+
+        symbolLabel: "代码",
+
+        typeLabel: "类型",
+
+        currentValueLabel: "当前价值",
+
+        selectType: "请选择类型",
+
+        typeStock: "股票",
+
+        typeETF: "ETF",
+
+        typeBond: "债券",
+
+        typeFund: "基金",
+
+        typeOther: "其他",
+
+        saveInvestment: "保存投资",
+
+        updateInvestment: "更新投资",
+
+        cancel: "取消",
+
+        formTradeTitle: "记录交易",
+
+        actionLabel: "操作",
+
+        nameLabel: "名称",
+
+        quantityLabel: "数量",
+
+        quantityHint: "股息/利息可留空",
+
+        priceLabel: "价格",
+
+        priceHint: "股息/利息可留空",
+
+        amountLabel: "金额",
+
+        amountHint: "留空则按 数量×价格 计算；股息/利息直接填金额",
+
+        dateLabel: "日期",
+
+        accountLabel: "账户",
+
+        accountHintTrade: "不选也会记入现金流，只是不影响账户余额",
+
+        selectAccount: "选择账户（可选）",
+
+        optBuy: "买入",
+
+        optSell: "卖出",
+
+        optDividend: "股息",
+
+        optInterest: "利息",
+
+        saveTrade: "保存交易",
+
+        confirmDelete: "删除投资"
 
     },
 
@@ -246,7 +336,97 @@ const DICTIONARY = {
 
         scopeMerged: "合併（全部成員）",
 
-        scopeShared: "家庭共同"
+        scopeShared: "家庭共同",
+
+        allocation: "組合配置",
+
+        performanceLabel: "表現",
+
+        riskLabel: "風險",
+
+        noInvestments: "暫無投資",
+
+        noTrades: "暫無交易記錄",
+
+        edit: "編輯",
+
+        delete: "刪除",
+
+        unnamed: "未命名",
+
+        sharesUnit: "股",
+
+        posCost: "成本",
+
+        unrealized: "未實現盈虧",
+
+        formAddTitle: "新增投資",
+
+        formEditTitle: "編輯投資",
+
+        invName: "投資名稱",
+
+        symbolLabel: "代碼",
+
+        typeLabel: "類型",
+
+        currentValueLabel: "目前價值",
+
+        selectType: "請選擇類型",
+
+        typeStock: "股票",
+
+        typeETF: "ETF",
+
+        typeBond: "債券",
+
+        typeFund: "基金",
+
+        typeOther: "其他",
+
+        saveInvestment: "儲存投資",
+
+        updateInvestment: "更新投資",
+
+        cancel: "取消",
+
+        formTradeTitle: "記錄交易",
+
+        actionLabel: "操作",
+
+        nameLabel: "名稱",
+
+        quantityLabel: "數量",
+
+        quantityHint: "股息/利息可留空",
+
+        priceLabel: "價格",
+
+        priceHint: "股息/利息可留空",
+
+        amountLabel: "金額",
+
+        amountHint: "留空則按 數量×價格 計算；股息/利息直接填金額",
+
+        dateLabel: "日期",
+
+        accountLabel: "帳戶",
+
+        accountHintTrade: "不選也會記入現金流，只是不影響帳戶餘額",
+
+        selectAccount: "選擇帳戶（可選）",
+
+        optBuy: "買入",
+
+        optSell: "賣出",
+
+        optDividend: "股息",
+
+        optInterest: "利息",
+
+        saveTrade: "儲存交易",
+
+        confirmDelete: "刪除投資"
 
     },
 
@@ -336,7 +516,97 @@ const DICTIONARY = {
 
         scopeMerged: "Merged (all members)",
 
-        scopeShared: "Family / Unassigned"
+        scopeShared: "Family / Unassigned",
+
+        allocation: "Portfolio Allocation",
+
+        performanceLabel: "Performance",
+
+        riskLabel: "Risk",
+
+        noInvestments: "No investments",
+
+        noTrades: "No trades recorded",
+
+        edit: "Edit",
+
+        delete: "Delete",
+
+        unnamed: "Unnamed",
+
+        sharesUnit: "shares",
+
+        posCost: "Cost",
+
+        unrealized: "Unrealized Gain/Loss",
+
+        formAddTitle: "Add Investment",
+
+        formEditTitle: "Edit Investment",
+
+        invName: "Investment Name",
+
+        symbolLabel: "Symbol",
+
+        typeLabel: "Type",
+
+        currentValueLabel: "Current Value",
+
+        selectType: "Select type",
+
+        typeStock: "Stock",
+
+        typeETF: "ETF",
+
+        typeBond: "Bond",
+
+        typeFund: "Fund",
+
+        typeOther: "Other",
+
+        saveInvestment: "Save Investment",
+
+        updateInvestment: "Update Investment",
+
+        cancel: "Cancel",
+
+        formTradeTitle: "Record Trade",
+
+        actionLabel: "Action",
+
+        nameLabel: "Name",
+
+        quantityLabel: "Quantity",
+
+        quantityHint: "optional for dividend/interest",
+
+        priceLabel: "Price",
+
+        priceHint: "optional for dividend/interest",
+
+        amountLabel: "Amount",
+
+        amountHint: "leave blank to use Quantity × Price; for dividend/interest enter the amount directly",
+
+        dateLabel: "Date",
+
+        accountLabel: "Account",
+
+        accountHintTrade: "without an account it still enters Cash Flow; it just does not change a balance",
+
+        selectAccount: "Select Account (optional)",
+
+        optBuy: "BUY",
+
+        optSell: "SELL",
+
+        optDividend: "DIVIDEND",
+
+        optInterest: "INTEREST",
+
+        saveTrade: "Save Trade",
+
+        confirmDelete: "Delete investment"
 
     },
 
@@ -426,7 +696,97 @@ const DICTIONARY = {
 
         scopeMerged: "合算（全メンバー）",
 
-        scopeShared: "家族共通"
+        scopeShared: "家族共通",
+
+        allocation: "ポートフォリオ配分",
+
+        performanceLabel: "パフォーマンス",
+
+        riskLabel: "リスク",
+
+        noInvestments: "投資がありません",
+
+        noTrades: "取引記録がありません",
+
+        edit: "編集",
+
+        delete: "削除",
+
+        unnamed: "名称未設定",
+
+        sharesUnit: "株",
+
+        posCost: "コスト",
+
+        unrealized: "未実現損益",
+
+        formAddTitle: "投資を追加",
+
+        formEditTitle: "投資を編集",
+
+        invName: "投資名",
+
+        symbolLabel: "銘柄コード",
+
+        typeLabel: "種類",
+
+        currentValueLabel: "現在価値",
+
+        selectType: "種類を選択",
+
+        typeStock: "株式",
+
+        typeETF: "ETF",
+
+        typeBond: "債券",
+
+        typeFund: "ファンド",
+
+        typeOther: "その他",
+
+        saveInvestment: "投資を保存",
+
+        updateInvestment: "投資を更新",
+
+        cancel: "キャンセル",
+
+        formTradeTitle: "取引を記録",
+
+        actionLabel: "操作",
+
+        nameLabel: "名称",
+
+        quantityLabel: "数量",
+
+        quantityHint: "配当/利息の場合は空欄可",
+
+        priceLabel: "価格",
+
+        priceHint: "配当/利息の場合は空欄可",
+
+        amountLabel: "金額",
+
+        amountHint: "空欄の場合は 数量×価格 で計算；配当/利息は金額を直接入力",
+
+        dateLabel: "日付",
+
+        accountLabel: "口座",
+
+        accountHintTrade: "口座なしでもキャッシュフローに記録されます（残高は変わりません）",
+
+        selectAccount: "口座を選択（任意）",
+
+        optBuy: "買い",
+
+        optSell: "売り",
+
+        optDividend: "配当",
+
+        optInterest: "利息",
+
+        saveTrade: "取引を保存",
+
+        confirmDelete: "投資を削除"
 
     }
 
