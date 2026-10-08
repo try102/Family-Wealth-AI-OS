@@ -104,6 +104,12 @@ const IncomeSchema = {
 
             "",
 
+            accountId:
+
+            data.accountId ||
+
+            "",
+
             note:
 
             data.note ||
