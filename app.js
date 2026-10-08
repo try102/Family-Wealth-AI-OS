@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261008z";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261008aa";
 
 const app =
 
@@ -1078,7 +1078,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./core/modules/assetsModule.js?v=20261008z"
+                            "./core/modules/assetsModule.js?v=20261008aa"
 
                         );
 
@@ -1166,7 +1166,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/investment/ui/investmentView.js?v=20261008z"
+                            "./modules/investment/ui/investmentView.js?v=20261008aa"
 
                         );
 
@@ -1256,7 +1256,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/account/ui/accountView.js?v=20261008z"
+                            "./modules/account/ui/accountView.js?v=20261008aa"
 
                         );
 
@@ -1638,7 +1638,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./core/modules/cashflowModule.js?v=20261008z"
+                            "./core/modules/cashflowModule.js?v=20261008aa"
 
                         );
 
@@ -3516,7 +3516,7 @@ async function start(){
 
             await import(
 
-                "./core/modules/assetsModule.js?v=20261008z"
+                "./core/modules/assetsModule.js?v=20261008aa"
 
             );
 
@@ -3593,6 +3593,110 @@ async function start(){
         let dashInvestments =
 
             investments;
+
+        try {
+
+            const dashAgentModule =
+
+                await import(
+
+                    "./modules/investment/agent/investmentAgent.js?v=20261008aa"
+
+                );
+
+            const dashPositions =
+
+                dashAgentModule.InvestmentAgent
+
+                    .deriveMemberPositions(
+
+                        ""
+
+                    ) || [];
+
+            if (dashPositions.length) {
+
+                const coveredSymbols =
+
+                    new Set(
+
+                        dashPositions.map(
+
+                            position =>
+
+                                String(
+
+                                    position.symbol ||
+
+                                        ""
+
+                                ).toUpperCase()
+
+                        )
+
+                    );
+
+                dashInvestments = [
+
+                    ...dashPositions.map(
+
+                        position => ({
+
+                            name:
+
+                                position.name,
+
+                            symbol:
+
+                                position.symbol,
+
+                            quantity:
+
+                                position.quantity,
+
+                            currentValue:
+
+                                position.marketValue,
+
+                            marketValue:
+
+                                position.marketValue,
+
+                            memberId:
+
+                                position.memberId
+
+                        })
+
+                    ),
+
+                    ...investments.filter(
+
+                        record =>
+
+                            !coveredSymbols.has(
+
+                                String(
+
+                                    record.symbol ||
+
+                                        ""
+
+                                ).toUpperCase()
+
+                            )
+
+                    )
+
+                ];
+
+            }
+
+        }
+
+        catch (dashPositionError) {
+
+        }
 
         let dashLiabilities =
 
@@ -3976,7 +4080,7 @@ async function start(){
 
                 await import(
 
-                    "./core/modules/cashflowModule.js?v=20261008z"
+                    "./core/modules/cashflowModule.js?v=20261008aa"
 
                 );
 
@@ -4224,7 +4328,7 @@ async function start(){
 
                 await import(
 
-                    "./modules/account/api/accountAPI.js?v=20261008z"
+                    "./modules/account/api/accountAPI.js?v=20261008aa"
 
                 );
 
