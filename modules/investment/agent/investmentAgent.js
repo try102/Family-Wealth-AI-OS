@@ -252,9 +252,19 @@ const InvestmentAgent = {
 
             trade => {
 
+                // A member explicitly chosen on the trade
+
+                // wins; otherwise fall back to the member
+
+                // who owns the trade's account.
+
                 const owner =
 
-                    accountMember[trade.accountId] || "";
+                    typeof trade.memberId === "string"
+
+                        ? trade.memberId
+
+                        : accountMember[trade.accountId] || "";
 
                 return memberId === "__shared__"
 
