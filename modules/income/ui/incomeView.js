@@ -10,6 +10,8 @@ Income View
 
 import IncomeAgent from "../agent/incomeAgent.js";
 
+import AccountAPI from "../../account/api/accountAPI.js";
+
 const IncomeView = {
 
     name: "Income View V7",
@@ -486,6 +488,70 @@ const IncomeView = {
 
     // ==================================================
 
+    // Accounts
+
+    // ==================================================
+
+    getAccounts() {
+
+        try {
+
+            return AccountAPI.getAll() || [];
+
+        } catch (accountError) {
+
+            return [];
+
+        }
+
+    },
+
+    buildAccountOptions(selectedId = "") {
+
+        return this.getAccounts().map(
+
+            account => `
+
+                <option
+
+                    value="${account.id}"
+
+                    ${
+
+                        String(account.id) ===
+
+                        String(selectedId)
+
+                        ?
+
+                        "selected"
+
+                        :
+
+                        ""
+
+                    }
+
+                >
+
+                    ${
+
+                        account.name ||
+
+                        account.id
+
+                    }
+
+                </option>
+
+            `
+
+        ).join("");
+
+    },
+
+    // ==================================================
+
     // Create Form
 
     // ==================================================
@@ -505,6 +571,34 @@ const IncomeView = {
             return;
 
         }
+
+        const accounts =
+
+            this.getAccounts();
+
+        const accountOptions =
+
+            this.buildAccountOptions();
+
+        const accountHint =
+
+            accounts.length === 0
+
+            ?
+
+            `
+
+            <p style="color:#c00;">
+
+                No account found. 请先到 Accounts 页面新建账户，否则这笔收入不会进入 Cash Flow。
+
+            </p>
+
+            `
+
+            :
+
+            "";
 
         formContainer.innerHTML = `
 
@@ -664,6 +758,34 @@ const IncomeView = {
 
                     <br><br>
 
+                    <label>
+
+                        Account（选了才会进入 Cash Flow）
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="income-account"
+
+                    >
+
+                        <option value="">
+
+                            Select Account
+
+                        </option>
+
+                        ${accountOptions}
+
+                    </select>
+
+                    ${accountHint}
+
+                    <br><br>
+
                     <button
 
                         type="submit"
@@ -744,6 +866,26 @@ const IncomeView = {
 
                     );
 
+                const accountField =
+
+                    form.querySelector(
+
+                        "#income-account"
+
+                    );
+
+                const accountId =
+
+                    accountField
+
+                    ?
+
+                    accountField.value
+
+                    :
+
+                    "";
+
                 IncomeAgent.addIncome({
 
                     name,
@@ -754,7 +896,9 @@ const IncomeView = {
 
                     amount,
 
-                    value: amount
+                    value: amount,
+
+                    accountId
 
                 });
 
@@ -1012,6 +1156,32 @@ const IncomeView = {
 
                     <br><br>
 
+                    <label>
+
+                        Account（选了才会进入 Cash Flow）
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="edit-income-account"
+
+                    >
+
+                        <option value="">
+
+                            Select Account
+
+                        </option>
+
+                        ${this.buildAccountOptions(income.accountId || "")}
+
+                    </select>
+
+                    <br><br>
+
                     <button
 
                         type="submit"
@@ -1111,6 +1281,32 @@ const IncomeView = {
                 updatedIncome.value =
 
                     updatedIncome.amount;
+
+                const editAccountField =
+
+                    form.querySelector(
+
+                        "#edit-income-account"
+
+                    );
+
+                updatedIncome.accountId =
+
+                    editAccountField
+
+                    ?
+
+                    editAccountField.value
+
+                    :
+
+                    (
+
+                        income.accountId ||
+
+                        ""
+
+                    );
 
                 IncomeAgent.updateIncome(
 
