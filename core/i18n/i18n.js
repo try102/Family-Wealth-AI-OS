@@ -133,7 +133,18 @@ const DICTIONARY = {
         "taxsum.dividends": "股息：", "taxsum.interestSep": "　利息：", "taxsum.gains": "资本利得（资产出售）：",
         "taxsum.mortgage": "房贷利息已付（可抵扣参考）：", "taxsum.paidSep": "　已缴税款：",
         "taxsum.total": "合计收入（已自动填入 Income）：",
-        "dash.advisorLabel": "顾问", "advisor.productName": "家庭财富顾问 AI V7"
+        "dash.advisorLabel": "顾问", "advisor.productName": "家庭财富顾问 AI V7",
+        "taxpage.center": "🧾 税务中心", "taxpage.moduleStatus": "税务模块状态", "taxpage.systemReady": "✅ 税务系统就绪",
+        "taxpage.plansColon": "税务计划：", "taxpage.dashboard": "📊 税务看板", "taxpage.plans": "税务计划",
+        "taxpage.totalDeductions": "总扣除", "taxpage.estimatedTax": "预估税额", "taxpage.effectiveRate": "有效税率",
+        "taxpage.latestPlan": "📋 最新税务计划", "taxpage.yearColon": "年度：", "taxpage.incomeColon": "收入：",
+        "taxpage.deductionsColon": "扣除：", "taxpage.taxableColon": "应税收入：", "taxpage.createPlan": "🧾 新建税务计划",
+        "taxpage.planInfo": "税务计划信息", "taxpage.optimization": "🎯 税务优化", "taxpage.noOpportunities": "暂无优化机会",
+        "taxpage.noOpportunitiesText": "尚未发现税务优化机会。", "taxpage.advisor": "🤖 税务顾问",
+        "taxpage.noAdvisorData": "暂无顾问数据", "taxpage.noAdvisorText": "创建税务计划后将生成税务建议。",
+        "taxpage.noRecommendations": "暂无建议", "taxpage.noRecommendationsText": "目前没有即时税务建议。",
+        "taxpage.recommendation": "💡 建议", "taxpage.quickAccess": "快捷入口", "taxpage.createPlanBtn": "➕ 新建税务计划",
+        "taxpage.refresh": "🔄 刷新", "taxpage.back": "⬅️ 返回"
     },
     "zh-TW": {
         "common.back": "← 返回首頁", "common.language": "語言", "common.save": "保存", "common.cancel": "取消",
@@ -253,7 +264,18 @@ const DICTIONARY = {
         "taxsum.dividends": "股息：", "taxsum.interestSep": "　利息：", "taxsum.gains": "資本利得（資產出售）：",
         "taxsum.mortgage": "房貸利息已付（可抵扣參考）：", "taxsum.paidSep": "　已繳稅款：",
         "taxsum.total": "合計收入（已自動填入 Income）：",
-        "dash.advisorLabel": "顧問", "advisor.productName": "家庭財富顧問 AI V7"
+        "dash.advisorLabel": "顧問", "advisor.productName": "家庭財富顧問 AI V7",
+        "taxpage.center": "🧾 稅務中心", "taxpage.moduleStatus": "稅務模組狀態", "taxpage.systemReady": "✅ 稅務系統就緒",
+        "taxpage.plansColon": "稅務計劃：", "taxpage.dashboard": "📊 稅務看板", "taxpage.plans": "稅務計劃",
+        "taxpage.totalDeductions": "總扣除", "taxpage.estimatedTax": "預估稅額", "taxpage.effectiveRate": "有效稅率",
+        "taxpage.latestPlan": "📋 最新稅務計劃", "taxpage.yearColon": "年度：", "taxpage.incomeColon": "收入：",
+        "taxpage.deductionsColon": "扣除：", "taxpage.taxableColon": "應稅收入：", "taxpage.createPlan": "🧾 新建稅務計劃",
+        "taxpage.planInfo": "稅務計劃資訊", "taxpage.optimization": "🎯 稅務優化", "taxpage.noOpportunities": "暫無優化機會",
+        "taxpage.noOpportunitiesText": "尚未發現稅務優化機會。", "taxpage.advisor": "🤖 稅務顧問",
+        "taxpage.noAdvisorData": "暫無顧問數據", "taxpage.noAdvisorText": "建立稅務計劃後將產生稅務建議。",
+        "taxpage.noRecommendations": "暫無建議", "taxpage.noRecommendationsText": "目前沒有即時稅務建議。",
+        "taxpage.recommendation": "💡 建議", "taxpage.quickAccess": "快捷入口", "taxpage.createPlanBtn": "➕ 新建稅務計劃",
+        "taxpage.refresh": "🔄 刷新", "taxpage.back": "⬅️ 返回"
     },
     "en-US": {
         "common.back": "← Back to Dashboard", "common.language": "Language", "common.save": "Save", "common.cancel": "Cancel",
@@ -373,7 +395,18 @@ const DICTIONARY = {
         "taxsum.dividends": "Dividends: ", "taxsum.interestSep": "  Interest: ", "taxsum.gains": "Capital Gains (Asset Sales): ",
         "taxsum.mortgage": "Mortgage Interest Paid (deductible reference): ", "taxsum.paidSep": "  Tax Paid: ",
         "taxsum.total": "Total Income (auto-filled into Income): ",
-        "dash.advisorLabel": "Advisor", "advisor.productName": "Family Wealth Advisor AI V7"
+        "dash.advisorLabel": "Advisor", "advisor.productName": "Family Wealth Advisor AI V7",
+        "taxpage.center": "🧾 Tax Center", "taxpage.moduleStatus": "Tax Module Status", "taxpage.systemReady": "✅ TAX SYSTEM READY",
+        "taxpage.plansColon": "Tax Plans:", "taxpage.dashboard": "📊 Tax Dashboard", "taxpage.plans": "Tax Plans",
+        "taxpage.totalDeductions": "Total Deductions", "taxpage.estimatedTax": "Estimated Tax", "taxpage.effectiveRate": "Effective Tax Rate",
+        "taxpage.latestPlan": "📋 Latest Tax Plan", "taxpage.yearColon": "Tax Year:", "taxpage.incomeColon": "Income:",
+        "taxpage.deductionsColon": "Deductions:", "taxpage.taxableColon": "Taxable Income:", "taxpage.createPlan": "🧾 Create Tax Plan",
+        "taxpage.planInfo": "Tax Plan Information", "taxpage.optimization": "🎯 Tax Optimization", "taxpage.noOpportunities": "No Opportunities",
+        "taxpage.noOpportunitiesText": "No tax optimization opportunities identified.", "taxpage.advisor": "🤖 Tax Advisor",
+        "taxpage.noAdvisorData": "No Advisor Data", "taxpage.noAdvisorText": "Create a tax plan to generate tax advice.",
+        "taxpage.noRecommendations": "No Recommendations", "taxpage.noRecommendationsText": "No immediate tax recommendations.",
+        "taxpage.recommendation": "💡 Recommendation", "taxpage.quickAccess": "Quick Access", "taxpage.createPlanBtn": "➕ Create Tax Plan",
+        "taxpage.refresh": "🔄 Refresh", "taxpage.back": "⬅️ Back"
     },
     "ja-JP": {
         "common.back": "← ダッシュボードに戻る", "common.language": "言語", "common.save": "保存", "common.cancel": "キャンセル",
@@ -493,7 +526,18 @@ const DICTIONARY = {
         "taxsum.dividends": "配当：", "taxsum.interestSep": "　利息：", "taxsum.gains": "キャピタルゲイン（資産売却）：",
         "taxsum.mortgage": "住宅ローン利息（控除参考）：", "taxsum.paidSep": "　納税済み：",
         "taxsum.total": "合計収入（Incomeに自動入力済み）：",
-        "dash.advisorLabel": "アドバイザー", "advisor.productName": "ファミリーウェルスアドバイザー AI V7"
+        "dash.advisorLabel": "アドバイザー", "advisor.productName": "ファミリーウェルスアドバイザー AI V7",
+        "taxpage.center": "🧾 税務センター", "taxpage.moduleStatus": "税務モジュール状態", "taxpage.systemReady": "✅ 税務システム準備完了",
+        "taxpage.plansColon": "税務プラン：", "taxpage.dashboard": "📊 税務ダッシュボード", "taxpage.plans": "税務プラン",
+        "taxpage.totalDeductions": "控除合計", "taxpage.estimatedTax": "推定税額", "taxpage.effectiveRate": "実効税率",
+        "taxpage.latestPlan": "📋 最新の税務プラン", "taxpage.yearColon": "年度：", "taxpage.incomeColon": "収入：",
+        "taxpage.deductionsColon": "控除：", "taxpage.taxableColon": "課税所得：", "taxpage.createPlan": "🧾 税務プラン作成",
+        "taxpage.planInfo": "税務プラン情報", "taxpage.optimization": "🎯 税務最適化", "taxpage.noOpportunities": "最適化の機会なし",
+        "taxpage.noOpportunitiesText": "税務最適化の機会は見つかりませんでした。", "taxpage.advisor": "🤖 税務アドバイザー",
+        "taxpage.noAdvisorData": "アドバイザーデータなし", "taxpage.noAdvisorText": "税務プランを作成すると税務アドバイスが生成されます。",
+        "taxpage.noRecommendations": "推奨なし", "taxpage.noRecommendationsText": "当面の税務推奨はありません。",
+        "taxpage.recommendation": "💡 推奨", "taxpage.quickAccess": "クイックアクセス", "taxpage.createPlanBtn": "➕ 税務プラン作成",
+        "taxpage.refresh": "🔄 更新", "taxpage.back": "⬅️ 戻る"
     }
 };
 
