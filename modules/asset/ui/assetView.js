@@ -24,7 +24,7 @@ import AssetAPI from "../api/assetAPI.js?v=20261008ae";
 
 import AccountAPI from "../../account/api/accountAPI.js?v=20261008ae";
 
-import MemberAPI from "../../member/api/memberAPI.js?v=20261008ae";
+import MemberAPI from "../../member/api/memberAPI.js?v=20261008am";
 
 import InvestmentAgent from "../../investment/agent/investmentAgent.js?v=20261008ah";
 
