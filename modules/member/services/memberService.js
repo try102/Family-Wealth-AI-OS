@@ -6,7 +6,7 @@ Member Service
 投资按投资记录的账户归属统计（持仓本身按代码汇总，不分成员）。
 */
 import MemberRepository from "../repository/memberRepository.js?v=20261008ae";
-import AccountAPI from "../../account/api/accountAPI.js?v=20261008ae";
+import AccountAPI from "../../account/api/accountAPI.js?v=20261008aw";
 import IncomeAPI from "../../income/api/incomeAPI.js?v=20261008ae";
 import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261008ae";
 import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261008ah";
