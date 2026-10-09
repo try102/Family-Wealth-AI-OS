@@ -6,11 +6,11 @@ Account View
 
 */
 
-import AccountAPI from "../api/accountAPI.js?v=20261008ae";
+import AccountAPI from "../api/accountAPI.js?v=20261008aw";
 
 import MemberAPI from "../../member/api/memberAPI.js?v=20261008ap";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008aq";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008aw";
 
 const AccountView = {
 
@@ -286,6 +286,18 @@ const AccountView = {
 
             </button>
 
+            <button
+
+                id="transfer-account-button"
+
+                type="button"
+
+            >
+
+                ${t("account.transfer")}
+
+            </button>
+
             <div
 
                 id="account-form-container"
@@ -446,6 +458,36 @@ const AccountView = {
 
         }
 
+        const transferButton =
+
+            container.querySelector(
+
+                "#transfer-account-button"
+
+            );
+
+        if (transferButton) {
+
+            transferButton.addEventListener(
+
+                "click",
+
+                () => {
+
+                    this.showTransferForm(
+
+                        container,
+
+                        onBack
+
+                    );
+
+                }
+
+            );
+
+        }
+
         // ==================================================
 
         // Delete
@@ -495,6 +537,332 @@ const AccountView = {
     // Create Form
 
     // ==================================================
+
+    showTransferForm(
+
+        container,
+
+        onBack
+
+    ){
+
+        const formContainer =
+
+            container.querySelector(
+
+                "#account-form-container"
+
+            );
+
+        if (!formContainer) {
+
+            return;
+
+        }
+
+        const accounts =
+
+            AccountAPI.getAll() || [];
+
+        const memberName =
+
+            id => {
+
+                if (!id) {
+
+                    return "";
+
+                }
+
+                try {
+
+                    const member =
+
+                        (
+
+                            MemberAPI.getMembers() ||
+
+                            []
+
+                        ).find(
+
+                            item =>
+
+                                String(item.id) ===
+
+                                String(id)
+
+                        );
+
+                    return member ? member.name : "";
+
+                } catch (memberError) {
+
+                    return "";
+
+                }
+
+            };
+
+        const options =
+
+            accounts
+
+                .map(
+
+                    account => {
+
+                        const owner =
+
+                            memberName(
+
+                                account.memberId ||
+
+                                account.ownerId
+
+                            );
+
+                        const label =
+
+                            `${owner ? owner + " — " : ""}${account.name || account.id} ($${Number(account.balance || 0).toLocaleString()})`;
+
+                        return `<option value="${account.id}">${label}</option>`;
+
+                    }
+
+                )
+
+                .join("");
+
+        formContainer.innerHTML = `
+
+            <div
+
+                class="account-form"
+
+                style="
+
+                    margin-top:20px;
+
+                    padding:20px;
+
+                    border:1px solid #ddd;
+
+                    border-radius:10px;
+
+                "
+
+            >
+
+                <h3>
+
+                    ${t("account.transfer")}
+
+                </h3>
+
+                <form
+
+                    id="account-transfer-form"
+
+                >
+
+                    <label>
+
+                        ${t("account.transferFrom")}
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="transfer-from"
+
+                        required
+
+                    >
+
+                        ${options}
+
+                    </select>
+
+                    <br><br>
+
+                    <label>
+
+                        ${t("account.transferTo")}
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="transfer-to"
+
+                        required
+
+                    >
+
+                        ${options}
+
+                    </select>
+
+                    <br><br>
+
+                    <label>
+
+                        ${t("account.transferAmount")}
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="transfer-amount"
+
+                        type="number"
+
+                        step="0.01"
+
+                        min="0"
+
+                        required
+
+                    >
+
+                    <br><br>
+
+                    <button
+
+                        type="submit"
+
+                    >
+
+                        ${t("account.transferSubmit")}
+
+                    </button>
+
+                    <button
+
+                        type="button"
+
+                        id="cancel-transfer-button"
+
+                    >
+
+                        ${t("common.cancel")}
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        `;
+
+        const form =
+
+            formContainer.querySelector(
+
+                "#account-transfer-form"
+
+            );
+
+        form.addEventListener(
+
+            "submit",
+
+            event => {
+
+                event.preventDefault();
+
+                const fromId =
+
+                    form.querySelector(
+
+                        "#transfer-from"
+
+                    ).value;
+
+                const toId =
+
+                    form.querySelector(
+
+                        "#transfer-to"
+
+                    ).value;
+
+                const amount =
+
+                    Number(
+
+                        form.querySelector(
+
+                            "#transfer-amount"
+
+                        ).value || 0
+
+                    );
+
+                if (
+
+                    fromId &&
+
+                    toId &&
+
+                    fromId !== toId &&
+
+                    amount > 0
+
+                ) {
+
+                    AccountAPI.transfer(
+
+                        fromId,
+
+                        toId,
+
+                        amount
+
+                    );
+
+                }
+
+                this.render(
+
+                    container,
+
+                    onBack
+
+                );
+
+            }
+
+        );
+
+        const cancelButton =
+
+            formContainer.querySelector(
+
+                "#cancel-transfer-button"
+
+            );
+
+        cancelButton.addEventListener(
+
+            "click",
+
+            () => {
+
+                formContainer.innerHTML = "";
+
+            }
+
+        );
+
+    },
 
     showCreateForm(container, onBack) {
 
