@@ -78,7 +78,7 @@ import AccountManager
 
 import AccountService
 
-    from "./accountService.js?v=20261008ar";
+    from "./accountService.js?v=20261008aw";
 
 import AccountController
 
