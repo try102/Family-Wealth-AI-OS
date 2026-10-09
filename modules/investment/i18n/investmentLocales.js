@@ -276,6 +276,18 @@ const DICTIONARY = {
 
         confirmDeleteScope: "连同持仓与买卖记录一并删除，历史现金流与税务记录保留。",
 
+        deleteTrade: "取引を削除",
+
+        confirmDeleteTrade: "削除を確認",
+
+        deleteTradeNote: "この取引を削除すると、保有数量・評価額・キャッシュフロー・口座残高・税務への影響も取り消されます。",
+
+        deleteTrade: "删除交易",
+
+        confirmDeleteTrade: "确认删除",
+
+        deleteTradeNote: "删除后，该笔买卖对持仓数量、市值、现金流、账户余额与税务的影响一并撤销。",
+
         allocEmpty: "暂无配置数据",
 
         memberLabel: "成员",
@@ -510,6 +522,12 @@ const DICTIONARY = {
 
         confirmDeleteScope: "連同持倉與買賣記錄一併刪除，歷史現金流與稅務記錄保留。",
 
+        deleteTrade: "刪除交易",
+
+        confirmDeleteTrade: "確認刪除",
+
+        deleteTradeNote: "刪除後，該筆買賣對持倉數量、市值、現金流、帳戶餘額與稅務的影響一併撤銷。",
+
         allocEmpty: "暫無配置數據",
 
         memberLabel: "成員",
@@ -743,6 +761,12 @@ const DICTIONARY = {
         confirmDelete: "Delete investment",
 
         confirmDeleteScope: "Its holdings and trade records will also be removed. Past cash-flow and tax records are kept.",
+
+        deleteTrade: "Delete trade",
+
+        confirmDeleteTrade: "Confirm delete",
+
+        deleteTradeNote: "Deleting this trade also reverses its effect on holdings, cash flow, account balance and taxes.",
 
         allocEmpty: "No allocation data",
 
