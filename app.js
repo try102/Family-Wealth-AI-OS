@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261008aq";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261008aw";
 
 const app =
 
@@ -1256,7 +1256,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/account/ui/accountView.js?v=20261008ae"
+                            "./modules/account/ui/accountView.js?v=20261008aw"
 
                         );
 
@@ -3464,7 +3464,7 @@ async function start(){
 
                 await import(
 
-                    "./core/integration/cashflowIntegration.js?v=20261008at"
+                    "./core/integration/cashflowIntegration.js?v=20261008aw"
 
                 );
 
@@ -3482,7 +3482,7 @@ async function start(){
 
                 await import(
 
-                    "./core/integration/accountBalanceIntegration.js?v=20261008av"
+                    "./core/integration/accountBalanceIntegration.js?v=20261008aw"
 
                 );
 
@@ -4024,7 +4024,7 @@ async function start(){
 
                     await import(
 
-                        "./modules/account/api/accountAPI.js?v=20261008ae"
+                        "./modules/account/api/accountAPI.js?v=20261008aw"
 
                     );
 
@@ -4568,7 +4568,7 @@ async function start(){
 
                 await import(
 
-                    "./modules/account/api/accountAPI.js?v=20261008ae"
+                    "./modules/account/api/accountAPI.js?v=20261008aw"
 
                 );
 
