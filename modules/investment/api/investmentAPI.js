@@ -8,7 +8,7 @@ Investment API
 
 import InvestmentService
 
-from "../services/investmentService.js?v=20261008aw";
+from "../services/investmentService.js?v=20261009bk";
 
 import PortfolioEngine
 
