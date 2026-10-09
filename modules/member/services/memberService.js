@@ -250,6 +250,10 @@ const MemberService = {
         const finish = bucket => ({
             ...bucket,
             netFlow: bucket.income - bucket.expense,
+            totalAssets:
+                bucket.accountsValue +
+                bucket.investmentsValue +
+                bucket.assetsValue,
             netWorth:
                 bucket.accountsValue +
                 bucket.investmentsValue +
@@ -415,6 +419,7 @@ const MemberService = {
             accountsValue: base.accountsValue,
             investmentsValue: base.investmentsValue,
             assetsValue: base.assetsValue,
+            totalAssets: grossAssets,
             liabilitiesValue: base.liabilitiesValue,
             netWorth: base.netWorth,
             debtRatio: grossAssets > 0 ? (base.liabilitiesValue / grossAssets) * 100 : 0,
