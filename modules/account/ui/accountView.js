@@ -10,7 +10,13 @@ import AccountAPI from "../api/accountAPI.js?v=20261008aw";
 
 import MemberAPI from "../../member/api/memberAPI.js?v=20261008ap";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bj";
+import IncomeAPI from "../../income/api/incomeAPI.js?v=20261008ae";
+
+import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261008ae";
+
+import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261008ae";
+
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bk";
 
 const AccountView = {
 
@@ -59,6 +65,20 @@ const AccountView = {
                         ${t("account.balance")}: $${Number(account.balance || 0).toLocaleString()}
 
                         <br><br>
+
+                        <button
+
+                            type="button"
+
+                            class="edit-balance-button"
+
+                            data-id="${account.id}"
+
+                        >
+
+                            ${t("account.editBalance")}
+
+                        </button>
 
                         <button
 
@@ -580,6 +600,48 @@ const AccountView = {
 
         // ==================================================
 
+        // Edit balance (classified)
+
+        // ==================================================
+
+        const editBalanceButtons =
+
+            container.querySelectorAll(
+
+                ".edit-balance-button"
+
+            );
+
+        editBalanceButtons.forEach(
+
+            button => {
+
+                button.addEventListener(
+
+                    "click",
+
+                    () => {
+
+                        this.showBalanceEditForm(
+
+                            container,
+
+                            onBack,
+
+                            button.dataset.id
+
+                        );
+
+                    }
+
+                );
+
+            }
+
+        );
+
+        // ==================================================
+
         // Delete
 
         // ==================================================
@@ -615,6 +677,382 @@ const AccountView = {
                     }
 
                 );
+
+            }
+
+        );
+
+    },
+
+    // ==================================================
+
+    // Edit Balance Form (classified)
+
+    //
+
+    // Typing a new balance in the Account Center
+
+    // asks what the change IS: a plain adjustment
+
+    // (new anchor), income (also lands in the
+
+    // Income Center), an expense, or borrowed
+
+    // money (also lands in the Liability Center).
+
+    // ==================================================
+
+    showBalanceEditForm(
+
+        container,
+
+        onBack,
+
+        accountId
+
+    ){
+
+        const formContainer =
+
+            container.querySelector(
+
+                "#account-form-container"
+
+            );
+
+        if (!formContainer) {
+
+            return;
+
+        }
+
+        const account =
+
+            (
+
+                AccountAPI.getAll() || []
+
+            ).find(
+
+                item =>
+
+                    String(item.id) ===
+
+                    String(accountId)
+
+            );
+
+        if (!account) {
+
+            return;
+
+        }
+
+        const currentBalance =
+
+            Number(account.balance || 0);
+
+        formContainer.innerHTML = `
+
+            <div
+
+                class="account-form"
+
+                style="
+
+                    margin-top:20px;
+
+                    padding:20px;
+
+                    border:1px solid #ddd;
+
+                    border-radius:10px;
+
+                "
+
+            >
+
+                <h3>
+
+                    ${t("account.editBalance")} — ${account.name || account.id}
+
+                </h3>
+
+                <form
+
+                    id="account-balance-edit-form"
+
+                >
+
+                    <label>
+
+                        ${t("account.currentBalance")}：$${currentBalance.toLocaleString()}
+
+                    </label>
+
+                    <br><br>
+
+                    <label>
+
+                        ${t("account.newBalance")}
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="edit-balance-value"
+
+                        type="number"
+
+                        step="0.01"
+
+                        value="${currentBalance}"
+
+                        required
+
+                    >
+
+                    <br><br>
+
+                    <label>
+
+                        ${t("account.balanceKind")}
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="edit-balance-kind"
+
+                    >
+
+                        <option value="adjust">${t("account.kindAdjust")}</option>
+
+                        <option value="income">${t("account.kindIncome")}</option>
+
+                        <option value="expense">${t("account.kindExpense")}</option>
+
+                        <option value="liability">${t("account.kindLiability")}</option>
+
+                    </select>
+
+                    <br><br>
+
+                    <button
+
+                        type="submit"
+
+                    >
+
+                        ${t("common.save")}
+
+                    </button>
+
+                    <button
+
+                        type="button"
+
+                        id="cancel-balance-edit-button"
+
+                    >
+
+                        ${t("common.cancel")}
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        `;
+
+        const form =
+
+            formContainer.querySelector(
+
+                "#account-balance-edit-form"
+
+            );
+
+        form.addEventListener(
+
+            "submit",
+
+            event => {
+
+                event.preventDefault();
+
+                const newBalance =
+
+                    Number(
+
+                        form.querySelector(
+
+                            "#edit-balance-value"
+
+                        ).value || 0
+
+                    );
+
+                const kind =
+
+                    form.querySelector(
+
+                        "#edit-balance-kind"
+
+                    ).value;
+
+                const delta =
+
+                    newBalance - currentBalance;
+
+                const owner =
+
+                    account.memberId ||
+
+                    account.ownerId ||
+
+                    "";
+
+                const today =
+
+                    new Date().toISOString().slice(0, 10);
+
+                try {
+
+                    if (
+
+                        kind === "income" &&
+
+                        delta > 0
+
+                    ) {
+
+                        // The income chain credits the
+
+                        // account itself; no manual
+
+                        // anchor on top of it.
+
+                        IncomeAPI.createIncome({
+
+                            name:
+
+                                t("account.balanceIncomeName"),
+
+                            amount: delta,
+
+                            date: today,
+
+                            accountId: account.id,
+
+                            memberId: owner,
+
+                            category: "其他收入"
+
+                        });
+
+                    } else if (
+
+                        kind === "expense" &&
+
+                        delta < 0
+
+                    ) {
+
+                        ExpenseAPI.createExpense({
+
+                            name:
+
+                                t("account.balanceExpenseName"),
+
+                            amount: Math.abs(delta),
+
+                            date: today,
+
+                            accountId: account.id,
+
+                            memberId: owner,
+
+                            category: "其他支出"
+
+                        });
+
+                    } else if (
+
+                        kind === "liability" &&
+
+                        delta > 0
+
+                    ) {
+
+                        LiabilityAPI.createLiability({
+
+                            name:
+
+                                t("account.balanceLiabilityName"),
+
+                            currentBalance: delta,
+
+                            memberId: owner
+
+                        });
+
+                        AccountAPI.update({
+
+                            ...account,
+
+                            balance: newBalance
+
+                        });
+
+                    } else {
+
+                        AccountAPI.update({
+
+                            ...account,
+
+                            balance: newBalance
+
+                        });
+
+                    }
+
+                } catch (editError) {
+
+                }
+
+                this.render(
+
+                    container,
+
+                    onBack
+
+                );
+
+            }
+
+        );
+
+        const cancelButton =
+
+            formContainer.querySelector(
+
+                "#cancel-balance-edit-button"
+
+            );
+
+        cancelButton.addEventListener(
+
+            "click",
+
+            () => {
+
+                formContainer.innerHTML = "";
 
             }
 
