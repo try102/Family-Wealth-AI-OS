@@ -48,7 +48,7 @@ import TransactionRepository
 
     from "../../../transaction/transactionRepository.js?v=20261008ae";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bh";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bi";
 
 import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
@@ -572,6 +572,130 @@ const cashflowView = {
 
             );
 
+        // Realized gains (FIFO, persisted on each
+
+        // SELL trade): economic income shown apart
+
+        // from daily income — the sale proceeds are
+
+        // already counted once as investment cash
+
+        // in, so gains are never added to cash
+
+        // income again.
+
+        const realizedGains =
+
+            (() => {
+
+                try {
+
+                    const acctMember = {};
+
+                    (
+
+                        AccountAPI.getAll() || []
+
+                    ).forEach(
+
+                        account => {
+
+                            acctMember[account.id] =
+
+                                account.memberId ||
+
+                                account.ownerId ||
+
+                                "";
+
+                        }
+
+                    );
+
+                    let sum = 0;
+
+                    (
+
+                        InvestmentAPI.getTrades() || []
+
+                    ).forEach(
+
+                        trade => {
+
+                            if (
+
+                                String(
+
+                                    trade.action || ""
+
+                                ).toUpperCase() !== "SELL"
+
+                            ) {
+
+                                return;
+
+                            }
+
+                            const owner =
+
+                                trade.memberId ||
+
+                                (
+
+                                    trade.accountId
+
+                                        ? acctMember[
+
+                                            trade.accountId
+
+                                        ]
+
+                                        : ""
+
+                                ) ||
+
+                                "";
+
+                            const inScope =
+
+                                !scopeId
+
+                                    ? true
+
+                                    : scopeId === "__shared__"
+
+                                        ? owner === ""
+
+                                        : owner === scopeId;
+
+                            if (!inScope) {
+
+                                return;
+
+                            }
+
+                            sum +=
+
+                                Number(
+
+                                    trade.realizedGainLoss || 0
+
+                                );
+
+                        }
+
+                    );
+
+                    return sum;
+
+                } catch (gainsError) {
+
+                    return 0;
+
+                }
+
+            })();
+
         let report = null;
 
         let advice = null;
@@ -869,6 +993,36 @@ const cashflowView = {
                                 $${Number(
 
                                     summary?.investmentNet ||
+
+                                    0
+
+                                ).toLocaleString()}
+
+                            </div>
+
+                        </div>
+
+                        <div
+
+                            class="dashboard-card"
+
+                        >
+
+                            <h3>
+
+                                ${t("cashflow.realizedGains")}
+
+                            </h3>
+
+                            <div
+
+                                class="value"
+
+                            >
+
+                                $${Number(
+
+                                    realizedGains ||
 
                                     0
 
