@@ -28,6 +28,8 @@ import MemberAPI from "../../member/api/memberAPI.js?v=20261008ae";
 
 import InvestmentAgent from "../../investment/agent/investmentAgent.js?v=20261008ae";
 
+import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261008ae";
+
 import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008ae";
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
@@ -262,6 +264,154 @@ const AssetView = {
 
             );
 
+        try {
+
+            const coveredSyncSymbols =
+
+                new Set(
+
+                    syncRows.map(
+
+                        row =>
+
+                            String(
+
+                                row.symbol || ""
+
+                            ).toUpperCase()
+
+                    )
+
+                );
+
+            InvestmentAPI.getInvestments()
+
+                .filter(
+
+                    record =>
+
+                        !coveredSyncSymbols.has(
+
+                            String(
+
+                                record.symbol ||
+
+                                    record.name ||
+
+                                    ""
+
+                            ).toUpperCase()
+
+                        )
+
+                )
+
+                .filter(
+
+                    record =>
+
+                        Number(
+
+                            record.currentValue ??
+
+                                record.marketValue ??
+
+                                0
+
+                        ) !== 0
+
+                )
+
+                .filter(
+
+                    record => {
+
+                        if (!scopeId) {
+
+                            return true;
+
+                        }
+
+                        const owner =
+
+                            record.memberId ||
+
+                            record.ownerId ||
+
+                            "";
+
+                        return scopeId === "__shared__"
+
+                            ? owner === ""
+
+                            : owner === scopeId;
+
+                    }
+
+                )
+
+                .forEach(
+
+                    record => {
+
+                        syncRows.push({
+
+                            label:
+
+                                record.memberId ||
+
+                                record.ownerId
+
+                                    ? memberNameOf(
+
+                                        record.memberId ||
+
+                                            record.ownerId
+
+                                    )
+
+                                    : t("scope.shared"),
+
+                            symbol:
+
+                                record.symbol ||
+
+                                record.name ||
+
+                                "",
+
+                            name:
+
+                                record.name || "",
+
+                            quantity:
+
+                                Number(record.quantity || 0),
+
+                            marketValue:
+
+                                Number(
+
+                                    record.currentValue ??
+
+                                        record.marketValue ??
+
+                                        0
+
+                                )
+
+                        });
+
+                    }
+
+                );
+
+        }
+
+        catch (syncRecordError) {
+
+        }
+
         const syncTotal =
 
             syncRows.reduce(
@@ -290,7 +440,7 @@ const AssetView = {
 
                     $${Number(
 
-                        totalValue
+                        totalValue + syncTotal
 
                     ).toLocaleString()}
 
