@@ -6,7 +6,7 @@ Goal Manager
 
 */
 
-import Goal from "./goal.js";
+import Goal from "./goal.js?v=20261008ae";
 
 const GoalManager = {
 

@@ -16,9 +16,9 @@ additional entry path.
 
 */
 
-import MemberAPI from "../../modules/member/api/memberAPI.js";
+import MemberAPI from "../../modules/member/api/memberAPI.js?v=20261008ae";
 
-import AccountAPI from "../../modules/account/api/accountAPI.js";
+import AccountAPI from "../../modules/account/api/accountAPI.js?v=20261008ae";
 
 export const NEW_MEMBER_VALUE =
 

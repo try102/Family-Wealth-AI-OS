@@ -6,7 +6,7 @@ Forecast Manager
 
 */
 
-import Forecast from "./forecast.js";
+import Forecast from "./forecast.js?v=20261008ae";
 
 const ForecastManager = {
 

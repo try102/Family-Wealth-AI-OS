@@ -16,7 +16,7 @@ app.innerHTML = `
 
 `;
 
-import("./core/modules/incomeModule.js")
+import("./core/modules/incomeModule.js?v=20261008ae")
 
     .then(({ default: IncomeModule }) => {
 

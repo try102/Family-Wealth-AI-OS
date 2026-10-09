@@ -6,9 +6,9 @@ Account Agent
 
 */
 
-import AccountAPI from "../api/accountAPI.js";
+import AccountAPI from "../api/accountAPI.js?v=20261008ae";
 
-import AccountAnalysisEngine from "../engines/accountAnalysisEngine.js";
+import AccountAnalysisEngine from "../engines/accountAnalysisEngine.js?v=20261008ae";
 
 const AccountAgent = {
 

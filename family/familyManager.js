@@ -6,7 +6,7 @@ Family Manager
 
 */
 
-import Member from "./member.js";
+import Member from "./member.js?v=20261008ae";
 
 const FamilyManager = {
 

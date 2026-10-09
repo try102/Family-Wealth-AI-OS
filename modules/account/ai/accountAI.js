@@ -6,7 +6,7 @@ Account AI Layer
 
 */
 
-import AccountAgent from "../agent/accountAgent.js";
+import AccountAgent from "../agent/accountAgent.js?v=20261008ae";
 
 const AccountAI = {
 

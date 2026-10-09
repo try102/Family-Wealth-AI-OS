@@ -6,11 +6,11 @@ System Manager
 
 */
 
-import SystemBootstrap from "../bootstrap/systemBootstrap.js";
+import SystemBootstrap from "../bootstrap/systemBootstrap.js?v=20261008ae";
 
-import ModuleRegistry from "../registry/moduleRegistry.js";
+import ModuleRegistry from "../registry/moduleRegistry.js?v=20261008ae";
 
-import AgentRegistry from "../registry/agentRegistry.js";
+import AgentRegistry from "../registry/agentRegistry.js?v=20261008ae";
 
 const SystemManager = {
 
