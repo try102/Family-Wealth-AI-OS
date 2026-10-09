@@ -20,6 +20,28 @@ const AccountService = {
 
     ){
 
+        // An opening balance typed by the user is
+
+        // the account's baseline and is never
+
+        // overwritten by calibration.
+
+        if (
+
+            account &&
+
+            account.openingBalance === undefined
+
+        ) {
+
+            account.openingBalance =
+
+                Number(account.balance || 0);
+
+            account.openingSource = "user";
+
+        }
+
         const savedAccount =
 
         AccountRepository.save(
