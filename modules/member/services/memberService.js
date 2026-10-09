@@ -222,7 +222,13 @@ const MemberService = {
         };
 
         accounts.forEach(account => {
-            bucketFor(account).accountsValue += num(account.balance);
+            if (account.openingSource !== "asset") {
+
+                bucketFor(account).accountsValue +=
+
+                    num(account.balance);
+
+            }
         });
         incomes.forEach(record => {
             bucketFor(record).income += num(record.amount ?? record.value);
