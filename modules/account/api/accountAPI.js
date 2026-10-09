@@ -8,7 +8,7 @@ Public Interface
 
 */
 
-import AccountService from "../services/accountService.js?v=20261008aw";
+import AccountService from "../services/accountService.js?v=20261008ax";
 
 const AccountAPI = {
 
