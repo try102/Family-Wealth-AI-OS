@@ -2312,11 +2312,21 @@ const AccountBalanceIntegration = {
 
                             account.openingBalance =
 
-                                Number(
+                                pair.basisValue !== undefined &&
 
-                                    pair.currentValue || 0
+                                pair.basisValue !== null
 
-                                );
+                                    ? Number(pair.basisValue)
+
+                                    : Number(
+
+                                        pair.currentValue || 0
+
+                                    );
+
+                            account.mirrorBasisValue =
+
+                                account.openingBalance;
 
                             account.balance =
 
@@ -2450,7 +2460,81 @@ const AccountBalanceIntegration = {
 
                                 );
 
-                        if (manualWins || assetEdited) {
+                        // A basis edit (the user re-typed
+
+                        // the deposit / Checking amount in
+
+                        // the Asset Center) re-anchors the
+
+                        // OPENING basis: balance = basis +
+
+                        // live effects. This also heals
+
+                        // anchors frozen by older versions
+
+                        // that baked trade effects into the
+
+                        // opening and pinned the balance.
+
+                        const basisNow =
+
+                            pair.basisValue !== undefined &&
+
+                            pair.basisValue !== null
+
+                                ? Number(pair.basisValue)
+
+                                : undefined;
+
+                        const basisEdited =
+
+                            basisNow !== undefined &&
+
+                            Number(
+
+                                account.mirrorBasisValue ?? NaN
+
+                            ) !== basisNow;
+
+                        if (basisEdited) {
+
+                            account.openingBalance =
+
+                                basisNow;
+
+                            account.balance =
+
+                                basisNow + effect;
+
+                            if (
+
+                                Number(
+
+                                    pair.currentValue || 0
+
+                                ) !== account.balance
+
+                            ) {
+
+                                pair.currentValue =
+
+                                    account.balance;
+
+                                try {
+
+                                    AssetRepository.save(
+
+                                        pair
+
+                                    );
+
+                                } catch (pairSaveError) {
+
+                                }
+
+                            }
+
+                        } else if (manualWins || assetEdited) {
 
                             const truth =
 
@@ -2587,6 +2671,14 @@ const AccountBalanceIntegration = {
                         account.mirrorAssetValue =
 
                             Number(pair.currentValue || 0);
+
+                        if (basisNow !== undefined) {
+
+                            account.mirrorBasisValue =
+
+                                basisNow;
+
+                        }
 
                         try {
 
