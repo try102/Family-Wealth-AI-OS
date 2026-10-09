@@ -8,23 +8,23 @@ Investment API
 
 import InvestmentService
 
-from "../services/investmentService.js?v=20261008ad";
+from "../services/investmentService.js?v=20261008ae";
 
 import PortfolioEngine
 
-from "../portfolio/portfolioEngine.js";
+from "../portfolio/portfolioEngine.js?v=20261008ae";
 
 import InvestmentAnalysisEngine
 
-from "../analysis/investmentAnalysisEngine.js";
+from "../analysis/investmentAnalysisEngine.js?v=20261008ae";
 
 import RiskEngine
 
-from "../risk/riskEngine.js";
+from "../risk/riskEngine.js?v=20261008ae";
 
 import InvestmentDecisionEngine
 
-from "../decision/investmentDecisionEngine.js";
+from "../decision/investmentDecisionEngine.js?v=20261008ae";
 
 
 function buildEffectivePositions(
