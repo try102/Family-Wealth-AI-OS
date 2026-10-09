@@ -3482,7 +3482,7 @@ async function start(){
 
                 await import(
 
-                    "./core/integration/accountBalanceIntegration.js?v=20261008ah"
+                    "./core/integration/accountBalanceIntegration.js?v=20261008an"
 
                 );
 
@@ -3707,6 +3707,28 @@ async function start(){
                     .ensureDefaultAccounts();
 
             } catch (memberSyncError) {
+
+            }
+
+            // Account sync + balance calibration:
+
+            // referenced-but-missing accounts are
+
+            // created; balances derive from the ledger.
+
+            try {
+
+                AccountBalanceIntegration
+
+                    .syncAndCalibrate(
+
+                        TransactionIntegration
+
+                            .getAllTransactions() || []
+
+                    );
+
+            } catch (calibrationError) {
 
             }
 
