@@ -28,6 +28,184 @@ import IncomeRepository from "../../modules/income/repository/incomeRepository.j
 
 import TransactionRepository from "../../transaction/transactionRepository.js?v=20261008ae";
 
+import InvestmentRepository from "../../modules/investment/repository/investmentRepository.js?v=20261008ae";
+
+// FIFO replay of all trades: for each SELL in the
+
+// target year, match sold shares against the oldest
+
+// open lots and split the realized gain by holding
+
+// period (> 1 year = long-term). Display-only
+
+// classification; the engine totals are unchanged.
+
+function realizedGainSplit(targetYear) {
+
+    let longTerm = 0;
+
+    let shortTerm = 0;
+
+    try {
+
+        const trades =
+
+            (
+
+                InvestmentRepository.getTrades() || []
+
+            ).slice().sort(
+
+                (a, b) =>
+
+                    String(a.tradeDate || a.date || "").localeCompare(
+
+                        String(b.tradeDate || b.date || "")
+
+                    )
+
+            );
+
+        const lotsBySymbol = {};
+
+        trades.forEach(trade => {
+
+            const symbol =
+
+                String(trade.symbol || "").toUpperCase();
+
+            if (!symbol) {
+
+                return;
+
+            }
+
+            const quantity =
+
+                Math.abs(Number(trade.quantity || 0));
+
+            const amount =
+
+                Math.abs(Number(trade.amount || 0));
+
+            const when =
+
+                trade.tradeDate || trade.date || "";
+
+            if (!quantity) {
+
+                return;
+
+            }
+
+            const unit =
+
+                amount / quantity;
+
+            const action =
+
+                String(trade.action || "").toUpperCase();
+
+            if (action === "BUY") {
+
+                (
+
+                    lotsBySymbol[symbol] =
+
+                        lotsBySymbol[symbol] || []
+
+                ).push({
+
+                    quantity,
+
+                    unitCost: unit,
+
+                    date: when
+
+                });
+
+                return;
+
+            }
+
+            if (action !== "SELL") {
+
+                return;
+
+            }
+
+            const inYear =
+
+                Number(String(when).slice(0, 4)) ===
+
+                targetYear;
+
+            let remaining = quantity;
+
+            const lots =
+
+                lotsBySymbol[symbol] || [];
+
+            while (remaining > 0 && lots.length) {
+
+                const lot = lots[0];
+
+                const take =
+
+                    Math.min(remaining, lot.quantity);
+
+                const gain =
+
+                    take * (unit - lot.unitCost);
+
+                if (inYear) {
+
+                    const heldMs =
+
+                        new Date(when).getTime() -
+
+                        new Date(lot.date).getTime();
+
+                    if (
+
+                        Number.isFinite(heldMs) &&
+
+                        heldMs > 365 * 24 * 3600 * 1000
+
+                    ) {
+
+                        longTerm += gain;
+
+                    } else {
+
+                        shortTerm += gain;
+
+                    }
+
+                }
+
+                lot.quantity -= take;
+
+                remaining -= take;
+
+                if (lot.quantity <= 0) {
+
+                    lots.shift();
+
+                }
+
+            }
+
+        });
+
+    } catch (splitError) {
+
+    }
+
+    return { longTerm, shortTerm };
+
+}
+
 function transactionYear(transaction) {
 
     const year =
@@ -348,6 +526,10 @@ const TaxDataIntegration = {
 
             capitalGains;
 
+        const gainSplit =
+
+            realizedGainSplit(targetYear);
+
         return {
 
             year:
@@ -363,6 +545,22 @@ const TaxDataIntegration = {
             mortgageInterestPaid,
 
             capitalGains,
+
+            capitalGainsLongTerm:
+
+                gainSplit.longTerm,
+
+            capitalGainsShortTerm:
+
+                gainSplit.shortTerm,
+
+            capitalGainsOther:
+
+                capitalGains -
+
+                gainSplit.longTerm -
+
+                gainSplit.shortTerm,
 
             taxPaid,
 
