@@ -12,7 +12,7 @@ import RiskEngine from "../risk/riskEngine.js?v=20261008ae";
 
 import AccountAPI from "../../account/api/accountAPI.js?v=20261008ae";
 
-import MemberAPI from "../../member/api/memberAPI.js?v=20261008ae";
+import MemberAPI from "../../member/api/memberAPI.js?v=20261008am";
 
 import PriceOverrideStore from "../services/priceOverrideStore.js?v=20261008ae";
 
