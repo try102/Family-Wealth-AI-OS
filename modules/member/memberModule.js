@@ -5,7 +5,7 @@ Member Module
 */
 import MemberAPI from "./api/memberAPI.js?v=20261008ap";
 import MemberAgent from "./agent/memberAgent.js?v=20261008ae";
-import MemberView from "./ui/memberView.js?v=20261008ae";
+import MemberView from "./ui/memberView.js?v=20261009bh";
 
 export const MemberModule = {
     name: "Member Module V7",
