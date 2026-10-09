@@ -8,7 +8,7 @@ Public Interface
 
 */
 
-import AccountService from "../services/accountService.js?v=20261008ar";
+import AccountService from "../services/accountService.js?v=20261008aw";
 
 const AccountAPI = {
 
@@ -55,6 +55,32 @@ const AccountAPI = {
         return AccountService.updateAccount(
 
             account
+
+        );
+
+    },
+
+    transfer(
+
+        fromAccountId,
+
+        toAccountId,
+
+        amount,
+
+        note = ""
+
+    ){
+
+        return AccountService.transfer(
+
+            fromAccountId,
+
+            toAccountId,
+
+            amount,
+
+            note
 
         );
 
