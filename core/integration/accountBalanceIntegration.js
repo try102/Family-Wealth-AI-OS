@@ -34,6 +34,10 @@ const AccountBalanceIntegration = {
 
         false,
 
+    lastDiagnostic:
+
+        "",
+
     /*
 
      * Transaction IDs already applied in
@@ -84,11 +88,33 @@ const AccountBalanceIntegration = {
 
                     : [];
 
+            // Legacy transactions with a malformed
+
+            // lines field must not abort the whole
+
+            // calibration for every account.
+
+            const safeTxs = txs.filter(
+
+                transaction =>
+
+                    transaction &&
+
+                    (
+
+                        transaction.lines === undefined ||
+
+                        Array.isArray(transaction.lines)
+
+                    )
+
+            );
+
             const effects = new Map();
 
             const referenced = new Set();
 
-            txs.forEach(
+            safeTxs.forEach(
 
                 transaction => {
 
@@ -410,7 +436,7 @@ const AccountBalanceIntegration = {
 
                     new Set();
 
-                txs.forEach(
+                safeTxs.forEach(
 
                     transaction => {
 
@@ -2776,7 +2802,145 @@ const AccountBalanceIntegration = {
 
             );
 
+            // Read-only diagnostic snapshot for
+
+            // support: what the calibration saw and
+
+            // derived, per account and per holding.
+
+            try {
+
+                const diagLines = [];
+
+                diagLines.push(
+
+                    `counts tx=${txs.length} safeTx=${safeTxs.length} trades=${(InvestmentRepository.getTrades() || []).length} positions=${(InvestmentRepository.getPositions() || []).length} records=${(InvestmentRepository.getInvestments() || []).length} accounts=${byId.size}`
+
+                );
+
+                byId.forEach(
+
+                    (account, accountKey) => {
+
+                        diagLines.push(
+
+                            `ACCT ${account.name || accountKey} | owner=${AccountBalanceIntegration.memberNameOf(account.memberId || account.ownerId || "") || (account.memberId || account.ownerId || "")} | kind=${AccountBalanceIntegration.mirrorKindOfRecord(account) || "-"} | src=${account.openingSource || "-"} | opening=${Number(account.openingBalance || 0)} | bal=${Number(account.balance || 0)} | fx=${effects.get(accountKey) || 0}`
+
+                        );
+
+                    }
+
+                );
+
+                (
+
+                    InvestmentRepository.getTrades() ||
+
+                    []
+
+                ).forEach(
+
+                    trade => {
+
+                        diagLines.push(
+
+                            `TRADE ${trade.symbol || ""} ${trade.action || ""} qty=${trade.quantity || 0} amt=${trade.amount || 0} member=${trade.memberId || trade.ownerId || ""} acct=${trade.accountId || ""}`
+
+                        );
+
+                    }
+
+                );
+
+                (
+
+                    InvestmentRepository.getPositions() ||
+
+                    []
+
+                ).forEach(
+
+                    position => {
+
+                        diagLines.push(
+
+                            `POS ${position.symbol || ""} qty=${position.quantity || 0} cost=${position.costBasis || 0} member=${position.memberId || position.ownerId || ""} acct=${position.accountId || ""}`
+
+                        );
+
+                    }
+
+                );
+
+                (
+
+                    InvestmentRepository.getInvestments() ||
+
+                    []
+
+                ).forEach(
+
+                    record => {
+
+                        diagLines.push(
+
+                            `REC ${record.symbol || ""} qty=${record.quantity || 0} cost=${record.costBasis ?? record.totalCost ?? record.currentValue ?? record.marketValue ?? 0} member=${record.memberId || record.ownerId || ""} acct=${record.accountId || ""}`
+
+                        );
+
+                    }
+
+                );
+
+                AccountBalanceIntegration.lastDiagnostic =
+
+                    diagLines.join("\n");
+
+                try {
+
+                    localStorage.setItem(
+
+                        "fw_last_diag",
+
+                        AccountBalanceIntegration.lastDiagnostic
+
+                    );
+
+                } catch (diagStoreError) {
+
+                }
+
+            } catch (diagError) {
+
+            }
+
         } catch (syncError) {
+
+            try {
+
+                AccountBalanceIntegration.lastDiagnostic =
+
+                    `CALIBRATION ERROR: ${
+
+                        syncError && syncError.message
+
+                            ? syncError.message
+
+                            : syncError
+
+                    }`;
+
+                localStorage.setItem(
+
+                    "fw_last_diag",
+
+                    AccountBalanceIntegration.lastDiagnostic
+
+                );
+
+            } catch (diagStoreError) {
+
+            }
 
         }
 
