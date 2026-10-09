@@ -14,7 +14,7 @@ import cashflowAPI
 
 import TransactionIntegration
 
-    from "../../../core/integration/transactionIntegration.js?v=20261008ae";
+    from "../../../core/integration/transactionIntegration.js?v=20261008ak";
 
 import AccountAPI
 
