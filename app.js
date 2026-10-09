@@ -3698,7 +3698,7 @@ async function start(){
 
                     await import(
 
-                        "./modules/member/api/memberAPI.js?v=20261008am"
+                        "./modules/member/api/memberAPI.js?v=20261008ap"
 
                     );
 
@@ -3980,7 +3980,7 @@ async function start(){
 
                 await import(
 
-                    "./modules/member/api/memberAPI.js?v=20261008am"
+                    "./modules/member/api/memberAPI.js?v=20261008ap"
 
                 );
 
