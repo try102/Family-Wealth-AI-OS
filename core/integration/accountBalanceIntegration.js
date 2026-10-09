@@ -570,6 +570,28 @@ const AccountBalanceIntegration = {
 
                         );
 
+                        // One balance in two places.
+
+                        // The current truth is whichever
+
+                        // side the user touched last;
+
+                        // the opening anchor is set so
+
+                        // that opening + live transaction
+
+                        // effects land exactly on it, and
+
+                        // from then on transactions move
+
+                        // both sides together.
+
+                        const effect =
+
+                            effects.get(accountKey) ||
+
+                            0;
+
                         const manualWins =
 
                             account.manualBalance &&
@@ -578,73 +600,77 @@ const AccountBalanceIntegration = {
 
                             pair.updatedAt &&
 
-                            String(account.manualAt) >=
+                            String(account.manualAt) >
 
                                 String(pair.updatedAt);
 
-                        if (manualWins) {
+                        const truth =
 
-                            if (
+                            manualWins
 
-                                Number(pair.currentValue || 0) !==
+                                ? Number(
 
-                                    Number(account.balance || 0)
+                                    account.balance || 0
 
-                            ) {
+                                )
 
-                                pair.currentValue =
-
-                                    Number(
-
-                                        account.balance || 0
-
-                                    );
-
-                                try {
-
-                                    AssetRepository.save(
-
-                                        pair
-
-                                    );
-
-                                } catch (pairSaveError) {
-
-                                }
-
-                            }
-
-                        } else {
-
-                            account.balance =
-
-                                Number(
+                                : Number(
 
                                     pair.currentValue || 0
 
                                 );
 
-                            account.openingBalance =
+                        account.openingBalance =
 
-                                account.balance;
+                            truth - effect;
 
-                            account.openingSource =
+                        account.balance =
 
-                                "asset";
+                            truth;
 
-                            account.manualBalance =
+                        account.openingSource =
 
-                                false;
+                            "asset";
+
+                        account.manualBalance =
+
+                            false;
+
+                        try {
+
+                            AccountRepository.save(
+
+                                account
+
+                            );
+
+                        } catch (mirrorSaveError) {
+
+                        }
+
+                        if (
+
+                            manualWins &&
+
+                            Number(pair.currentValue || 0) !==
+
+                                truth
+
+                        ) {
+
+                            pair.currentValue =
+
+                                truth;
 
                             try {
 
-                                AccountRepository.save(
+                                AssetRepository.save(
 
-                                    account
+                                    pair
 
                                 );
 
-                            } catch (mirrorSaveError) {
+                            } catch (pairSaveError) {
 
                             }
 
@@ -661,12 +687,6 @@ const AccountBalanceIntegration = {
             byId.forEach(
 
                 (account, accountKey) => {
-
-                    if (mirrorIds.has(accountKey)) {
-
-                        return;
-
-                    }
 
                     const effect =
 
@@ -946,6 +966,110 @@ const AccountBalanceIntegration = {
 
      */
 
+    mirrorKindOfRecord(record) {
+
+        const label =
+
+            `${(record && record.name) || ""} ${(record && record.category) || ""} ${(record && record.accountType) || ""} ${(record && record.type) || ""}`.toLowerCase();
+
+        if (label.includes("invest")) {
+
+            return "investment";
+
+        }
+
+        if (label.includes("check")) {
+
+            return "checking";
+
+        }
+
+        return "";
+
+    },
+
+    findMirrorAsset(account) {
+
+        try {
+
+            const kind =
+
+                this.mirrorKindOfRecord(account);
+
+            if (!kind) {
+
+                return null;
+
+            }
+
+            const owner =
+
+                account.memberId ||
+
+                account.ownerId ||
+
+                "";
+
+            return (
+
+                AssetRepository.findAll() ||
+
+                []
+
+            ).find(
+
+                asset =>
+
+                    this.mirrorKindOfRecord(asset) ===
+
+                        kind &&
+
+                    String(
+
+                        asset.memberId ||
+
+                        asset.ownerId ||
+
+                        ""
+
+                    ) === String(owner)
+
+            ) || null;
+
+        } catch (lookupError) {
+
+            return null;
+
+        }
+
+    },
+
+    syncAssetMirror(account) {
+
+        const asset =
+
+            this.findMirrorAsset(account);
+
+        if (
+
+            asset &&
+
+            Number(asset.currentValue || 0) !==
+
+                Number(account.balance || 0)
+
+        ) {
+
+            asset.currentValue =
+
+                Number(account.balance || 0);
+
+            AssetRepository.save(asset);
+
+        }
+
+    },
+
     applyTransaction(
 
         transaction
@@ -1132,19 +1256,9 @@ const AccountBalanceIntegration = {
 
                     if (
 
-                        !account ||
-
-                        account.openingSource ===
-
-                            "asset"
+                        !account
 
                     ) {
-
-                        // Mirror-managed accounts take
-
-                        // their balance from the asset
-
-                        // record, not from transactions.
 
                         return;
 
@@ -1169,6 +1283,38 @@ const AccountBalanceIntegration = {
                             account
 
                         );
+
+                    // A mirrored account IS an asset
+
+                    // record (deposit / Checking from
+
+                    // the Asset Center): the same
+
+                    // money in two places, so move the
+
+                    // asset value by the same step.
+
+                    if (
+
+                        account.openingSource ===
+
+                            "asset"
+
+                    ) {
+
+                        try {
+
+                            this.syncAssetMirror(
+
+                                account
+
+                            );
+
+                        } catch (mirrorWriteError) {
+
+                        }
+
+                    }
 
                 } catch (balanceError) {
 
