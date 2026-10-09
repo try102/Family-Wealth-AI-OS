@@ -6,7 +6,7 @@ Investment AI Layer
 
 */
 
-import InvestmentAgent from "../agent/investmentAgent.js?v=20261008ae";
+import InvestmentAgent from "../agent/investmentAgent.js?v=20261008ag";
 
 const InvestmentAI = {
 
