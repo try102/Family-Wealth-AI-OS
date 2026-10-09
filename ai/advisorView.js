@@ -115,17 +115,29 @@ const AdvisorView = {
 
         const accountsTotal =
 
-            accounts.reduce(
+            accounts
 
-                (sum, account) =>
+                .filter(
 
-                    sum +
+                    account =>
 
-                    Number(account.balance || 0),
+                        account.openingSource !==
 
-                0
+                        "asset"
 
-            );
+                )
+
+                .reduce(
+
+                    (sum, account) =>
+
+                        sum +
+
+                        Number(account.balance || 0),
+
+                    0
+
+                );
 
         const assetRecords =
 
