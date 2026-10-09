@@ -10,7 +10,7 @@ External Support Center
 
 */
 
-import { t } from "../../core/i18n/i18n.js?v=20261009bj";
+import { t } from "../../core/i18n/i18n.js?v=20261009bk";
 
 export const SUPPORT_RESOURCES = {
 
