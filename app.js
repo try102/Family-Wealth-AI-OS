@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009bg";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009bh";
 
 const app =
 
@@ -1832,7 +1832,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/member/ui/memberView.js?v=20261008ae"
+                            "./modules/member/ui/memberView.js?v=20261009bh"
 
                         );
 
@@ -4996,7 +4996,49 @@ async function start(){
 
         const dashboardAssets = [
 
-            ...dashAssets,
+            // Asset records that are really accounts
+
+            // (deposit / Checking / savings entered in
+
+            // the Asset Center — the same records the
+
+            // account pairing mirrors) are cash for
+
+            // allocation purposes; only true holdings
+
+            // and property stay in their own category.
+
+            ...dashAssets.map(
+
+                asset => {
+
+                    const label =
+
+                        `${asset.name || ""} ${asset.category || ""} ${asset.type || ""}`
+
+                            .toLowerCase();
+
+                    const accountLike =
+
+                        label.includes("invest") ||
+
+                        label.includes("check") ||
+
+                        label.includes("saving") ||
+
+                        label.includes("broker") ||
+
+                        label.includes("cash");
+
+                    return accountLike
+
+                        ? { ...asset, category: "Cash" }
+
+                        : asset;
+
+                }
+
+            ),
 
             ...dashAccounts.map(
 
