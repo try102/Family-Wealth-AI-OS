@@ -3444,7 +3444,7 @@ async function start(){
 
                 await import(
 
-                    "./core/integration/transactionIntegration.js?v=20261008ae"
+                    "./core/integration/transactionIntegration.js?v=20261008ak"
 
                 );
 
@@ -3611,54 +3611,6 @@ async function start(){
                         if (!orphanExpense && !orphanIncome) {
 
                             return;
-
-                        }
-
-                        try {
-
-                            AccountBalanceIntegration
-
-                                .reverseTransaction(
-
-                                    transaction
-
-                                );
-
-                        } catch (revokeBalanceError) {
-
-                        }
-
-                        try {
-
-                            (
-
-                                cashflowAPI.getCashflows() || []
-
-                            )
-
-                                .filter(
-
-                                    entry =>
-
-                                        String(entry.transactionId) ===
-
-                                        String(transaction.id)
-
-                                )
-
-                                .forEach(
-
-                                    entry =>
-
-                                        cashflowAPI.deleteCashflow(
-
-                                            entry.id
-
-                                        )
-
-                                );
-
-                        } catch (revokeCashflowError) {
 
                         }
 
