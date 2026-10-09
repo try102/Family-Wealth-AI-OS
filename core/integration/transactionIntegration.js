@@ -28,6 +28,14 @@
 
  */
 
+import AccountBalanceIntegration
+
+    from "./accountBalanceIntegration.js?v=20261008ah";
+
+import cashflowAPI
+
+    from "../../modules/cashflow/api/cashflowAPI.js?v=20261008ae";
+
 class TransactionIntegrationService {
 
     constructor(
@@ -887,6 +895,92 @@ class TransactionIntegrationService {
         transactionId
 
     ) {
+
+        // Deleting a transaction revokes everything
+
+        // it caused: the account-balance effect is
+
+        // reversed and its cash-flow entries are
+
+        // removed (Tax reads transactions live, so
+
+        // it follows automatically).
+
+        let transaction = null;
+
+        try {
+
+            transaction =
+
+                (
+
+                    this.getAllTransactions() || []
+
+                ).find(
+
+                    item =>
+
+                        String(item.id) ===
+
+                        String(transactionId)
+
+                ) || null;
+
+        } catch (lookupError) {
+
+        }
+
+        if (transaction) {
+
+            try {
+
+                AccountBalanceIntegration
+
+                    .reverseTransaction(
+
+                        transaction
+
+                    );
+
+            } catch (reverseError) {
+
+            }
+
+            try {
+
+                (
+
+                    cashflowAPI.getCashflows() || []
+
+                )
+
+                    .filter(
+
+                        entry =>
+
+                            String(entry.transactionId) ===
+
+                            String(transaction.id)
+
+                    )
+
+                    .forEach(
+
+                        entry =>
+
+                            cashflowAPI.deleteCashflow(
+
+                                entry.id
+
+                            )
+
+                    );
+
+            } catch (cashflowError) {
+
+            }
+
+        }
 
         return this
 
