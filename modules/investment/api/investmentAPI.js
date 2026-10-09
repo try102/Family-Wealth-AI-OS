@@ -8,7 +8,7 @@ Investment API
 
 import InvestmentService
 
-from "../services/investmentService.js?v=20261008ae";
+from "../services/investmentService.js?v=20261008ag";
 
 import PortfolioEngine
 
@@ -292,6 +292,22 @@ const InvestmentAPI = {
         return InvestmentService
 
         .getTrades();
+
+    },
+
+    deleteTrade(
+
+        tradeId
+
+    ){
+
+        return InvestmentService
+
+        .deleteTrade(
+
+            tradeId
+
+        );
 
     },
 
