@@ -6,7 +6,7 @@ Advisor API
 
 */
 
-import AIAdvisor from "../ai/advisor.js";
+import AIAdvisor from "../ai/advisor.js?v=20261008ae";
 
 const AdvisorAPI = {
 
