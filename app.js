@@ -1078,7 +1078,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./core/modules/assetsModule.js?v=20261008af"
+                            "./core/modules/assetsModule.js?v=20261008ag"
 
                         );
 
@@ -1166,7 +1166,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/investment/ui/investmentView.js?v=20261008ae"
+                            "./modules/investment/ui/investmentView.js?v=20261008ag"
 
                         );
 
@@ -3482,7 +3482,7 @@ async function start(){
 
                 await import(
 
-                    "./core/integration/accountBalanceIntegration.js?v=20261008ae"
+                    "./core/integration/accountBalanceIntegration.js?v=20261008ag"
 
                 );
 
@@ -3516,7 +3516,7 @@ async function start(){
 
             await import(
 
-                "./core/modules/assetsModule.js?v=20261008af"
+                "./core/modules/assetsModule.js?v=20261008ag"
 
             );
 
@@ -3538,7 +3538,7 @@ async function start(){
 
             await import(
 
-                "./modules/investment/api/investmentAPI.js?v=20261008ae"
+                "./modules/investment/api/investmentAPI.js?v=20261008ag"
 
             );
 
@@ -3600,7 +3600,7 @@ async function start(){
 
                 await import(
 
-                    "./modules/investment/agent/investmentAgent.js?v=20261008ae"
+                    "./modules/investment/agent/investmentAgent.js?v=20261008ag"
 
                 );
 
@@ -3854,7 +3854,7 @@ async function start(){
 
                         await import(
 
-                            "./modules/investment/agent/investmentAgent.js?v=20261008ae"
+                            "./modules/investment/agent/investmentAgent.js?v=20261008ag"
 
                         );
 
