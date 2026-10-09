@@ -10,6 +10,8 @@ import AccountRepository from "../repository/accountRepository.js?v=20261008ae";
 
 import AssetRepository from "../../asset/repository/assetRepository.js?v=20261008ae";
 
+import TransactionIntegration from "../../../core/integration/transactionIntegration.js?v=20261008ak";
+
 function mirrorKindOf(record) {
     const label =
         `${(record && record.name) || ""} ${(record && record.category) || ""} ${(record && record.accountType) || ""} ${(record && record.type) || ""}`.toLowerCase();
@@ -243,6 +245,78 @@ const AccountService = {
         );
 
         return updated;
+
+    },
+
+    transfer(
+
+        fromAccountId,
+
+        toAccountId,
+
+        amount,
+
+        note = ""
+
+    ){
+
+        const value =
+
+            Number(amount || 0);
+
+        if (
+
+            !fromAccountId ||
+
+            !toAccountId ||
+
+            String(fromAccountId) ===
+
+                String(toAccountId) ||
+
+            !Number.isFinite(value) ||
+
+            value <= 0
+
+        ) {
+
+            return null;
+
+        }
+
+        // A transfer is one Transaction with an
+
+        // OUT line and an IN line: both balances
+
+        // (and any mirrored asset values) move
+
+        // together, and it stays out of Cash Flow
+
+        // income/expense.
+
+        return TransactionIntegration.recordTransfer({
+
+            date:
+
+                new Date().toISOString(),
+
+            fromAccountId:
+
+                String(fromAccountId),
+
+            toAccountId:
+
+                String(toAccountId),
+
+            amount:
+
+                value,
+
+            description:
+
+                note || "Transfer"
+
+        });
 
     },
 
