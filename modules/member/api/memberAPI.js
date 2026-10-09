@@ -3,7 +3,7 @@ Family Wealth AI OS V7
 Member API
 家庭成员统一接口层
 */
-import MemberService from "../services/memberService.js?v=20261008al";
+import MemberService from "../services/memberService.js?v=20261008am";
 
 const MemberAPI = {
     name: "Member API V7",
@@ -22,6 +22,10 @@ const MemberAPI = {
 
     deleteMember(id) {
         return MemberService.deleteMember(id);
+    },
+
+    ensureDefaultAccounts() {
+        return MemberService.ensureDefaultAccounts();
     },
 
     getMemberStats() {
