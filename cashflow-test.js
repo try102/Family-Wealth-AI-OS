@@ -16,7 +16,7 @@ app.innerHTML = `
 
 `;
 
-import("./core/modules/cashflowModule.js")
+import("./core/modules/cashflowModule.js?v=20261008ae")
 
     .then(({ default: CashflowModule }) => {
 

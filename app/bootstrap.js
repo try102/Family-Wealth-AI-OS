@@ -10,11 +10,11 @@
 
  */
 
-import AIAdvisor from "../ai/advisor.js";
+import AIAdvisor from "../ai/advisor.js?v=20261008ae";
 
-import AdvisorAgent from "../agents/advisor/advisorAgent.js";
+import AdvisorAgent from "../agents/advisor/advisorAgent.js?v=20261008ae";
 
-import TransactionModule from "../transaction/transactionModule.js";
+import TransactionModule from "../transaction/transactionModule.js?v=20261008ae";
 
 const AppBootstrap = {
 

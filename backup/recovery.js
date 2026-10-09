@@ -6,7 +6,7 @@ Recovery Manager
 
 */
 
-import Database from "../storage/database.js";
+import Database from "../storage/database.js?v=20261008ae";
 
 const Recovery = {
 

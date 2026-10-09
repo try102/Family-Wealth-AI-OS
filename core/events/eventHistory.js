@@ -6,7 +6,7 @@ Event History
 
 */
 
-import EventStore from "./eventStore.js";
+import EventStore from "./eventStore.js?v=20261008ae";
 
 const EventHistory = {
 

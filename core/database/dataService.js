@@ -6,7 +6,7 @@ Data Service
 
 */
 
-import Database from "./database.js";
+import Database from "./database.js?v=20261008ae";
 
 const DataService = {
 

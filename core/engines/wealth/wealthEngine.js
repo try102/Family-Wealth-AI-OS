@@ -6,9 +6,9 @@ Wealth Engine
 
 */
 
-import WealthCalculator from "./wealthCalculator.js";
+import WealthCalculator from "./wealthCalculator.js?v=20261008ae";
 
-import WealthScore from "./wealthScore.js";
+import WealthScore from "./wealthScore.js?v=20261008ae";
 
 const WealthEngine = {
 

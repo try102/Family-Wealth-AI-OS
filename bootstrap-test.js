@@ -16,7 +16,7 @@ app.innerHTML = `
 
 `;
 
-import("./core/bootstrap/systemBootstrap.js")
+import("./core/bootstrap/systemBootstrap.js?v=20261008ae")
 
     .then(({ default: SystemBootstrap }) => {
 

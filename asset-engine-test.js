@@ -28,7 +28,7 @@ app.innerHTML = `
 
 import(
 
-    "./modules/assets/engines/assetAnalysisEngine.js"
+    "./modules/assets/engines/assetAnalysisEngine.js?v=20261008ae"
 
 )
 

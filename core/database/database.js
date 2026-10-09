@@ -6,7 +6,7 @@ Database Core
 
 */
 
-import StorageAdapter from "./storageAdapter.js";
+import StorageAdapter from "./storageAdapter.js?v=20261008ae";
 
 const Database = {
 

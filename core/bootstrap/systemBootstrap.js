@@ -14,11 +14,11 @@
 
 import ModuleRegistry
 
-    from "../registry/moduleRegistry.js";
+    from "../registry/moduleRegistry.js?v=20261008ae";
 
 import AgentRegistry
 
-    from "../registry/agentRegistry.js";
+    from "../registry/agentRegistry.js?v=20261008ae";
 
 // ==================================================
 
@@ -32,15 +32,15 @@ import AgentRegistry
 
 import EngineRegistry
 
-    from "../engines/engineRegistry.js";
+    from "../engines/engineRegistry.js?v=20261008ae";
 
 import WealthEngine
 
-    from "../engines/wealth/wealthEngine.js";
+    from "../engines/wealth/wealthEngine.js?v=20261008ae";
 
 import CashFlowEngine
 
-    from "../engines/cashflow/cashFlowEngine.js";
+    from "../engines/cashflow/cashFlowEngine.js?v=20261008ae";
 
 // ==================================================
 
@@ -54,11 +54,11 @@ import CashFlowEngine
 
 import AIRegistry
 
-    from "../../ai/aiRegistry.js";
+    from "../../ai/aiRegistry.js?v=20261008ae";
 
 import Advisor
 
-    from "../../ai/advisor.js";
+    from "../../ai/advisor.js?v=20261008ae";
 
 // ==================================================
 
@@ -72,7 +72,7 @@ import Advisor
 
 import InvestmentAgent
 
-    from "../../modules/investment/agent/investmentAgent.js";
+    from "../../modules/investment/agent/investmentAgent.js?v=20261008ae";
 
 // ==================================================
 
@@ -86,23 +86,23 @@ import InvestmentAgent
 
 import TaxFacade
 
-    from "../../tax/taxFacade.js";
+    from "../../tax/taxFacade.js?v=20261008ae";
 
 import LiabilityModule
 
-    from "../modules/liabilityModule.js";
+    from "../modules/liabilityModule.js?v=20261008ae";
 
 import IncomeModule
 
-    from "../modules/incomeModule.js";
+    from "../modules/incomeModule.js?v=20261008ae";
 
 import CashflowModule
 
-    from "../modules/cashflowModule.js";
+    from "../modules/cashflowModule.js?v=20261008ae";
 
 import AssetsModule
 
-    from "../modules/assetsModule.js";
+    from "../modules/assetsModule.js?v=20261008ae";
 
 // ==================================================
 
@@ -116,7 +116,7 @@ import AssetsModule
 
 import AccountModule
 
-    from "../../account/accountModule.js";
+    from "../../account/accountModule.js?v=20261008ae";
 
 // ==================================================
 
@@ -130,7 +130,7 @@ import AccountModule
 
 import AccountIntegration
 
-    from "../integration/accountIntegration.js";
+    from "../integration/accountIntegration.js?v=20261008ae";
 
 // ==================================================
 
@@ -144,7 +144,7 @@ import AccountIntegration
 
 import TransactionModule
 
-    from "../../transaction/transactionModule.js";
+    from "../../transaction/transactionModule.js?v=20261008ae";
 
 // ==================================================
 
@@ -158,7 +158,7 @@ import TransactionModule
 
 import TransactionIntegration
 
-    from "../integration/transactionIntegration.js";
+    from "../integration/transactionIntegration.js?v=20261008ae";
 
 // ==================================================
 
@@ -176,7 +176,7 @@ import TransactionIntegration
 
 import CashflowIntegration
 
-    from "../integration/cashflowIntegration.js";
+    from "../integration/cashflowIntegration.js?v=20261008ae";
 
 // ==================================================
 
