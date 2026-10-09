@@ -1872,7 +1872,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./ai/advisorView.js?v=20261008ae"
+                            "./ai/advisorView.js?v=20261008as"
 
                         );
 
@@ -4614,9 +4614,19 @@ async function start(){
 
                     // asset count and allocation.
 
+                    // Accounts mirrored from an asset
+
+                    // record are the same money as
+
+                    // that asset: count them once,
+
+                    // on the asset side.
+
                     account =>
 
-                        Number(account.balance || 0) !== 0
+                        Number(account.balance || 0) !== 0 &&
+
+                        account.openingSource !== "asset"
 
                 );
 
