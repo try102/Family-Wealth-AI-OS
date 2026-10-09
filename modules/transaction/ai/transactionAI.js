@@ -6,7 +6,7 @@ Transaction AI Layer
 
 */
 
-import TransactionAgent from "../agent/transactionAgent.js";
+import TransactionAgent from "../agent/transactionAgent.js?v=20261008ae";
 
 const TransactionAI = {
 

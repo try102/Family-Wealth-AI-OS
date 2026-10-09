@@ -6,7 +6,7 @@ Transaction View
 
 */
 
-import TransactionAPI from "../api/transactionAPI.js";
+import TransactionAPI from "../api/transactionAPI.js?v=20261008ae";
 
 const TransactionView = {
 

@@ -6,11 +6,11 @@ Transaction Service
 
 */
 
-import TransactionRepository from "../repository/transactionRepository.js";
+import TransactionRepository from "../repository/transactionRepository.js?v=20261008ae";
 
-import EventBus from "../../../core/events/eventBus.js";
+import EventBus from "../../../core/events/eventBus.js?v=20261008ae";
 
-import EventTypes from "../../../core/events/eventTypes.js";
+import EventTypes from "../../../core/events/eventTypes.js?v=20261008ae";
 
 const TransactionService = {
 

@@ -84,7 +84,7 @@
 
 import TransactionController
 
-    from "./transactionController.js";
+    from "./transactionController.js?v=20261008ae";
 
 /*
 

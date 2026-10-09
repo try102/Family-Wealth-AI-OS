@@ -6,7 +6,7 @@ Report Manager
 
 */
 
-import Report from "./report.js";
+import Report from "./report.js?v=20261008ae";
 
 const ReportManager = {
 

@@ -6,7 +6,7 @@ Simulation Manager
 
 */
 
-import Simulation from "./simulation.js";
+import Simulation from "./simulation.js?v=20261008ae";
 
 const SimulationManager = {
 

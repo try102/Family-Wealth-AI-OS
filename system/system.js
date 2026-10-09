@@ -8,11 +8,11 @@ System Manager
 
 import AppBootstrap
 
-from "../app/bootstrap.js";
+from "../app/bootstrap.js?v=20261008ae";
 
 import DashboardView
 
-from "../modules/ui/dashboardView.js";
+from "../modules/ui/dashboardView.js?v=20261008ae";
 
 const System = {
 

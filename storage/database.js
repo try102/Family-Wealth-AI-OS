@@ -8,7 +8,7 @@ Database Manager
 
 import Storage
 
-from "./storage.js";
+from "./storage.js?v=20261008ae";
 
 const Database = {
 

@@ -8,7 +8,7 @@ Dashboard View Adapter
 
 import DashboardController
 
-from "../dashboard/dashboardController.js";
+from "../dashboard/dashboardController.js?v=20261008ae";
 
 const DashboardView = {
 

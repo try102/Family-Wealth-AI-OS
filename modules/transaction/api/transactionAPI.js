@@ -8,7 +8,7 @@ Public Interface
 
 */
 
-import TransactionService from "../services/transactionService.js";
+import TransactionService from "../services/transactionService.js?v=20261008ae";
 
 const TransactionAPI = {
 
