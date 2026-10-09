@@ -866,6 +866,1018 @@ const AccountBalanceIntegration = {
 
             }
 
+            // Manual investment records (holdings
+
+            // typed into the Investment Center with
+
+            // no trades behind them) are buys paid
+
+            // from the member's investable cash,
+
+            // exactly like a recorded trade: the
+
+            // quantity not already covered by that
+
+            // member's trades settles against the
+
+            // member's Investment account. Deleting
+
+            // or editing the record re-derives at
+
+            // the next calibration, like trades do.
+
+            try {
+
+                const manualRecords =
+
+                    InvestmentRepository.getInvestments() ||
+
+                    [];
+
+                const accountsNow =
+
+                    AccountRepository.findAll() ||
+
+                    [];
+
+                const canonicalMember = rawId => {
+
+                    if (!rawId) {
+
+                        return "";
+
+                    }
+
+                    const hit =
+
+                        (
+
+                            MemberRepository.getAll() || []
+
+                        ).find(
+
+                            member =>
+
+                                AccountBalanceIntegration
+
+                                    .sameMemberId(
+
+                                        member.id,
+
+                                        rawId
+
+                                    )
+
+                        );
+
+                    return hit
+
+                        ? String(hit.id)
+
+                        : String(rawId);
+
+                };
+
+                const accountOwnerOf = accountId => {
+
+                    if (!accountId) {
+
+                        return "";
+
+                    }
+
+                    const found =
+
+                        accountsNow.find(
+
+                            account =>
+
+                                String(account.id) ===
+
+                                String(accountId)
+
+                        );
+
+                    return found
+
+                        ? String(
+
+                            found.memberId ||
+
+                            found.ownerId ||
+
+                            ""
+
+                        )
+
+                        : "";
+
+                };
+
+                const tradeQty = new Map();
+
+                (
+
+                    InvestmentRepository.getTrades() ||
+
+                    []
+
+                ).forEach(
+
+                    trade => {
+
+                        if (!trade) {
+
+                            return;
+
+                        }
+
+                        const memberKey =
+
+                            canonicalMember(
+
+                                trade.memberId ||
+
+                                    trade.ownerId ||
+
+                                    accountOwnerOf(
+
+                                        trade.accountId
+
+                                    )
+
+                            );
+
+                        const symbolKey =
+
+                            String(
+
+                                trade.symbol ||
+
+                                    trade.name ||
+
+                                    ""
+
+                            ).toUpperCase();
+
+                        if (!memberKey || !symbolKey) {
+
+                            return;
+
+                        }
+
+                        const action =
+
+                            String(
+
+                                trade.action || ""
+
+                            ).toUpperCase();
+
+                        const qty =
+
+                            Number(trade.quantity || 0);
+
+                        if (!Number.isFinite(qty)) {
+
+                            return;
+
+                        }
+
+                        const key =
+
+                            `${memberKey}::${symbolKey}`;
+
+                        tradeQty.set(
+
+                            key,
+
+                            (tradeQty.get(key) || 0) +
+
+                                (
+
+                                    action === "SELL"
+
+                                        ? -qty
+
+                                        : qty
+
+                                )
+
+                        );
+
+                    }
+
+                );
+
+                manualRecords.forEach(
+
+                    record => {
+
+                        if (!record) {
+
+                            return;
+
+                        }
+
+                        const quantity =
+
+                            Number(record.quantity || 0);
+
+                        if (
+
+                            !Number.isFinite(quantity) ||
+
+                            quantity <= 0
+
+                        ) {
+
+                            return;
+
+                        }
+
+                        const costBasis =
+
+                            Number(
+
+                                record.costBasis ??
+
+                                    record.totalCost ??
+
+                                    record.currentValue ??
+
+                                    record.marketValue ??
+
+                                    0
+
+                            );
+
+                        const unitCost =
+
+                            Number(record.averageCost || 0) ||
+
+                            (
+
+                                quantity > 0
+
+                                    ? costBasis / quantity
+
+                                    : 0
+
+                            );
+
+                        if (
+
+                            !Number.isFinite(unitCost) ||
+
+                            unitCost <= 0
+
+                        ) {
+
+                            return;
+
+                        }
+
+                        const memberRaw =
+
+                            record.memberId ||
+
+                            record.ownerId ||
+
+                            accountOwnerOf(record.accountId) ||
+
+                            "";
+
+                        const memberKey =
+
+                            canonicalMember(memberRaw);
+
+                        const symbolKey =
+
+                            String(
+
+                                record.symbol ||
+
+                                    record.name ||
+
+                                    ""
+
+                            ).toUpperCase();
+
+                        if (!symbolKey) {
+
+                            return;
+
+                        }
+
+                        const covered =
+
+                            memberKey
+
+                                ? tradeQty.get(
+
+                                    `${memberKey}::${symbolKey}`
+
+                                ) || 0
+
+                                : 0;
+
+                        const uncovered =
+
+                            Math.max(0, quantity - covered);
+
+                        if (uncovered <= 0) {
+
+                            return;
+
+                        }
+
+                        const settleAmount =
+
+                            uncovered * unitCost;
+
+                        let target = "";
+
+                        if (record.accountId) {
+
+                            const picked =
+
+                                accountsNow.find(
+
+                                    account =>
+
+                                        String(account.id) ===
+
+                                        String(record.accountId)
+
+                                );
+
+                            if (picked) {
+
+                                const pickedOwner =
+
+                                    String(
+
+                                        picked.memberId ||
+
+                                        picked.ownerId ||
+
+                                        ""
+
+                                    );
+
+                                if (
+
+                                    !memberKey ||
+
+                                    !pickedOwner ||
+
+                                    AccountBalanceIntegration
+
+                                        .sameMemberId(
+
+                                            pickedOwner,
+
+                                            memberRaw
+
+                                        )
+
+                                ) {
+
+                                    target =
+
+                                        String(picked.id);
+
+                                }
+
+                            }
+
+                        }
+
+                        if (!target && memberKey) {
+
+                            const owned =
+
+                                accountsNow.filter(
+
+                                    account =>
+
+                                        AccountBalanceIntegration
+
+                                            .sameMemberId(
+
+                                                account.memberId ||
+
+                                                    account.ownerId ||
+
+                                                    "",
+
+                                                memberRaw
+
+                                            )
+
+                                );
+
+                            const pick =
+
+                                owned.find(
+
+                                    account =>
+
+                                        account.openingSource ===
+
+                                            "asset" &&
+
+                                        AccountBalanceIntegration
+
+                                            .mirrorKindOfRecord(
+
+                                                account
+
+                                            ) === "investment"
+
+                                ) ||
+
+                                owned.find(
+
+                                    account =>
+
+                                        AccountBalanceIntegration
+
+                                            .mirrorKindOfRecord(
+
+                                                account
+
+                                            ) === "investment"
+
+                                );
+
+                            if (pick) {
+
+                                target = String(pick.id);
+
+                            }
+
+                        }
+
+                        if (!target) {
+
+                            return;
+
+                        }
+
+                        effects.set(
+
+                            target,
+
+                            (
+
+                                effects.get(target) ||
+
+                                0
+
+                            ) - settleAmount
+
+                        );
+
+                        referenced.add(target);
+
+                        if (record.accountId) {
+
+                            referenced.add(
+
+                                String(record.accountId)
+
+                            );
+
+                        }
+
+                    }
+
+                );
+
+            } catch (manualSettleError) {
+
+            }
+
+            // Position records are the third holding
+
+            // source. When trades and manual records
+
+            // are gone but a position remains (e.g.
+
+            // the trades were removed outside the
+
+            // trade-delete path), its remaining cost
+
+            // still came out of the member's
+
+            // investable cash: settle the quantity
+
+            // not covered by trades or records.
+
+            try {
+
+                const positions =
+
+                    InvestmentRepository.getPositions() ||
+
+                    [];
+
+                const accountsNow =
+
+                    AccountRepository.findAll() ||
+
+                    [];
+
+                const canonicalMember = rawId => {
+
+                    if (!rawId) {
+
+                        return "";
+
+                    }
+
+                    const hit =
+
+                        (
+
+                            MemberRepository.getAll() || []
+
+                        ).find(
+
+                            member =>
+
+                                AccountBalanceIntegration
+
+                                    .sameMemberId(
+
+                                        member.id,
+
+                                        rawId
+
+                                    )
+
+                        );
+
+                    return hit
+
+                        ? String(hit.id)
+
+                        : String(rawId);
+
+                };
+
+                const accountOwnerOf = accountId => {
+
+                    if (!accountId) {
+
+                        return "";
+
+                    }
+
+                    const found =
+
+                        accountsNow.find(
+
+                            account =>
+
+                                String(account.id) ===
+
+                                String(accountId)
+
+                        );
+
+                    return found
+
+                        ? String(
+
+                            found.memberId ||
+
+                            found.ownerId ||
+
+                            ""
+
+                        )
+
+                        : "";
+
+                };
+
+                const coveredQty = new Map();
+
+                const bumpCovered = (key, qty) => {
+
+                    coveredQty.set(
+
+                        key,
+
+                        Math.max(
+
+                            coveredQty.get(key) || 0,
+
+                            qty
+
+                        )
+
+                    );
+
+                };
+
+                // Net trade quantity per member+symbol.
+
+                const netTradeQty = new Map();
+
+                (
+
+                    InvestmentRepository.getTrades() ||
+
+                    []
+
+                ).forEach(
+
+                    trade => {
+
+                        if (!trade) {
+
+                            return;
+
+                        }
+
+                        const memberKey =
+
+                            canonicalMember(
+
+                                trade.memberId ||
+
+                                    trade.ownerId ||
+
+                                    accountOwnerOf(
+
+                                        trade.accountId
+
+                                    )
+
+                            );
+
+                        const symbolKey =
+
+                            String(
+
+                                trade.symbol ||
+
+                                    trade.name ||
+
+                                    ""
+
+                            ).toUpperCase();
+
+                        if (!memberKey || !symbolKey) {
+
+                            return;
+
+                        }
+
+                        const action =
+
+                            String(
+
+                                trade.action || ""
+
+                            ).toUpperCase();
+
+                        const qty =
+
+                            Number(trade.quantity || 0);
+
+                        if (!Number.isFinite(qty)) {
+
+                            return;
+
+                        }
+
+                        const key =
+
+                            `${memberKey}::${symbolKey}`;
+
+                        netTradeQty.set(
+
+                            key,
+
+                            (netTradeQty.get(key) || 0) +
+
+                                (
+
+                                    action === "SELL"
+
+                                        ? -qty
+
+                                        : qty
+
+                                )
+
+                        );
+
+                    }
+
+                );
+
+                netTradeQty.forEach(
+
+                    (qty, key) => bumpCovered(key, qty)
+
+                );
+
+                (
+
+                    InvestmentRepository.getInvestments() ||
+
+                    []
+
+                ).forEach(
+
+                    record => {
+
+                        if (!record) {
+
+                            return;
+
+                        }
+
+                        const memberKey =
+
+                            canonicalMember(
+
+                                record.memberId ||
+
+                                    record.ownerId ||
+
+                                    accountOwnerOf(
+
+                                        record.accountId
+
+                                    )
+
+                            );
+
+                        const symbolKey =
+
+                            String(
+
+                                record.symbol ||
+
+                                    record.name ||
+
+                                    ""
+
+                            ).toUpperCase();
+
+                        const qty =
+
+                            Number(record.quantity || 0);
+
+                        if (
+
+                            memberKey &&
+
+                            symbolKey &&
+
+                            Number.isFinite(qty)
+
+                        ) {
+
+                            bumpCovered(
+
+                                `${memberKey}::${symbolKey}`,
+
+                                qty
+
+                            );
+
+                        }
+
+                    }
+
+                );
+
+                positions.forEach(
+
+                    position => {
+
+                        if (!position) {
+
+                            return;
+
+                        }
+
+                        const quantity =
+
+                            Number(position.quantity || 0);
+
+                        const costBasis =
+
+                            Number(position.costBasis || 0);
+
+                        if (
+
+                            !Number.isFinite(quantity) ||
+
+                            quantity <= 0 ||
+
+                            !Number.isFinite(costBasis) ||
+
+                            costBasis <= 0
+
+                        ) {
+
+                            return;
+
+                        }
+
+                        const symbolKey =
+
+                            String(
+
+                                position.symbol ||
+
+                                    position.name ||
+
+                                    ""
+
+                            ).toUpperCase();
+
+                        if (!symbolKey) {
+
+                            return;
+
+                        }
+
+                        const memberRaw =
+
+                            position.memberId ||
+
+                            position.ownerId ||
+
+                            accountOwnerOf(
+
+                                position.accountId
+
+                            ) ||
+
+                            "";
+
+                        const memberKey =
+
+                            canonicalMember(memberRaw);
+
+                        const covered =
+
+                            memberKey
+
+                                ? coveredQty.get(
+
+                                    `${memberKey}::${symbolKey}`
+
+                                ) || 0
+
+                                : 0;
+
+                        const uncovered =
+
+                            Math.max(0, quantity - covered);
+
+                        if (uncovered <= 0) {
+
+                            return;
+
+                        }
+
+                        const settleAmount =
+
+                            uncovered *
+
+                            (costBasis / quantity);
+
+                        let target = "";
+
+                        if (position.accountId) {
+
+                            const picked =
+
+                                accountsNow.find(
+
+                                    account =>
+
+                                        String(account.id) ===
+
+                                        String(position.accountId)
+
+                                );
+
+                            if (picked) {
+
+                                target = String(picked.id);
+
+                            }
+
+                        }
+
+                        if (!target && memberKey) {
+
+                            const owned =
+
+                                accountsNow.filter(
+
+                                    account =>
+
+                                        AccountBalanceIntegration
+
+                                            .sameMemberId(
+
+                                                account.memberId ||
+
+                                                    account.ownerId ||
+
+                                                    "",
+
+                                                memberRaw
+
+                                            )
+
+                                );
+
+                            const pick =
+
+                                owned.find(
+
+                                    account =>
+
+                                        account.openingSource ===
+
+                                            "asset" &&
+
+                                        AccountBalanceIntegration
+
+                                            .mirrorKindOfRecord(
+
+                                                account
+
+                                            ) === "investment"
+
+                                ) ||
+
+                                owned.find(
+
+                                    account =>
+
+                                        AccountBalanceIntegration
+
+                                            .mirrorKindOfRecord(
+
+                                                account
+
+                                            ) === "investment"
+
+                                );
+
+                            if (pick) {
+
+                                target = String(pick.id);
+
+                            }
+
+                        }
+
+                        if (!target) {
+
+                            return;
+
+                        }
+
+                        effects.set(
+
+                            target,
+
+                            (
+
+                                effects.get(target) ||
+
+                                0
+
+                            ) - settleAmount
+
+                        );
+
+                        referenced.add(target);
+
+                    }
+
+                );
+
+            } catch (positionSettleError) {
+
+            }
+
             try {
 
                 (
@@ -2008,7 +3020,29 @@ const AccountBalanceIntegration = {
 
         const nameB = this.memberNameOf(b);
 
-        return !!nameA && nameA === nameB;
+        if (!!nameA && nameA === nameB) {
+
+            return true;
+
+        }
+
+        // A raw member NAME stored where an id
+
+        // belongs still names the same member.
+
+        if (nameB && String(a) === nameB) {
+
+            return true;
+
+        }
+
+        if (nameA && String(b) === nameA) {
+
+            return true;
+
+        }
+
+        return false;
 
     },
 
