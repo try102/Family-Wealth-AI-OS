@@ -18,11 +18,11 @@ Delete Investment
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js?v=20261008ae";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261008ag";
 
 import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
-import InvestmentAgent from "../agent/investmentAgent.js?v=20261008ae";
+import InvestmentAgent from "../agent/investmentAgent.js?v=20261008ag";
 
 import AccountAPI from "../../account/api/accountAPI.js?v=20261008ae";
 
@@ -38,7 +38,7 @@ import {
 
     t
 
-} from "../i18n/investmentLocales.js?v=20261008ae";
+} from "../i18n/investmentLocales.js?v=20261008ag";
 
 const InvestmentView = {
 
@@ -202,11 +202,13 @@ const InvestmentView = {
 
             trade =>
 
-                typeof trade.memberId === "string"
+                trade.memberId ||
 
-                    ? trade.memberId
+                trade.ownerId ||
 
-                    : accountMemberMap[trade.accountId] || "";
+                accountMemberMap[trade.accountId] ||
+
+                "";
 
         const positionTradeLines =
 
@@ -1278,6 +1280,68 @@ const InvestmentView = {
 
                                     }
 
+                                    ${
+
+                                        this.pendingTradeDeleteId === trade.id
+
+                                        ?
+
+                                        `
+
+                                    <button
+
+                                        type="button"
+
+                                        class="delete-trade-button"
+
+                                        data-id="${trade.id}"
+
+                                    >
+
+                                        ${t("confirmDeleteTrade")}
+
+                                    </button>
+
+                                    <button
+
+                                        type="button"
+
+                                        class="cancel-delete-trade-button"
+
+                                        data-id="${trade.id}"
+
+                                    >
+
+                                        ${t("cancel")}
+
+                                    </button>
+
+                                    <br><small>${t("deleteTradeNote")}</small>
+
+                                        `
+
+                                        :
+
+                                        `
+
+                                    <button
+
+                                        type="button"
+
+                                        class="delete-trade-button"
+
+                                        data-id="${trade.id}"
+
+                                    >
+
+                                        ${t("deleteTrade")}
+
+                                    </button>
+
+                                        `
+
+                                    }
+
                                 </li>
 
                             `
@@ -2017,6 +2081,86 @@ const InvestmentView = {
             );
 
         }
+
+        // ==========================================
+
+        // Delete Trade Buttons
+
+        // ==========================================
+
+        const deleteTradeButtons =
+
+            container.querySelectorAll(
+
+                ".delete-trade-button"
+
+            );
+
+        deleteTradeButtons.forEach(
+
+            button => {
+
+                button.addEventListener(
+
+                    "click",
+
+                    () => {
+
+                        this.deleteTrade(
+
+                            container,
+
+                            button.dataset.id,
+
+                            onBack
+
+                        );
+
+                    }
+
+                );
+
+            }
+
+        );
+
+        const cancelDeleteTradeButtons =
+
+            container.querySelectorAll(
+
+                ".cancel-delete-trade-button"
+
+            );
+
+        cancelDeleteTradeButtons.forEach(
+
+            button => {
+
+                button.addEventListener(
+
+                    "click",
+
+                    () => {
+
+                        this.pendingTradeDeleteId =
+
+                            null;
+
+                        this.render(
+
+                            container,
+
+                            onBack
+
+                        );
+
+                    }
+
+                );
+
+            }
+
+        );
 
         // ==========================================
 
@@ -3531,6 +3675,60 @@ const InvestmentView = {
     // Delete Investment
 
     // ==========================================
+
+    deleteTrade(
+
+        container,
+
+        id,
+
+        onBack
+
+    ) {
+
+        // Two-step inline confirm, same pattern
+
+        // as Delete Investment.
+
+        if (this.pendingTradeDeleteId !== id) {
+
+            this.pendingTradeDeleteId =
+
+                id;
+
+            this.render(
+
+                container,
+
+                onBack
+
+            );
+
+            return;
+
+        }
+
+        this.pendingTradeDeleteId =
+
+            null;
+
+        InvestmentAPI
+
+        .deleteTrade(
+
+            id
+
+        );
+
+        this.render(
+
+            container,
+
+            onBack
+
+        );
+
+    },
 
     deleteInvestment(
 
