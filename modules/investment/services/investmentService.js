@@ -36,7 +36,7 @@
 
 import InvestmentRepository
 
-    from "../repository/investmentRepository.js?v=20261008ac";
+    from "../repository/investmentRepository.js?v=20261008ad";
 
 import EventBus
 
@@ -49,6 +49,10 @@ import EventTypes
 import TransactionIntegration
 
     from "../../../core/integration/transactionIntegration.js";
+
+import PriceOverrideStore
+
+    from "./priceOverrideStore.js?v=20261008ad";
 
 /*
 
@@ -1228,6 +1232,12 @@ const InvestmentService = {
 
         }
 
+        PriceOverrideStore.clear(
+
+            symbol
+
+        );
+
         const savedPosition =
 
             this.updatePosition(
@@ -1371,6 +1381,202 @@ const InvestmentService = {
             );
 
         return savedPosition;
+
+    },
+
+    // =====================================================
+
+    // Current Price (manual / imported)
+
+    // =====================================================
+
+    setCurrentPrice(
+
+        symbol,
+
+        price,
+
+        source = "manual"
+
+    ){
+
+        const key =
+
+            String(symbol || "")
+
+                .trim()
+
+                .toUpperCase();
+
+        const value =
+
+            Number(price || 0);
+
+        if (!key || !(value > 0)) {
+
+            return null;
+
+        }
+
+        PriceOverrideStore.set(
+
+            key,
+
+            value,
+
+            source
+
+        );
+
+        let updatedPosition = null;
+
+        const position =
+
+            this.getPositions().find(
+
+                item =>
+
+                    String(item.symbol || "")
+
+                        .toUpperCase() === key
+
+            );
+
+        if (position) {
+
+            position.currentPrice =
+
+                value;
+
+            position.marketValue =
+
+                Number(position.quantity || 0) *
+
+                value;
+
+            position.unrealizedGainLoss =
+
+                position.marketValue -
+
+                Number(position.costBasis || 0);
+
+            updatedPosition =
+
+                this.updatePosition(
+
+                    position
+
+                );
+
+        }
+
+        const record =
+
+            this.getInvestments().find(
+
+                item =>
+
+                    String(
+
+                        item.symbol ||
+
+                            item.name ||
+
+                            ""
+
+                    ).toUpperCase() === key
+
+            );
+
+        if (record) {
+
+            record.currentPrice =
+
+                value;
+
+            const recordQuantity =
+
+                Number(record.quantity || 0);
+
+            if (recordQuantity > 0) {
+
+                record.currentValue =
+
+                    recordQuantity * value;
+
+                record.marketValue =
+
+                    record.currentValue;
+
+            }
+
+            InvestmentRepository
+
+                .saveInvestment(
+
+                    record
+
+                );
+
+        }
+
+        return {
+
+            symbol: key,
+
+            price: value,
+
+            position: updatedPosition
+
+        };
+
+    },
+
+    importPrices(
+
+        priceMap,
+
+        source = "import"
+
+    ){
+
+        const applied = [];
+
+        Object.entries(priceMap || {})
+
+            .forEach(
+
+                ([symbol, price]) => {
+
+                    const result =
+
+                        this.setCurrentPrice(
+
+                            symbol,
+
+                            price,
+
+                            source
+
+                        );
+
+                    if (result) {
+
+                        applied.push(result);
+
+                    }
+
+                }
+
+            );
+
+        return applied;
+
+    },
+
+    getPriceOverrides(){
+
+        return PriceOverrideStore.all();
 
     },
 
