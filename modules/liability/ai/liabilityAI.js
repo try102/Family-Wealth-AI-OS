@@ -8,7 +8,7 @@ Liability AI Layer
 
 */
 
-import LiabilityAgent from "../agent/liabilityAgent.js";
+import LiabilityAgent from "../agent/liabilityAgent.js?v=20261008ae";
 
 const LiabilityAI = {
 

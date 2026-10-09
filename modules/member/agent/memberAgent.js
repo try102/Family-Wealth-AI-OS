@@ -3,7 +3,7 @@ Family Wealth AI OS V7
 Member Agent
 家庭成员智能入口
 */
-import MemberAPI from "../api/memberAPI.js";
+import MemberAPI from "../api/memberAPI.js?v=20261008ae";
 
 const MemberAgent = {
     getMembers() {

@@ -8,11 +8,11 @@ Liability Service
 
 */
 
-import LiabilityRepository from "../repository/liabilityRepository.js";
+import LiabilityRepository from "../repository/liabilityRepository.js?v=20261008ae";
 
-import LiabilitySchema from "../schema/liabilitySchema.js";
+import LiabilitySchema from "../schema/liabilitySchema.js?v=20261008ae";
 
-import TransactionIntegration from "../../../core/integration/transactionIntegration.js";
+import TransactionIntegration from "../../../core/integration/transactionIntegration.js?v=20261008ae";
 
 const LiabilityService = {
 

@@ -10,7 +10,7 @@ Liability Agent
 
 */
 
-import LiabilityAPI from "../api/liabilityAPI.js";
+import LiabilityAPI from "../api/liabilityAPI.js?v=20261008ae";
 
 const LiabilityAgent = {
 
