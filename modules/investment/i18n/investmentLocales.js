@@ -148,6 +148,30 @@ const DICTIONARY = {
 
         holdingsAuto: "持仓（买卖自动更新）",
 
+        priceCurrent: "当前价格",
+
+        priceUpdate: "更新价格",
+
+        priceSource: "价格来源",
+
+        priceManual: "手动输入",
+
+        priceImported: "外部导入",
+
+        priceImportTitle: "当前价格（手动 / 外部导入）",
+
+        priceImportHint: "每行一个：代码,价格（如 AAPL,190.5），或粘贴 JSON",
+
+        priceImportApply: "应用导入",
+
+        priceImportFetch: "从接口拉取",
+
+        priceImportUrl: "接口地址（返回 代码:价格 的 JSON）",
+
+        priceApplied: "已应用价格",
+
+        priceFailed: "导入失败，请检查格式",
+
         recentTrades: "最近交易",
 
         investmentsTitle: "投资列表",
@@ -357,6 +381,30 @@ const DICTIONARY = {
         recordTrade: "⇄ 記錄交易",
 
         holdingsAuto: "持倉（買賣自動更新）",
+
+        priceCurrent: "當前價格",
+
+        priceUpdate: "更新價格",
+
+        priceSource: "價格來源",
+
+        priceManual: "手動輸入",
+
+        priceImported: "外部匯入",
+
+        priceImportTitle: "當前價格（手動 / 外部匯入）",
+
+        priceImportHint: "每行一個：代碼,價格（如 AAPL,190.5），或貼上 JSON",
+
+        priceImportApply: "套用匯入",
+
+        priceImportFetch: "從介面拉取",
+
+        priceImportUrl: "介面地址（回傳 代碼:價格 的 JSON）",
+
+        priceApplied: "已套用價格",
+
+        priceFailed: "匯入失敗，請檢查格式",
 
         recentTrades: "最近交易",
 
@@ -568,6 +616,30 @@ const DICTIONARY = {
 
         holdingsAuto: "Holdings (auto-updated by trades)",
 
+        priceCurrent: "Current price",
+
+        priceUpdate: "Update price",
+
+        priceSource: "Price source",
+
+        priceManual: "Manual",
+
+        priceImported: "Imported",
+
+        priceImportTitle: "Current prices (manual / import)",
+
+        priceImportHint: "One per line: SYMBOL,price (e.g. AAPL,190.5), or paste JSON",
+
+        priceImportApply: "Apply import",
+
+        priceImportFetch: "Fetch from API",
+
+        priceImportUrl: "API URL (returns JSON of symbol: price)",
+
+        priceApplied: "Prices applied",
+
+        priceFailed: "Import failed, check the format",
+
         recentTrades: "Recent Trades",
 
         investmentsTitle: "Investments",
@@ -777,6 +849,30 @@ const DICTIONARY = {
         recordTrade: "⇄ 取引を記録",
 
         holdingsAuto: "保有銘柄（取引で自動更新）",
+
+        priceCurrent: "現在価格",
+
+        priceUpdate: "価格を更新",
+
+        priceSource: "価格ソース",
+
+        priceManual: "手動入力",
+
+        priceImported: "外部インポート",
+
+        priceImportTitle: "現在価格（手動 / 外部インポート）",
+
+        priceImportHint: "1行に1件：コード,価格（例 AAPL,190.5）、またはJSONを貼付",
+
+        priceImportApply: "インポートを適用",
+
+        priceImportFetch: "APIから取得",
+
+        priceImportUrl: "APIアドレス（コード:価格 のJSONを返す）",
+
+        priceApplied: "価格を適用しました",
+
+        priceFailed: "インポート失敗、形式を確認してください",
 
         recentTrades: "最近の取引",
 
