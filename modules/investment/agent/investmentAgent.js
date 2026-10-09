@@ -14,6 +14,8 @@ import AccountAPI from "../../account/api/accountAPI.js";
 
 import MemberAPI from "../../member/api/memberAPI.js";
 
+import PriceOverrideStore from "../services/priceOverrideStore.js";
+
 function decideSignal(weight, returnRate) {
 
     if (
@@ -431,6 +433,44 @@ const InvestmentAgent = {
                 position =>
 
                     position.quantity > 0
+
+            )
+
+            .map(
+
+                position => {
+
+                    const overridePrice =
+
+                        PriceOverrideStore.get(
+
+                            position.symbol
+
+                        );
+
+                    if (overridePrice > 0) {
+
+                        position.currentPrice =
+
+                            overridePrice;
+
+                        position.marketValue =
+
+                            position.quantity *
+
+                            overridePrice;
+
+                        position.unrealizedGainLoss =
+
+                            position.marketValue -
+
+                            position.costBasis;
+
+                    }
+
+                    return position;
+
+                }
 
             );
 
