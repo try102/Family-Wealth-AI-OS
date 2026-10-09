@@ -384,7 +384,13 @@ const AccountBalanceIntegration = {
 
                         id: accountKey,
 
-                        name: "同步账户",
+                        name:
+
+                            /^\d{6,}_/.test(accountKey)
+
+                                ? "同步账户"
+
+                                : accountKey,
 
                         accountType: "Cash",
 
@@ -477,6 +483,72 @@ const AccountBalanceIntegration = {
                     const current =
 
                         Number(account.balance || 0);
+
+                    // Household rule: legacy Investment /
+
+                    // Checking accounts open at 200,000
+
+                    // unless the user typed their own
+
+                    // opening balance at creation.
+
+                    const kindLabel =
+
+                        `${account.name || ""} ${account.accountType || ""} ${account.type || ""}`.toLowerCase();
+
+                    if (
+
+                        !account.openingSource &&
+
+                        (
+
+                            kindLabel.includes("invest") ||
+
+                            kindLabel.includes("check")
+
+                        )
+
+                    ) {
+
+                        account.openingBalance = 200000;
+
+                        account.openingSource = "rule";
+
+                        account.balance =
+
+                            200000 +
+
+                            (
+
+                                effects.has(accountKey)
+
+                                    ? effect
+
+                                    : entryEffects.get(
+
+                                        accountKey
+
+                                    ) ||
+
+                                    0
+
+                            );
+
+                        try {
+
+                            AccountRepository.save(
+
+                                account
+
+                            );
+
+                        } catch (ruleError) {
+
+                        }
+
+                        return;
+
+                    }
 
                     if (
 
