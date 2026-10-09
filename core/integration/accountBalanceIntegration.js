@@ -24,6 +24,8 @@ import InvestmentRepository from "../../modules/investment/repository/investment
 
 import AssetRepository from "../../modules/asset/repository/assetRepository.js?v=20261008ae";
 
+import cashflowAPI from "../../modules/cashflow/api/cashflowAPI.js?v=20261008ae";
+
 const AccountBalanceIntegration = {
 
     initialized:
@@ -250,6 +252,100 @@ const AccountBalanceIntegration = {
 
             }
 
+            // Cash-flow entries survive even when
+
+            // their transactions were deleted, so
+
+            // they are a reference source too.
+
+            const entryEffects = new Map();
+
+            try {
+
+                (
+
+                    cashflowAPI.getCashflows() ||
+
+                    []
+
+                ).forEach(
+
+                    entry => {
+
+                        if (!entry.accountId) {
+
+                            return;
+
+                        }
+
+                        const accountKey =
+
+                            String(entry.accountId);
+
+                        referenced.add(
+
+                            accountKey
+
+                        );
+
+                        const amount =
+
+                            Number(entry.amount || 0);
+
+                        if (
+
+                            !Number.isFinite(amount) ||
+
+                            amount === 0
+
+                        ) {
+
+                            return;
+
+                        }
+
+                        const delta =
+
+                            entry.type === "INCOME"
+
+                                ? amount
+
+                                : entry.type === "EXPENSE"
+
+                                    ? -amount
+
+                                    : 0;
+
+                        if (delta) {
+
+                            entryEffects.set(
+
+                                accountKey,
+
+                                (
+
+                                    entryEffects.get(
+
+                                        accountKey
+
+                                    ) ||
+
+                                    0
+
+                                ) + delta
+
+                            );
+
+                        }
+
+                    }
+
+                );
+
+            } catch (entryScanError) {
+
+            }
+
             const byId = new Map();
 
             (
@@ -296,11 +392,37 @@ const AccountBalanceIntegration = {
 
                         balance:
 
-                            effects.get(accountKey) ||
+                            effects.has(accountKey)
 
-                            0,
+                                ? effects.get(accountKey)
 
-                        openingBalance: 0,
+                                : entryEffects.get(
+
+                                    accountKey
+
+                                ) ||
+
+                                0,
+
+                        openingBalance:
+
+                            (
+
+                                effects.has(accountKey)
+
+                                    ? effects.get(accountKey)
+
+                                    : entryEffects.get(
+
+                                        accountKey
+
+                                    ) ||
+
+                                    0
+
+                            ) -
+
+                            (effects.get(accountKey) || 0),
 
                         memberId:
 
