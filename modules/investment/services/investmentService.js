@@ -36,7 +36,7 @@
 
 import InvestmentRepository
 
-    from "../repository/investmentRepository.js?v=20261008ae";
+    from "../repository/investmentRepository.js?v=20261008ag";
 
 import EventBus
 
@@ -53,6 +53,14 @@ import TransactionIntegration
 import PriceOverrideStore
 
     from "./priceOverrideStore.js?v=20261008ae";
+
+import AccountBalanceIntegration
+
+    from "../../../core/integration/accountBalanceIntegration.js?v=20261008ag";
+
+import cashflowAPI
+
+    from "../../cashflow/api/cashflowAPI.js?v=20261008ae";
 
 /*
 
@@ -91,6 +99,216 @@ function getTransactionService() {
         return null;
 
     }
+
+}
+
+/*
+
+ * FIFO replay of one symbol's trades: buys form lots,
+
+ * sells consume the oldest lots first. Returns the
+
+ * remaining quantity/cost basis and each sell's
+
+ * realized gain (proceeds minus FIFO lot cost).
+
+ */
+
+function replayFifoTrades(
+
+    symbol,
+
+    trades
+
+) {
+
+    const key =
+
+        String(symbol || "")
+
+            .toUpperCase();
+
+    const lots = [];
+
+    const gainByTradeId = {};
+
+    let lastPrice = 0;
+
+    let hasBuys = false;
+
+    (trades || [])
+
+        .filter(
+
+            trade =>
+
+                String(trade.symbol || "")
+
+                    .toUpperCase() === key
+
+        )
+
+        .forEach(
+
+            trade => {
+
+                const action =
+
+                    String(trade.action || "")
+
+                        .toUpperCase();
+
+                const quantity =
+
+                    Number(trade.quantity || 0);
+
+                const price =
+
+                    Number(trade.price || 0);
+
+                const amount =
+
+                    Number(
+
+                        trade.amount ||
+
+                        quantity * price ||
+
+                        0
+
+                    );
+
+                if (price > 0) {
+
+                    lastPrice = price;
+
+                }
+
+                if (
+
+                    action === "BUY" &&
+
+                    quantity > 0
+
+                ) {
+
+                    hasBuys = true;
+
+                    lots.push({
+
+                        quantity,
+
+                        unitCost:
+
+                            amount > 0
+
+                                ? amount / quantity
+
+                                : price
+
+                    });
+
+                } else if (
+
+                    action === "SELL" &&
+
+                    quantity > 0
+
+                ) {
+
+                    let remaining =
+
+                        quantity;
+
+                    let consumedCost = 0;
+
+                    while (
+
+                        remaining > 0 &&
+
+                        lots.length
+
+                    ) {
+
+                        const lot =
+
+                            lots[0];
+
+                        const take =
+
+                            Math.min(
+
+                                remaining,
+
+                                lot.quantity
+
+                            );
+
+                        consumedCost +=
+
+                            take * lot.unitCost;
+
+                        lot.quantity -=
+
+                            take;
+
+                        remaining -=
+
+                            take;
+
+                        if (lot.quantity <= 0) {
+
+                            lots.shift();
+
+                        }
+
+                    }
+
+                    gainByTradeId[trade.id] =
+
+                        amount - consumedCost;
+
+                }
+
+            }
+
+        );
+
+    const quantity =
+
+        lots.reduce(
+
+            (sum, lot) => sum + lot.quantity,
+
+            0
+
+        );
+
+    const costBasis =
+
+        lots.reduce(
+
+            (sum, lot) =>
+
+                sum + lot.quantity * lot.unitCost,
+
+            0
+
+        );
+
+    return {
+
+        quantity,
+
+        costBasis,
+
+        lastPrice,
+
+        hasBuys,
+
+        gainByTradeId
+
+    };
 
 }
 
@@ -431,6 +649,480 @@ const InvestmentService = {
         return InvestmentRepository
 
             .getTrades();
+
+    },
+
+    // =====================================================
+
+    // Delete one trade: the holding is rebuilt from
+
+    // the remaining trades, and the trade's linked
+
+    // Transaction, cash-flow entry and account-balance
+
+    // effect are revoked. (Deleting a Transaction
+
+    // record alone never touches holdings.)
+
+    // =====================================================
+
+    deleteTrade(
+
+        tradeId
+
+    ){
+
+        const trade =
+
+            this.getTrades().find(
+
+                item =>
+
+                    String(item.id) ===
+
+                    String(tradeId)
+
+            );
+
+        if (!trade) {
+
+            return false;
+
+        }
+
+        const symbol =
+
+            String(trade.symbol || "")
+
+                .trim();
+
+        InvestmentRepository
+
+            .deleteTrade(
+
+                trade.id
+
+            );
+
+        try {
+
+            const transactions =
+
+                TransactionIntegration
+
+                    .getAllTransactions() || [];
+
+            const linked =
+
+                transactions.find(
+
+                    transaction =>
+
+                        transaction &&
+
+                        transaction.businessDetails &&
+
+                        transaction.businessDetails
+
+                            .investment &&
+
+                        String(
+
+                            transaction.businessDetails
+
+                                .investment.tradeId
+
+                        ) === String(trade.id)
+
+                );
+
+            if (linked) {
+
+                try {
+
+                    AccountBalanceIntegration
+
+                        .reverseTransaction(
+
+                            linked
+
+                        );
+
+                } catch (reverseError) {
+
+                }
+
+                try {
+
+                    (cashflowAPI.getCashflows() || [])
+
+                        .filter(
+
+                            entry =>
+
+                                String(
+
+                                    entry.transactionId
+
+                                ) === String(linked.id)
+
+                        )
+
+                        .forEach(
+
+                            entry =>
+
+                                cashflowAPI
+
+                                    .deleteCashflow(
+
+                                        entry.id
+
+                                    )
+
+                        );
+
+                } catch (cashflowError) {
+
+                }
+
+                TransactionIntegration
+
+                    .removeTransaction(
+
+                        linked.id
+
+                    );
+
+            }
+
+        } catch (transactionError) {
+
+        }
+
+        if (symbol) {
+
+            this.recomputePositionFromTrades(
+
+                symbol
+
+            );
+
+        }
+
+        return true;
+
+    },
+
+    // =====================================================
+
+    // Rebuild a holding from its remaining trades
+
+    // (FIFO lots), keeping every surface consistent.
+
+    // =====================================================
+
+    recomputePositionFromTrades(
+
+        symbol
+
+    ){
+
+        const key =
+
+            String(symbol || "")
+
+                .toUpperCase();
+
+        const remaining =
+
+            this.getTrades()
+
+                .filter(
+
+                    trade =>
+
+                        String(trade.symbol || "")
+
+                            .toUpperCase() === key &&
+
+                        (
+
+                            trade.action === "BUY" ||
+
+                            trade.action === "SELL"
+
+                        )
+
+                );
+
+        const record =
+
+            this.getInvestments().find(
+
+                item =>
+
+                    String(
+
+                        item.symbol ||
+
+                            item.name ||
+
+                            ""
+
+                    ).toUpperCase() === key
+
+            );
+
+        if (!remaining.length) {
+
+            if (record) {
+
+                // The holding existed only through
+
+                // its trades: remove it completely.
+
+                this.deleteInvestment(
+
+                    record.id
+
+                );
+
+            } else {
+
+                InvestmentRepository
+
+                    .deletePosition(
+
+                        key
+
+                    );
+
+            }
+
+            PriceOverrideStore.clear(
+
+                key
+
+            );
+
+            return null;
+
+        }
+
+        const fifo =
+
+            replayFifoTrades(
+
+                key,
+
+                this.getTrades()
+
+            );
+
+        // Refresh realized gains on remaining sells:
+
+        // deleting an early buy changes later gains.
+
+        remaining
+
+            .filter(
+
+                trade =>
+
+                    trade.action === "SELL"
+
+            )
+
+            .forEach(
+
+                trade => {
+
+                    const gain =
+
+                        fifo.gainByTradeId[trade.id];
+
+                    if (
+
+                        gain !== undefined &&
+
+                        Number(trade.realizedGainLoss || 0) !==
+
+                            gain
+
+                    ) {
+
+                        trade.realizedGainLoss =
+
+                            gain;
+
+                        InvestmentRepository
+
+                            .saveTrade(
+
+                                trade
+
+                            );
+
+                    }
+
+                }
+
+            );
+
+        const existing =
+
+            this.getPositions().find(
+
+                item =>
+
+                    String(item.symbol || "")
+
+                        .toUpperCase() === key
+
+            );
+
+        const lastTrade =
+
+            remaining[remaining.length - 1];
+
+        const overridePrice =
+
+            PriceOverrideStore.get(
+
+                key
+
+            );
+
+        const currentPrice =
+
+            overridePrice > 0
+
+                ? overridePrice
+
+                : Number(
+
+                    (existing && existing.currentPrice) ||
+
+                    fifo.lastPrice ||
+
+                    0
+
+                );
+
+        const position = {
+
+            ...(existing || {}),
+
+            symbol: key,
+
+            name:
+
+                (lastTrade && lastTrade.name) ||
+
+                (existing && existing.name) ||
+
+                key,
+
+            quantity:
+
+                fifo.quantity,
+
+            costBasis:
+
+                Math.max(
+
+                    fifo.costBasis,
+
+                    0
+
+                ),
+
+            averageCost:
+
+                fifo.quantity > 0
+
+                    ? Math.max(
+
+                        fifo.costBasis,
+
+                        0
+
+                    ) / fifo.quantity
+
+                    : 0,
+
+            currentPrice,
+
+            marketValue:
+
+                fifo.quantity * currentPrice,
+
+            memberId:
+
+                (lastTrade && lastTrade.memberId) ||
+
+                (existing && existing.memberId) ||
+
+                "",
+
+            accountId:
+
+                (lastTrade && lastTrade.accountId) ||
+
+                (existing && existing.accountId) ||
+
+                ""
+
+        };
+
+        position.unrealizedGainLoss =
+
+            position.marketValue -
+
+            position.costBasis;
+
+        const saved =
+
+            this.updatePosition(
+
+                position
+
+            );
+
+        if (record) {
+
+            record.quantity =
+
+                position.quantity;
+
+            record.costBasis =
+
+                position.costBasis;
+
+            record.currentPrice =
+
+                position.currentPrice;
+
+            record.currentValue =
+
+                position.marketValue;
+
+            record.marketValue =
+
+                position.marketValue;
+
+            InvestmentRepository
+
+                .saveInvestment(
+
+                    record
+
+                );
+
+        }
+
+        return saved;
 
     },
 
@@ -924,15 +1616,29 @@ const InvestmentService = {
 
                 : 0;
 
+            const buyOverridePrice =
+
+                PriceOverrideStore.get(
+
+                    symbol
+
+                );
+
             position.currentPrice =
 
-                price;
+                buyOverridePrice > 0
+
+                    ? buyOverridePrice
+
+                    : position.currentPrice ||
+
+                        price;
 
             position.marketValue =
 
                 position.quantity *
 
-                price;
+                position.currentPrice;
 
             if (trade.name) {
 
@@ -1146,41 +1852,89 @@ const InvestmentService = {
 
             // Realized capital gain on this sale:
 
-            // proceeds minus the average cost of
+            // proceeds minus the FIFO (first-in,
 
-            // the shares sold.
+            // first-out) cost of the shares sold.
 
-            trade.realizedGainLoss =
+            // Falls back to the record's average
 
-                amount -
+            // cost when the holding came from a
 
-                averageCostHeld *
+            // manual record without buy trades.
 
-                    sellQuantity;
+            const fifo =
 
-            position.quantity =
+                replayFifoTrades(
 
-                held -
+                    symbol,
 
-                sellQuantity;
+                    this.getTrades()
 
-            position.costBasis =
+                );
 
-                Math.max(
+            if (
 
-                    Number(
+                fifo.hasBuys &&
 
-                        position.costBasis || 0
+                fifo.gainByTradeId[trade.id] !==
 
-                    ) -
+                    undefined
+
+            ) {
+
+                trade.realizedGainLoss =
+
+                    fifo.gainByTradeId[trade.id];
+
+                position.quantity =
+
+                    fifo.quantity;
+
+                position.costBasis =
+
+                    Math.max(
+
+                        fifo.costBasis,
+
+                        0
+
+                    );
+
+            } else {
+
+                trade.realizedGainLoss =
+
+                    amount -
 
                     averageCostHeld *
 
-                        sellQuantity,
+                        sellQuantity;
 
-                    0
+                position.quantity =
 
-                );
+                    held -
+
+                    sellQuantity;
+
+                position.costBasis =
+
+                    Math.max(
+
+                        Number(
+
+                            position.costBasis || 0
+
+                        ) -
+
+                        averageCostHeld *
+
+                            sellQuantity,
+
+                        0
+
+                    );
+
+            }
 
             position.averageCost =
 
@@ -1192,15 +1946,29 @@ const InvestmentService = {
 
                 : 0;
 
+            const sellOverridePrice =
+
+                PriceOverrideStore.get(
+
+                    symbol
+
+                );
+
             position.currentPrice =
 
-                price;
+                sellOverridePrice > 0
+
+                    ? sellOverridePrice
+
+                    : position.currentPrice ||
+
+                        price;
 
             position.marketValue =
 
                 position.quantity *
 
-                price;
+                position.currentPrice;
 
         }
 
@@ -1231,12 +1999,6 @@ const InvestmentService = {
                 trade.memberId;
 
         }
-
-        PriceOverrideStore.clear(
-
-            symbol
-
-        );
 
         const savedPosition =
 
