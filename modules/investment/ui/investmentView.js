@@ -24,7 +24,7 @@ import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCr
 
 import InvestmentAgent from "../agent/investmentAgent.js?v=20261008ah";
 
-import AccountAPI from "../../account/api/accountAPI.js?v=20261008ae";
+import AccountAPI from "../../account/api/accountAPI.js?v=20261008aw";
 
 import MemberAPI from "../../member/api/memberAPI.js?v=20261008ap";
 
