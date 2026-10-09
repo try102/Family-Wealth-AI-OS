@@ -9,7 +9,7 @@ import MemberRepository from "../repository/memberRepository.js?v=20261008ae";
 import AccountAPI from "../../account/api/accountAPI.js?v=20261008ae";
 import IncomeAPI from "../../income/api/incomeAPI.js?v=20261008ae";
 import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261008ae";
-import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261008ag";
+import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261008ah";
 import AssetAPI from "../../asset/api/assetAPI.js?v=20261008ae";
 import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261008ae";
 
