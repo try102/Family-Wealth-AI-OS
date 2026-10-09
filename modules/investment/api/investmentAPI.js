@@ -8,7 +8,7 @@ Investment API
 
 import InvestmentService
 
-from "../services/investmentService.js?v=20261008ac";
+from "../services/investmentService.js?v=20261008ad";
 
 import PortfolioEngine
 
@@ -292,6 +292,58 @@ const InvestmentAPI = {
         return InvestmentService
 
         .getTrades();
+
+    },
+
+    setCurrentPrice(
+
+        symbol,
+
+        price,
+
+        source
+
+    ){
+
+        return InvestmentService
+
+        .setCurrentPrice(
+
+            symbol,
+
+            price,
+
+            source
+
+        );
+
+    },
+
+    importPrices(
+
+        priceMap,
+
+        source
+
+    ){
+
+        return InvestmentService
+
+        .importPrices(
+
+            priceMap,
+
+            source
+
+        );
+
+    },
+
+    getPriceOverrides(){
+
+        return InvestmentService
+
+        .getPriceOverrides();
 
     },
 
