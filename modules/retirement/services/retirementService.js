@@ -18,7 +18,7 @@ import RetirementRepository from "../repository/retirementRepository.js?v=202610
 
 import RetirementEngine from "../../../core/retirement/retirementEngine.js?v=20261008ae";
 
-import AccountAPI from "../../account/api/accountAPI.js?v=20261008ae";
+import AccountAPI from "../../account/api/accountAPI.js?v=20261008aw";
 
 import AssetAPI from "../../asset/api/assetAPI.js?v=20261008ae";
 
