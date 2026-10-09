@@ -10,7 +10,7 @@ Member View
 
 import MemberAPI from "../api/memberAPI.js?v=20261008ap";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bg";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bh";
 
 function money(value) {
 
@@ -128,6 +128,8 @@ function reportHTML(report) {
 
                 ${t("member.assets")}：${money(report.assetsValue)}<br>
 
+                ${t("member.totalAssets")}：${money(report.totalAssets)}<br>
+
                 ${t("member.liabilities")}：${money(report.liabilitiesValue)}<br>
 
                 ${t("member.netWorth")}：${money(report.netWorth)}<br>
@@ -197,6 +199,8 @@ const MemberView = {
                 <td style="${cell}">${money(stat.investmentsValue)}</td>
 
                 <td style="${cell}">${money(stat.assetsValue)}</td>
+
+                <td style="${cell}">${money(stat.totalAssets)}</td>
 
                 <td style="${cell}">${money(stat.liabilitiesValue)}</td>
 
@@ -269,6 +273,8 @@ const MemberView = {
                             <th style="${cell}">${t("member.investments")}</th>
 
                             <th style="${cell}">${t("member.assets")}</th>
+
+                            <th style="${cell}">${t("member.totalAssets")}</th>
 
                             <th style="${cell}">${t("member.liabilities")}</th>
 
