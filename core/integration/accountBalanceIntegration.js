@@ -466,6 +466,130 @@ const AccountBalanceIntegration = {
 
                     [];
 
+                // Accounts a trade points at may have
+
+                // been deleted after the trade was
+
+                // recorded. Materialize them now (the
+
+                // later ghost pass skips existing ids)
+
+                // so settlement can still land on the
+
+                // account the trade names instead of
+
+                // dropping the trade from every balance.
+
+                const materializedIds = new Set();
+
+                try {
+
+                    const knownIds = new Set(
+
+                        allAccounts.map(
+
+                            account => String(account.id)
+
+                        )
+
+                    );
+
+                    (
+
+                        InvestmentRepository.getTrades() ||
+
+                        []
+
+                    ).forEach(
+
+                        trade => {
+
+                            if (
+
+                                !trade ||
+
+                                !trade.accountId ||
+
+                                knownIds.has(
+
+                                    String(trade.accountId)
+
+                                )
+
+                            ) {
+
+                                return;
+
+                            }
+
+                            const ghostId =
+
+                                String(trade.accountId);
+
+                            const ghostMember =
+
+                                trade.memberId ||
+
+                                trade.ownerId ||
+
+                                tradeOwner[ghostId] ||
+
+                                "";
+
+                            const ghost = {
+
+                                id: ghostId,
+
+                                name:
+
+                                    /^\d{6,}_/.test(ghostId)
+
+                                        ? "同步账户"
+
+                                        : ghostId,
+
+                                accountType: "Cash",
+
+                                type: "Cash",
+
+                                balance: 0,
+
+                                openingBalance: 0,
+
+                                memberId: ghostMember,
+
+                                ownerId: ghostMember,
+
+                                currency: "USD"
+
+                            };
+
+                            try {
+
+                                AccountRepository.save(
+
+                                    ghost
+
+                                );
+
+                                allAccounts.push(ghost);
+
+                                knownIds.add(ghostId);
+
+                                materializedIds.add(ghostId);
+
+                            } catch (ghostError) {
+
+                            }
+
+                        }
+
+                    );
+
+                } catch (preGhostError) {
+
+                }
+
                 (
 
                     InvestmentRepository.getTrades() ||
@@ -582,9 +706,23 @@ const AccountBalanceIntegration = {
 
                         let target = "";
 
+                        // A real picked account whose
+
+                        // owner matches wins; a
+
+                        // materialized ghost never does
+
+                        // (it exists only as a fallback).
+
                         if (
 
                             picked &&
+
+                            !materializedIds.has(
+
+                                String(picked.id)
+
+                            ) &&
 
                             (
 
@@ -676,27 +814,15 @@ const AccountBalanceIntegration = {
 
                         }
 
-                        if (
-
-                            !target &&
-
-                            picked &&
-
-                            AccountBalanceIntegration
-
-                                .mirrorKindOfRecord(picked) ===
-
-                                "investment"
-
-                        ) {
+                        if (!target && picked) {
 
                             // The trade names this
 
-                            // investment account; settling
+                            // account; settling nowhere
 
-                            // nowhere would silently drop
+                            // would silently drop the
 
-                            // the trade from every balance.
+                            // trade from every balance.
 
                             target = String(picked.id);
 
@@ -1048,15 +1174,33 @@ const AccountBalanceIntegration = {
 
                                         kind &&
 
-                                    String(
+                                    (
 
-                                        asset.memberId ||
+                                        String(
 
-                                        asset.ownerId ||
+                                            asset.memberId ||
 
-                                        ""
+                                            asset.ownerId ||
 
-                                    ) === String(owner)
+                                            ""
+
+                                        ) === String(owner) ||
+
+                                        AccountBalanceIntegration
+
+                                            .sameMemberId(
+
+                                                asset.memberId ||
+
+                                                    asset.ownerId ||
+
+                                                    "",
+
+                                                owner
+
+                                            )
+
+                                    )
 
                             );
 
@@ -2126,15 +2270,31 @@ const AccountBalanceIntegration = {
 
                         kind &&
 
-                    String(
+                    (
 
-                        asset.memberId ||
+                        String(
 
-                        asset.ownerId ||
+                            asset.memberId ||
 
-                        ""
+                            asset.ownerId ||
 
-                    ) === String(owner)
+                            ""
+
+                        ) === String(owner) ||
+
+                        this.sameMemberId(
+
+                            asset.memberId ||
+
+                                asset.ownerId ||
+
+                                "",
+
+                            owner
+
+                        )
+
+                    )
 
             ) || null;
 
