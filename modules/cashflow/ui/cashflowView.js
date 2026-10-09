@@ -48,7 +48,7 @@ import TransactionRepository
 
     from "../../../transaction/transactionRepository.js?v=20261008ae";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008aw";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009be";
 
 import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
@@ -344,19 +344,57 @@ const cashflowView = {
 
                     let expense = 0;
 
+                    let investmentIn = 0;
+
+                    let investmentOut = 0;
+
+                    let regularIncome = 0;
+
+                    let regularExpense = 0;
+
                     cashflows.forEach(
 
                         item => {
 
+                            const value =
+
+                                annualizeEntry(item);
+
+                            const isInvestment =
+
+                                item.category ===
+
+                                "Investment";
+
                             if (item.type === "INCOME") {
 
-                                income += annualizeEntry(item);
+                                income += value;
+
+                                if (isInvestment) {
+
+                                    investmentIn += value;
+
+                                } else {
+
+                                    regularIncome += value;
+
+                                }
 
                             }
 
                             if (item.type === "EXPENSE") {
 
-                                expense += annualizeEntry(item);
+                                expense += value;
+
+                                if (isInvestment) {
+
+                                    investmentOut += value;
+
+                                } else {
+
+                                    regularExpense += value;
+
+                                }
 
                             }
 
@@ -370,7 +408,23 @@ const cashflowView = {
 
                         expense,
 
-                        net: income - expense
+                        net: income - expense,
+
+                        investmentIn,
+
+                        investmentOut,
+
+                        investmentNet:
+
+                            investmentIn - investmentOut,
+
+                        regularIncome,
+
+                        regularExpense,
+
+                        regularNet:
+
+                            regularIncome - regularExpense
 
                     };
 
@@ -379,6 +433,144 @@ const cashflowView = {
                 : cashflowAPI
 
                     .getSummary();
+
+        // Cash across ALL accounts (checking,
+
+        // savings, investment-account cash...),
+
+        // classified by member and account.
+
+        const cashAccounts =
+
+            (() => {
+
+                try {
+
+                    const memberNames = {};
+
+                    (
+
+                        MemberAPI.getMembers() || []
+
+                    ).forEach(
+
+                        member => {
+
+                            memberNames[member.id] =
+
+                                member.name || "";
+
+                        }
+
+                    );
+
+                    return (
+
+                        AccountAPI.getAll() || []
+
+                    )
+
+                        .filter(
+
+                            account =>
+
+                                Number(
+
+                                    account.balance || 0
+
+                                ) !== 0
+
+                        )
+
+                        .filter(
+
+                            account =>
+
+                                !scopeId
+
+                                    ? true
+
+                                    : scopeId === "__shared__"
+
+                                        ? !(
+
+                                            account.memberId ||
+
+                                            account.ownerId ||
+
+                                            ""
+
+                                        )
+
+                                        : (
+
+                                            account.memberId ||
+
+                                            account.ownerId ||
+
+                                            ""
+
+                                        ) === scopeId
+
+                        )
+
+                        .map(
+
+                            account => ({
+
+                                name:
+
+                                    account.name ||
+
+                                    "Account",
+
+                                type:
+
+                                    account.type ||
+
+                                    "",
+
+                                owner:
+
+                                    memberNames[
+
+                                        account.memberId ||
+
+                                        account.ownerId ||
+
+                                        ""
+
+                                    ] || "",
+
+                                balance:
+
+                                    Number(
+
+                                        account.balance || 0
+
+                                    )
+
+                            })
+
+                        );
+
+                } catch (cashError) {
+
+                    return [];
+
+                }
+
+            })();
+
+        const cashTotal =
+
+            cashAccounts.reduce(
+
+                (sum, account) => sum + account.balance,
+
+                0
+
+            );
 
         let report = null;
 
@@ -514,7 +706,7 @@ const cashflowView = {
 
                             <h3>
 
-                                ${t("cashflow.income")}
+                                ${t("cashflow.dailyIncome")}
 
                             </h3>
 
@@ -526,7 +718,7 @@ const cashflowView = {
 
                                 $${Number(
 
-                                    summary?.income ||
+                                    summary?.regularIncome ||
 
                                     0
 
@@ -544,7 +736,7 @@ const cashflowView = {
 
                             <h3>
 
-                                ${t("cashflow.expense")}
+                                ${t("cashflow.dailyExpense")}
 
                             </h3>
 
@@ -556,7 +748,7 @@ const cashflowView = {
 
                                 $${Number(
 
-                                    summary?.expense ||
+                                    summary?.regularExpense ||
 
                                     0
 
@@ -574,7 +766,127 @@ const cashflowView = {
 
                             <h3>
 
-                                ${t("cashflow.net")}
+                                ${t("cashflow.dailyNet")}
+
+                            </h3>
+
+                            <div
+
+                                class="value"
+
+                            >
+
+                                $${Number(
+
+                                    summary?.regularNet ||
+
+                                    0
+
+                                ).toLocaleString()}
+
+                            </div>
+
+                        </div>
+
+                        <div
+
+                            class="dashboard-card"
+
+                        >
+
+                            <h3>
+
+                                ${t("cashflow.investOut")}
+
+                            </h3>
+
+                            <div
+
+                                class="value"
+
+                            >
+
+                                $${Number(
+
+                                    summary?.investmentOut ||
+
+                                    0
+
+                                ).toLocaleString()}
+
+                            </div>
+
+                        </div>
+
+                        <div
+
+                            class="dashboard-card"
+
+                        >
+
+                            <h3>
+
+                                ${t("cashflow.investIn")}
+
+                            </h3>
+
+                            <div
+
+                                class="value"
+
+                            >
+
+                                $${Number(
+
+                                    summary?.investmentIn ||
+
+                                    0
+
+                                ).toLocaleString()}
+
+                            </div>
+
+                        </div>
+
+                        <div
+
+                            class="dashboard-card"
+
+                        >
+
+                            <h3>
+
+                                ${t("cashflow.investNet")}
+
+                            </h3>
+
+                            <div
+
+                                class="value"
+
+                            >
+
+                                $${Number(
+
+                                    summary?.investmentNet ||
+
+                                    0
+
+                                ).toLocaleString()}
+
+                            </div>
+
+                        </div>
+
+                        <div
+
+                            class="dashboard-card"
+
+                        >
+
+                            <h3>
+
+                                ${t("cashflow.combinedNet")}
 
                             </h3>
 
@@ -597,6 +909,34 @@ const cashflowView = {
                         </div>
 
                     </div>
+
+                </section>
+
+                <section
+
+                    class="card"
+
+                >
+
+                    <h2>
+
+                        ${t("cashflow.cashTitle")}
+
+                    </h2>
+
+                    <p>
+
+                        ${t("cashflow.cashTotal")}：$${cashTotal.toLocaleString()}
+
+                    </p>
+
+                    ${cashAccounts.map(
+
+                        account =>
+
+                            `<p>${account.owner ? account.owner + " · " : ""}${account.name}${account.type ? "（" + account.type + "）" : ""}：$${account.balance.toLocaleString()}</p>`
+
+                    ).join("")}
 
                 </section>
 
