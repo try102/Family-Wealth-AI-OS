@@ -6,13 +6,13 @@ Asset Service
 
 */
 
-import AssetRepository from "../repository/assetRepository.js";
+import AssetRepository from "../repository/assetRepository.js?v=20261008ae";
 
-import EventBus from "../../../core/events/eventBus.js";
+import EventBus from "../../../core/events/eventBus.js?v=20261008ae";
 
-import EventTypes from "../../../core/events/eventTypes.js";
+import EventTypes from "../../../core/events/eventTypes.js?v=20261008ae";
 
-import TransactionIntegration from "../../../core/integration/transactionIntegration.js";
+import TransactionIntegration from "../../../core/integration/transactionIntegration.js?v=20261008ae";
 
 const AssetService = {
 

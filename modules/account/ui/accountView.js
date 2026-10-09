@@ -6,11 +6,11 @@ Account View
 
 */
 
-import AccountAPI from "../api/accountAPI.js";
+import AccountAPI from "../api/accountAPI.js?v=20261008ae";
 
-import MemberAPI from "../../member/api/memberAPI.js";
+import MemberAPI from "../../member/api/memberAPI.js?v=20261008ae";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008ae";
 
 const AccountView = {
 

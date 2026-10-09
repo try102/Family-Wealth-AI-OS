@@ -6,9 +6,9 @@ Asset Agent
 
 */
 
-import AssetAPI from "../api/assetAPI.js";
+import AssetAPI from "../api/assetAPI.js?v=20261008ae";
 
-import AssetAnalysisEngine from "../engines/assetAnalysisEngine.js";
+import AssetAnalysisEngine from "../engines/assetAnalysisEngine.js?v=20261008ae";
 
 const AssetAgent = {
 

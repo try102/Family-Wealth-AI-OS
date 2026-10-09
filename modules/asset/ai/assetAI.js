@@ -6,7 +6,7 @@ Asset AI Layer
 
 */
 
-import AssetAgent from "../agent/assetAgent.js";
+import AssetAgent from "../agent/assetAgent.js?v=20261008ae";
 
 const AssetAI = {
 

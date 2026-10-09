@@ -8,7 +8,7 @@ Public Interface
 
 */
 
-import AssetService from "../services/assetService.js";
+import AssetService from "../services/assetService.js?v=20261008ae";
 
 const AssetAPI = {
 

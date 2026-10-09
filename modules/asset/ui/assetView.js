@@ -20,17 +20,17 @@ Return To Dashboard
 
 */
 
-import AssetAPI from "../api/assetAPI.js";
+import AssetAPI from "../api/assetAPI.js?v=20261008ae";
 
-import AccountAPI from "../../account/api/accountAPI.js";
+import AccountAPI from "../../account/api/accountAPI.js?v=20261008ae";
 
-import MemberAPI from "../../member/api/memberAPI.js";
+import MemberAPI from "../../member/api/memberAPI.js?v=20261008ae";
 
-import InvestmentAgent from "../../investment/agent/investmentAgent.js";
+import InvestmentAgent from "../../investment/agent/investmentAgent.js?v=20261008ae";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008ad";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008ae";
 
-import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js";
+import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
 const AssetView = {
 
