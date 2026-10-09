@@ -2044,63 +2044,89 @@ const module =
 
                                 );
 
-                        const incomeInput =
+                        // The Create-Plan form is not in
 
-                            document
+                        // the DOM yet when the Tax Center
 
-                                .getElementById(
+                        // dashboard first renders, so the
 
-                                    "tax-plan-income"
+                        // summary panel is inserted as soon
 
-                                );
+                        // as a suitable anchor appears:
 
-                        if(
+                        // before the plan form when it shows,
 
-                            incomeInput &&
+                        // otherwise right after the Tax
 
-                            Number(
+                        // Module Status section.
 
-                                incomeInput.value ||
+                        const fmt =
 
-                                0
+                            value =>
 
-                            ) === 0 &&
+                                "$" +
 
-                            taxData.totalIncome > 0
+                                Number(
 
-                        ){
+                                    value ||
 
-                            incomeInput.value =
-
-                                taxData.totalIncome;
-
-                        }
-
-                        const taxForm =
-
-                            document
-
-                                .getElementById(
-
-                                    "tax-plan-form"
-
-                                );
-
-                        if(
-
-                            taxForm &&
-
-                            taxForm.parentNode &&
-
-                            !document
-
-                                .getElementById(
-
-                                    "tax-data-panel"
+                                    0
 
                                 )
 
-                        ){
+                                    .toLocaleString();
+
+                        const tryInsertTaxPanel =
+
+                            () => {
+
+                                const incomeInput =
+
+                                    document
+
+                                        .getElementById(
+
+                                            "tax-plan-income"
+
+                                        );
+
+                                if(
+
+                                    incomeInput &&
+
+                                    Number(
+
+                                        incomeInput.value ||
+
+                                        0
+
+                                    ) === 0 &&
+
+                                    taxData.totalIncome > 0
+
+                                ){
+
+                                    incomeInput.value =
+
+                                        taxData.totalIncome;
+
+                                }
+
+                                if(
+
+                                    document
+
+                                        .getElementById(
+
+                                            "tax-data-panel"
+
+                                        )
+
+                                ){
+
+                                    return true;
+
+                                }
 
                             const panel =
 
@@ -2212,15 +2238,129 @@ const module =
 
                                 "</p>";
 
-                            taxForm.parentNode
+                            const taxForm =
 
-                                .insertBefore(
+                                document
 
-                                    panel,
+                                    .getElementById(
 
-                                    taxForm
+                                        "tax-plan-form"
+
+                                    );
+
+                            if(
+
+                                taxForm &&
+
+                                taxForm.parentNode
+
+                            ){
+
+                                taxForm.parentNode
+
+                                    .insertBefore(
+
+                                        panel,
+
+                                        taxForm
+
+                                    );
+
+                                return true;
+
+                            }
+
+                            const statusSection =
+
+                                document
+
+                                    .querySelector(
+
+                                        "section.system-status"
+
+                                    );
+
+                            if(
+
+                                statusSection &&
+
+                                statusSection.parentNode
+
+                            ){
+
+                                statusSection.parentNode
+
+                                    .insertBefore(
+
+                                        panel,
+
+                                        statusSection
+
+                                            .nextSibling
+
+                                    );
+
+                                return true;
+
+                            }
+
+                            return false;
+
+                        };
+
+                        if(
+
+                            !tryInsertTaxPanel()
+
+                        ){
+
+                            const taxPanelObserver =
+
+                                new MutationObserver(
+
+                                    () => {
+
+                                        if(
+
+                                            tryInsertTaxPanel()
+
+                                        ){
+
+                                            taxPanelObserver
+
+                                                .disconnect();
+
+                                        }
+
+                                    }
 
                                 );
+
+                            taxPanelObserver.observe(
+
+                                document.body,
+
+                                {
+
+                                    childList: true,
+
+                                    subtree: true
+
+                                }
+
+                            );
+
+                            setTimeout(
+
+                                () =>
+
+                                    taxPanelObserver
+
+                                        .disconnect(),
+
+                                15000
+
+                            );
 
                         }
 
