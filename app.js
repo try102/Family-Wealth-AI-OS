@@ -1256,7 +1256,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/account/ui/accountView.js?v=20261008aw"
+                            "./modules/account/ui/accountView.js?v=20261009bc"
 
                         );
 
@@ -3482,7 +3482,7 @@ async function start(){
 
                 await import(
 
-                    "./core/integration/accountBalanceIntegration.js?v=20261009bb"
+                    "./core/integration/accountBalanceIntegration.js?v=20261009bc"
 
                 );
 
