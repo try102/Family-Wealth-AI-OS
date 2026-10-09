@@ -8,7 +8,7 @@ Income API
 
 */
 
-import IncomeService from "../services/incomeService.js?v=20261008ak";
+import IncomeService from "../services/incomeService.js?v=20261009bk";
 
 const IncomeAPI = {
 
