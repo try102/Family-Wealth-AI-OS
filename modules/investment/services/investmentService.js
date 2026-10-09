@@ -60,7 +60,7 @@ import PriceOverrideStore
 
 import AccountBalanceIntegration
 
-    from "../../../core/integration/accountBalanceIntegration.js?v=20261008aw";
+    from "../../../core/integration/accountBalanceIntegration.js?v=20261008ax";
 
 import cashflowAPI
 
