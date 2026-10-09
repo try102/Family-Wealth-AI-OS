@@ -28,7 +28,7 @@ import MemberAPI from "../../member/api/memberAPI.js";
 
 import InvestmentAgent from "../../investment/agent/investmentAgent.js";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008ac";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008ad";
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js";
 
