@@ -650,27 +650,11 @@ const AccountBalanceIntegration = {
 
             const mirrorIds = new Set();
 
-            const mirrorKindOf = record => {
+            const mirrorKindOf = record =>
 
-                const label =
+                AccountBalanceIntegration
 
-                    `${(record && record.name) || ""} ${(record && record.category) || ""} ${(record && record.accountType) || ""} ${(record && record.type) || ""}`.toLowerCase();
-
-                if (label.includes("invest")) {
-
-                    return "investment";
-
-                }
-
-                if (label.includes("check")) {
-
-                    return "checking";
-
-                }
-
-                return "";
-
-            };
+                    .mirrorKindOfRecord(record);
 
             try {
 
@@ -962,6 +946,50 @@ const AccountBalanceIntegration = {
 
                         Number(account.balance || 0);
 
+                    // A balance typed in the Account
+
+                    // Center is the new truth for EVERY
+
+                    // account, paired or not: re-anchor
+
+                    // the opening so the derivation
+
+                    // below keeps it, and later
+
+                    // transactions move from there.
+
+                    if (account.manualBalance) {
+
+                        account.openingBalance =
+
+                            current - effect;
+
+                        account.manualBalance =
+
+                            false;
+
+                        if (!account.openingSource) {
+
+                            account.openingSource =
+
+                                "user";
+
+                        }
+
+                        try {
+
+                            AccountRepository.save(
+
+                                account
+
+                            );
+
+                        } catch (manualAnchorError) {
+
+                        }
+
+                    }
+
                     // Household rule: legacy Investment /
 
                     // Checking accounts open at 200,000
@@ -1232,6 +1260,14 @@ const AccountBalanceIntegration = {
 
     mirrorKindOfRecord(record) {
 
+        // Account-like kinds pair an asset record
+
+        // with the same member's account of the
+
+        // same kind: one balance in two places,
+
+        // for every account, not just two names.
+
         const label =
 
             `${(record && record.name) || ""} ${(record && record.category) || ""} ${(record && record.accountType) || ""} ${(record && record.type) || ""}`.toLowerCase();
@@ -1245,6 +1281,24 @@ const AccountBalanceIntegration = {
         if (label.includes("check")) {
 
             return "checking";
+
+        }
+
+        if (label.includes("saving")) {
+
+            return "savings";
+
+        }
+
+        if (label.includes("broker")) {
+
+            return "brokerage";
+
+        }
+
+        if (label.includes("cash")) {
+
+            return "cash";
 
         }
 
