@@ -306,6 +306,22 @@ const cashflowService = {
 
         let expense = 0;
 
+        // Classified view: entries tagged
+
+        // category "Investment" are security
+
+        // buys (out) and sells (in); everything
+
+        // else is daily income / expense.
+
+        let investmentIn = 0;
+
+        let investmentOut = 0;
+
+        let regularIncome = 0;
+
+        let regularExpense = 0;
+
         list.forEach(
 
             item => {
@@ -338,6 +354,26 @@ const cashflowService = {
 
                         annualized;
 
+                    if(
+
+                        item.category ===
+
+                        "Investment"
+
+                    ){
+
+                        investmentIn +=
+
+                            annualized;
+
+                    } else {
+
+                        regularIncome +=
+
+                            annualized;
+
+                    }
+
                 }
 
                 if(
@@ -351,6 +387,26 @@ const cashflowService = {
                     expense +=
 
                         annualized;
+
+                    if(
+
+                        item.category ===
+
+                        "Investment"
+
+                    ){
+
+                        investmentOut +=
+
+                            annualized;
+
+                    } else {
+
+                        regularExpense +=
+
+                            annualized;
+
+                    }
 
                 }
 
@@ -368,7 +424,27 @@ const cashflowService = {
 
                 income -
 
-                expense
+                expense,
+
+            investmentIn,
+
+            investmentOut,
+
+            investmentNet:
+
+                investmentIn -
+
+                investmentOut,
+
+            regularIncome,
+
+            regularExpense,
+
+            regularNet:
+
+                regularIncome -
+
+                regularExpense
 
         };
 
