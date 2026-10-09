@@ -60,6 +60,69 @@ const MemberService = {
         return saved;
     },
 
+    /*
+
+     * Sync: a member who already has trades but
+
+     * no account of their own gets their default
+
+     * cash account created automatically.
+
+     */
+
+    ensureDefaultAccounts() {
+        try {
+            const members = this.getMembers() || [];
+            const accounts = safe(() => AccountAPI.getAll(), []);
+            const owners = new Set(
+                accounts
+                    .map(account => account.memberId || account.ownerId || "")
+                    .filter(Boolean)
+                    .map(String)
+            );
+            const accountOwner = {};
+            accounts.forEach(account => {
+                accountOwner[account.id] =
+                    account.memberId || account.ownerId || "";
+            });
+            const active = new Set();
+            safe(() => InvestmentAPI.getTrades(), []).forEach(trade => {
+                const owner =
+                    trade.memberId ||
+                    trade.ownerId ||
+                    (trade.accountId ? accountOwner[trade.accountId] : "") ||
+                    "";
+                if (owner) {
+                    active.add(String(owner));
+                }
+            });
+            members.forEach(member => {
+                if (!member || !member.id) {
+                    return;
+                }
+                if (owners.has(String(member.id))) {
+                    return;
+                }
+                if (!active.has(String(member.id))) {
+                    return;
+                }
+                try {
+                    AccountAPI.create({
+                        name: (member.name || "Member") + "的账户",
+                        accountType: "Cash",
+                        type: "Cash",
+                        balance: 0,
+                        memberId: member.id,
+                        ownerId: member.id
+                    });
+                    owners.add(String(member.id));
+                } catch (createError) {
+                }
+            });
+        } catch (syncError) {
+        }
+    },
+
     deleteMember(id) {
         return MemberRepository.remove(id);
     },
