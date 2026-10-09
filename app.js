@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009be";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009bg";
 
 const app =
 
@@ -2024,7 +2024,7 @@ const module =
 
                             await import(
 
-                                "./core/integration/taxDataIntegration.js?v=20261009be"
+                                "./core/integration/taxDataIntegration.js?v=20261009bg"
 
                             );
 
