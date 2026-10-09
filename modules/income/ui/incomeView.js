@@ -14,7 +14,7 @@ import AccountAPI from "../../account/api/accountAPI.js?v=20261008aw";
 
 import MemberAPI from "../../member/api/memberAPI.js?v=20261008ap";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bj";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bk";
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
@@ -686,9 +686,37 @@ const IncomeView = {
 
             this.buildMemberOptions();
 
+        // Default the income into a Checking
+
+        // account (still the user's choice): pick
+
+        // the first checking-kind account.
+
+        const defaultAccountId =
+
+            (
+
+                accounts.find(
+
+                    account =>
+
+                        `${account.name || ""} ${account.type || ""}`
+
+                            .toLowerCase()
+
+                            .includes("check")
+
+                ) || {}
+
+            ).id || "";
+
         const accountOptions =
 
-            this.buildAccountOptions();
+            this.buildAccountOptions(
+
+                defaultAccountId
+
+            );
 
         const accountHint =
 
