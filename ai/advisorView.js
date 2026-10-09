@@ -26,13 +26,13 @@ import LiabilityAPI from "../modules/liability/api/liabilityAPI.js?v=20261008ae"
 
 import cashflowAPI from "../modules/cashflow/api/cashflowAPI.js?v=20261008ae";
 
-import TaxDataIntegration from "../core/integration/taxDataIntegration.js?v=20261008ae";
+import TaxDataIntegration from "../core/integration/taxDataIntegration.js?v=20261009be";
 
 import { computeAdvisorModels } from "./advisorModels.js?v=20261008ae";
 
 import RetirementAPI from "../modules/retirement/api/retirementAPI.js?v=20261008ae";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../core/i18n/i18n.js?v=20261008aw";
+import { t, getLanguage, setLanguage, languageOptions } from "../core/i18n/i18n.js?v=20261009be";
 
 const ADVISOR_TEXT_KEYS = {
     "GOOD": "advisor.health.good",
