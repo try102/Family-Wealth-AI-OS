@@ -42,11 +42,11 @@ import IncomeSchema
 
 import IncomeService
 
-    from "./services/incomeService.js?v=20261008ak";
+    from "./services/incomeService.js?v=20261009bk";
 
 import IncomeView
 
-    from "./ui/incomeView.js?v=20261008ae";
+    from "./ui/incomeView.js?v=20261009bk";
 
 const IncomeModule = {
 
