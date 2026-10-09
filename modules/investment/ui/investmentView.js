@@ -18,11 +18,11 @@ Delete Investment
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js?v=20261008ag";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261008ah";
 
 import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
-import InvestmentAgent from "../agent/investmentAgent.js?v=20261008ag";
+import InvestmentAgent from "../agent/investmentAgent.js?v=20261008ah";
 
 import AccountAPI from "../../account/api/accountAPI.js?v=20261008ae";
 
@@ -38,7 +38,7 @@ import {
 
     t
 
-} from "../i18n/investmentLocales.js?v=20261008ag";
+} from "../i18n/investmentLocales.js?v=20261008ah";
 
 const InvestmentView = {
 
