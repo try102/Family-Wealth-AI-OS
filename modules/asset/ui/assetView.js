@@ -30,7 +30,7 @@ import InvestmentAgent from "../../investment/agent/investmentAgent.js?v=2026100
 
 import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261008ah";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008ae";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008aq";
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
@@ -424,6 +424,152 @@ const AssetView = {
 
             );
 
+        // Account balances, synced read-only from the
+
+        // Account Center and grouped by member.
+
+        const allAccountsForSync =
+
+            (() => {
+
+                try {
+
+                    return AccountAPI.getAll() || [];
+
+                } catch (accountSyncError) {
+
+                    return [];
+
+                }
+
+            })();
+
+        const accountSyncBuckets =
+
+            scopeId
+
+                ? [
+
+                    {
+
+                        label:
+
+                            scopeId === "__shared__"
+
+                                ? t("scope.shared")
+
+                                : memberNameOf(scopeId),
+
+                        owner:
+
+                            scopeId === "__shared__"
+
+                                ? ""
+
+                                : scopeId
+
+                    }
+
+                ]
+
+                : [
+
+                    ...members.map(
+
+                        member => ({
+
+                            label:
+
+                                member.name ||
+
+                                member.id,
+
+                            owner:
+
+                                member.id
+
+                        })
+
+                    ),
+
+                    {
+
+                        label:
+
+                            t("scope.shared"),
+
+                        owner: ""
+
+                    }
+
+                ];
+
+        const accountSyncRows =
+
+            accountSyncBuckets.flatMap(
+
+                bucket =>
+
+                    allAccountsForSync
+
+                        .filter(
+
+                            account =>
+
+                                String(
+
+                                    account.memberId ||
+
+                                    account.ownerId ||
+
+                                    ""
+
+                                ) === String(bucket.owner)
+
+                        )
+
+                        .map(
+
+                            account => ({
+
+                                label:
+
+                                    bucket.label,
+
+                                name:
+
+                                    account.name ||
+
+                                    "Account",
+
+                                balance:
+
+                                    Number(
+
+                                        account.balance ||
+
+                                        0
+
+                                    )
+
+                            })
+
+                        )
+
+            );
+
+        const accountSyncTotal =
+
+            accountSyncRows.reduce(
+
+                (sum, row) =>
+
+                    sum + row.balance,
+
+                0
+
+            );
+
         container.innerHTML = `
 
             <div class="asset-center">
@@ -721,6 +867,66 @@ const AssetView = {
                 <p>
 
                     <small>${t("asset.investSyncNote")}</small>
+
+                </p>
+
+                <hr>
+
+                <h3>
+
+                    ${t("asset.accountSyncTitle")}
+
+                </h3>
+
+                <ul>
+
+                    ${
+
+                        accountSyncRows.length === 0
+
+                        ?
+
+                        "<li>" + t("asset.emptyScoped") + "</li>"
+
+                        :
+
+                        accountSyncRows.map(
+
+                            row => `
+
+                                <li>
+
+                                    ${row.label}
+
+                                    —
+
+                                    <strong>${row.name}</strong>
+
+                                    -
+
+                                    $${row.balance.toLocaleString()}
+
+                                </li>
+
+                            `
+
+                        ).join("")
+
+                    }
+
+                </ul>
+
+                <p>
+
+                    ${t("asset.accountSyncTotal")}:
+
+                    $${accountSyncTotal.toLocaleString()}
+
+                </p>
+
+                <p>
+
+                    <small>${t("asset.accountSyncNote")}</small>
 
                 </p>
 
