@@ -3,7 +3,7 @@ Family Wealth AI OS V7
 Member Module
 家庭成员模块入口
 */
-import MemberAPI from "./api/memberAPI.js?v=20261008ae";
+import MemberAPI from "./api/memberAPI.js?v=20261008am";
 import MemberAgent from "./agent/memberAgent.js?v=20261008ae";
 import MemberView from "./ui/memberView.js?v=20261008ae";
 
