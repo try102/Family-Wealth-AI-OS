@@ -16,7 +16,7 @@ additional entry path.
 
 */
 
-import MemberAPI from "../../modules/member/api/memberAPI.js?v=20261008ae";
+import MemberAPI from "../../modules/member/api/memberAPI.js?v=20261008am";
 
 import AccountAPI from "../../modules/account/api/accountAPI.js?v=20261008ae";
 
