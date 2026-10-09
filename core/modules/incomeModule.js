@@ -38,11 +38,11 @@ from "../../modules/income/schema/incomeSchema.js?v=20261008ae";
 
 import incomeService
 
-from "../../modules/income/services/incomeService.js?v=20261008ak";
+from "../../modules/income/services/incomeService.js?v=20261009bk";
 
 import incomeView
 
-from "../../modules/income/ui/incomeView.js?v=20261008ae";
+from "../../modules/income/ui/incomeView.js?v=20261009bk";
 
 const IncomeModule = {
 
