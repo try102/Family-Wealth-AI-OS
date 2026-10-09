@@ -28,7 +28,7 @@ import ExpenseSchema
 
 import ExpenseService
 
-    from "./services/expenseService.js?v=20261008ai";
+    from "./services/expenseService.js?v=20261008ak";
 
 import ExpenseView
 
