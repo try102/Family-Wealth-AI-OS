@@ -2094,6 +2094,46 @@ const AssetView = {
 
                         ),
 
+                    basisValue:
+
+                        (() => {
+
+                            const typed =
+
+                                Number(
+
+                                    form.querySelector(
+
+                                        "#asset-value"
+
+                                    ).value
+
+                                );
+
+                            const label =
+
+                                `${form.querySelector("#asset-name").value} ${form.querySelector("#asset-category").value}`.toLowerCase();
+
+                            const accountLike =
+
+                                label.includes("invest") ||
+
+                                label.includes("check") ||
+
+                                label.includes("saving") ||
+
+                                label.includes("broker") ||
+
+                                label.includes("cash");
+
+                            return accountLike
+
+                                ? typed
+
+                                : undefined;
+
+                        })(),
+
                     liquidity:
 
                         form.querySelector(
@@ -2342,9 +2382,11 @@ const AssetView = {
 
                             value="${Number(
 
-                                asset.currentValue ||
+                                asset.basisValue ??
 
-                                0
+                                    asset.currentValue ??
+
+                                    0
 
                             )}"
 
@@ -2501,6 +2543,56 @@ const AssetView = {
                             ).value
 
                         ),
+
+                    // Account-like assets (deposit /
+
+                    // Checking / savings entered here):
+
+                    // the typed number is the OPENING
+
+                    // basis; the live balance is basis
+
+                    // plus every trade since.
+
+                    basisValue:
+
+                        (() => {
+
+                            const typed =
+
+                                Number(
+
+                                    form.querySelector(
+
+                                        "#edit-asset-value"
+
+                                    ).value
+
+                                );
+
+                            const label =
+
+                                `${form.querySelector("#edit-asset-name").value} ${form.querySelector("#edit-asset-category").value} ${asset.type || ""}`.toLowerCase();
+
+                            const accountLike =
+
+                                label.includes("invest") ||
+
+                                label.includes("check") ||
+
+                                label.includes("saving") ||
+
+                                label.includes("broker") ||
+
+                                label.includes("cash");
+
+                            return accountLike
+
+                                ? typed
+
+                                : asset.basisValue;
+
+                        })(),
 
                     liquidity:
 
