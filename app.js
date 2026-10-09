@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261008aw";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009be";
 
 const app =
 
@@ -440,7 +440,7 @@ function renderDashboard(
 
                         <h3>
 
-                            ${t("dash.expense")}
+                            ${t("dash.dailyExpense")}
 
                         </h3>
 
@@ -483,6 +483,38 @@ function renderDashboard(
                             ${formatCurrency(
 
                                 cashFlow.net
+
+                            )}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Investment Net -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
+
+                        <h3>
+
+                            ${t("dash.investNet")}
+
+                        </h3>
+
+                        <div
+
+                            class="value"
+
+                        >
+
+                            ${formatCurrency(
+
+                                cashFlow.investmentNet ||
+
+                                0
 
                             )}
 
@@ -1992,7 +2024,7 @@ const module =
 
                             await import(
 
-                                "./core/integration/taxDataIntegration.js?v=20261008ae"
+                                "./core/integration/taxDataIntegration.js?v=20261009be"
 
                             );
 
@@ -2137,6 +2169,26 @@ const module =
                                 t("taxsum.gains") +
 
                                 fmt(taxData.capitalGains) +
+
+                                "</p>" +
+
+                                "<p>" +
+
+                                t("taxsum.gainsLong") +
+
+                                fmt(taxData.capitalGainsLongTerm) +
+
+                                t("taxsum.gainsShortSep") +
+
+                                fmt(taxData.capitalGainsShortTerm) +
+
+                                "</p>" +
+
+                                "<p>" +
+
+                                t("taxsum.gainsOther") +
+
+                                fmt(taxData.capitalGainsOther) +
 
                                 "</p>" +
 
@@ -3464,7 +3516,7 @@ async function start(){
 
                 await import(
 
-                    "./core/integration/cashflowIntegration.js?v=20261008aw"
+                    "./core/integration/cashflowIntegration.js?v=20261009be"
 
                 );
 
@@ -4308,6 +4360,10 @@ async function start(){
 
         let liabilityAnnualInterest = 0;
 
+        let dashRegularExpense = 0;
+
+        let dashInvestmentNet = 0;
+
         // ==================================================
 
         // Direct Cashflow Expense
@@ -4351,6 +4407,28 @@ async function start(){
                     Number(
 
                         cashflowSummary?.expense ||
+
+                        0
+
+                    );
+
+                dashRegularExpense =
+
+                    Number(
+
+                        cashflowSummary?.regularExpense ??
+
+                        cashflowSummary?.expense ??
+
+                        0
+
+                    );
+
+                dashInvestmentNet =
+
+                    Number(
+
+                        cashflowSummary?.investmentNet ||
 
                         0
 
@@ -4476,19 +4554,27 @@ async function start(){
 
             expense:
 
-                cashFlowExpense,
+                dashRegularExpense,
 
             net:
 
                 incomeTotal -
 
-                cashFlowExpense,
+                dashRegularExpense +
+
+                dashInvestmentNet,
 
             netCashFlow:
 
                 incomeTotal -
 
-                cashFlowExpense,
+                dashRegularExpense +
+
+                dashInvestmentNet,
+
+            investmentNet:
+
+                dashInvestmentNet,
 
             directExpense:
 
@@ -4517,6 +4603,136 @@ async function start(){
             cashFlowData.netCashFlow =
 
                 dashScopeBucket.netFlow;
+
+            // Member-scoped investment cash flow
+
+            // (sells in, buys out) from the trades
+
+            // themselves.
+
+            try {
+
+                const acctModule =
+
+                    await import(
+
+                        "./modules/account/api/accountAPI.js?v=20261008aw"
+
+                    );
+
+                const acctMember = {};
+
+                (
+
+                    acctModule.default.getAll() || []
+
+                ).forEach(
+
+                    account => {
+
+                        acctMember[account.id] =
+
+                            account.memberId ||
+
+                            account.ownerId ||
+
+                            "";
+
+                    }
+
+                );
+
+                let scopedInvestmentNet = 0;
+
+                (
+
+                    InvestmentAPI.getTrades() || []
+
+                ).forEach(
+
+                    trade => {
+
+                        const owner =
+
+                            trade.memberId ||
+
+                            (
+
+                                trade.accountId
+
+                                    ? acctMember[
+
+                                        trade.accountId
+
+                                    ]
+
+                                    : ""
+
+                            ) ||
+
+                            "";
+
+                        const inScope =
+
+                            dashScopeId === "__shared__"
+
+                                ? owner === ""
+
+                                : owner === dashScopeId;
+
+                        if (!inScope) {
+
+                            return;
+
+                        }
+
+                        const amount =
+
+                            Math.abs(
+
+                                Number(trade.amount || 0)
+
+                            );
+
+                        const action =
+
+                            String(
+
+                                trade.action || ""
+
+                            ).toUpperCase();
+
+                        if (action === "SELL") {
+
+                            scopedInvestmentNet += amount;
+
+                        } else if (action === "BUY") {
+
+                            scopedInvestmentNet -= amount;
+
+                        }
+
+                    }
+
+                );
+
+                cashFlowData.investmentNet =
+
+                    scopedInvestmentNet;
+
+                cashFlowData.net =
+
+                    dashScopeBucket.netFlow +
+
+                    scopedInvestmentNet;
+
+                cashFlowData.netCashFlow =
+
+                    cashFlowData.net;
+
+            } catch (scopedInvestmentError) {
+
+            }
 
         }
 
