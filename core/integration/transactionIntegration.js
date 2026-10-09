@@ -30,7 +30,7 @@
 
 import AccountBalanceIntegration
 
-    from "./accountBalanceIntegration.js?v=20261009bb";
+    from "./accountBalanceIntegration.js?v=20261009bc";
 
 import cashflowAPI
 
