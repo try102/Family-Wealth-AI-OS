@@ -3482,7 +3482,7 @@ async function start(){
 
                 await import(
 
-                    "./core/integration/accountBalanceIntegration.js?v=20261009ba"
+                    "./core/integration/accountBalanceIntegration.js?v=20261009bb"
 
                 );
 
