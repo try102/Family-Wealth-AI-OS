@@ -18,11 +18,11 @@ Delete Investment
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js?v=20261008ac";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261008ad";
 
 import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js";
 
-import InvestmentAgent from "../agent/investmentAgent.js?v=20261008ac";
+import InvestmentAgent from "../agent/investmentAgent.js?v=20261008ad";
 
 import AccountAPI from "../../account/api/accountAPI.js";
 
@@ -38,7 +38,7 @@ import {
 
     t
 
-} from "../i18n/investmentLocales.js?v=20261008ac";
+} from "../i18n/investmentLocales.js?v=20261008ad";
 
 const InvestmentView = {
 
@@ -135,6 +135,22 @@ const InvestmentView = {
             : InvestmentAPI
 
                 .getPositions();
+
+        const priceOverrides =
+
+            (() => {
+
+                try {
+
+                    return InvestmentAPI.getPriceOverrides();
+
+                } catch (error) {
+
+                    return {};
+
+                }
+
+            })();
 
         const members =
 
@@ -824,6 +840,92 @@ const InvestmentView = {
 
                     <h3>
 
+                        ${t("priceImportTitle")}
+
+                    </h3>
+
+                    <p>
+
+                        ${t("priceImportHint")}
+
+                    </p>
+
+                    <input
+
+                        type="file"
+
+                        id="price-import-file"
+
+                        accept=".csv,.json,.txt"
+
+                    >
+
+                    <br>
+
+                    <textarea
+
+                        id="price-import-text"
+
+                        rows="3"
+
+                        cols="40"
+
+                        placeholder="AAPL,190.5"
+
+                    ></textarea>
+
+                    <br>
+
+                    <button
+
+                        type="button"
+
+                        id="price-import-apply"
+
+                    >
+
+                        ${t("priceImportApply")}
+
+                    </button>
+
+                    <br>
+
+                    <input
+
+                        type="text"
+
+                        id="price-import-url"
+
+                        size="40"
+
+                        placeholder="${t("priceImportUrl")}"
+
+                    >
+
+                    <button
+
+                        type="button"
+
+                        id="price-import-fetch"
+
+                    >
+
+                        ${t("priceImportFetch")}
+
+                    </button>
+
+                    <p
+
+                        id="price-import-msg"
+
+                    ></p>
+
+                </section>
+
+                <section>
+
+                    <h3>
+
                         ${t("holdingsAuto")}
 
                     </h3>
@@ -875,6 +977,66 @@ const InvestmentView = {
                                         ${t("holdingBalance")} ${Number(position.quantity || 0)} ${t("sharesUnit")} / $${Number(position.marketValue || 0).toLocaleString()}
 
                                         ${positionTradeLines(position.symbol)}
+
+                                        <br>
+
+                                        <label>
+
+                                            ${t("priceCurrent")}
+
+                                        </label>
+
+                                        <input
+
+                                            type="number"
+
+                                            step="0.01"
+
+                                            min="0"
+
+                                            class="price-input"
+
+                                            data-symbol="${position.symbol || position.name || ""}"
+
+                                            value="${Number(position.currentPrice || 0)}"
+
+                                        >
+
+                                        <button
+
+                                            type="button"
+
+                                            class="update-price-button"
+
+                                            data-symbol="${position.symbol || position.name || ""}"
+
+                                        >
+
+                                            ${t("priceUpdate")}
+
+                                        </button>
+
+                                        ${
+
+                                            (() => {
+
+                                                const entry =
+
+                                                    priceOverrides[
+
+                                                        String(position.symbol || position.name || "").toUpperCase()
+
+                                                    ];
+
+                                                return entry
+
+                                                    ? `(${t("priceSource")}: ${entry.source === "manual" ? t("priceManual") : t("priceImported")})`
+
+                                                    : "";
+
+                                            })()
+
+                                        }
 
                                     </li>
 
@@ -1365,6 +1527,496 @@ const InvestmentView = {
             }
 
         );
+
+        // ==========================================
+
+        // Current price: manual update + import
+
+        // ==========================================
+
+        const parsePriceText =
+
+            text => {
+
+                const map = {};
+
+                const trimmed =
+
+                    String(text || "").trim();
+
+                if (!trimmed) {
+
+                    return map;
+
+                }
+
+                try {
+
+                    const parsed =
+
+                        JSON.parse(trimmed);
+
+                    if (Array.isArray(parsed)) {
+
+                        parsed.forEach(
+
+                            item => {
+
+                                if (item && item.symbol) {
+
+                                    map[item.symbol] =
+
+                                        Number(item.price);
+
+                                }
+
+                            }
+
+                        );
+
+                        return map;
+
+                    }
+
+                    if (
+
+                        parsed &&
+
+                        typeof parsed === "object"
+
+                    ) {
+
+                        Object.entries(parsed)
+
+                            .forEach(
+
+                                ([symbol, price]) => {
+
+                                    map[symbol] =
+
+                                        Number(price);
+
+                                }
+
+                            );
+
+                        return map;
+
+                    }
+
+                } catch (error) {
+
+                }
+
+                trimmed
+
+                    .split(/\n/)
+
+                    .forEach(
+
+                        line => {
+
+                            const parts =
+
+                                line
+
+                                    .split(/[,:	 ]+/)
+
+                                    .map(
+
+                                        part => part.trim()
+
+                                    )
+
+                                    .filter(Boolean);
+
+                            if (parts.length >= 2) {
+
+                                const value =
+
+                                    Number(parts[1]);
+
+                                if (value > 0) {
+
+                                    map[parts[0]] =
+
+                                        value;
+
+                                }
+
+                            }
+
+                        }
+
+                    );
+
+                return map;
+
+            };
+
+        const applyPriceMap =
+
+            (map, source) => {
+
+                const msg =
+
+                    container.querySelector(
+
+                        "#price-import-msg"
+
+                    );
+
+                const entries =
+
+                    Object.entries(map || {})
+
+                        .filter(
+
+                            ([, price]) =>
+
+                                Number(price) > 0
+
+                        );
+
+                if (!entries.length) {
+
+                    if (msg) {
+
+                        msg.textContent =
+
+                            t("priceFailed");
+
+                    }
+
+                    return;
+
+                }
+
+                InvestmentAPI.importPrices(
+
+                    Object.fromEntries(entries),
+
+                    source
+
+                );
+
+                if (msg) {
+
+                    msg.textContent =
+
+                        `${t("priceApplied")}: ` +
+
+                        entries
+
+                            .map(
+
+                                ([symbol, price]) =>
+
+                                    `${symbol} $${Number(price)}`
+
+                            )
+
+                            .join(", ");
+
+                }
+
+                this.render(
+
+                    container,
+
+                    onBack
+
+                );
+
+            };
+
+        container.querySelectorAll(
+
+            ".update-price-button"
+
+        ).forEach(
+
+            button => {
+
+                button.addEventListener(
+
+                    "click",
+
+                    () => {
+
+                        const symbol =
+
+                            button.dataset.symbol;
+
+                        const input =
+
+                            container.querySelector(
+
+                                `.price-input[data-symbol="${symbol}"]`
+
+                            );
+
+                        const price =
+
+                            input
+
+                                ? Number(input.value)
+
+                                : 0;
+
+                        if (symbol && price > 0) {
+
+                            InvestmentAPI.setCurrentPrice(
+
+                                symbol,
+
+                                price,
+
+                                "manual"
+
+                            );
+
+                            this.render(
+
+                                container,
+
+                                onBack
+
+                            );
+
+                        }
+
+                    }
+
+                );
+
+            }
+
+        );
+
+        const priceFileInput =
+
+            container.querySelector(
+
+                "#price-import-file"
+
+            );
+
+        if (priceFileInput) {
+
+            priceFileInput.addEventListener(
+
+                "change",
+
+                () => {
+
+                    const file =
+
+                        priceFileInput.files &&
+
+                        priceFileInput.files[0];
+
+                    if (!file) {
+
+                        return;
+
+                    }
+
+                    const reader =
+
+                        new FileReader();
+
+                    reader.onload =
+
+                        () => {
+
+                            const textArea =
+
+                                container.querySelector(
+
+                                    "#price-import-text"
+
+                                );
+
+                            if (textArea) {
+
+                                textArea.value =
+
+                                    String(reader.result || "");
+
+                            }
+
+                        };
+
+                    reader.readAsText(file);
+
+                }
+
+            );
+
+        }
+
+        const priceApplyButton =
+
+            container.querySelector(
+
+                "#price-import-apply"
+
+            );
+
+        if (priceApplyButton) {
+
+            priceApplyButton.addEventListener(
+
+                "click",
+
+                () => {
+
+                    const textArea =
+
+                        container.querySelector(
+
+                            "#price-import-text"
+
+                        );
+
+                    applyPriceMap(
+
+                        parsePriceText(
+
+                            textArea
+
+                                ? textArea.value
+
+                                : ""
+
+                        ),
+
+                        "import"
+
+                    );
+
+                }
+
+            );
+
+        }
+
+        const priceFetchButton =
+
+            container.querySelector(
+
+                "#price-import-fetch"
+
+            );
+
+        if (priceFetchButton) {
+
+            priceFetchButton.addEventListener(
+
+                "click",
+
+                async () => {
+
+                    const urlInput =
+
+                        container.querySelector(
+
+                            "#price-import-url"
+
+                        );
+
+                    const msg =
+
+                        container.querySelector(
+
+                            "#price-import-msg"
+
+                        );
+
+                    const url =
+
+                        urlInput
+
+                            ? urlInput.value.trim()
+
+                            : "";
+
+                    if (!url) {
+
+                        return;
+
+                    }
+
+                    try {
+
+                        const response =
+
+                            await fetch(url);
+
+                        const data =
+
+                            await response.json();
+
+                        const map =
+
+                            Array.isArray(data)
+
+                                ? Object.fromEntries(
+
+                                    data
+
+                                        .filter(
+
+                                            item =>
+
+                                                item &&
+
+                                                item.symbol
+
+                                        )
+
+                                        .map(
+
+                                            item => [
+
+                                                item.symbol,
+
+                                                Number(item.price)
+
+                                            ]
+
+                                        )
+
+                                )
+
+                                : data;
+
+                        applyPriceMap(
+
+                            map,
+
+                            "import"
+
+                        );
+
+                    } catch (error) {
+
+                        if (msg) {
+
+                            msg.textContent =
+
+                                t("priceFailed");
+
+                        }
+
+                    }
+
+                }
+
+            );
+
+        }
 
         // ==========================================
 
