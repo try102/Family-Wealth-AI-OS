@@ -176,6 +176,38 @@ const InvestmentRepository = {
 
     },
 
+    deleteTrade(
+
+        tradeId
+
+    ){
+
+        const data =
+
+        this.getTrades()
+
+        .filter(
+
+            item =>
+
+            String(item.id) !==
+
+            String(tradeId)
+
+        );
+
+        DataService.save(
+
+            TRADE_KEY,
+
+            data
+
+        );
+
+        return true;
+
+    },
+
     deleteTradesBySymbol(
 
         symbol
