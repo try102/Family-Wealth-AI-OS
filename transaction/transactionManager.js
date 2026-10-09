@@ -30,19 +30,19 @@
 
 import Transaction
 
-    from "./transaction.js";
+    from "./transaction.js?v=20261008ae";
 
 import TransactionRepository
 
-    from "./transactionRepository.js";
+    from "./transactionRepository.js?v=20261008ae";
 
 import EventBus
 
-    from "../core/events/eventBus.js";
+    from "../core/events/eventBus.js?v=20261008ae";
 
 import EventTypes
 
-    from "../core/events/eventTypes.js";
+    from "../core/events/eventTypes.js?v=20261008ae";
 
 class TransactionManager {
 

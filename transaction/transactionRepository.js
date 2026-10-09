@@ -26,11 +26,11 @@
 
 import DataService
 
-    from "../core/database/dataService.js";
+    from "../core/database/dataService.js?v=20261008ae";
 
 import Transaction
 
-    from "./transaction.js";
+    from "./transaction.js?v=20261008ae";
 
 const TRANSACTION_KEY =
 
