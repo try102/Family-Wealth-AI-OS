@@ -470,9 +470,203 @@ const AccountBalanceIntegration = {
 
             );
 
+            // Mirror pairs: an asset record that IS
+
+            // the account (deposit / Checking entered
+
+            // in the Asset Center) and the matching
+
+            // account share one balance. Asset value
+
+            // wins unless the user typed a balance in
+
+            // the Account Center more recently.
+
+            const mirrorIds = new Set();
+
+            const mirrorKindOf = record => {
+
+                const label =
+
+                    `${(record && record.name) || ""} ${(record && record.category) || ""} ${(record && record.accountType) || ""} ${(record && record.type) || ""}`.toLowerCase();
+
+                if (label.includes("invest")) {
+
+                    return "investment";
+
+                }
+
+                if (label.includes("check")) {
+
+                    return "checking";
+
+                }
+
+                return "";
+
+            };
+
+            try {
+
+                const assetRecords =
+
+                    AssetRepository.findAll() ||
+
+                    [];
+
+                byId.forEach(
+
+                    (account, accountKey) => {
+
+                        const kind =
+
+                            mirrorKindOf(account);
+
+                        if (!kind) {
+
+                            return;
+
+                        }
+
+                        const owner =
+
+                            account.memberId ||
+
+                            account.ownerId ||
+
+                            "";
+
+                        const pair =
+
+                            assetRecords.find(
+
+                                asset =>
+
+                                    mirrorKindOf(asset) ===
+
+                                        kind &&
+
+                                    String(
+
+                                        asset.memberId ||
+
+                                        asset.ownerId ||
+
+                                        ""
+
+                                    ) === String(owner)
+
+                            );
+
+                        if (!pair) {
+
+                            return;
+
+                        }
+
+                        mirrorIds.add(
+
+                            accountKey
+
+                        );
+
+                        const manualWins =
+
+                            account.manualBalance &&
+
+                            account.manualAt &&
+
+                            pair.updatedAt &&
+
+                            String(account.manualAt) >=
+
+                                String(pair.updatedAt);
+
+                        if (manualWins) {
+
+                            if (
+
+                                Number(pair.currentValue || 0) !==
+
+                                    Number(account.balance || 0)
+
+                            ) {
+
+                                pair.currentValue =
+
+                                    Number(
+
+                                        account.balance || 0
+
+                                    );
+
+                                try {
+
+                                    AssetRepository.save(
+
+                                        pair
+
+                                    );
+
+                                } catch (pairSaveError) {
+
+                                }
+
+                            }
+
+                        } else {
+
+                            account.balance =
+
+                                Number(
+
+                                    pair.currentValue || 0
+
+                                );
+
+                            account.openingBalance =
+
+                                account.balance;
+
+                            account.openingSource =
+
+                                "asset";
+
+                            account.manualBalance =
+
+                                false;
+
+                            try {
+
+                                AccountRepository.save(
+
+                                    account
+
+                                );
+
+                            } catch (mirrorSaveError) {
+
+                            }
+
+                        }
+
+                    }
+
+                );
+
+            } catch (mirrorSyncError) {
+
+            }
+
             byId.forEach(
 
                 (account, accountKey) => {
+
+                    if (mirrorIds.has(accountKey)) {
+
+                        return;
+
+                    }
 
                     const effect =
 
@@ -938,9 +1132,19 @@ const AccountBalanceIntegration = {
 
                     if (
 
-                        !account
+                        !account ||
+
+                        account.openingSource ===
+
+                            "asset"
 
                     ) {
+
+                        // Mirror-managed accounts take
+
+                        // their balance from the asset
+
+                        // record, not from transactions.
 
                         return;
 
