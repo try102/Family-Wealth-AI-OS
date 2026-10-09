@@ -604,6 +604,98 @@ const AccountBalanceIntegration = {
 
                                 String(pair.updatedAt);
 
+                        if (
+
+                            !account.mirrorBasis &&
+
+                            !manualWins
+
+                        ) {
+
+                            // First pairing: the value
+
+                            // typed in the Asset Center
+
+                            // is the OPENING balance; the
+
+                            // live balance is opening +
+
+                            // transaction effects (e.g.
+
+                            // 200,000 minus stock buys),
+
+                            // mirrored onto both sides.
+
+                            account.openingBalance =
+
+                                Number(
+
+                                    pair.currentValue || 0
+
+                                );
+
+                            account.balance =
+
+                                account.openingBalance +
+
+                                effect;
+
+                            account.openingSource =
+
+                                "asset";
+
+                            account.mirrorBasis =
+
+                                "opening";
+
+                            account.manualBalance =
+
+                                false;
+
+                            try {
+
+                                AccountRepository.save(
+
+                                    account
+
+                                );
+
+                            } catch (mirrorSaveError) {
+
+                            }
+
+                            if (
+
+                                Number(
+
+                                    pair.currentValue || 0
+
+                                ) !== account.balance
+
+                            ) {
+
+                                pair.currentValue =
+
+                                    account.balance;
+
+                                try {
+
+                                    AssetRepository.save(
+
+                                        pair
+
+                                    );
+
+                                } catch (pairSaveError) {
+
+                                }
+
+                            }
+
+                            return;
+
+                        }
+
                         const truth =
 
                             manualWins
@@ -627,6 +719,12 @@ const AccountBalanceIntegration = {
                         account.balance =
 
                             truth;
+
+                        account.mirrorBasis =
+
+                            account.mirrorBasis ||
+
+                            "opening";
 
                         account.openingSource =
 
