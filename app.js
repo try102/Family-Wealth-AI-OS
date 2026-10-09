@@ -1078,7 +1078,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./core/modules/assetsModule.js?v=20261008ae"
+                            "./core/modules/assetsModule.js?v=20261008af"
 
                         );
 
@@ -3516,7 +3516,7 @@ async function start(){
 
             await import(
 
-                "./core/modules/assetsModule.js?v=20261008ae"
+                "./core/modules/assetsModule.js?v=20261008af"
 
             );
 
