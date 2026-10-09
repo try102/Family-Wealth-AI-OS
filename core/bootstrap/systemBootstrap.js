@@ -72,7 +72,7 @@ import Advisor
 
 import InvestmentAgent
 
-    from "../../modules/investment/agent/investmentAgent.js?v=20261008ae";
+    from "../../modules/investment/agent/investmentAgent.js?v=20261008ag";
 
 // ==================================================
 
@@ -102,7 +102,7 @@ import CashflowModule
 
 import AssetsModule
 
-    from "../modules/assetsModule.js?v=20261008ae";
+    from "../modules/assetsModule.js?v=20261008ag";
 
 // ==================================================
 
