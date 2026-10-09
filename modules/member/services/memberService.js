@@ -35,7 +35,29 @@ const MemberService = {
     },
 
     saveMember(data) {
-        return MemberRepository.save(data || {});
+        const input = data || {};
+        const isNewMember =
+            !input.id ||
+            !this.getMembers().some(
+                member => member.id === input.id
+            );
+        const saved = MemberRepository.save(input);
+        if (isNewMember && saved && saved.id) {
+            // New members automatically get a
+            // default cash account of their own.
+            try {
+                AccountAPI.create({
+                    name: (saved.name || "Member") + "的账户",
+                    accountType: "Cash",
+                    type: "Cash",
+                    balance: 0,
+                    memberId: saved.id,
+                    ownerId: saved.id
+                });
+            } catch (accountError) {
+            }
+        }
+        return saved;
     },
 
     deleteMember(id) {
