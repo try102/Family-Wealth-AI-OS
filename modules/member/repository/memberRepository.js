@@ -3,8 +3,8 @@ Family Wealth AI OS V7
 Member Repository
 家庭成员档案持久化（localStorage: family_members）
 */
-import DataService from "../../../core/database/dataService.js";
-import MemberSchema from "../schema/memberSchema.js";
+import DataService from "../../../core/database/dataService.js?v=20261008ae";
+import MemberSchema from "../schema/memberSchema.js?v=20261008ae";
 
 const MEMBERS_KEY = "family_members";
 

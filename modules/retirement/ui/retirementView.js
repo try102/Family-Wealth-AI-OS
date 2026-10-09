@@ -8,11 +8,11 @@ Retirement View
 
 */
 
-import RetirementAPI from "../api/retirementAPI.js";
+import RetirementAPI from "../api/retirementAPI.js?v=20261008ae";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008ae";
 
-import { renderSupportCenter, bindSupportCenter } from "../../support/supportCenter.js";
+import { renderSupportCenter, bindSupportCenter } from "../../support/supportCenter.js?v=20261008ae";
 
 function money(value) {
 

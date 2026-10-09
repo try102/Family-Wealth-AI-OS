@@ -6,7 +6,7 @@ Retirement Agent
 
 */
 
-import RetirementAPI from "../api/retirementAPI.js";
+import RetirementAPI from "../api/retirementAPI.js?v=20261008ae";
 
 const RetirementAgent = {
 

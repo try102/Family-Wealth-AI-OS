@@ -5,17 +5,17 @@ Member Service
 归属解析顺序：记录 memberId → ownerId → 所属账户的成员 → owner 姓名匹配 → 家庭共同。
 投资按投资记录的账户归属统计（持仓本身按代码汇总，不分成员）。
 */
-import MemberRepository from "../repository/memberRepository.js";
-import AccountAPI from "../../account/api/accountAPI.js";
-import IncomeAPI from "../../income/api/incomeAPI.js";
-import ExpenseAPI from "../../expense/api/expenseAPI.js";
-import InvestmentAPI from "../../investment/api/investmentAPI.js";
-import AssetAPI from "../../asset/api/assetAPI.js";
-import LiabilityAPI from "../../liability/api/liabilityAPI.js";
+import MemberRepository from "../repository/memberRepository.js?v=20261008ae";
+import AccountAPI from "../../account/api/accountAPI.js?v=20261008ae";
+import IncomeAPI from "../../income/api/incomeAPI.js?v=20261008ae";
+import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261008ae";
+import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261008ae";
+import AssetAPI from "../../asset/api/assetAPI.js?v=20261008ae";
+import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261008ae";
 
-import IncomeRepository from "../../income/repository/incomeRepository.js";
+import IncomeRepository from "../../income/repository/incomeRepository.js?v=20261008ae";
 
-import TransactionRepository from "../../../transaction/transactionRepository.js";
+import TransactionRepository from "../../../transaction/transactionRepository.js?v=20261008ae";
 
 function num(value) {
     return Number(value || 0);

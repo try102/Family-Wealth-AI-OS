@@ -6,9 +6,9 @@ Transaction Agent
 
 */
 
-import TransactionAPI from "../api/transactionAPI.js";
+import TransactionAPI from "../api/transactionAPI.js?v=20261008ae";
 
-import TransactionAnalysisEngine from "../engines/transactionAnalysisEngine.js";
+import TransactionAnalysisEngine from "../engines/transactionAnalysisEngine.js?v=20261008ae";
 
 const TransactionAgent = {
 

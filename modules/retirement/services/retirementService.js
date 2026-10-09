@@ -14,19 +14,19 @@ Retirement Service
 
 */
 
-import RetirementRepository from "../repository/retirementRepository.js";
+import RetirementRepository from "../repository/retirementRepository.js?v=20261008ae";
 
-import RetirementEngine from "../../../core/retirement/retirementEngine.js";
+import RetirementEngine from "../../../core/retirement/retirementEngine.js?v=20261008ae";
 
-import AccountAPI from "../../account/api/accountAPI.js";
+import AccountAPI from "../../account/api/accountAPI.js?v=20261008ae";
 
-import AssetAPI from "../../asset/api/assetAPI.js";
+import AssetAPI from "../../asset/api/assetAPI.js?v=20261008ae";
 
-import InvestmentAPI from "../../investment/api/investmentAPI.js";
+import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261008ae";
 
-import LiabilityAPI from "../../liability/api/liabilityAPI.js";
+import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261008ae";
 
-import ExpenseRepository from "../../expense/repository/expenseRepository.js";
+import ExpenseRepository from "../../expense/repository/expenseRepository.js?v=20261008ae";
 
 function safeTotal(fn, fallback = 0) {
 
