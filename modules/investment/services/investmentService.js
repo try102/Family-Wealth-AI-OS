@@ -36,7 +36,7 @@
 
 import InvestmentRepository
 
-    from "../repository/investmentRepository.js?v=20261008ag";
+    from "../repository/investmentRepository.js?v=20261008ah";
 
 import EventBus
 
@@ -56,7 +56,7 @@ import PriceOverrideStore
 
 import AccountBalanceIntegration
 
-    from "../../../core/integration/accountBalanceIntegration.js?v=20261008ag";
+    from "../../../core/integration/accountBalanceIntegration.js?v=20261008ah";
 
 import cashflowAPI
 
@@ -1630,9 +1630,9 @@ const InvestmentService = {
 
                     ? buyOverridePrice
 
-                    : position.currentPrice ||
+                    : price ||
 
-                        price;
+                        position.currentPrice;
 
             position.marketValue =
 
@@ -1960,9 +1960,9 @@ const InvestmentService = {
 
                     ? sellOverridePrice
 
-                    : position.currentPrice ||
+                    : price ||
 
-                        price;
+                        position.currentPrice;
 
             position.marketValue =
 
