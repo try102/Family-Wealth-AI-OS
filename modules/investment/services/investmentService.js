@@ -50,13 +50,17 @@ import TransactionIntegration
 
     from "../../../core/integration/transactionIntegration.js?v=20261008ak";
 
+import AccountRepository
+
+    from "../../account/repository/accountRepository.js?v=20261008ae";
+
 import PriceOverrideStore
 
     from "./priceOverrideStore.js?v=20261008ae";
 
 import AccountBalanceIntegration
 
-    from "../../../core/integration/accountBalanceIntegration.js?v=20261008av";
+    from "../../../core/integration/accountBalanceIntegration.js?v=20261008aw";
 
 import cashflowAPI
 
@@ -1256,11 +1260,151 @@ const InvestmentService = {
 
                     trade.id || "",
 
+                memberId:
+
+                    trade.memberId || "",
+
                 action
 
             }
 
         };
+
+        /*
+
+         * A trade recorded for a member without
+
+         * choosing an account settles in that
+
+         * member's Investment account, so the
+
+         * investable cash balance always moves
+
+         * with buys and sells.
+
+         */
+
+        const pickedAccount =
+
+            transactionData.accountId
+
+                ? (
+
+                    AccountRepository.findAll() ||
+
+                    []
+
+                ).find(
+
+                    account =>
+
+                        String(account.id) ===
+
+                        String(transactionData.accountId)
+
+                )
+
+                : null;
+
+        const pickedOwnerMismatch =
+
+            pickedAccount &&
+
+            trade.memberId &&
+
+            String(
+
+                pickedAccount.memberId ||
+
+                pickedAccount.ownerId ||
+
+                ""
+
+            ) !== String(trade.memberId);
+
+        if (
+
+            trade.memberId &&
+
+            (
+
+                !transactionData.accountId ||
+
+                pickedOwnerMismatch
+
+            )
+
+        ) {
+
+            try {
+
+                const owned =
+
+                    (
+
+                        AccountRepository.findAll() ||
+
+                        []
+
+                    ).filter(
+
+                        account =>
+
+                            String(
+
+                                account.memberId ||
+
+                                account.ownerId ||
+
+                                ""
+
+                            ) === String(trade.memberId)
+
+                    );
+
+                const settle =
+
+                    owned.find(
+
+                        account =>
+
+                            account.openingSource ===
+
+                                "asset" &&
+
+                            `${account.name || ""} ${account.accountType || ""} ${account.type || ""}`
+
+                                .toLowerCase()
+
+                                .includes("invest")
+
+                    ) ||
+
+                    owned.find(
+
+                        account =>
+
+                            `${account.name || ""} ${account.accountType || ""} ${account.type || ""}`
+
+                                .toLowerCase()
+
+                                .includes("invest")
+
+                    );
+
+                if (settle) {
+
+                    transactionData.accountId =
+
+                        String(settle.id);
+
+                }
+
+            } catch (settleError) {
+
+            }
+
+        }
 
         /*
 
