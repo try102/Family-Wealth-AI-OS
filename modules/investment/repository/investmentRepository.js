@@ -6,9 +6,9 @@ Investment Repository
 
 */
 
-import DataService from "../../../core/database/dataService.js";
+import DataService from "../../../core/database/dataService.js?v=20261008ae";
 
-import Helpers from "../../../core/utils/helpers.js";
+import Helpers from "../../../core/utils/helpers.js?v=20261008ae";
 
 const INVESTMENT_KEY =
 
