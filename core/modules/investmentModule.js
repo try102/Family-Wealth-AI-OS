@@ -10,39 +10,39 @@ Investment Module
 
 import investmentAgent
 
-    from "../../modules/investment/agent/investmentAgent.js";
+    from "../../modules/investment/agent/investmentAgent.js?v=20261008ae";
 
 import investmentAI
 
-    from "../../modules/investment/ai/investmentAI.js";
+    from "../../modules/investment/ai/investmentAI.js?v=20261008ae";
 
 import investmentAPI
 
-    from "../../modules/investment/api/investmentAPI.js";
+    from "../../modules/investment/api/investmentAPI.js?v=20261008ae";
 
 import investmentAnalysisEngine
 
-    from "../../modules/investment/analysis/investmentAnalysisEngine.js";
+    from "../../modules/investment/analysis/investmentAnalysisEngine.js?v=20261008ae";
 
 import investmentDecisionEngine
 
-    from "../../modules/investment/decision/investmentDecisionEngine.js";
+    from "../../modules/investment/decision/investmentDecisionEngine.js?v=20261008ae";
 
 import investmentEvents
 
-    from "../../modules/investment/events/investmentEvents.js";
+    from "../../modules/investment/events/investmentEvents.js?v=20261008ae";
 
 import marketDataService
 
-    from "../../modules/investment/data/marketDataService.js";
+    from "../../modules/investment/data/marketDataService.js?v=20261008ae";
 
 import portfolioEngine
 
-    from "../../modules/investment/portfolio/portfolioEngine.js";
+    from "../../modules/investment/portfolio/portfolioEngine.js?v=20261008ae";
 
 import investmentRepository
 
-    from "../../modules/investment/repository/investmentRepository.js";
+    from "../../modules/investment/repository/investmentRepository.js?v=20261008ae";
 
 const InvestmentModule = {
 

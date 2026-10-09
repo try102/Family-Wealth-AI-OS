@@ -14,11 +14,11 @@ Account Balance Integration
 
 */
 
-import EventBus from "../events/eventBus.js";
+import EventBus from "../events/eventBus.js?v=20261008ae";
 
-import EventTypes from "../events/eventTypes.js";
+import EventTypes from "../events/eventTypes.js?v=20261008ae";
 
-import AccountRepository from "../../modules/account/repository/accountRepository.js";
+import AccountRepository from "../../modules/account/repository/accountRepository.js?v=20261008ae";
 
 const AccountBalanceIntegration = {
 

@@ -32,15 +32,15 @@
 
 import EventBus
 
-    from "../events/eventBus.js";
+    from "../events/eventBus.js?v=20261008ae";
 
 import EventTypes
 
-    from "../events/eventTypes.js";
+    from "../events/eventTypes.js?v=20261008ae";
 
 import cashflowAPI
 
-    from "../../modules/cashflow/api/cashflowAPI.js";
+    from "../../modules/cashflow/api/cashflowAPI.js?v=20261008ae";
 
 const CashflowIntegration = {
 

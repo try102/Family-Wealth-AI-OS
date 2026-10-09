@@ -6,11 +6,11 @@ Health Monitor
 
 */
 
-import ModuleRegistry from "../registry/moduleRegistry.js";
+import ModuleRegistry from "../registry/moduleRegistry.js?v=20261008ae";
 
-import AgentRegistry from "../registry/agentRegistry.js";
+import AgentRegistry from "../registry/agentRegistry.js?v=20261008ae";
 
-import SystemManager from "../system/systemManager.js";
+import SystemManager from "../system/systemManager.js?v=20261008ae";
 
 const HealthMonitor = {
 

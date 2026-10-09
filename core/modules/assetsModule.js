@@ -10,39 +10,39 @@ Assets Module
 
 import assetAgent
 
-from "../../modules/asset/agent/assetAgent.js";
+from "../../modules/asset/agent/assetAgent.js?v=20261008ae";
 
 import assetAI
 
-from "../../modules/asset/ai/assetAI.js";
+from "../../modules/asset/ai/assetAI.js?v=20261008ae";
 
 import assetAPI
 
-from "../../modules/asset/api/assetAPI.js";
+from "../../modules/asset/api/assetAPI.js?v=20261008ae";
 
 import assetAnalysisEngine
 
-from "../../modules/assets/engines/assetAnalysisEngine.js";
+from "../../modules/assets/engines/assetAnalysisEngine.js?v=20261008ae";
 
 import assetEventHandler
 
-from "../../modules/asset/events/assetEventHandler.js";
+from "../../modules/asset/events/assetEventHandler.js?v=20261008ae";
 
 import assetRepository
 
-from "../../modules/asset/repository/assetRepository.js";
+from "../../modules/asset/repository/assetRepository.js?v=20261008ae";
 
 import assetSchema
 
-from "../../modules/asset/schema/assetSchema.js";
+from "../../modules/asset/schema/assetSchema.js?v=20261008ae";
 
 import assetService
 
-from "../../modules/asset/services/assetService.js";
+from "../../modules/asset/services/assetService.js?v=20261008ae";
 
 import assetView
 
-from "../../modules/asset/ui/assetView.js?v=20261008ad";
+from "../../modules/asset/ui/assetView.js?v=20261008ae";
 
 const AssetsModule = {
 

@@ -24,9 +24,9 @@ Tax Data Integration
 
 */
 
-import IncomeRepository from "../../modules/income/repository/incomeRepository.js";
+import IncomeRepository from "../../modules/income/repository/incomeRepository.js?v=20261008ae";
 
-import TransactionRepository from "../../transaction/transactionRepository.js";
+import TransactionRepository from "../../transaction/transactionRepository.js?v=20261008ae";
 
 function transactionYear(transaction) {
 

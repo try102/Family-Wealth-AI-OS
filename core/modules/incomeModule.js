@@ -10,39 +10,39 @@ Income Module
 
 import incomeAgent
 
-from "../../modules/income/agent/incomeAgent.js";
+from "../../modules/income/agent/incomeAgent.js?v=20261008ae";
 
 import incomeAPI
 
-from "../../modules/income/api/incomeAPI.js";
+from "../../modules/income/api/incomeAPI.js?v=20261008ae";
 
 import incomeAI
 
-from "../../modules/income/ai/incomeAI.js";
+from "../../modules/income/ai/incomeAI.js?v=20261008ae";
 
 import incomeAnalysisEngine
 
-from "../../modules/income/analysis/incomeAnalysisEngine.js";
+from "../../modules/income/analysis/incomeAnalysisEngine.js?v=20261008ae";
 
 import incomeEvents
 
-from "../../modules/income/events/incomeEvents.js";
+from "../../modules/income/events/incomeEvents.js?v=20261008ae";
 
 import incomeRepository
 
-from "../../modules/income/repository/incomeRepository.js";
+from "../../modules/income/repository/incomeRepository.js?v=20261008ae";
 
 import incomeSchema
 
-from "../../modules/income/schema/incomeSchema.js";
+from "../../modules/income/schema/incomeSchema.js?v=20261008ae";
 
 import incomeService
 
-from "../../modules/income/services/incomeService.js";
+from "../../modules/income/services/incomeService.js?v=20261008ae";
 
 import incomeView
 
-from "../../modules/income/ui/incomeView.js";
+from "../../modules/income/ui/incomeView.js?v=20261008ae";
 
 const IncomeModule = {
 
