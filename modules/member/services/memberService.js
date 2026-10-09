@@ -29,6 +29,88 @@ function safe(fn, fallback) {
     }
 }
 
+/*
+
+ * Every member carries two default accounts:
+
+ * an Investment account and a Checking account,
+
+ * each opening at 200,000. Balances then move
+
+ * with the member's transactions only.
+
+ */
+
+const DEFAULT_ACCOUNT_OPENING = 200000;
+
+const DEFAULT_ACCOUNT_DEFS = [
+    {
+        kind: "investment",
+        name: "Investment",
+        accountType: "Investment",
+        type: "Investment"
+    },
+    {
+        kind: "checking",
+        name: "Checking",
+        accountType: "Checking",
+        type: "Checking"
+    }
+];
+
+function accountKind(account) {
+    const label =
+        `${(account && account.name) || ""} ${(account && account.accountType) || ""} ${(account && account.type) || ""}`.toLowerCase();
+    if (label.includes("invest")) {
+        return "investment";
+    }
+    if (label.includes("check")) {
+        return "checking";
+    }
+    return "";
+}
+
+function ensureMemberDefaultAccounts(member, accounts) {
+    if (!member || !member.id) {
+        return accounts;
+    }
+    const pool = Array.isArray(accounts) ? accounts : [];
+    const kinds = new Set(
+        pool
+            .filter(
+                account =>
+                    String(
+                        (account && (account.memberId || account.ownerId)) || ""
+                    ) === String(member.id)
+            )
+            .map(accountKind)
+            .filter(Boolean)
+    );
+    DEFAULT_ACCOUNT_DEFS.forEach(def => {
+        if (kinds.has(def.kind)) {
+            return;
+        }
+        try {
+            const created = AccountAPI.create({
+                name: def.name,
+                accountType: def.accountType,
+                type: def.type,
+                balance: DEFAULT_ACCOUNT_OPENING,
+                openingBalance: DEFAULT_ACCOUNT_OPENING,
+                memberId: member.id,
+                ownerId: member.id,
+                currency: "USD"
+            });
+            if (created) {
+                pool.push(created);
+            }
+            kinds.add(def.kind);
+        } catch (createError) {
+        }
+    });
+    return pool;
+}
+
 const MemberService = {
     getMembers() {
         return MemberRepository.getAll();
@@ -43,19 +125,12 @@ const MemberService = {
             );
         const saved = MemberRepository.save(input);
         if (isNewMember && saved && saved.id) {
-            // New members automatically get a
-            // default cash account of their own.
-            try {
-                AccountAPI.create({
-                    name: (saved.name || "Member") + "的账户",
-                    accountType: "Cash",
-                    type: "Cash",
-                    balance: 0,
-                    memberId: saved.id,
-                    ownerId: saved.id
-                });
-            } catch (accountError) {
-            }
+            // New members automatically get their
+            // Investment + Checking default accounts.
+            ensureMemberDefaultAccounts(
+                saved,
+                safe(() => AccountAPI.getAll(), [])
+            );
         }
         return saved;
     },
@@ -73,51 +148,12 @@ const MemberService = {
     ensureDefaultAccounts() {
         try {
             const members = this.getMembers() || [];
-            const accounts = safe(() => AccountAPI.getAll(), []);
-            const owners = new Set(
-                accounts
-                    .map(account => account.memberId || account.ownerId || "")
-                    .filter(Boolean)
-                    .map(String)
-            );
-            const accountOwner = {};
-            accounts.forEach(account => {
-                accountOwner[account.id] =
-                    account.memberId || account.ownerId || "";
-            });
-            const active = new Set();
-            safe(() => InvestmentAPI.getTrades(), []).forEach(trade => {
-                const owner =
-                    trade.memberId ||
-                    trade.ownerId ||
-                    (trade.accountId ? accountOwner[trade.accountId] : "") ||
-                    "";
-                if (owner) {
-                    active.add(String(owner));
-                }
-            });
+            let accounts = safe(() => AccountAPI.getAll(), []);
             members.forEach(member => {
-                if (!member || !member.id) {
-                    return;
-                }
-                if (owners.has(String(member.id))) {
-                    return;
-                }
-                if (!active.has(String(member.id))) {
-                    return;
-                }
-                try {
-                    AccountAPI.create({
-                        name: (member.name || "Member") + "的账户",
-                        accountType: "Cash",
-                        type: "Cash",
-                        balance: 0,
-                        memberId: member.id,
-                        ownerId: member.id
-                    });
-                    owners.add(String(member.id));
-                } catch (createError) {
-                }
+                accounts = ensureMemberDefaultAccounts(
+                    member,
+                    accounts
+                );
             });
         } catch (syncError) {
         }
