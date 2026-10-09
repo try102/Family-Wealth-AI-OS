@@ -20,6 +20,10 @@ import EventTypes from "../events/eventTypes.js?v=20261008ae";
 
 import AccountRepository from "../../modules/account/repository/accountRepository.js?v=20261008ae";
 
+import InvestmentRepository from "../../modules/investment/repository/investmentRepository.js?v=20261008ae";
+
+import AssetRepository from "../../modules/asset/repository/assetRepository.js?v=20261008ae";
+
 const AccountBalanceIntegration = {
 
     initialized:
@@ -39,6 +43,394 @@ const AccountBalanceIntegration = {
     appliedTransactionIds:
 
         new Set(),
+
+    /*
+
+     * Startup sync + calibration:
+
+     * - Any accountId still referenced by a live
+
+     *   transaction, trade or asset but missing as
+
+     *   an account record is created automatically
+
+     *   (balance = its live transaction effects).
+
+     * - Every account balance is derived as
+
+     *   openingBalance + live transaction effects,
+
+     *   so balances can never drift from the ledger.
+
+     */
+
+    syncAndCalibrate(
+
+        transactions
+
+    ) {
+
+        try {
+
+            const txs =
+
+                Array.isArray(transactions)
+
+                    ? transactions
+
+                    : [];
+
+            const effects = new Map();
+
+            const referenced = new Set();
+
+            txs.forEach(
+
+                transaction => {
+
+                    (
+
+                        transaction.lines || []
+
+                    ).forEach(
+
+                        line => {
+
+                            if (
+
+                                !line ||
+
+                                !line.accountId
+
+                            ) {
+
+                                return;
+
+                            }
+
+                            const accountKey =
+
+                                String(line.accountId);
+
+                            referenced.add(
+
+                                accountKey
+
+                            );
+
+                            if (!line.cashEffect) {
+
+                                return;
+
+                            }
+
+                            const amount =
+
+                                Number(line.amount);
+
+                            if (
+
+                                !Number.isFinite(amount) ||
+
+                                amount === 0
+
+                            ) {
+
+                                return;
+
+                            }
+
+                            const delta =
+
+                                line.direction === "IN"
+
+                                    ? amount
+
+                                    : line.direction === "OUT"
+
+                                        ? -amount
+
+                                        : 0;
+
+                            if (delta) {
+
+                                effects.set(
+
+                                    accountKey,
+
+                                    (
+
+                                        effects.get(accountKey) ||
+
+                                        0
+
+                                    ) + delta
+
+                                );
+
+                            }
+
+                        }
+
+                    );
+
+                }
+
+            );
+
+            const tradeOwner = {};
+
+            try {
+
+                (
+
+                    InvestmentRepository.getTrades() ||
+
+                    []
+
+                ).forEach(
+
+                    trade => {
+
+                        if (trade.accountId) {
+
+                            referenced.add(
+
+                                String(trade.accountId)
+
+                            );
+
+                            if (trade.memberId) {
+
+                                tradeOwner[
+
+                                    String(trade.accountId)
+
+                                ] = trade.memberId;
+
+                            }
+
+                        }
+
+                    }
+
+                );
+
+            } catch (tradeScanError) {
+
+            }
+
+            try {
+
+                (
+
+                    AssetRepository.findAll() ||
+
+                    []
+
+                ).forEach(
+
+                    asset => {
+
+                        if (asset.accountId) {
+
+                            referenced.add(
+
+                                String(asset.accountId)
+
+                            );
+
+                        }
+
+                    }
+
+                );
+
+            } catch (assetScanError) {
+
+            }
+
+            const byId = new Map();
+
+            (
+
+                AccountRepository.findAll() ||
+
+                []
+
+            ).forEach(
+
+                account => {
+
+                    byId.set(
+
+                        String(account.id),
+
+                        account
+
+                    );
+
+                }
+
+            );
+
+            referenced.forEach(
+
+                accountKey => {
+
+                    if (byId.has(accountKey)) {
+
+                        return;
+
+                    }
+
+                    const ghost = {
+
+                        id: accountKey,
+
+                        name: "同步账户",
+
+                        accountType: "Cash",
+
+                        type: "Cash",
+
+                        balance:
+
+                            effects.get(accountKey) ||
+
+                            0,
+
+                        openingBalance: 0,
+
+                        memberId:
+
+                            tradeOwner[accountKey] ||
+
+                            "",
+
+                        ownerId:
+
+                            tradeOwner[accountKey] ||
+
+                            "",
+
+                        currency: "USD"
+
+                    };
+
+                    try {
+
+                        AccountRepository.save(
+
+                            ghost
+
+                        );
+
+                        byId.set(
+
+                            accountKey,
+
+                            ghost
+
+                        );
+
+                    } catch (ghostError) {
+
+                    }
+
+                }
+
+            );
+
+            byId.forEach(
+
+                (account, accountKey) => {
+
+                    const effect =
+
+                        effects.get(accountKey) ||
+
+                        0;
+
+                    const current =
+
+                        Number(account.balance || 0);
+
+                    if (
+
+                        account.openingBalance ===
+
+                            undefined ||
+
+                        account.openingBalance ===
+
+                            null
+
+                    ) {
+
+                        account.openingBalance =
+
+                            current - effect;
+
+                        try {
+
+                            AccountRepository.save(
+
+                                account
+
+                            );
+
+                        } catch (anchorError) {
+
+                        }
+
+                    } else {
+
+                        const correct =
+
+                            Number(
+
+                                account.openingBalance
+
+                            ) + effect;
+
+                        if (
+
+                            Math.abs(
+
+                                correct - current
+
+                            ) > 0.005
+
+                        ) {
+
+                            account.balance = correct;
+
+                            try {
+
+                                AccountRepository.save(
+
+                                    account
+
+                                );
+
+                            } catch (calibrateError) {
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            );
+
+        } catch (syncError) {
+
+        }
+
+    },
 
     initialize() {
 
