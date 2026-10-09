@@ -36,23 +36,23 @@
 
 import InvestmentRepository
 
-    from "../repository/investmentRepository.js?v=20261008ad";
+    from "../repository/investmentRepository.js?v=20261008ae";
 
 import EventBus
 
-    from "../../../core/events/eventBus.js";
+    from "../../../core/events/eventBus.js?v=20261008ae";
 
 import EventTypes
 
-    from "../../../core/events/eventTypes.js";
+    from "../../../core/events/eventTypes.js?v=20261008ae";
 
 import TransactionIntegration
 
-    from "../../../core/integration/transactionIntegration.js";
+    from "../../../core/integration/transactionIntegration.js?v=20261008ae";
 
 import PriceOverrideStore
 
-    from "./priceOverrideStore.js?v=20261008ad";
+    from "./priceOverrideStore.js?v=20261008ae";
 
 /*
 
