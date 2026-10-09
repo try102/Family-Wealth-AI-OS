@@ -8,7 +8,7 @@ Retirement API
 
 */
 
-import RetirementService from "../services/retirementService.js?v=20261008ae";
+import RetirementService from "../services/retirementService.js?v=20261008as";
 
 const RetirementAPI = {
 
