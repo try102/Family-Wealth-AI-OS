@@ -16,7 +16,7 @@ import AdvisorReport from "./advisorReport.js?v=20261008ae";
 
 import WealthEngine from "../core/engines/wealth/wealthEngine.js?v=20261008ae";
 
-import AccountAPI from "../modules/account/api/accountAPI.js?v=20261008ae";
+import AccountAPI from "../modules/account/api/accountAPI.js?v=20261008aw";
 
 import AssetAPI from "../modules/asset/api/assetAPI.js?v=20261008ae";
 
@@ -32,7 +32,7 @@ import { computeAdvisorModels } from "./advisorModels.js?v=20261008ae";
 
 import RetirementAPI from "../modules/retirement/api/retirementAPI.js?v=20261008ae";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../core/i18n/i18n.js?v=20261008aq";
+import { t, getLanguage, setLanguage, languageOptions } from "../core/i18n/i18n.js?v=20261008aw";
 
 const ADVISOR_TEXT_KEYS = {
     "GOOD": "advisor.health.good",
