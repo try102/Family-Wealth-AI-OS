@@ -34,11 +34,11 @@
 
 import DataService
 
-    from "../core/database/dataService.js";
+    from "../core/database/dataService.js?v=20261008ae";
 
 import Account
 
-    from "./account.js";
+    from "./account.js?v=20261008ae";
 
 const ACCOUNT_KEY =
 

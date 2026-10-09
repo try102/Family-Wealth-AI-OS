@@ -70,23 +70,23 @@
 
 import AccountRepository
 
-    from "./accountRepository.js";
+    from "./accountRepository.js?v=20261008ae";
 
 import AccountManager
 
-    from "./accountManager.js";
+    from "./accountManager.js?v=20261008ae";
 
 import AccountService
 
-    from "./accountService.js";
+    from "./accountService.js?v=20261008ae";
 
 import AccountController
 
-    from "./accountController.js";
+    from "./accountController.js?v=20261008ae";
 
 import AccountFacade
 
-    from "./accountFacade.js";
+    from "./accountFacade.js?v=20261008ae";
 
 class AccountModule {
 

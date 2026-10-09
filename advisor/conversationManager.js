@@ -6,7 +6,7 @@ Conversation Manager
 
 */
 
-import Conversation from "./conversation.js";
+import Conversation from "./conversation.js?v=20261008ae";
 
 const ConversationManager = {
 

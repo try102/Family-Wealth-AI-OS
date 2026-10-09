@@ -10,15 +10,15 @@ AI Wealth Orchestration Layer
 
 import ModuleRegistry
 
-from "../core/registry/moduleRegistry.js";
+from "../core/registry/moduleRegistry.js?v=20261008ae";
 
 import EngineRegistry
 
-from "../core/engines/engineRegistry.js";
+from "../core/engines/engineRegistry.js?v=20261008ae";
 
 import AdvisorReport
 
-from "./advisorReport.js";
+from "./advisorReport.js?v=20261008ae";
 
 const Advisor = {
 

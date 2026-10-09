@@ -6,9 +6,9 @@ AI Orchestrator Layer
 
 */
 
-import TaxAdvisorAI from "../taxAI/taxAdvisorAI.js";
+import TaxAdvisorAI from "../taxAI/taxAdvisorAI.js?v=20261008ae";
 
-import InvestmentAI from "../../modules/investment/ai/investmentAI.js";
+import InvestmentAI from "../../modules/investment/ai/investmentAI.js?v=20261008ae";
 
 // =====================
 

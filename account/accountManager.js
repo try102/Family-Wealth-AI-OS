@@ -68,11 +68,11 @@
 
 import Account
 
-    from "./account.js";
+    from "./account.js?v=20261008ae";
 
 import AccountRepository
 
-    from "./accountRepository.js";
+    from "./accountRepository.js?v=20261008ae";
 
 class AccountManager {
 

@@ -68,7 +68,7 @@
 
 import AccountController
 
-    from "./accountController.js";
+    from "./accountController.js?v=20261008ae";
 
 class AccountFacade {
 
