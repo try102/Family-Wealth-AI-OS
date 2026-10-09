@@ -86,6 +86,133 @@ import TransactionIntegration
 
     from "../../../core/integration/transactionIntegration.js?v=20261008ae";
 
+import AccountBalanceIntegration
+
+    from "../../../core/integration/accountBalanceIntegration.js?v=20261008ah";
+
+import cashflowAPI
+
+    from "../../cashflow/api/cashflowAPI.js?v=20261008ae";
+
+
+/*
+
+ * Deleting an Income / Expense record also revokes
+
+ * the Transaction it created: the account-balance
+
+ * effect is reversed, its cash-flow entries are
+
+ * removed, and the Transaction itself is deleted,
+
+ * so Dashboard / Cash Flow / Tax stop counting it.
+
+ */
+
+function revokeLinkedTransaction(
+
+    kind,
+
+    recordId
+
+) {
+
+    try {
+
+        const transactions =
+
+            TransactionIntegration
+
+                .getAllTransactions() || [];
+
+        const linked =
+
+            transactions.find(
+
+                transaction =>
+
+                    transaction &&
+
+                    transaction.businessDetails &&
+
+                    transaction.businessDetails[kind] &&
+
+                    String(
+
+                        transaction.businessDetails[kind][
+
+                            kind + "Id"
+
+                        ]
+
+                    ) === String(recordId)
+
+            );
+
+        if (!linked) {
+
+            return;
+
+        }
+
+        try {
+
+            AccountBalanceIntegration
+
+                .reverseTransaction(
+
+                    linked
+
+                );
+
+        } catch (reverseError) {
+
+        }
+
+        try {
+
+            (cashflowAPI.getCashflows() || [])
+
+                .filter(
+
+                    entry =>
+
+                        String(entry.transactionId) ===
+
+                        String(linked.id)
+
+                )
+
+                .forEach(
+
+                    entry =>
+
+                        cashflowAPI.deleteCashflow(
+
+                            entry.id
+
+                        )
+
+                );
+
+        } catch (cashflowError) {
+
+        }
+
+        TransactionIntegration
+
+            .removeTransaction(
+
+                linked.id
+
+            );
+
+    } catch (transactionError) {
+
+    }
+
+}
+
 const IncomeService = {
 
     // =====================================================
@@ -416,15 +543,13 @@ const IncomeService = {
 
     ){
 
-        /*
+        revokeLinkedTransaction(
 
-         *
+            "income",
 
-         * Preserve existing Income CRUD.
+            id
 
-         *
-
-         */
+        );
 
         return IncomeRepository.remove(
 
