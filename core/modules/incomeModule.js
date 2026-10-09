@@ -38,7 +38,7 @@ from "../../modules/income/schema/incomeSchema.js?v=20261008ae";
 
 import incomeService
 
-from "../../modules/income/services/incomeService.js?v=20261008ai";
+from "../../modules/income/services/incomeService.js?v=20261008ak";
 
 import incomeView
 
