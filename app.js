@@ -3492,6 +3492,250 @@ async function start(){
 
             AccountBalanceIntegration.initialize();
 
+            // Reconcile: a deleted Income / Expense record
+
+            // must stop counting everywhere. Revoke any
+
+            // Transaction whose source record is gone
+
+            // (covers records deleted before cascading
+
+            // deletes existed), and prune cash-flow
+
+            // entries whose Transaction no longer exists.
+
+            try {
+
+                const incomeRepoImport =
+
+                    await import(
+
+                        "./modules/income/repository/incomeRepository.js?v=20261008ae"
+
+                    );
+
+                const expenseRepoImport =
+
+                    await import(
+
+                        "./modules/expense/repository/expenseRepository.js?v=20261008ae"
+
+                    );
+
+                const cashflowApiImport =
+
+                    await import(
+
+                        "./modules/cashflow/api/cashflowAPI.js?v=20261008ae"
+
+                    );
+
+                const cashflowAPI =
+
+                    cashflowApiImport.default;
+
+                const incomeIds =
+
+                    new Set(
+
+                        (
+
+                            incomeRepoImport.default
+
+                                .findAll() || []
+
+                        ).map(
+
+                            record => String(record.id)
+
+                        )
+
+                    );
+
+                const expenseIds =
+
+                    new Set(
+
+                        (
+
+                            expenseRepoImport.default
+
+                                .findAll() || []
+
+                        ).map(
+
+                            record => String(record.id)
+
+                        )
+
+                    );
+
+                const allTransactions =
+
+                    TransactionIntegration
+
+                        .getAllTransactions() || [];
+
+                allTransactions.forEach(
+
+                    transaction => {
+
+                        const details =
+
+                            transaction.businessDetails || {};
+
+                        const orphanExpense =
+
+                            details.expense &&
+
+                            details.expense.expenseId &&
+
+                            !expenseIds.has(
+
+                                String(details.expense.expenseId)
+
+                            );
+
+                        const orphanIncome =
+
+                            details.income &&
+
+                            details.income.incomeId &&
+
+                            !incomeIds.has(
+
+                                String(details.income.incomeId)
+
+                            );
+
+                        if (!orphanExpense && !orphanIncome) {
+
+                            return;
+
+                        }
+
+                        try {
+
+                            AccountBalanceIntegration
+
+                                .reverseTransaction(
+
+                                    transaction
+
+                                );
+
+                        } catch (revokeBalanceError) {
+
+                        }
+
+                        try {
+
+                            (
+
+                                cashflowAPI.getCashflows() || []
+
+                            )
+
+                                .filter(
+
+                                    entry =>
+
+                                        String(entry.transactionId) ===
+
+                                        String(transaction.id)
+
+                                )
+
+                                .forEach(
+
+                                    entry =>
+
+                                        cashflowAPI.deleteCashflow(
+
+                                            entry.id
+
+                                        )
+
+                                );
+
+                        } catch (revokeCashflowError) {
+
+                        }
+
+                        TransactionIntegration
+
+                            .removeTransaction(
+
+                                transaction.id
+
+                            );
+
+                    }
+
+                );
+
+                try {
+
+                    const liveTransactionIds =
+
+                        new Set(
+
+                            (
+
+                                TransactionIntegration
+
+                                    .getAllTransactions() || []
+
+                            ).map(
+
+                                transaction =>
+
+                                    String(transaction.id)
+
+                            )
+
+                        );
+
+                    (
+
+                        cashflowAPI.getCashflows() || []
+
+                    )
+
+                        .filter(
+
+                            entry =>
+
+                                entry.transactionId &&
+
+                                !liveTransactionIds.has(
+
+                                    String(entry.transactionId)
+
+                                )
+
+                        )
+
+                        .forEach(
+
+                            entry =>
+
+                                cashflowAPI.deleteCashflow(
+
+                                    entry.id
+
+                                )
+
+                        );
+
+                } catch (pruneError) {
+
+                }
+
+            } catch (reconcileError) {
+
+            }
+
         }
 
         catch(bridgeError){
