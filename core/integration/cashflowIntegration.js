@@ -42,6 +42,10 @@ import cashflowAPI
 
     from "../../modules/cashflow/api/cashflowAPI.js?v=20261008ae";
 
+import AccountRepository
+
+    from "../../modules/account/repository/accountRepository.js?v=20261008ae";
+
 const CashflowIntegration = {
 
     name:
@@ -177,6 +181,138 @@ const CashflowIntegration = {
         this.lastSyncResult =
 
             this.syncExistingTransactions();
+
+        /*
+
+         * Remove cash-flow entries that earlier
+
+         * builds created for trades on accounts
+
+         * that have since become asset-mirrored.
+
+         */
+
+        try {
+
+            const txById =
+
+                new Map(
+
+                    (
+
+                        this.transactionManager
+
+                            .getAllTransactions() ||
+
+                        []
+
+                    ).map(
+
+                        transaction => [
+
+                            String(transaction.id),
+
+                            transaction
+
+                        ]
+
+                    )
+
+                );
+
+            (
+
+                cashflowAPI.getCashflows() ||
+
+                []
+
+            ).forEach(
+
+                entry => {
+
+                    if(
+
+                        !entry.transactionId
+
+                    ){
+
+                        return;
+
+                    }
+
+                    const transaction =
+
+                        txById.get(
+
+                            String(entry.transactionId)
+
+                        );
+
+                    if(
+
+                        !transaction ||
+
+                        (
+
+                            transaction.type !==
+
+                                "INVESTMENT_BUY" &&
+
+                            transaction.type !==
+
+                                "INVESTMENT_SELL"
+
+                        )
+
+                    ){
+
+                        return;
+
+                    }
+
+                    const cashLine =
+
+                        (
+
+                            transaction.lines || []
+
+                        ).find(
+
+                            line =>
+
+                                line &&
+
+                                line.accountId
+
+                        );
+
+                    if(
+
+                        cashLine &&
+
+                        this.isMirroredAccount(
+
+                            cashLine.accountId
+
+                        )
+
+                    ){
+
+                        cashflowAPI.deleteCashflow(
+
+                            entry.id
+
+                        );
+
+                    }
+
+                }
+
+            );
+
+        } catch (pruneError) {
+
+        }
 
         console.log(
 
@@ -442,6 +578,46 @@ const CashflowIntegration = {
 
     // ==================================================
 
+    isMirroredAccount(
+
+        accountId
+
+    ){
+
+        if(
+
+            !accountId
+
+        ){
+
+            return false;
+
+        }
+
+        try {
+
+            const account =
+
+                AccountRepository.findById(
+
+                    accountId
+
+                );
+
+            return !!account &&
+
+                account.openingSource ===
+
+                    "asset";
+
+        } catch (lookupError) {
+
+            return false;
+
+        }
+
+    },
+
     handleTransactionCreated(
 
         transaction
@@ -556,19 +732,7 @@ const CashflowIntegration = {
 
             transaction.type ===
 
-            "INVESTMENT_BUY"
-
-        ){
-
-            return this.recordExpense(
-
-                transaction
-
-            );
-
-        }
-
-        if(
+            "INVESTMENT_BUY" ||
 
             transaction.type ===
 
@@ -576,11 +740,81 @@ const CashflowIntegration = {
 
         ){
 
-            return this.recordIncome(
+            /*
 
-                transaction
+             * Trades on an asset-mirrored account
 
-            );
+             * (the deposit / Checking entered in
+
+             * the Asset Center) do not move cash:
+
+             * the money only changes form inside
+
+             * the assets, so they stay out of
+
+             * Cash Flow. Trades on real accounts
+
+             * still count as cash out / in.
+
+             */
+
+            const cashLine =
+
+                (
+
+                    transaction.lines || []
+
+                ).find(
+
+                    line =>
+
+                        line &&
+
+                        line.accountId
+
+                );
+
+            if(
+
+                cashLine &&
+
+                this.isMirroredAccount(
+
+                    cashLine.accountId
+
+                )
+
+            ){
+
+                return {
+
+                    created:
+
+                        false,
+
+                    reason:
+
+                        "MIRRORED_ACCOUNT"
+
+                };
+
+            }
+
+            return transaction.type ===
+
+                "INVESTMENT_BUY"
+
+                ? this.recordExpense(
+
+                    transaction
+
+                )
+
+                : this.recordIncome(
+
+                    transaction
+
+                );
 
         }
 
