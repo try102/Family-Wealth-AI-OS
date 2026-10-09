@@ -298,6 +298,24 @@ const AccountView = {
 
             </button>
 
+            <button
+
+                id="account-diag-button"
+
+                type="button"
+
+            >
+
+                诊断
+
+            </button>
+
+            <div
+
+                id="account-diag-container"
+
+            ></div>
+
             <div
 
                 id="account-form-container"
@@ -481,6 +499,78 @@ const AccountView = {
                         onBack
 
                     );
+
+                }
+
+            );
+
+        }
+
+        const diagButton =
+
+            container.querySelector(
+
+                "#account-diag-button"
+
+            );
+
+        if (diagButton) {
+
+            diagButton.addEventListener(
+
+                "click",
+
+                () => {
+
+                    const diagContainer =
+
+                        container.querySelector(
+
+                            "#account-diag-container"
+
+                        );
+
+                    if (!diagContainer) {
+
+                        return;
+
+                    }
+
+                    let diagText = "";
+
+                    try {
+
+                        diagText =
+
+                            localStorage.getItem(
+
+                                "fw_last_diag"
+
+                            ) || "";
+
+                    } catch (diagReadError) {
+
+                    }
+
+                    diagContainer.innerHTML =
+
+                        `<p>把下面全部内容复制发给 Muse：</p><textarea readonly rows="14" style="width:100%">${diagText.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</textarea>`;
+
+                    const area =
+
+                        diagContainer.querySelector(
+
+                            "textarea"
+
+                        );
+
+                    if (area) {
+
+                        area.focus();
+
+                        area.select();
+
+                    }
 
                 }
 
