@@ -221,16 +221,33 @@ const MemberService = {
             return id && buckets[id] ? buckets[id] : unassigned;
         };
 
+        // Caliber (2026-10-09): Account Cash is the
+
+        // sum of ALL account balances, paired or not;
+
+        // account-like asset records are counted
+
+        // there instead of under Assets.
+
         accounts.forEach(account => {
-            if (account.openingSource !== "asset") {
 
-                bucketFor(account).accountsValue +=
+            bucketFor(account).accountsValue +=
 
-                    num(account.balance);
+                num(account.balance);
 
-            }
         });
         incomes.forEach(record => {
+            // Auto investment income (gains / dividends
+
+            // / interest mirrored from transactions)
+
+            // lives in the Income Center but stays out
+
+            // of the daily-income caliber.
+
+            if (record.autoSource) {
+                return;
+            }
             bucketFor(record).income += num(record.amount ?? record.value);
         });
         expenses.forEach(record => {
@@ -241,7 +258,17 @@ const MemberService = {
                 num(record.currentValue ?? record.marketValue);
         });
         assets.forEach(record => {
-            bucketFor(record).assetsValue += num(record.currentValue);
+            const label =
+                `${record.name || ""} ${record.category || ""} ${record.type || ""}`.toLowerCase();
+            const accountLike =
+                label.includes("invest") ||
+                label.includes("check") ||
+                label.includes("saving") ||
+                label.includes("broker") ||
+                label.includes("cash");
+            if (!accountLike) {
+                bucketFor(record).assetsValue += num(record.currentValue);
+            }
         });
         liabilities.forEach(record => {
             bucketFor(record).liabilitiesValue += num(record.currentBalance);
