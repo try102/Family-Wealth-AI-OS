@@ -48,7 +48,7 @@ import EventTypes
 
 import TransactionIntegration
 
-    from "../../../core/integration/transactionIntegration.js?v=20261008ae";
+    from "../../../core/integration/transactionIntegration.js?v=20261008ak";
 
 import PriceOverrideStore
 
@@ -737,54 +737,6 @@ const InvestmentService = {
                 );
 
             if (linked) {
-
-                try {
-
-                    AccountBalanceIntegration
-
-                        .reverseTransaction(
-
-                            linked
-
-                        );
-
-                } catch (reverseError) {
-
-                }
-
-                try {
-
-                    (cashflowAPI.getCashflows() || [])
-
-                        .filter(
-
-                            entry =>
-
-                                String(
-
-                                    entry.transactionId
-
-                                ) === String(linked.id)
-
-                        )
-
-                        .forEach(
-
-                            entry =>
-
-                                cashflowAPI
-
-                                    .deleteCashflow(
-
-                                        entry.id
-
-                                    )
-
-                        );
-
-                } catch (cashflowError) {
-
-                }
 
                 TransactionIntegration
 
