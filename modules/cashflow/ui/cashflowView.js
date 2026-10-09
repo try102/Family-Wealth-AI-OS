@@ -22,7 +22,7 @@ import AccountAPI
 
 import MemberAPI
 
-    from "../../member/api/memberAPI.js?v=20261008am";
+    from "../../member/api/memberAPI.js?v=20261008ap";
 
 import IncomeAPI
 
