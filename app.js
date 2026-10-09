@@ -4338,31 +4338,47 @@ async function start(){
 
             dashAccounts =
 
-                dashScopeId
+                (
 
-                    ? allAccounts.filter(
+                    dashScopeId
 
-                        account => {
+                        ? allAccounts.filter(
 
-                            const owner =
+                            account => {
 
-                                account.memberId ||
+                                const owner =
 
-                                account.ownerId ||
+                                    account.memberId ||
 
-                                "";
+                                    account.ownerId ||
 
-                            return dashScopeId === "__shared__"
+                                    "";
 
-                                ? owner === ""
+                                return dashScopeId === "__shared__"
 
-                                : owner === dashScopeId;
+                                    ? owner === ""
 
-                        }
+                                    : owner === dashScopeId;
 
-                    )
+                            }
 
-                    : allAccounts;
+                        )
+
+                        : allAccounts
+
+                ).filter(
+
+                    // Zero-balance accounts add no
+
+                    // value; keep them out of the
+
+                    // asset count and allocation.
+
+                    account =>
+
+                        Number(account.balance || 0) !== 0
+
+                );
 
         }
 
