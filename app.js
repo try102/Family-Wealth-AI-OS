@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009bj";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009bk";
 
 const app =
 
@@ -1320,7 +1320,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/account/ui/accountView.js?v=20261009bc"
+                            "./modules/account/ui/accountView.js?v=20261009bk"
 
                         );
 
@@ -4492,7 +4492,9 @@ async function start(){
 
             Number(
 
-                incomeSummary?.totalIncome ||
+                incomeSummary?.dailyIncome ??
+
+                incomeSummary?.totalIncome ??
 
                 0
 
