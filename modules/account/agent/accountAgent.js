@@ -6,7 +6,7 @@ Account Agent
 
 */
 
-import AccountAPI from "../api/accountAPI.js?v=20261008ae";
+import AccountAPI from "../api/accountAPI.js?v=20261008aw";
 
 import AccountAnalysisEngine from "../engines/accountAnalysisEngine.js?v=20261008ae";
 
