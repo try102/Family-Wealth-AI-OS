@@ -3688,6 +3688,28 @@ async function start(){
 
             }
 
+            // Sync: members who already have trades
+
+            // but no account get a default account.
+
+            try {
+
+                const memberApiImport =
+
+                    await import(
+
+                        "./modules/member/api/memberAPI.js?v=20261008am"
+
+                    );
+
+                memberApiImport.default
+
+                    .ensureDefaultAccounts();
+
+            } catch (memberSyncError) {
+
+            }
+
         }
 
         catch(bridgeError){
@@ -3936,7 +3958,7 @@ async function start(){
 
                 await import(
 
-                    "./modules/member/api/memberAPI.js?v=20261008ae"
+                    "./modules/member/api/memberAPI.js?v=20261008am"
 
                 );
 
