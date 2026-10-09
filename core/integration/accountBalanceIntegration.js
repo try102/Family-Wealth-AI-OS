@@ -388,6 +388,314 @@ const AccountBalanceIntegration = {
 
             }
 
+            // Trades whose Transaction no longer
+
+            // exists (deleted directly, or recorded
+
+            // before the transaction bridge) still
+
+            // settle: the trade record itself is the
+
+            // evidence, attributed to its member's
+
+            // Investment account (or its own picked
+
+            // account when the owner matches).
+
+            try {
+
+                const settledTradeIds =
+
+                    new Set();
+
+                txs.forEach(
+
+                    transaction => {
+
+                        if (
+
+                            transaction &&
+
+                            (
+
+                                transaction.type ===
+
+                                    "INVESTMENT_BUY" ||
+
+                                transaction.type ===
+
+                                    "INVESTMENT_SELL"
+
+                            )
+
+                        ) {
+
+                            const detail =
+
+                                (
+
+                                    transaction
+
+                                        .businessDetails ||
+
+                                    {}
+
+                                ).investment || {};
+
+                            if (detail.tradeId) {
+
+                                settledTradeIds.add(
+
+                                    String(detail.tradeId)
+
+                                );
+
+                            }
+
+                        }
+
+                    }
+
+                );
+
+                const allAccounts =
+
+                    AccountRepository.findAll() ||
+
+                    [];
+
+                (
+
+                    InvestmentRepository.getTrades() ||
+
+                    []
+
+                ).forEach(
+
+                    trade => {
+
+                        if (
+
+                            !trade ||
+
+                            !trade.id ||
+
+                            settledTradeIds.has(
+
+                                String(trade.id)
+
+                            )
+
+                        ) {
+
+                            return;
+
+                        }
+
+                        const action =
+
+                            String(
+
+                                trade.action || ""
+
+                            ).toUpperCase();
+
+                        if (
+
+                            action !== "BUY" &&
+
+                            action !== "SELL"
+
+                        ) {
+
+                            return;
+
+                        }
+
+                        const amount =
+
+                            Number(trade.amount || 0);
+
+                        if (
+
+                            !Number.isFinite(amount) ||
+
+                            amount === 0
+
+                        ) {
+
+                            return;
+
+                        }
+
+                        const memberId =
+
+                            trade.memberId ||
+
+                            trade.ownerId ||
+
+                            "";
+
+                        let target = "";
+
+                        if (trade.accountId) {
+
+                            const picked =
+
+                                allAccounts.find(
+
+                                    account =>
+
+                                        String(account.id) ===
+
+                                        String(trade.accountId)
+
+                                );
+
+                            const pickedOwner =
+
+                                picked
+
+                                    ? String(
+
+                                        picked.memberId ||
+
+                                        picked.ownerId ||
+
+                                        ""
+
+                                    )
+
+                                    : "";
+
+                            if (
+
+                                picked &&
+
+                                (
+
+                                    !memberId ||
+
+                                    !pickedOwner ||
+
+                                    pickedOwner ===
+
+                                        String(memberId)
+
+                                )
+
+                            ) {
+
+                                target =
+
+                                    String(picked.id);
+
+                            }
+
+                        }
+
+                        if (!target && memberId) {
+
+                            const owned =
+
+                                allAccounts.filter(
+
+                                    account =>
+
+                                        String(
+
+                                            account.memberId ||
+
+                                            account.ownerId ||
+
+                                            ""
+
+                                        ) === String(memberId)
+
+                                );
+
+                            const pick =
+
+                                owned.find(
+
+                                    account =>
+
+                                        account.openingSource ===
+
+                                            "asset" &&
+
+                                        AccountBalanceIntegration
+
+                                            .mirrorKindOfRecord(
+
+                                                account
+
+                                            ) === "investment"
+
+                                ) ||
+
+                                owned.find(
+
+                                    account =>
+
+                                        AccountBalanceIntegration
+
+                                            .mirrorKindOfRecord(
+
+                                                account
+
+                                            ) === "investment"
+
+                                );
+
+                            if (pick) {
+
+                                target =
+
+                                    String(pick.id);
+
+                            }
+
+                        }
+
+                        if (!target) {
+
+                            return;
+
+                        }
+
+                        const d =
+
+                            action === "BUY"
+
+                                ? -amount
+
+                                : amount;
+
+                        effects.set(
+
+                            target,
+
+                            (
+
+                                effects.get(target) ||
+
+                                0
+
+                            ) + d
+
+                        );
+
+                        referenced.add(target);
+
+                    }
+
+                );
+
+            } catch (tradeSettleError) {
+
+            }
+
             try {
 
                 (
@@ -842,33 +1150,205 @@ const AccountBalanceIntegration = {
 
                             }
 
-                            return;
+                            account.mirrorAssetUpdatedAt =
 
-                        }
+                                pair.updatedAt || "";
 
-                        const truth =
+                            account.mirrorAssetValue =
 
-                            manualWins
-
-                                ? Number(
-
-                                    account.balance || 0
-
-                                )
-
-                                : Number(
+                                Number(
 
                                     pair.currentValue || 0
 
                                 );
 
-                        account.openingBalance =
+                            try {
 
-                            truth - effect;
+                                AccountRepository.save(
 
-                        account.balance =
+                                    account
 
-                            truth;
+                                );
+
+                            } catch (mirrorSaveError) {
+
+                            }
+
+                            return;
+
+                        }
+
+                        // Steady state: the balance is
+
+                        // derived from the ledger
+
+                        // (opening + live effects) and
+
+                        // the asset mirrors it. Only a
+
+                        // manual edit re-anchors: an
+
+                        // account edit (manualWins) or
+
+                        // an asset edit, detected by the
+
+                        // asset's updatedAt moving past
+
+                        // the timestamp last mirrored.
+
+                        const assetEdited =
+
+                            account.mirrorAssetValue !==
+
+                                undefined &&
+
+                            (
+
+                                Number(pair.currentValue || 0) !==
+
+                                    Number(
+
+                                        account.mirrorAssetValue
+
+                                    ) ||
+
+                                (
+
+                                    account
+
+                                        .mirrorAssetUpdatedAt &&
+
+                                    pair.updatedAt &&
+
+                                    String(pair.updatedAt) !==
+
+                                        String(
+
+                                            account
+
+                                                .mirrorAssetUpdatedAt
+
+                                        )
+
+                                )
+
+                            );
+
+                        if (manualWins || assetEdited) {
+
+                            const truth =
+
+                                manualWins
+
+                                    ? Number(
+
+                                        account.balance || 0
+
+                                    )
+
+                                    : Number(
+
+                                        pair.currentValue || 0
+
+                                    );
+
+                            account.openingBalance =
+
+                                truth - effect;
+
+                            account.balance =
+
+                                truth;
+
+                            if (
+
+                                Number(
+
+                                    pair.currentValue || 0
+
+                                ) !== truth
+
+                            ) {
+
+                                pair.currentValue =
+
+                                    truth;
+
+                                try {
+
+                                    AssetRepository.save(
+
+                                        pair
+
+                                    );
+
+                                } catch (pairSaveError) {
+
+                                }
+
+                            }
+
+                        } else {
+
+                            if (
+
+                                account.openingBalance ===
+
+                                    undefined ||
+
+                                account.openingBalance ===
+
+                                    null
+
+                            ) {
+
+                                account.openingBalance =
+
+                                    Number(
+
+                                        pair.currentValue || 0
+
+                                    );
+
+                            }
+
+                            account.balance =
+
+                                Number(
+
+                                    account.openingBalance
+
+                                ) + effect;
+
+                            if (
+
+                                Number(
+
+                                    pair.currentValue || 0
+
+                                ) !== account.balance
+
+                            ) {
+
+                                pair.currentValue =
+
+                                    account.balance;
+
+                                try {
+
+                                    AssetRepository.save(
+
+                                        pair
+
+                                    );
+
+                                } catch (pairSaveError) {
+
+                                }
+
+                            }
+
+                        }
 
                         account.mirrorBasis =
 
@@ -884,6 +1364,14 @@ const AccountBalanceIntegration = {
 
                             false;
 
+                        account.mirrorAssetUpdatedAt =
+
+                            pair.updatedAt || "";
+
+                        account.mirrorAssetValue =
+
+                            Number(pair.currentValue || 0);
+
                         try {
 
                             AccountRepository.save(
@@ -893,34 +1381,6 @@ const AccountBalanceIntegration = {
                             );
 
                         } catch (mirrorSaveError) {
-
-                        }
-
-                        if (
-
-                            manualWins &&
-
-                            Number(pair.currentValue || 0) !==
-
-                                truth
-
-                        ) {
-
-                            pair.currentValue =
-
-                                truth;
-
-                            try {
-
-                                AssetRepository.save(
-
-                                    pair
-
-                                );
-
-                            } catch (pairSaveError) {
-
-                            }
 
                         }
 
