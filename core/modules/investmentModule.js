@@ -10,7 +10,7 @@ Investment Module
 
 import investmentAgent
 
-    from "../../modules/investment/agent/investmentAgent.js?v=20261008ae";
+    from "../../modules/investment/agent/investmentAgent.js?v=20261008ag";
 
 import investmentAI
 
@@ -18,7 +18,7 @@ import investmentAI
 
 import investmentAPI
 
-    from "../../modules/investment/api/investmentAPI.js?v=20261008ae";
+    from "../../modules/investment/api/investmentAPI.js?v=20261008ag";
 
 import investmentAnalysisEngine
 
@@ -42,7 +42,7 @@ import portfolioEngine
 
 import investmentRepository
 
-    from "../../modules/investment/repository/investmentRepository.js?v=20261008ae";
+    from "../../modules/investment/repository/investmentRepository.js?v=20261008ag";
 
 const InvestmentModule = {
 
