@@ -176,6 +176,172 @@ const AccountBalanceIntegration = {
 
                     );
 
+                    // Investment trades recorded
+
+                    // without an account settle in
+
+                    // the member's Investment account
+
+                    // so the investable cash balance
+
+                    // reflects buys and sells.
+
+                    if (
+
+                        transaction &&
+
+                        (
+
+                            transaction.type ===
+
+                                "INVESTMENT_BUY" ||
+
+                            transaction.type ===
+
+                                "INVESTMENT_SELL"
+
+                        )
+
+                    ) {
+
+                        const cashLine =
+
+                            (
+
+                                transaction.lines || []
+
+                            ).find(
+
+                                line =>
+
+                                    line &&
+
+                                    line.cashEffect
+
+                            );
+
+                        if (cashLine) {
+
+                            const target =
+
+                                AccountBalanceIntegration
+
+                                    .resolveInvestmentSettleAccount(
+
+                                        transaction
+
+                                    );
+
+                            const amt =
+
+                                Number(cashLine.amount);
+
+                            if (
+
+                                target &&
+
+                                target !==
+
+                                    String(
+
+                                        cashLine.accountId ||
+
+                                        ""
+
+                                    ) &&
+
+                                Number.isFinite(amt) &&
+
+                                amt !== 0
+
+                            ) {
+
+                                const d =
+
+                                    cashLine.direction ===
+
+                                        "IN"
+
+                                        ? amt
+
+                                        : cashLine.direction ===
+
+                                                "OUT"
+
+                                            ? -amt
+
+                                            : 0;
+
+                                if (d) {
+
+                                    effects.set(
+
+                                        target,
+
+                                        (
+
+                                            effects.get(
+
+                                                target
+
+                                            ) || 0
+
+                                        ) + d
+
+                                    );
+
+                                    referenced.add(
+
+                                        target
+
+                                    );
+
+                                    if (cashLine.accountId) {
+
+                                        // Undo the contribution
+
+                                        // the lines loop put on
+
+                                        // the wrong member's
+
+                                        // account.
+
+                                        effects.set(
+
+                                            String(
+
+                                                cashLine.accountId
+
+                                            ),
+
+                                            (
+
+                                                effects.get(
+
+                                                    String(
+
+                                                        cashLine
+
+                                                            .accountId
+
+                                                    )
+
+                                                ) || 0
+
+                                            ) - d
+
+                                        );
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
                 }
 
             );
@@ -1086,6 +1252,226 @@ const AccountBalanceIntegration = {
 
     },
 
+    resolveInvestmentSettleAccount(transaction) {
+
+        try {
+
+            const detail =
+
+                (
+
+                    transaction &&
+
+                    transaction.businessDetails
+
+                )
+
+                    ? transaction.businessDetails
+
+                        .investment || {}
+
+                    : {};
+
+            let memberId =
+
+                detail.memberId || "";
+
+            if (!memberId && detail.tradeId) {
+
+                const trade =
+
+                    (
+
+                        InvestmentRepository
+
+                            .getTrades() ||
+
+                        []
+
+                    ).find(
+
+                        item =>
+
+                            String(item.id) ===
+
+                            String(detail.tradeId)
+
+                    );
+
+                memberId =
+
+                    (
+
+                        trade &&
+
+                        (
+
+                            trade.memberId ||
+
+                            trade.ownerId
+
+                        )
+
+                    ) || "";
+
+            }
+
+            const cashLine =
+
+                (
+
+                    (transaction && transaction.lines) ||
+
+                    []
+
+                ).find(
+
+                    line =>
+
+                        line &&
+
+                        line.cashEffect
+
+                );
+
+            const lineAccountId =
+
+                cashLine && cashLine.accountId
+
+                    ? String(cashLine.accountId)
+
+                    : "";
+
+            if (!memberId) {
+
+                return lineAccountId;
+
+            }
+
+            const owned =
+
+                (
+
+                    AccountRepository.findAll() ||
+
+                    []
+
+                ).filter(
+
+                    account =>
+
+                        String(
+
+                            account.memberId ||
+
+                            account.ownerId ||
+
+                            ""
+
+                        ) === String(memberId)
+
+                );
+
+            const pick =
+
+                owned.find(
+
+                    account =>
+
+                        account.openingSource ===
+
+                            "asset" &&
+
+                        this.mirrorKindOfRecord(
+
+                            account
+
+                        ) === "investment"
+
+                ) ||
+
+                owned.find(
+
+                    account =>
+
+                        this.mirrorKindOfRecord(
+
+                            account
+
+                        ) === "investment"
+
+                );
+
+            if (!pick) {
+
+                return lineAccountId;
+
+            }
+
+            if (!lineAccountId) {
+
+                return String(pick.id);
+
+            }
+
+            // The trade's member is authoritative
+
+            // for investment settlement: a buy made
+
+            // in Hu's name settles in Hu's own
+
+            // Investment account even if another
+
+            // member's account was picked by
+
+            // mistake.
+
+            const lineAccount =
+
+                AccountRepository.findById(
+
+                    lineAccountId
+
+                );
+
+            const lineOwner =
+
+                lineAccount
+
+                    ? String(
+
+                        lineAccount.memberId ||
+
+                        lineAccount.ownerId ||
+
+                        ""
+
+                    )
+
+                    : "";
+
+            if (
+
+                lineOwner &&
+
+                lineOwner !== String(memberId)
+
+            ) {
+
+                return String(pick.id);
+
+            }
+
+            return lineAccountId;
+
+        } catch (resolveError) {
+
+            return "";
+
+        }
+
+    },
+
     findMirrorAsset(account) {
 
         try {
@@ -1335,6 +1721,82 @@ const AccountBalanceIntegration = {
             }
 
         );
+
+        if (
+
+            transaction.type ===
+
+                "INVESTMENT_BUY" ||
+
+            transaction.type ===
+
+                "INVESTMENT_SELL"
+
+        ) {
+
+            const cashLine =
+
+                (
+
+                    transaction.lines || []
+
+                ).find(
+
+                    line =>
+
+                        line &&
+
+                        line.cashEffect
+
+                );
+
+            if (cashLine) {
+
+                const target =
+
+                    this.resolveInvestmentSettleAccount(
+
+                        transaction
+
+                    );
+
+                const amt =
+
+                    Number(cashLine.amount);
+
+                if (
+
+                    target &&
+
+                    target !==
+
+                        String(cashLine.accountId || "") &&
+
+                    Number.isFinite(amt) &&
+
+                    amt !== 0
+
+                ) {
+
+                    deltas.clear();
+
+                    deltas.set(
+
+                        target,
+
+                        cashLine.direction === "IN"
+
+                            ? amt
+
+                            : -amt
+
+                    );
+
+                }
+
+            }
+
+        }
 
         deltas.forEach(
 
