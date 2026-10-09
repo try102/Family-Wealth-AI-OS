@@ -46,6 +46,10 @@ import AccountRepository
 
     from "../../modules/account/repository/accountRepository.js?v=20261008ae";
 
+import InvestmentRepository
+
+    from "../../modules/investment/repository/investmentRepository.js?v=20261008ae";
+
 const CashflowIntegration = {
 
     name:
@@ -286,13 +290,31 @@ const CashflowIntegration = {
 
                         );
 
+                    const effectiveAccountId =
+
+                        this.resolveInvestmentAccountId(
+
+                            transaction
+
+                        ) ||
+
+                        (
+
+                            cashLine &&
+
+                            cashLine.accountId
+
+                        ) ||
+
+                        "";
+
                     if(
 
-                        cashLine &&
+                        effectiveAccountId &&
 
                         this.isMirroredAccount(
 
-                            cashLine.accountId
+                            effectiveAccountId
 
                         )
 
@@ -618,6 +640,232 @@ const CashflowIntegration = {
 
     },
 
+    resolveInvestmentAccountId(
+
+        transaction
+
+    ){
+
+        try {
+
+            const detail =
+
+                (
+
+                    transaction &&
+
+                    transaction.businessDetails
+
+                )
+
+                    ? transaction.businessDetails
+
+                        .investment || {}
+
+                    : {};
+
+            let memberId =
+
+                detail.memberId || "";
+
+            if (!memberId && detail.tradeId) {
+
+                const trade =
+
+                    (
+
+                        InvestmentRepository
+
+                            .getTrades() ||
+
+                        []
+
+                    ).find(
+
+                        item =>
+
+                            String(item.id) ===
+
+                            String(detail.tradeId)
+
+                    );
+
+                memberId =
+
+                    (
+
+                        trade &&
+
+                        (
+
+                            trade.memberId ||
+
+                            trade.ownerId
+
+                        )
+
+                    ) || "";
+
+            }
+
+            if (!memberId) {
+
+                return "";
+
+            }
+
+            const kindOf =
+
+                account =>
+
+                    `${account.name || ""} ${account.accountType || ""} ${account.type || ""}`
+
+                        .toLowerCase()
+
+                        .includes("invest");
+
+            const owned =
+
+                (
+
+                    AccountRepository.findAll() ||
+
+                    []
+
+                ).filter(
+
+                    account =>
+
+                        String(
+
+                            account.memberId ||
+
+                            account.ownerId ||
+
+                            ""
+
+                        ) === String(memberId)
+
+                );
+
+            const pick =
+
+                owned.find(
+
+                    account =>
+
+                        account.openingSource ===
+
+                            "asset" &&
+
+                        kindOf(account)
+
+                ) ||
+
+                owned.find(kindOf);
+
+            if (!pick) {
+
+                return "";
+
+            }
+
+            // Member-authoritative settlement,
+
+            // mirroring the balance integration:
+
+            // the member's own Investment account
+
+            // wins over another member's account.
+
+            const cashLine =
+
+                (
+
+                    (transaction && transaction.lines) ||
+
+                    []
+
+                ).find(
+
+                    line =>
+
+                        line &&
+
+                        line.cashEffect
+
+                );
+
+            const lineAccountId =
+
+                cashLine && cashLine.accountId
+
+                    ? String(cashLine.accountId)
+
+                    : "";
+
+            if (!lineAccountId) {
+
+                return String(pick.id);
+
+            }
+
+            const lineAccount =
+
+                (
+
+                    AccountRepository.findAll() ||
+
+                    []
+
+                ).find(
+
+                    account =>
+
+                        String(account.id) ===
+
+                        lineAccountId
+
+                );
+
+            const lineOwner =
+
+                lineAccount
+
+                    ? String(
+
+                        lineAccount.memberId ||
+
+                        lineAccount.ownerId ||
+
+                        ""
+
+                    )
+
+                    : "";
+
+            if (
+
+                lineOwner &&
+
+                lineOwner !== String(memberId)
+
+            ) {
+
+                return String(pick.id);
+
+            }
+
+            return lineAccountId;
+
+        } catch (resolveError) {
+
+            return "";
+
+        }
+
+    },
+
     handleTransactionCreated(
 
         transaction
@@ -774,13 +1022,31 @@ const CashflowIntegration = {
 
                 );
 
+            const effectiveAccountId =
+
+                this.resolveInvestmentAccountId(
+
+                    transaction
+
+                ) ||
+
+                (
+
+                    cashLine &&
+
+                    cashLine.accountId
+
+                ) ||
+
+                "";
+
             if(
 
-                cashLine &&
+                effectiveAccountId &&
 
                 this.isMirroredAccount(
 
-                    cashLine.accountId
+                    effectiveAccountId
 
                 )
 
