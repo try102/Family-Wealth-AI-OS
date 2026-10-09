@@ -8,7 +8,7 @@ Investment API
 
 import InvestmentService
 
-from "../services/investmentService.js?v=20261008ab";
+from "../services/investmentService.js?v=20261008ac";
 
 import PortfolioEngine
 
@@ -25,6 +25,167 @@ from "../risk/riskEngine.js";
 import InvestmentDecisionEngine
 
 from "../decision/investmentDecisionEngine.js";
+
+
+function buildEffectivePositions(
+
+    positions,
+
+    records
+
+) {
+
+    const covered =
+
+    new Set(
+
+        (positions || []).map(
+
+            position =>
+
+                String(
+
+                    position.symbol ||
+
+                        position.name ||
+
+                        ""
+
+                ).toUpperCase()
+
+        )
+
+    );
+
+    const extras =
+
+    (records || [])
+
+        .filter(
+
+            record =>
+
+                !covered.has(
+
+                    String(
+
+                        record.symbol ||
+
+                            record.name ||
+
+                            ""
+
+                    ).toUpperCase()
+
+                )
+
+        )
+
+        .map(
+
+            record => {
+
+                const quantity =
+
+                Number(record.quantity || 0);
+
+                const marketValue =
+
+                Number(
+
+                    record.currentValue ??
+
+                        record.marketValue ??
+
+                        0
+
+                );
+
+                const costBasis =
+
+                Number(
+
+                    record.costBasis ??
+
+                        record.totalCost ??
+
+                        marketValue
+
+                );
+
+                return {
+
+                    symbol:
+
+                    record.symbol ||
+
+                        record.name ||
+
+                        "",
+
+                    name:
+
+                    record.name || "",
+
+                    type:
+
+                    record.type || "OTHER",
+
+                    quantity,
+
+                    averageCost:
+
+                    Number(
+
+                        record.averageCost ||
+
+                            (
+
+                                quantity > 0
+
+                                    ? costBasis / quantity
+
+                                    : 0
+
+                            )
+
+                    ),
+
+                    currentPrice:
+
+                    Number(
+
+                        record.currentPrice || 0
+
+                    ),
+
+                    costBasis,
+
+                    marketValue,
+
+                    memberId:
+
+                    record.memberId ||
+
+                        record.ownerId ||
+
+                        ""
+
+                };
+
+            }
+
+        );
+
+    return [
+
+        ...(positions || []),
+
+        ...extras
+
+    ];
+
+}
 
 const InvestmentAPI = {
 
@@ -144,7 +305,13 @@ const InvestmentAPI = {
 
         const positions =
 
-        this.getPositions();
+        buildEffectivePositions(
+
+            this.getPositions(),
+
+            this.getInvestments()
+
+        );
 
         return {
 
@@ -194,7 +361,13 @@ const InvestmentAPI = {
 
         .portfolioPerformance(
 
-            this.getPositions()
+            buildEffectivePositions(
+
+                this.getPositions(),
+
+                this.getInvestments()
+
+            )
 
         );
 
@@ -210,7 +383,13 @@ const InvestmentAPI = {
 
         const positions =
 
-        this.getPositions();
+        buildEffectivePositions(
+
+            this.getPositions(),
+
+            this.getInvestments()
+
+        );
 
         return {
 
