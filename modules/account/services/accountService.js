@@ -21,6 +21,15 @@ function mirrorKindOf(record) {
     if (label.includes("check")) {
         return "checking";
     }
+    if (label.includes("saving")) {
+        return "savings";
+    }
+    if (label.includes("broker")) {
+        return "brokerage";
+    }
+    if (label.includes("cash")) {
+        return "cash";
+    }
     return "";
 }
 
