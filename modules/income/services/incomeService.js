@@ -525,11 +525,13 @@ const IncomeService = {
 
         let totalIncome = 0;
 
+        let investmentIncome = 0;
+
         list.forEach(
 
             item => {
 
-                totalIncome +=
+                const amount =
 
                     Number(
 
@@ -541,6 +543,22 @@ const IncomeService = {
 
                     );
 
+                totalIncome +=
+
+                    amount;
+
+                if(
+
+                    item.autoSource
+
+                ){
+
+                    investmentIncome +=
+
+                        amount;
+
+                }
+
             }
 
         );
@@ -551,9 +569,205 @@ const IncomeService = {
 
                 list.length,
 
-            totalIncome
+            totalIncome,
+
+            investmentIncome,
+
+            dailyIncome:
+
+                totalIncome -
+
+                investmentIncome
 
         };
+
+    },
+
+    /*
+
+     * Auto income mirrored from an investment event
+
+     * (realized capital gain, dividend, interest).
+
+     * The economic event already lives in its own
+
+     * Transaction, so NO second transaction is
+
+     * created here; the record only makes the
+
+     * income visible in the Income Center, tagged
+
+     * autoSource so daily-income calibers can keep
+
+     * it separate. Deduped by source trade.
+
+     */
+
+    createLinkedIncome(
+
+        data = {}
+
+    ){
+
+        try {
+
+            if(
+
+                !data.autoSource ||
+
+                !data.tradeId
+
+            ){
+
+                return null;
+
+            }
+
+            const existing =
+
+                (
+
+                    IncomeRepository.findAll() || []
+
+                ).find(
+
+                    record =>
+
+                        record.autoSource &&
+
+                        String(record.tradeId) ===
+
+                            String(data.tradeId)
+
+                );
+
+            if(
+
+                existing
+
+            ){
+
+                return existing;
+
+            }
+
+            const record =
+
+                IncomeSchema.create({
+
+                    id:
+
+                        `auto_${data.autoSource}_${data.tradeId}`,
+
+                    name:
+
+                        data.name || "",
+
+                    category:
+
+                        data.category || "其他",
+
+                    source:
+
+                        "Auto",
+
+                    amount:
+
+                        Number(data.amount || 0),
+
+                    currency:
+
+                        data.currency || "USD",
+
+                    frequency:
+
+                        "ONE_TIME",
+
+                    taxable:
+
+                        true,
+
+                    accountId:
+
+                        data.accountId || "",
+
+                    memberId:
+
+                        data.memberId || "",
+
+                    note:
+
+                        data.note || ""
+
+                });
+
+            record.autoSource =
+
+                data.autoSource;
+
+            record.tradeId =
+
+                data.tradeId;
+
+            record.date =
+
+                data.date || "";
+
+            return IncomeRepository.save(
+
+                record
+
+            );
+
+        } catch (linkError) {
+
+            return null;
+
+        }
+
+    },
+
+    deleteLinkedIncome(
+
+        tradeId
+
+    ){
+
+        try {
+
+            (
+
+                IncomeRepository.findAll() || []
+
+            )
+
+                .filter(
+
+                    record =>
+
+                        record.autoSource &&
+
+                        String(record.tradeId) ===
+
+                            String(tradeId)
+
+                )
+
+                .forEach(
+
+                    record =>
+
+                        IncomeRepository.remove(
+
+                            record.id
+
+                        )
+
+                );
+
+        } catch (linkError) {
+
+        }
 
     }
 
