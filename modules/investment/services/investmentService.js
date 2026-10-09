@@ -58,6 +58,8 @@ import PriceOverrideStore
 
     from "./priceOverrideStore.js?v=20261008ae";
 
+import IncomeService from "../../income/services/incomeService.js?v=20261009bk";
+
 import AccountBalanceIntegration
 
     from "../../../core/integration/accountBalanceIntegration.js?v=20261009bd";
@@ -608,6 +610,18 @@ const InvestmentService = {
 
         }
 
+        // Mirror realized gains, dividends and
+
+        // interest into the Income Center (tagged
+
+        // auto records; no second transaction).
+
+        this.syncAutoIncome(
+
+            result
+
+        );
+
         /*
 
          * Investment event.
@@ -645,6 +659,136 @@ const InvestmentService = {
         }
 
         return result;
+
+    },
+
+    // Mirror realized gains / dividends / interest
+
+    // into the Income Center as tagged auto records.
+
+    // The event's own transaction already moved the
+
+    // account balance; these records never create a
+
+    // second transaction.
+
+    syncAutoIncome(
+
+        trade
+
+    ){
+
+        try {
+
+            if (!trade) {
+
+                return;
+
+            }
+
+            const action =
+
+                String(trade.action || "")
+
+                    .toUpperCase();
+
+            let spec = null;
+
+            if (
+
+                action === "SELL" &&
+
+                Number(trade.realizedGainLoss || 0) > 0
+
+            ) {
+
+                spec = {
+
+                    autoSource: "CAPITAL_GAIN",
+
+                    category: "资本利得",
+
+                    name:
+
+                        `资本利得 ${trade.symbol || ""}`.trim(),
+
+                    amount:
+
+                        Number(trade.realizedGainLoss)
+
+                };
+
+            } else if (
+
+                action === "DIVIDEND"
+
+            ) {
+
+                spec = {
+
+                    autoSource: "DIVIDEND",
+
+                    category: "股息",
+
+                    name:
+
+                        `股息 ${trade.symbol || ""}`.trim(),
+
+                    amount:
+
+                        Math.abs(Number(trade.amount || 0))
+
+                };
+
+            } else if (
+
+                action === "INTEREST"
+
+            ) {
+
+                spec = {
+
+                    autoSource: "INTEREST",
+
+                    category: "利息",
+
+                    name:
+
+                        `利息 ${trade.symbol || ""}`.trim(),
+
+                    amount:
+
+                        Math.abs(Number(trade.amount || 0))
+
+                };
+
+            }
+
+            if (!spec || !(spec.amount > 0)) {
+
+                return;
+
+            }
+
+            IncomeService.createLinkedIncome({
+
+                ...spec,
+
+                tradeId: trade.id,
+
+                memberId: trade.memberId || "",
+
+                accountId: trade.accountId || "",
+
+                date: trade.tradeDate || trade.date || "",
+
+                currency: trade.currency || "USD"
+
+            });
+
+        } catch (autoIncomeError) {
+
+        }
 
     },
 
@@ -707,6 +851,14 @@ const InvestmentService = {
                 trade.id
 
             );
+
+        // The trade's auto income mirror goes with it.
+
+        IncomeService.deleteLinkedIncome(
+
+            trade.id
+
+        );
 
         try {
 
@@ -919,6 +1071,22 @@ const InvestmentService = {
                                 trade
 
                             );
+
+                        // Keep the Income Center mirror
+
+                        // in step with the new gain.
+
+                        IncomeService.deleteLinkedIncome(
+
+                            trade.id
+
+                        );
+
+                        this.syncAutoIncome(
+
+                            trade
+
+                        );
 
                     }
 
