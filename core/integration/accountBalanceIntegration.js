@@ -76,7 +76,89 @@ const AccountBalanceIntegration = {
 
     },
 
-    /*
+        /*
+
+     * Reverse the cash legs of one Transaction
+
+     * (used when the transaction is deleted):
+
+     * IN becomes OUT and OUT becomes IN.
+
+     */
+
+    reverseTransaction(
+
+        transaction
+
+    ) {
+
+        if (
+
+            !transaction ||
+
+            !Array.isArray(
+
+                transaction.lines
+
+            )
+
+        ) {
+
+            return;
+
+        }
+
+        const flipped = {
+
+            ...transaction,
+
+            lines:
+
+                transaction.lines.map(
+
+                    line => ({
+
+                        ...line,
+
+                        direction:
+
+                            line.direction === "IN"
+
+                                ? "OUT"
+
+                                : "IN"
+
+                    })
+
+                )
+
+        };
+
+        if (
+
+            transaction.id
+
+        ) {
+
+            this.appliedTransactionIds
+
+                .delete(
+
+                    transaction.id
+
+                );
+
+        }
+
+        this.applyTransaction(
+
+            flipped
+
+        );
+
+    },
+
+/*
 
      * Apply the cash legs of one Transaction
 
