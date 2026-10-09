@@ -12,7 +12,7 @@ import LiabilityRepository from "../repository/liabilityRepository.js?v=20261008
 
 import LiabilitySchema from "../schema/liabilitySchema.js?v=20261008ae";
 
-import TransactionIntegration from "../../../core/integration/transactionIntegration.js?v=20261008ae";
+import TransactionIntegration from "../../../core/integration/transactionIntegration.js?v=20261008ak";
 
 const LiabilityService = {
 
