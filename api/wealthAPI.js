@@ -6,9 +6,9 @@ Wealth API
 
 */
 
-import WealthEngine from "../core/engines/wealth/wealthEngine.js";
+import WealthEngine from "../core/engines/wealth/wealthEngine.js?v=20261008ae";
 
-import CashFlowEngine from "../core/engines/cashflow/cashFlowEngine.js";
+import CashFlowEngine from "../core/engines/cashflow/cashFlowEngine.js?v=20261008ae";
 
 const WealthAPI = {
 
