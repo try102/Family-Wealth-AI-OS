@@ -336,6 +336,8 @@ const TaxDataIntegration = {
 
         let capitalGains = 0;
 
+        let investmentGains = 0;
+
         let taxPaid = 0;
 
         try {
@@ -464,7 +466,7 @@ const TaxDataIntegration = {
 
                 ) {
 
-                    capitalGains +=
+                    const gain =
 
                         Number(
 
@@ -479,6 +481,14 @@ const TaxDataIntegration = {
                             0
 
                         );
+
+                    capitalGains +=
+
+                        gain;
+
+                    investmentGains +=
+
+                        gain;
 
                 }
 
@@ -530,6 +540,38 @@ const TaxDataIntegration = {
 
             realizedGainSplit(targetYear);
 
+        // Scale the FIFO replay split so long-term +
+
+        // short-term always equals the investment-sell
+
+        // gains the transactions recorded; the residual
+
+        // (asset sales and anything unclassified) stays
+
+        // in capitalGainsOther and the three lines
+
+        // always add up to capitalGains.
+
+        const replayTotal =
+
+            gainSplit.longTerm + gainSplit.shortTerm;
+
+        const splitScale =
+
+            replayTotal !== 0
+
+                ? investmentGains / replayTotal
+
+                : 0;
+
+        const gainsLongTerm =
+
+            gainSplit.longTerm * splitScale;
+
+        const gainsShortTerm =
+
+            gainSplit.shortTerm * splitScale;
+
         return {
 
             year:
@@ -548,19 +590,19 @@ const TaxDataIntegration = {
 
             capitalGainsLongTerm:
 
-                gainSplit.longTerm,
+                gainsLongTerm,
 
             capitalGainsShortTerm:
 
-                gainSplit.shortTerm,
+                gainsShortTerm,
 
             capitalGainsOther:
 
                 capitalGains -
 
-                gainSplit.longTerm -
+                gainsLongTerm -
 
-                gainSplit.shortTerm,
+                gainsShortTerm,
 
             taxPaid,
 
