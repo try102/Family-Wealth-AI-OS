@@ -186,155 +186,6 @@ const CashflowIntegration = {
 
             this.syncExistingTransactions();
 
-        /*
-
-         * Remove cash-flow entries that earlier
-
-         * builds created for trades on accounts
-
-         * that have since become asset-mirrored.
-
-         */
-
-        try {
-
-            const txById =
-
-                new Map(
-
-                    (
-
-                        this.transactionManager
-
-                            .getAllTransactions() ||
-
-                        []
-
-                    ).map(
-
-                        transaction => [
-
-                            String(transaction.id),
-
-                            transaction
-
-                        ]
-
-                    )
-
-                );
-
-            (
-
-                cashflowAPI.getCashflows() ||
-
-                []
-
-            ).forEach(
-
-                entry => {
-
-                    if(
-
-                        !entry.transactionId
-
-                    ){
-
-                        return;
-
-                    }
-
-                    const transaction =
-
-                        txById.get(
-
-                            String(entry.transactionId)
-
-                        );
-
-                    if(
-
-                        !transaction ||
-
-                        (
-
-                            transaction.type !==
-
-                                "INVESTMENT_BUY" &&
-
-                            transaction.type !==
-
-                                "INVESTMENT_SELL"
-
-                        )
-
-                    ){
-
-                        return;
-
-                    }
-
-                    const cashLine =
-
-                        (
-
-                            transaction.lines || []
-
-                        ).find(
-
-                            line =>
-
-                                line &&
-
-                                line.accountId
-
-                        );
-
-                    const effectiveAccountId =
-
-                        this.resolveInvestmentAccountId(
-
-                            transaction
-
-                        ) ||
-
-                        (
-
-                            cashLine &&
-
-                            cashLine.accountId
-
-                        ) ||
-
-                        "";
-
-                    if(
-
-                        effectiveAccountId &&
-
-                        this.isMirroredAccount(
-
-                            effectiveAccountId
-
-                        )
-
-                    ){
-
-                        cashflowAPI.deleteCashflow(
-
-                            entry.id
-
-                        );
-
-                    }
-
-                }
-
-            );
-
-        } catch (pruneError) {
-
-        }
 
         console.log(
 
@@ -990,81 +841,29 @@ const CashflowIntegration = {
 
             /*
 
-             * Trades on an asset-mirrored account
+             * Investment buys and sells ARE cash
 
-             * (the deposit / Checking entered in
+             * movements and belong in Cash Flow on
 
-             * the Asset Center) do not move cash:
+             * every account, mirrored or not: a buy
 
-             * the money only changes form inside
+             * moves cash out of the account, a sell
 
-             * the assets, so they stay out of
+             * brings proceeds back in. They are
 
-             * Cash Flow. Trades on real accounts
+             * tagged category "Investment" so the
 
-             * still count as cash out / in.
+             * Cash Flow page and summaries can show
+
+             * them apart from daily income/expense,
+
+             * and only the realized gain (not the
+
+             * full proceeds) is treated as income
+
+             * on the Tax side.
 
              */
-
-            const cashLine =
-
-                (
-
-                    transaction.lines || []
-
-                ).find(
-
-                    line =>
-
-                        line &&
-
-                        line.accountId
-
-                );
-
-            const effectiveAccountId =
-
-                this.resolveInvestmentAccountId(
-
-                    transaction
-
-                ) ||
-
-                (
-
-                    cashLine &&
-
-                    cashLine.accountId
-
-                ) ||
-
-                "";
-
-            if(
-
-                effectiveAccountId &&
-
-                this.isMirroredAccount(
-
-                    effectiveAccountId
-
-                )
-
-            ){
-
-                return {
-
-                    created:
-
-                        false,
-
-                    reason:
-
-                        "MIRRORED_ACCOUNT"
-
-                };
-
-            }
 
             return transaction.type ===
 
@@ -1072,13 +871,17 @@ const CashflowIntegration = {
 
                 ? this.recordExpense(
 
-                    transaction
+                    transaction,
+
+                    "Investment"
 
                 )
 
                 : this.recordIncome(
 
-                    transaction
+                    transaction,
+
+                    "Investment"
 
                 );
 
@@ -1110,7 +913,9 @@ const CashflowIntegration = {
 
     recordIncome(
 
-        transaction
+        transaction,
+
+        categoryOverride = ""
 
     ){
 
@@ -1230,6 +1035,8 @@ const CashflowIntegration = {
 
                 category:
 
+                    categoryOverride ||
+
                     line.category ||
 
                     "Income"
@@ -1284,7 +1091,9 @@ const CashflowIntegration = {
 
     recordExpense(
 
-        transaction
+        transaction,
+
+        categoryOverride = ""
 
     ){
 
@@ -1403,6 +1212,8 @@ const CashflowIntegration = {
                     line.accountId,
 
                 category:
+
+                    categoryOverride ||
 
                     line.category ||
 
