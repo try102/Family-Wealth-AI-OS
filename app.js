@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261008ae";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261008aq";
 
 const app =
 
@@ -3482,7 +3482,7 @@ async function start(){
 
                 await import(
 
-                    "./core/integration/accountBalanceIntegration.js?v=20261008ao"
+                    "./core/integration/accountBalanceIntegration.js?v=20261008aq"
 
                 );
 
@@ -3688,28 +3688,6 @@ async function start(){
 
             }
 
-            // Sync: members who already have trades
-
-            // but no account get a default account.
-
-            try {
-
-                const memberApiImport =
-
-                    await import(
-
-                        "./modules/member/api/memberAPI.js?v=20261008ap"
-
-                    );
-
-                memberApiImport.default
-
-                    .ensureDefaultAccounts();
-
-            } catch (memberSyncError) {
-
-            }
-
             // Account sync + balance calibration:
 
             // referenced-but-missing accounts are
@@ -3729,6 +3707,28 @@ async function start(){
                     );
 
             } catch (calibrationError) {
+
+            }
+
+            // Sync: members who already have trades
+
+            // but no account get a default account.
+
+            try {
+
+                const memberApiImport =
+
+                    await import(
+
+                        "./modules/member/api/memberAPI.js?v=20261008ap"
+
+                    );
+
+                memberApiImport.default
+
+                    .ensureDefaultAccounts();
+
+            } catch (memberSyncError) {
 
             }
 
