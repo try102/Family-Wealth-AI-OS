@@ -6,7 +6,7 @@ Investment Agent
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js?v=20261008ae";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261008ag";
 
 import RiskEngine from "../risk/riskEngine.js?v=20261008ae";
 
@@ -238,6 +238,8 @@ const InvestmentAgent = {
 
         const bySymbol = {};
 
+        const lotsBySymbol = {};
+
         trades
 
         .filter(
@@ -262,11 +264,13 @@ const InvestmentAgent = {
 
                 const owner =
 
-                    typeof trade.memberId === "string"
+                    trade.memberId ||
 
-                        ? trade.memberId
+                    trade.ownerId ||
 
-                        : accountMember[trade.accountId] || "";
+                    accountMember[trade.accountId] ||
+
+                    "";
 
                 return memberId === "__shared__"
 
@@ -336,53 +340,107 @@ const InvestmentAgent = {
 
                     Number(trade.price || 0);
 
+                if (!lotsBySymbol[symbol]) {
+
+                    lotsBySymbol[symbol] = [];
+
+                }
+
+                const lots =
+
+                    lotsBySymbol[symbol];
+
                 if (
 
                     trade.action === "BUY"
 
                 ) {
 
-                    position.quantity +=
+                    lots.push({
 
-                        quantity;
+                        quantity,
 
-                    position.costBasis +=
+                        unitCost:
 
-                        amount;
+                            quantity > 0
+
+                                ? amount / quantity
+
+                                : price
+
+                    });
 
                 } else {
 
-                    const sellQuantity =
+                    let remaining =
 
-                        Math.min(
+                        quantity;
 
-                            quantity,
+                    while (
 
-                            position.quantity
+                        remaining > 0 &&
 
-                        );
+                        lots.length
 
-                    const averageCost =
+                    ) {
 
-                        position.quantity > 0
+                        const lot =
 
-                        ? position.costBasis /
+                            lots[0];
 
-                            position.quantity
+                        const take =
 
-                        : 0;
+                            Math.min(
 
-                    position.costBasis -=
+                                remaining,
 
-                        averageCost *
+                                lot.quantity
 
-                        sellQuantity;
+                            );
 
-                    position.quantity -=
+                        lot.quantity -=
 
-                        sellQuantity;
+                            take;
+
+                        remaining -=
+
+                            take;
+
+                        if (lot.quantity <= 0) {
+
+                            lots.shift();
+
+                        }
+
+                    }
 
                 }
+
+                position.quantity =
+
+                    lots.reduce(
+
+                        (sum, lot) =>
+
+                            sum + lot.quantity,
+
+                        0
+
+                    );
+
+                position.costBasis =
+
+                    lots.reduce(
+
+                        (sum, lot) =>
+
+                            sum +
+
+                            lot.quantity * lot.unitCost,
+
+                        0
+
+                    );
 
                 if (price > 0) {
 
@@ -564,11 +622,13 @@ const InvestmentAgent = {
 
                 const owner =
 
-                    typeof trade.memberId === "string"
+                    trade.memberId ||
 
-                        ? trade.memberId
+                    trade.ownerId ||
 
-                        : accountMember[trade.accountId] || "";
+                    accountMember[trade.accountId] ||
+
+                    "";
 
                 return memberId === "__shared__"
 
@@ -630,7 +690,27 @@ const InvestmentAgent = {
 
                     );
 
+                if (!book.lots) {
+
+                    book.lots = [];
+
+                }
+
                 if (trade.action === "BUY") {
+
+                    book.lots.push({
+
+                        quantity,
+
+                        unitCost:
+
+                            quantity > 0
+
+                                ? amount / quantity
+
+                                : Number(trade.price || 0)
+
+                    });
 
                     book.quantity += quantity;
 
@@ -640,35 +720,61 @@ const InvestmentAgent = {
 
                 }
 
-                const held =
+                // FIFO: the sale consumes the
 
-                    book.quantity;
+                // oldest lots first.
 
-                const sellQuantity =
+                let remaining =
 
-                    Math.min(quantity, held);
+                    quantity;
 
-                if (sellQuantity <= 0) {
+                let consumedCost = 0;
 
-                    byTrade[trade.id] = 0;
+                while (
 
-                    return;
+                    remaining > 0 &&
+
+                    book.lots.length
+
+                ) {
+
+                    const lot =
+
+                        book.lots[0];
+
+                    const take =
+
+                        Math.min(
+
+                            remaining,
+
+                            lot.quantity
+
+                        );
+
+                    consumedCost +=
+
+                        take * lot.unitCost;
+
+                    lot.quantity -=
+
+                        take;
+
+                    remaining -=
+
+                        take;
+
+                    if (lot.quantity <= 0) {
+
+                        book.lots.shift();
+
+                    }
 
                 }
 
-                const averageCost =
-
-                    held > 0
-
-                        ? book.costBasis / held
-
-                        : 0;
-
                 const gain =
 
-                    amount -
-
-                    averageCost * sellQuantity;
+                    amount - consumedCost;
 
                 byTrade[trade.id] = gain;
 
@@ -676,15 +782,25 @@ const InvestmentAgent = {
 
                 book.quantity =
 
-                    held - sellQuantity;
+                    book.lots.reduce(
+
+                        (sum, lot) =>
+
+                            sum + lot.quantity,
+
+                        0
+
+                    );
 
                 book.costBasis =
 
-                    Math.max(
+                    book.lots.reduce(
 
-                        book.costBasis -
+                        (sum, lot) =>
 
-                            averageCost * sellQuantity,
+                            sum +
+
+                            lot.quantity * lot.unitCost,
 
                         0
 
