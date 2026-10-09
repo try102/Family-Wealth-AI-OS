@@ -182,7 +182,19 @@ const RetirementService = {
 
                     []
 
-                ).reduce(
+                )
+
+                .filter(
+
+                    account =>
+
+                        account.openingSource !==
+
+                        "asset"
+
+                )
+
+                .reduce(
 
                     (sum, account) =>
 
