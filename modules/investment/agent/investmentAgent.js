@@ -6,15 +6,15 @@ Investment Agent
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261008ae";
 
-import RiskEngine from "../risk/riskEngine.js";
+import RiskEngine from "../risk/riskEngine.js?v=20261008ae";
 
-import AccountAPI from "../../account/api/accountAPI.js";
+import AccountAPI from "../../account/api/accountAPI.js?v=20261008ae";
 
-import MemberAPI from "../../member/api/memberAPI.js";
+import MemberAPI from "../../member/api/memberAPI.js?v=20261008ae";
 
-import PriceOverrideStore from "../services/priceOverrideStore.js";
+import PriceOverrideStore from "../services/priceOverrideStore.js?v=20261008ae";
 
 function decideSignal(weight, returnRate) {
 

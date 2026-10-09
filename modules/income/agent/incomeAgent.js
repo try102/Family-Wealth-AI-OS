@@ -8,7 +8,7 @@ Income Agent
 
 */
 
-import IncomeAPI from "../api/incomeAPI.js";
+import IncomeAPI from "../api/incomeAPI.js?v=20261008ae";
 
 const IncomeAgent = {
 

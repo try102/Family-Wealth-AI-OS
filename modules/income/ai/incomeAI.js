@@ -8,7 +8,7 @@ Income AI Layer
 
 */
 
-import IncomeAgent from "../agent/incomeAgent.js";
+import IncomeAgent from "../agent/incomeAgent.js?v=20261008ae";
 
 const IncomeAI = {
 

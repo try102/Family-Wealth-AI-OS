@@ -14,39 +14,39 @@ Income Module
 
 import IncomeAgent
 
-    from "./agent/incomeAgent.js";
+    from "./agent/incomeAgent.js?v=20261008ae";
 
 import IncomeAPI
 
-    from "./api/incomeAPI.js";
+    from "./api/incomeAPI.js?v=20261008ae";
 
 import IncomeAI
 
-    from "./ai/incomeAI.js";
+    from "./ai/incomeAI.js?v=20261008ae";
 
 import IncomeAnalysisEngine
 
-    from "./analysis/incomeAnalysisEngine.js";
+    from "./analysis/incomeAnalysisEngine.js?v=20261008ae";
 
 import IncomeEvents
 
-    from "./events/incomeEvents.js";
+    from "./events/incomeEvents.js?v=20261008ae";
 
 import IncomeRepository
 
-    from "./repository/incomeRepository.js";
+    from "./repository/incomeRepository.js?v=20261008ae";
 
 import IncomeSchema
 
-    from "./schema/incomeSchema.js";
+    from "./schema/incomeSchema.js?v=20261008ae";
 
 import IncomeService
 
-    from "./services/incomeService.js";
+    from "./services/incomeService.js?v=20261008ae";
 
 import IncomeView
 
-    from "./ui/incomeView.js";
+    from "./ui/incomeView.js?v=20261008ae";
 
 const IncomeModule = {
 

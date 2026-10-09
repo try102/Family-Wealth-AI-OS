@@ -76,15 +76,15 @@
 
 import IncomeSchema
 
-    from "../schema/incomeSchema.js";
+    from "../schema/incomeSchema.js?v=20261008ae";
 
 import IncomeRepository
 
-    from "../repository/incomeRepository.js";
+    from "../repository/incomeRepository.js?v=20261008ae";
 
 import TransactionIntegration
 
-    from "../../../core/integration/transactionIntegration.js";
+    from "../../../core/integration/transactionIntegration.js?v=20261008ae";
 
 const IncomeService = {
 

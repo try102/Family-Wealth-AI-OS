@@ -52,15 +52,15 @@ keep Expense record only
 
 import ExpenseSchema
 
-    from "../schema/expenseSchema.js";
+    from "../schema/expenseSchema.js?v=20261008ae";
 
 import ExpenseRepository
 
-    from "../repository/expenseRepository.js";
+    from "../repository/expenseRepository.js?v=20261008ae";
 
 import TransactionIntegration
 
-    from "../../../core/integration/transactionIntegration.js";
+    from "../../../core/integration/transactionIntegration.js?v=20261008ae";
 
 const ExpenseService = {
 
