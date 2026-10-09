@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009bh";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009bi";
 
 const app =
 
@@ -513,6 +513,38 @@ function renderDashboard(
                             ${formatCurrency(
 
                                 cashFlow.investmentNet ||
+
+                                0
+
+                            )}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Realized Gains -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
+
+                        <h3>
+
+                            ${t("dash.realizedGains")}
+
+                        </h3>
+
+                        <div
+
+                            class="value"
+
+                        >
+
+                            ${formatCurrency(
+
+                                cashFlow.realizedGains ||
 
                                 0
 
@@ -4504,6 +4536,48 @@ async function start(){
 
         let dashInvestmentNet = 0;
 
+        let dashRealizedGains = 0;
+
+        try {
+
+            (
+
+                InvestmentAPI.getTrades() || []
+
+            ).forEach(
+
+                trade => {
+
+                    if (
+
+                        String(
+
+                            trade.action || ""
+
+                        ).toUpperCase() === "SELL"
+
+                    ) {
+
+                        dashRealizedGains +=
+
+                            Number(
+
+                                trade.realizedGainLoss || 0
+
+                            );
+
+                    }
+
+                }
+
+            );
+
+        } catch (gainsError) {
+
+            dashRealizedGains = 0;
+
+        }
+
         // ==================================================
 
         // Direct Cashflow Expense
@@ -4716,6 +4790,10 @@ async function start(){
 
                 dashInvestmentNet,
 
+            realizedGains:
+
+                dashRealizedGains,
+
             directExpense:
 
                 directCashflowExpense,
@@ -4784,6 +4862,8 @@ async function start(){
 
                 let scopedInvestmentNet = 0;
 
+                let scopedRealizedGains = 0;
+
                 (
 
                     InvestmentAPI.getTrades() || []
@@ -4846,6 +4926,14 @@ async function start(){
 
                             scopedInvestmentNet += amount;
 
+                            scopedRealizedGains +=
+
+                                Number(
+
+                                    trade.realizedGainLoss || 0
+
+                                );
+
                         } else if (action === "BUY") {
 
                             scopedInvestmentNet -= amount;
@@ -4859,6 +4947,10 @@ async function start(){
                 cashFlowData.investmentNet =
 
                     scopedInvestmentNet;
+
+                cashFlowData.realizedGains =
+
+                    scopedRealizedGains;
 
                 cashFlowData.net =
 
