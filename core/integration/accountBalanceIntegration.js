@@ -26,6 +26,8 @@ import AssetRepository from "../../modules/asset/repository/assetRepository.js?v
 
 import cashflowAPI from "../../modules/cashflow/api/cashflowAPI.js?v=20261008ae";
 
+import MemberRepository from "../../modules/member/repository/memberRepository.js?v=20261008ae";
+
 const AccountBalanceIntegration = {
 
     initialized:
@@ -528,7 +530,7 @@ const AccountBalanceIntegration = {
 
                         }
 
-                        const memberId =
+                        let memberId =
 
                             trade.memberId ||
 
@@ -536,11 +538,13 @@ const AccountBalanceIntegration = {
 
                             "";
 
-                        let target = "";
+                        let picked = null;
+
+                        let pickedOwner = "";
 
                         if (trade.accountId) {
 
-                            const picked =
+                            picked =
 
                                 allAccounts.find(
 
@@ -550,13 +554,13 @@ const AccountBalanceIntegration = {
 
                                         String(trade.accountId)
 
-                                );
+                                ) || null;
 
-                            const pickedOwner =
+                            if (picked) {
 
-                                picked
+                                pickedOwner =
 
-                                    ? String(
+                                    String(
 
                                         picked.memberId ||
 
@@ -564,33 +568,45 @@ const AccountBalanceIntegration = {
 
                                         ""
 
-                                    )
+                                    );
 
-                                    : "";
+                                if (!memberId && pickedOwner) {
 
-                            if (
+                                    memberId = pickedOwner;
 
-                                picked &&
-
-                                (
-
-                                    !memberId ||
-
-                                    !pickedOwner ||
-
-                                    pickedOwner ===
-
-                                        String(memberId)
-
-                                )
-
-                            ) {
-
-                                target =
-
-                                    String(picked.id);
+                                }
 
                             }
+
+                        }
+
+                        let target = "";
+
+                        if (
+
+                            picked &&
+
+                            (
+
+                                !memberId ||
+
+                                !pickedOwner ||
+
+                                AccountBalanceIntegration
+
+                                    .sameMemberId(
+
+                                        pickedOwner,
+
+                                        memberId
+
+                                    )
+
+                            )
+
+                        ) {
+
+                            target = String(picked.id);
 
                         }
 
@@ -602,15 +618,19 @@ const AccountBalanceIntegration = {
 
                                     account =>
 
-                                        String(
+                                        AccountBalanceIntegration
 
-                                            account.memberId ||
+                                            .sameMemberId(
 
-                                            account.ownerId ||
+                                                account.memberId ||
 
-                                            ""
+                                                    account.ownerId ||
 
-                                        ) === String(memberId)
+                                                    "",
+
+                                                memberId
+
+                                            )
 
                                 );
 
@@ -650,11 +670,35 @@ const AccountBalanceIntegration = {
 
                             if (pick) {
 
-                                target =
-
-                                    String(pick.id);
+                                target = String(pick.id);
 
                             }
+
+                        }
+
+                        if (
+
+                            !target &&
+
+                            picked &&
+
+                            AccountBalanceIntegration
+
+                                .mirrorKindOfRecord(picked) ===
+
+                                "investment"
+
+                        ) {
+
+                            // The trade names this
+
+                            // investment account; settling
+
+                            // nowhere would silently drop
+
+                            // the trade from every balance.
+
+                            target = String(picked.id);
 
                         }
 
@@ -1196,43 +1240,33 @@ const AccountBalanceIntegration = {
 
                         // the timestamp last mirrored.
 
+                        // Asset edits are detected by
+
+                        // VALUE only: any save bumps the
+
+                        // asset's updatedAt, and a
+
+                        // timestamp-only change must never
+
+                        // re-anchor (it would bake the
+
+                        // live effects into the opening
+
+                        // and pin the balance forever).
+
                         const assetEdited =
 
                             account.mirrorAssetValue !==
 
                                 undefined &&
 
-                            (
+                            Number(pair.currentValue || 0) !==
 
-                                Number(pair.currentValue || 0) !==
+                                Number(
 
-                                    Number(
+                                    account.mirrorAssetValue
 
-                                        account.mirrorAssetValue
-
-                                    ) ||
-
-                                (
-
-                                    account
-
-                                        .mirrorAssetUpdatedAt &&
-
-                                    pair.updatedAt &&
-
-                                    String(pair.updatedAt) !==
-
-                                        String(
-
-                                            account
-
-                                                .mirrorAssetUpdatedAt
-
-                                        )
-
-                                )
-
-                            );
+                                );
 
                         if (manualWins || assetEdited) {
 
@@ -1766,6 +1800,74 @@ const AccountBalanceIntegration = {
 
     },
 
+    memberNameOf(memberId) {
+
+        try {
+
+            if (!memberId) {
+
+                return "";
+
+            }
+
+            const member =
+
+                (
+
+                    MemberRepository.getAll() || []
+
+                ).find(
+
+                    item =>
+
+                        String(item.id) === String(memberId)
+
+                );
+
+            return member
+
+                ? String(member.name || "").trim()
+
+                : "";
+
+        } catch (nameError) {
+
+            return "";
+
+        }
+
+    },
+
+    // Two member ids are "the same member" when they are equal, or when
+
+    // both resolve to member records with the same name (a member that
+
+    // was deleted and recreated, or created twice, must not orphan the
+
+    // trades recorded under the older id).
+
+    sameMemberId(a, b) {
+
+        if (!a || !b) {
+
+            return false;
+
+        }
+
+        if (String(a) === String(b)) {
+
+            return true;
+
+        }
+
+        const nameA = this.memberNameOf(a);
+
+        const nameB = this.memberNameOf(b);
+
+        return !!nameA && nameA === nameB;
+
+    },
+
     resolveInvestmentSettleAccount(transaction) {
 
         try {
@@ -1874,15 +1976,17 @@ const AccountBalanceIntegration = {
 
                     account =>
 
-                        String(
+                        this.sameMemberId(
 
                             account.memberId ||
 
-                            account.ownerId ||
+                                account.ownerId ||
 
-                            ""
+                                "",
 
-                        ) === String(memberId)
+                            memberId
+
+                        )
 
                 );
 
@@ -1968,7 +2072,7 @@ const AccountBalanceIntegration = {
 
                 lineOwner &&
 
-                lineOwner !== String(memberId)
+                !this.sameMemberId(lineOwner, memberId)
 
             ) {
 
@@ -2048,9 +2152,13 @@ const AccountBalanceIntegration = {
 
             this.findMirrorAsset(account);
 
-        if (
+        if (!asset) {
 
-            asset &&
+            return;
+
+        }
+
+        if (
 
             Number(asset.currentValue || 0) !==
 
@@ -2063,6 +2171,54 @@ const AccountBalanceIntegration = {
                 Number(account.balance || 0);
 
             AssetRepository.save(asset);
+
+        }
+
+        // Keep the mirrored-value watermark in
+
+        // sync with every mirror write. Otherwise
+
+        // the next calibration mistakes a
+
+        // mirror-driven value change for a manual
+
+        // asset edit and absorbs live trade
+
+        // effects into the opening anchor, which
+
+        // pins the balance and can drop trades
+
+        // that have no transaction left.
+
+        const mirroredValue =
+
+            Number(account.balance || 0);
+
+        if (
+
+            Number(account.mirrorAssetValue || 0) !==
+
+                mirroredValue ||
+
+            String(account.mirrorAssetUpdatedAt || "") !==
+
+                String(asset.updatedAt || "")
+
+        ) {
+
+            account.mirrorAssetValue = mirroredValue;
+
+            account.mirrorAssetUpdatedAt =
+
+                asset.updatedAt || "";
+
+            try {
+
+                AccountRepository.save(account);
+
+            } catch (watermarkError) {
+
+            }
 
         }
 
