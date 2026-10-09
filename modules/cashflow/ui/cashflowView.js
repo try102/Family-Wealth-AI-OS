@@ -10,55 +10,55 @@ Cashflow View
 
 import cashflowAPI
 
-    from "../api/cashflowAPI.js";
+    from "../api/cashflowAPI.js?v=20261008ae";
 
 import TransactionIntegration
 
-    from "../../../core/integration/transactionIntegration.js";
+    from "../../../core/integration/transactionIntegration.js?v=20261008ae";
 
 import AccountAPI
 
-    from "../../account/api/accountAPI.js";
+    from "../../account/api/accountAPI.js?v=20261008ae";
 
 import MemberAPI
 
-    from "../../member/api/memberAPI.js";
+    from "../../member/api/memberAPI.js?v=20261008ae";
 
 import IncomeAPI
 
-    from "../../income/api/incomeAPI.js";
+    from "../../income/api/incomeAPI.js?v=20261008ae";
 
 import ExpenseAPI
 
-    from "../../expense/api/expenseAPI.js";
+    from "../../expense/api/expenseAPI.js?v=20261008ae";
 
 import LiabilityAPI
 
-    from "../../liability/api/liabilityAPI.js";
+    from "../../liability/api/liabilityAPI.js?v=20261008ae";
 
 import AssetAPI
 
-    from "../../asset/api/assetAPI.js";
+    from "../../asset/api/assetAPI.js?v=20261008ae";
 
 import InvestmentAPI
 
-    from "../../investment/api/investmentAPI.js";
+    from "../../investment/api/investmentAPI.js?v=20261008ae";
 
 import TransactionRepository
 
-    from "../../../transaction/transactionRepository.js";
+    from "../../../transaction/transactionRepository.js?v=20261008ae";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008ad";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261008ae";
 
-import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js";
+import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
 import cashflowAgent
 
-    from "../agent/cashflowAgent.js";
+    from "../agent/cashflowAgent.js?v=20261008ae";
 
 import cashflowAI
 
-    from "../ai/cashflowAI.js";
+    from "../ai/cashflowAI.js?v=20261008ae";
 
 const cashflowView = {
 

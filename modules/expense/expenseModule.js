@@ -12,27 +12,27 @@ Expense Module
 
 import ExpenseAgent
 
-    from "./agent/expenseAgent.js";
+    from "./agent/expenseAgent.js?v=20261008ae";
 
 import ExpenseAPI
 
-    from "./api/expenseAPI.js";
+    from "./api/expenseAPI.js?v=20261008ae";
 
 import ExpenseRepository
 
-    from "./repository/expenseRepository.js";
+    from "./repository/expenseRepository.js?v=20261008ae";
 
 import ExpenseSchema
 
-    from "./schema/expenseSchema.js";
+    from "./schema/expenseSchema.js?v=20261008ae";
 
 import ExpenseService
 
-    from "./services/expenseService.js";
+    from "./services/expenseService.js?v=20261008ae";
 
 import ExpenseView
 
-    from "./ui/expenseView.js";
+    from "./ui/expenseView.js?v=20261008ae";
 
 const ExpenseModule = {
 

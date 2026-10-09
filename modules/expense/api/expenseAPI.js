@@ -8,7 +8,7 @@ Expense API
 
 */
 
-import ExpenseService from "../services/expenseService.js";
+import ExpenseService from "../services/expenseService.js?v=20261008ae";
 
 const ExpenseAPI = {
 

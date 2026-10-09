@@ -10,7 +10,7 @@ Cashflow AI
 
 import cashflowAgent
 
-from "../agent/cashflowAgent.js";
+from "../agent/cashflowAgent.js?v=20261008ae";
 
 const cashflowAI = {
 

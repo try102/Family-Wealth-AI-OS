@@ -40,7 +40,7 @@ localStorage
 
 import Database
 
-    from "../../../core/database/database.js";
+    from "../../../core/database/database.js?v=20261008ae";
 
 const STORAGE_KEY =
 

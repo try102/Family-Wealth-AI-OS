@@ -8,11 +8,11 @@ Dashboard Controller
 
 import WealthAPI
 
-from "../../api/wealthAPI.js";
+from "../../api/wealthAPI.js?v=20261008ae";
 
 import AdvisorAPI
 
-from "../../api/advisorAPI.js";
+from "../../api/advisorAPI.js?v=20261008ae";
 
 const DashboardController = {
 

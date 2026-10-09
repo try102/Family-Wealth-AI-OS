@@ -8,7 +8,7 @@ Expense Agent
 
 */
 
-import ExpenseAPI from "../api/expenseAPI.js";
+import ExpenseAPI from "../api/expenseAPI.js?v=20261008ae";
 
 const ExpenseAgent = {
 

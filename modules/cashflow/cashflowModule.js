@@ -10,19 +10,19 @@ Cashflow Module Definition
 
 import cashflowAPI
 
-    from "./api/cashflowAPI.js";
+    from "./api/cashflowAPI.js?v=20261008ae";
 
 import cashflowAgent
 
-    from "./agent/cashflowAgent.js";
+    from "./agent/cashflowAgent.js?v=20261008ae";
 
 import cashflowAI
 
-    from "./ai/cashflowAI.js";
+    from "./ai/cashflowAI.js?v=20261008ae";
 
 import cashflowView
 
-    from "./ui/cashflowView.js";
+    from "./ui/cashflowView.js?v=20261008ae";
 
 const cashflowModule = {
 

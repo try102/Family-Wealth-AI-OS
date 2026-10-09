@@ -12,7 +12,7 @@ Cashflow API
 
 import cashflowService
 
-    from "../services/cashflowService.js";
+    from "../services/cashflowService.js?v=20261008ae";
 
 const cashflowAPI = {
 
