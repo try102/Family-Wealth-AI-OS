@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009bk";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009bo";
 
 const app =
 
@@ -3979,6 +3979,36 @@ async function start(){
                     .ensureDefaultAccounts();
 
             } catch (memberSyncError) {
+
+            }
+
+            // Record any scheduled loan installments
+
+            // whose repayment date has arrived (each is
+
+            // a normal loan payment: account, Cash Flow,
+
+            // Expense Center interest mirror). Idempotent
+
+            // — recorded periods are remembered on the
+
+            // liability itself.
+
+            try {
+
+                const liabilityServiceImport =
+
+                    await import(
+
+                        "./modules/liability/services/liabilityService.js?v=20261009bo"
+
+                    );
+
+                liabilityServiceImport.default
+
+                    .syncAllScheduledPayments();
+
+            } catch (liabilitySyncError) {
 
             }
 
