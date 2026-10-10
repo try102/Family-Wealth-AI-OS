@@ -10,31 +10,31 @@ Cashflow View
 
 import cashflowAPI
 
-    from "../api/cashflowAPI.js?v=20261009bq";
+    from "../api/cashflowAPI.js?v=20261010da";
 
 import TransactionIntegration
 
-    from "../../../core/integration/transactionIntegration.js?v=20261009bp";
+    from "../../../core/integration/transactionIntegration.js?v=20261010da";
 
 import AccountAPI
 
-    from "../../account/api/accountAPI.js?v=20261008aw";
+    from "../../account/api/accountAPI.js?v=20261010da";
 
 import MemberAPI
 
-    from "../../member/api/memberAPI.js?v=20261008ap";
+    from "../../member/api/memberAPI.js?v=20261010da";
 
 import IncomeAPI
 
-    from "../../income/api/incomeAPI.js?v=20261008ae";
+    from "../../income/api/incomeAPI.js?v=20261010da";
 
 import ExpenseAPI
 
-    from "../../expense/api/expenseAPI.js?v=20261008ae";
+    from "../../expense/api/expenseAPI.js?v=20261010da";
 
 import LiabilityAPI
 
-    from "../../liability/api/liabilityAPI.js?v=20261009by";
+    from "../../liability/api/liabilityAPI.js?v=20261010da";
 
 import AssetAPI
 
@@ -42,19 +42,19 @@ import AssetAPI
 
 import InvestmentAPI
 
-    from "../../investment/api/investmentAPI.js?v=20261008ah";
+    from "../../investment/api/investmentAPI.js?v=20261010da";
 
 import TransactionRepository
 
     from "../../../transaction/transactionRepository.js?v=20261008ae";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009cc";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261010db";
 
-import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
+import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261010da";
 
 import cashflowAgent
 
-    from "../agent/cashflowAgent.js?v=20261008ae";
+    from "../agent/cashflowAgent.js?v=20261010da";
 
 import cashflowAI
 
