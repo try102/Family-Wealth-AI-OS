@@ -10,11 +10,11 @@ Cashflow View
 
 import cashflowAPI
 
-    from "../api/cashflowAPI.js?v=20261008ae";
+    from "../api/cashflowAPI.js?v=20261009bp";
 
 import TransactionIntegration
 
-    from "../../../core/integration/transactionIntegration.js?v=20261008ak";
+    from "../../../core/integration/transactionIntegration.js?v=20261009bp";
 
 import AccountAPI
 
