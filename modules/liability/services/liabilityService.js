@@ -10,11 +10,11 @@ Liability Service
 
 import LiabilityRepository from "../repository/liabilityRepository.js?v=20261008ae";
 
-import LiabilitySchema from "../schema/liabilitySchema.js?v=20261009bo";
+import LiabilitySchema from "../schema/liabilitySchema.js?v=20261009bp";
 
-import TransactionIntegration from "../../../core/integration/transactionIntegration.js?v=20261008ak";
+import TransactionIntegration from "../../../core/integration/transactionIntegration.js?v=20261009bp";
 
-import ExpenseService from "../../expense/services/expenseService.js?v=20261009bo";
+import ExpenseService from "../../expense/services/expenseService.js?v=20261009bp";
 
 import {
 
@@ -24,7 +24,7 @@ import {
 
     todayText
 
-} from "./repaymentSchedule.js?v=20261009bo";
+} from "./repaymentSchedule.js?v=20261009bp";
 
 const LiabilityService = {
 
@@ -194,13 +194,75 @@ const LiabilityService = {
 
     ){
 
-        // The auto interest mirrors are derived data
+        // Deleting a liability revokes everything it
 
-        // and die with the liability; the payment
+        // caused: every loan-payment transaction is
 
-        // transactions themselves are real events
+        // removed through the choke point (account
 
-        // and stay (same policy as manual payments).
+        // balance restored, cash-flow entries gone),
+
+        // the auto interest mirrors are deleted, and
+
+        // only then the liability record itself.
+
+        try {
+
+            (
+
+                TransactionIntegration
+
+                    .getAllTransactions() || []
+
+            )
+
+                .filter(
+
+                    transaction =>
+
+                        transaction &&
+
+                        transaction.type ===
+
+                            "LOAN_PAYMENT" &&
+
+                        transaction.businessDetails &&
+
+                        transaction.businessDetails
+
+                            .liability &&
+
+                        String(
+
+                            transaction.businessDetails
+
+                                .liability.liabilityId
+
+                        ) === String(id)
+
+                )
+
+                .forEach(transaction => {
+
+                    try {
+
+                        TransactionIntegration
+
+                            .removeTransaction(
+
+                                transaction.id
+
+                            );
+
+                    } catch (removeError) {
+
+                    }
+
+                });
+
+        } catch (cascadeError) {
+
+        }
 
         ExpenseService
 
@@ -217,6 +279,260 @@ const LiabilityService = {
             id
 
         );
+
+    },
+
+    /*
+
+     * A loan payment was removed somewhere else
+
+     * (e.g. its row was deleted in the Cash Flow
+
+     * center): put the liability side back — the
+
+     * principal portion returns to the outstanding
+
+     * balance, the period is no longer counted as
+
+     * paid, and its interest mirror is deleted.
+
+     */
+
+    handleLoanPaymentRemoved(
+
+        transaction
+
+    ){
+
+        try {
+
+            const details =
+
+                (
+
+                    transaction &&
+
+                    transaction.businessDetails &&
+
+                    transaction.businessDetails.liability
+
+                ) || {};
+
+            const liabilityId =
+
+                details.liabilityId;
+
+            if (!liabilityId){
+
+                return;
+
+            }
+
+            const liability =
+
+                LiabilityRepository.findById(
+
+                    liabilityId
+
+                );
+
+            if (!liability){
+
+                return;
+
+            }
+
+            const updates = {
+
+                currentBalance:
+
+                    Number(
+
+                        liability.currentBalance || 0
+
+                    ) +
+
+                    Number(
+
+                        details.principalPortion || 0
+
+                    )
+
+            };
+
+            if (details.period){
+
+                updates.paidPeriods =
+
+                    (
+
+                        liability.paidPeriods || []
+
+                    ).filter(
+
+                        period =>
+
+                            Number(period) !==
+
+                            Number(details.period)
+
+                    );
+
+                // The user deleted this payment on
+
+                // purpose: never auto-record it again.
+
+                updates.voidedPeriods =
+
+                    [
+
+                        ...(
+
+                            liability.voidedPeriods ||
+
+                            []
+
+                        ),
+
+                        Number(details.period)
+
+                    ];
+
+            }
+
+            LiabilityRepository.update(
+
+                liabilityId,
+
+                updates
+
+            );
+
+            if (details.period){
+
+                ExpenseService.deleteLinkedExpense(
+
+                    liabilityId,
+
+                    details.period
+
+                );
+
+            }
+
+        } catch (restoreError) {
+
+        }
+
+    },
+
+    /*
+
+     * Loan payments whose liability no longer
+
+     * exists (deleted before delete cascading
+
+     * existed) are orphans: revoke them so the
+
+     * account money comes back. Runs at startup.
+
+     */
+
+    cleanupOrphanPayments(){
+
+        let revoked = 0;
+
+        try {
+
+            const liabilityIds =
+
+                new Set(
+
+                    (
+
+                        this.getLiabilities() || []
+
+                    ).map(
+
+                        liability =>
+
+                            String(liability.id)
+
+                    )
+
+                );
+
+            (
+
+                TransactionIntegration
+
+                    .getAllTransactions() || []
+
+            )
+
+                .filter(
+
+                    transaction =>
+
+                        transaction &&
+
+                        transaction.type ===
+
+                            "LOAN_PAYMENT" &&
+
+                        transaction.businessDetails &&
+
+                        transaction.businessDetails
+
+                            .liability &&
+
+                        transaction.businessDetails
+
+                            .liability.liabilityId &&
+
+                        !liabilityIds.has(
+
+                            String(
+
+                                transaction
+
+                                    .businessDetails
+
+                                    .liability
+
+                                    .liabilityId
+
+                            )
+
+                        )
+
+                )
+
+                .forEach(transaction => {
+
+                    try {
+
+                        TransactionIntegration
+
+                            .removeTransaction(
+
+                                transaction.id
+
+                            );
+
+                        revoked += 1;
+
+                    } catch (removeError) {
+
+                    }
+
+                });
+
+        } catch (cleanupError) {
+
+        }
+
+        return revoked;
 
     },
 
@@ -254,7 +570,9 @@ const LiabilityService = {
 
             today,
 
-            (liability || {}).paidPeriods || []
+            (liability || {}).paidPeriods || [],
+
+            (liability || {}).voidedPeriods || []
 
         );
 
@@ -334,6 +652,22 @@ const LiabilityService = {
 
             );
 
+        const voidedSet =
+
+            new Set(
+
+                (
+
+                    liability.voidedPeriods || []
+
+                ).map(
+
+                    period => Number(period)
+
+                )
+
+            );
+
         let recorded = 0;
 
         installments.forEach(installment => {
@@ -342,7 +676,9 @@ const LiabilityService = {
 
                 installment.date > today ||
 
-                paidSet.has(installment.period)
+                paidSet.has(installment.period) ||
+
+                voidedSet.has(installment.period)
 
             ){
 
@@ -494,7 +830,9 @@ const LiabilityService = {
 
                     today,
 
-                    paidPeriods
+                    paidPeriods,
+
+                    liability.voidedPeriods || []
 
                 );
 
