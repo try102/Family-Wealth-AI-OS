@@ -950,6 +950,50 @@ const ExpenseView = {
 
         );
 
+        // Same cross-account guard as income: changing
+        // the member resets the account, so a stale
+        // account cannot silently pay the money.
+
+        const expenseMemberSelect =
+
+            form.querySelector(
+
+                "#expense-member"
+
+            );
+
+        const expenseAccountSelect =
+
+            form.querySelector(
+
+                "#expense-account"
+
+            );
+
+        if (
+
+            expenseMemberSelect &&
+
+            expenseAccountSelect
+
+        ) {
+
+            expenseMemberSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    expenseAccountSelect.selectedIndex =
+
+                        0;
+
+                }
+
+            );
+
+        }
+
         form.addEventListener(
 
             "submit",
@@ -1382,6 +1426,48 @@ const ExpenseView = {
                 "#expense-edit-form"
 
             );
+
+        // Same cross-account guard as the create form.
+
+        const editExpenseMemberSelect =
+
+            form.querySelector(
+
+                "#edit-expense-member"
+
+            );
+
+        const editExpenseAccountSelect =
+
+            form.querySelector(
+
+                "#edit-expense-account"
+
+            );
+
+        if (
+
+            editExpenseMemberSelect &&
+
+            editExpenseAccountSelect
+
+        ) {
+
+            editExpenseMemberSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    editExpenseAccountSelect.selectedIndex =
+
+                        0;
+
+                }
+
+            );
+
+        }
 
         form.addEventListener(
 
