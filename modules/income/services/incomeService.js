@@ -667,6 +667,10 @@ const IncomeService = {
 
                         data.category || "其他",
 
+                    type:
+
+                        data.category || "其他",
+
                     source:
 
                         "Auto",
@@ -704,6 +708,10 @@ const IncomeService = {
             record.autoSource =
 
                 data.autoSource;
+
+            record.type =
+
+                data.category || "其他";
 
             record.tradeId =
 
