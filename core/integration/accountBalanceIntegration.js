@@ -20,11 +20,11 @@ import EventTypes from "../events/eventTypes.js?v=20261008ae";
 
 import AccountRepository from "../../modules/account/repository/accountRepository.js?v=20261008ae";
 
-import InvestmentRepository from "../../modules/investment/repository/investmentRepository.js?v=20261008ae";
+import InvestmentRepository from "../../modules/investment/repository/investmentRepository.js?v=20261010da";
 
 import AssetRepository from "../../modules/asset/repository/assetRepository.js?v=20261008ae";
 
-import cashflowAPI from "../../modules/cashflow/api/cashflowAPI.js?v=20261009bq";
+import cashflowAPI from "../../modules/cashflow/api/cashflowAPI.js?v=20261010da";
 
 import MemberRepository from "../../modules/member/repository/memberRepository.js?v=20261008ae";
 
@@ -2505,6 +2505,16 @@ const AccountBalanceIntegration = {
                             account.balance =
 
                                 basisNow + effect;
+
+                            // Remember the basis we just
+                            // anchored to, so the next load
+                            // does not re-anchor again and
+                            // again (which would pin the
+                            // balance and hide live effects).
+
+                            account.mirrorBasisValue =
+
+                                basisNow;
 
                             if (
 
