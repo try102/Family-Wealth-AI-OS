@@ -8,7 +8,7 @@ Liability API
 
 */
 
-import LiabilityService from "../services/liabilityService.js?v=20261009bx";
+import LiabilityService from "../services/liabilityService.js?v=20261009by";
 
 import {
 
@@ -187,6 +187,38 @@ const LiabilityAPI = {
         .getSchedule(
 
             liability
+
+        );
+
+    },
+
+    bookedPaymentCount(
+
+        id
+
+    ){
+
+        return LiabilityService
+
+        .bookedPaymentCount(
+
+            id
+
+        );
+
+    },
+
+    migratePaymentAccount(
+
+        id
+
+    ){
+
+        return LiabilityService
+
+        .migratePaymentAccount(
+
+            id
 
         );
 
