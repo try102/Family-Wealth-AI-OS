@@ -8,7 +8,7 @@ Liability API
 
 */
 
-import LiabilityService from "../services/liabilityService.js?v=20261009bs";
+import LiabilityService from "../services/liabilityService.js?v=20261009bt";
 
 import {
 
