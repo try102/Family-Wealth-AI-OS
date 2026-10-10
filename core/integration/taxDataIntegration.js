@@ -302,6 +302,22 @@ const TaxDataIntegration = {
 
                 }
 
+                // 自动生成的投资收入镜像（交易产生的资本
+
+                // 利得 / 股息 / 利息记录）已在下方按交易
+
+                // 单独统计，此处再计会重复计算，故排除。
+
+                if (
+
+                    income.autoSource
+
+                ) {
+
+                    return;
+
+                }
+
                 wageIncome +=
 
                     Number(
