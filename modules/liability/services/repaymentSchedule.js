@@ -432,7 +432,9 @@ export function summarizeSchedule(
 
     today = todayText(),
 
-    paidPeriods = []
+    paidPeriods = [],
+
+    voidedPeriods = []
 
 ) {
 
@@ -441,6 +443,18 @@ export function summarizeSchedule(
         new Set(
 
             (paidPeriods || []).map(
+
+                period => Number(period)
+
+            )
+
+        );
+
+    const voidedSet =
+
+        new Set(
+
+            (voidedPeriods || []).map(
 
                 period => Number(period)
 
@@ -458,11 +472,21 @@ export function summarizeSchedule(
 
     installments.forEach(installment => {
 
+        // A period the user explicitly deleted
+
+        // (voided) never counts as paid again.
+
         const paid =
 
-            paidSet.has(installment.period) ||
+            !voidedSet.has(installment.period) &&
 
-            installment.date <= today;
+            (
+
+                paidSet.has(installment.period) ||
+
+                installment.date <= today
+
+            );
 
         installment.paid = paid;
 
