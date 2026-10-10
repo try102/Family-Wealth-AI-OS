@@ -792,6 +792,124 @@ const InvestmentService = {
 
     },
 
+    // Backfill / refresh the Income Center mirrors
+
+    // for every existing trade (the live hook only
+
+    // fires when a trade is recorded). Idempotent:
+
+    // records are keyed by trade and only rewritten
+
+    // when the amount changed.
+
+    syncAllAutoIncome(){
+
+        try {
+
+            (
+
+                this.getTrades() || []
+
+            ).forEach(
+
+                trade => {
+
+                    const action =
+
+                        String(trade.action || "")
+
+                            .toUpperCase();
+
+                    const relevant =
+
+                        action === "SELL" ||
+
+                        action === "DIVIDEND" ||
+
+                        action === "INTEREST";
+
+                    if (!relevant) {
+
+                        return;
+
+                    }
+
+                    const expected =
+
+                        action === "SELL"
+
+                            ? Number(
+
+                                trade.realizedGainLoss || 0
+
+                            )
+
+                            : Math.abs(
+
+                                Number(trade.amount || 0)
+
+                            );
+
+                    const existing =
+
+                        (
+
+                            IncomeService.getAllIncome() || []
+
+                        ).find(
+
+                            record =>
+
+                                record.autoSource &&
+
+                                String(record.tradeId) ===
+
+                                    String(trade.id)
+
+                        );
+
+                    if (
+
+                        existing &&
+
+                        Number(existing.amount || 0) ===
+
+                            expected &&
+
+                        expected > 0
+
+                    ) {
+
+                        return;
+
+                    }
+
+                    IncomeService.deleteLinkedIncome(
+
+                        trade.id
+
+                    );
+
+                    if (expected > 0) {
+
+                        this.syncAutoIncome(
+
+                            trade
+
+                        );
+
+                    }
+
+                }
+
+            );
+
+        } catch (syncError) {
+
+        }
+
+    },
+
     getTrades(){
 
         return InvestmentRepository
