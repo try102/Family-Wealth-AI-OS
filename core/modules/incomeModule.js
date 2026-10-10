@@ -34,7 +34,7 @@ from "../../modules/income/repository/incomeRepository.js?v=20261008ae";
 
 import incomeSchema
 
-from "../../modules/income/schema/incomeSchema.js?v=20261008ae";
+from "../../modules/income/schema/incomeSchema.js?v=20261009cc";
 
 import incomeService
 
