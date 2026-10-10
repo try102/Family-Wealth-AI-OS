@@ -6,12 +6,12 @@ Member Service
 投资按投资记录的账户归属统计（持仓本身按代码汇总，不分成员）。
 */
 import MemberRepository from "../repository/memberRepository.js?v=20261008ae";
-import AccountAPI from "../../account/api/accountAPI.js?v=20261008aw";
-import IncomeAPI from "../../income/api/incomeAPI.js?v=20261008ae";
-import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261008ae";
-import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261008ah";
+import AccountAPI from "../../account/api/accountAPI.js?v=20261010da";
+import IncomeAPI from "../../income/api/incomeAPI.js?v=20261010da";
+import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261010da";
+import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261010da";
 import AssetAPI from "../../asset/api/assetAPI.js?v=20261008ae";
-import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261009by";
+import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261010da";
 
 import IncomeRepository from "../../income/repository/incomeRepository.js?v=20261008ae";
 
@@ -238,15 +238,15 @@ const MemberService = {
 
         });
         incomes.forEach(record => {
-            // Auto investment income (gains / dividends
+            // Only realized capital-gain mirrors stay
 
-            // / interest mirrored from transactions)
+            // out of the daily-income caliber. Auto
 
-            // lives in the Income Center but stays out
+            // dividends / interest are ordinary income
 
-            // of the daily-income caliber.
+            // under tax rules (option D, 2026-10-10).
 
-            if (record.autoSource) {
+            if (record.autoSource === "CAPITAL_GAIN") {
                 return;
             }
             bucketFor(record).income += num(record.amount ?? record.value);
