@@ -14,7 +14,7 @@ from "../../modules/income/agent/incomeAgent.js?v=20261008ae";
 
 import incomeAPI
 
-from "../../modules/income/api/incomeAPI.js?v=20261008ae";
+from "../../modules/income/api/incomeAPI.js?v=20261010da";
 
 import incomeAI
 
@@ -34,15 +34,15 @@ from "../../modules/income/repository/incomeRepository.js?v=20261008ae";
 
 import incomeSchema
 
-from "../../modules/income/schema/incomeSchema.js?v=20261009cc";
+from "../../modules/income/schema/incomeSchema.js?v=20261010da";
 
 import incomeService
 
-from "../../modules/income/services/incomeService.js?v=20261009bm";
+from "../../modules/income/services/incomeService.js?v=20261010dc";
 
 import incomeView
 
-from "../../modules/income/ui/incomeView.js?v=20261009bk";
+from "../../modules/income/ui/incomeView.js?v=20261010dc";
 
 const IncomeModule = {
 
