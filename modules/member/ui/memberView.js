@@ -10,7 +10,7 @@ Member View
 
 import MemberAPI from "../api/memberAPI.js?v=20261008ap";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bo";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bq";
 
 function money(value) {
 
