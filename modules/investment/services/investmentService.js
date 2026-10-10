@@ -58,7 +58,7 @@ import PriceOverrideStore
 
     from "./priceOverrideStore.js?v=20261008ae";
 
-import IncomeService from "../../income/services/incomeService.js?v=20261009bk";
+import IncomeService from "../../income/services/incomeService.js?v=20261009bm";
 
 import AccountBalanceIntegration
 
@@ -876,7 +876,9 @@ const InvestmentService = {
 
                             expected &&
 
-                        expected > 0
+                        expected > 0 &&
+
+                        existing.type
 
                     ) {
 
