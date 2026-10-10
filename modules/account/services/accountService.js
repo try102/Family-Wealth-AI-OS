@@ -10,7 +10,7 @@ import AccountRepository from "../repository/accountRepository.js?v=20261008ae";
 
 import AssetRepository from "../../asset/repository/assetRepository.js?v=20261008ae";
 
-import TransactionIntegration from "../../../core/integration/transactionIntegration.js?v=20261008ak";
+import TransactionIntegration from "../../../core/integration/transactionIntegration.js?v=20261009bp";
 
 function mirrorKindOf(record) {
     const label =
