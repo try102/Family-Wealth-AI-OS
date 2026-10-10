@@ -12,7 +12,7 @@ import EventBus from "../../../core/events/eventBus.js?v=20261008ae";
 
 import EventTypes from "../../../core/events/eventTypes.js?v=20261008ae";
 
-import TransactionIntegration from "../../../core/integration/transactionIntegration.js?v=20261008ak";
+import TransactionIntegration from "../../../core/integration/transactionIntegration.js?v=20261009bp";
 
 const AssetService = {
 
