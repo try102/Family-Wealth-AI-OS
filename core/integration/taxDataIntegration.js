@@ -286,6 +286,10 @@ const TaxDataIntegration = {
 
         let taxExemptInterest = 0;
 
+        let ordinaryInterestFromIncome = 0;
+
+        let ordinaryDividendFromIncome = 0;
+
         try {
 
             (
@@ -364,6 +368,64 @@ const TaxDataIntegration = {
                 ) {
 
                     qualifiedDividendIncome +=
+
+                        Number(
+
+                            income.value ??
+
+                            income.amount ??
+
+                            0
+
+                        );
+
+                    return;
+
+                }
+
+                // Ordinary interest/dividends recorded in
+
+                // the Income module belong in the
+
+                // interest/dividend buckets, not wages.
+
+                // They are added to the transaction-based
+
+                // totals below.
+
+                if (
+
+                    incomeType ===
+
+                    "OrdinaryInterest"
+
+                ) {
+
+                    ordinaryInterestFromIncome +=
+
+                        Number(
+
+                            income.value ??
+
+                            income.amount ??
+
+                            0
+
+                        );
+
+                    return;
+
+                }
+
+                if (
+
+                    incomeType ===
+
+                    "OrdinaryDividend"
+
+                ) {
+
+                    ordinaryDividendFromIncome +=
 
                         Number(
 
@@ -602,6 +664,16 @@ const TaxDataIntegration = {
             );
 
         }
+
+        // Merge ordinary interest/dividends recorded
+
+        // in the Income module into the respective
+
+        // buckets.
+
+        interestIncome += ordinaryInterestFromIncome;
+
+        dividendIncome += ordinaryDividendFromIncome;
 
         const totalIncome =
 
