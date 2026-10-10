@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009bz";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009ca";
 
 const app =
 
@@ -4602,6 +4602,16 @@ async function start(){
 
             );
 
+        // The dashboard income card and net cash flow
+        // follow the cash-flow entries (same source as
+        // the Cash Flow page), so the two surfaces can
+        // never diverge; the Income-module figure stays
+        // as a fallback when cash flow is unavailable.
+
+        let dashIncomeTotal =
+
+            incomeTotal;
+
         // ==================================================
 
         // Cash Flow
@@ -4764,6 +4774,16 @@ async function start(){
 
                     );
 
+                dashIncomeTotal =
+
+                    Number(
+
+                        cashflowSummary?.regularIncome ??
+
+                        dashIncomeTotal
+
+                    );
+
             }
 
         }
@@ -4880,7 +4900,7 @@ async function start(){
 
             income:
 
-                incomeTotal,
+                dashIncomeTotal,
 
             expense:
 
@@ -4888,7 +4908,7 @@ async function start(){
 
             net:
 
-                incomeTotal -
+                dashIncomeTotal -
 
                 dashRegularExpense -
 
@@ -4898,7 +4918,7 @@ async function start(){
 
             netCashFlow:
 
-                incomeTotal -
+                dashIncomeTotal -
 
                 dashRegularExpense -
 
