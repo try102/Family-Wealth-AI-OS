@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009cc";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261010db";
 
 const app =
 
@@ -545,6 +545,38 @@ function renderDashboard(
                             ${formatCurrency(
 
                                 cashFlow.realizedGains ||
+
+                                0
+
+                            )}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Unrealized Gains -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
+
+                        <h3>
+
+                            ${t("dash.unrealizedGains")}
+
+                        </h3>
+
+                        <div
+
+                            class="value"
+
+                        >
+
+                            ${formatCurrency(
+
+                                cashFlow.unrealizedGains ||
 
                                 0
 
@@ -1184,7 +1216,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./core/modules/assetsModule.js?v=20261008ah"
+                            "./core/modules/assetsModule.js?v=20261010da"
 
                         );
 
@@ -1272,7 +1304,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/investment/ui/investmentView.js?v=20261008ah"
+                            "./modules/investment/ui/investmentView.js?v=20261010da"
 
                         );
 
@@ -1362,7 +1394,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/account/ui/accountView.js?v=20261009cc"
+                            "./modules/account/ui/accountView.js?v=20261010da"
 
                         );
 
@@ -1448,7 +1480,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/income/incomeModule.js?v=20261008ae"
+                            "./modules/income/incomeModule.js?v=20261010da"
 
                         );
 
@@ -1548,7 +1580,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/expense/expenseModule.js?v=20261008ae"
+                            "./modules/expense/expenseModule.js?v=20261010da"
 
                         );
 
@@ -1648,7 +1680,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./core/modules/liabilityModule.js?v=20261008ae"
+                            "./core/modules/liabilityModule.js?v=20261010da"
 
                         );
 
@@ -1744,7 +1776,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./core/modules/cashflowModule.js?v=20261008ae"
+                            "./core/modules/cashflowModule.js?v=20261010da"
 
                         );
 
@@ -1832,7 +1864,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/retirement/retirementModule.js?v=20261008ae"
+                            "./modules/retirement/retirementModule.js?v=20261010da"
 
                         );
 
@@ -1906,7 +1938,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/member/ui/memberView.js?v=20261009bh"
+                            "./modules/member/ui/memberView.js?v=20261010da"
 
                         );
 
@@ -1978,7 +2010,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./ai/advisorView.js?v=20261008as"
+                            "./ai/advisorView.js?v=20261010da"
 
                         );
 
@@ -2098,7 +2130,7 @@ const module =
 
                             await import(
 
-                                "./core/integration/taxDataIntegration.js?v=20261009bn"
+                                "./core/integration/taxDataIntegration.js?v=20261010da"
 
                             );
 
@@ -2464,7 +2496,7 @@ const module =
 
                             await import(
 
-                                "./modules/support/supportCenter.js?v=20261008ae"
+                                "./modules/support/supportCenter.js?v=20261010da"
 
                             );
 
@@ -3674,7 +3706,7 @@ async function start(){
 
                 await import(
 
-                    "./modules/investment/services/investmentService.js?v=20261009bm"
+                    "./modules/investment/services/investmentService.js?v=20261010da"
 
                 );
 
@@ -3720,7 +3752,7 @@ async function start(){
 
                 await import(
 
-                    "./transaction/transactionModule.js?v=20261008ae"
+                    "./transaction/transactionModule.js?v=20261010da"
 
                 );
 
@@ -3736,7 +3768,7 @@ async function start(){
 
                 await import(
 
-                    "./core/integration/transactionIntegration.js?v=20261009bp"
+                    "./core/integration/transactionIntegration.js?v=20261010da"
 
                 );
 
@@ -3756,7 +3788,7 @@ async function start(){
 
                 await import(
 
-                    "./core/integration/cashflowIntegration.js?v=20261009by"
+                    "./core/integration/cashflowIntegration.js?v=20261010da"
 
                 );
 
@@ -3774,7 +3806,7 @@ async function start(){
 
                 await import(
 
-                    "./core/integration/accountBalanceIntegration.js?v=20261009bd"
+                    "./core/integration/accountBalanceIntegration.js?v=20261010da"
 
                 );
 
@@ -3818,7 +3850,7 @@ async function start(){
 
                     await import(
 
-                        "./modules/cashflow/api/cashflowAPI.js?v=20261009bq"
+                        "./modules/cashflow/api/cashflowAPI.js?v=20261010da"
 
                     );
 
@@ -4012,7 +4044,7 @@ async function start(){
 
                     await import(
 
-                        "./modules/member/api/memberAPI.js?v=20261008ap"
+                        "./modules/member/api/memberAPI.js?v=20261010da"
 
                     );
 
@@ -4042,7 +4074,7 @@ async function start(){
 
                     await import(
 
-                        "./modules/liability/services/liabilityService.js?v=20261009by"
+                        "./modules/liability/services/liabilityService.js?v=20261010da"
 
                     );
 
@@ -4082,7 +4114,7 @@ async function start(){
 
             await import(
 
-                "./core/modules/assetsModule.js?v=20261008ah"
+                "./core/modules/assetsModule.js?v=20261010da"
 
             );
 
@@ -4104,7 +4136,7 @@ async function start(){
 
             await import(
 
-                "./modules/investment/api/investmentAPI.js?v=20261008ah"
+                "./modules/investment/api/investmentAPI.js?v=20261010da"
 
             );
 
@@ -4126,7 +4158,7 @@ async function start(){
 
             await import(
 
-                "./core/modules/liabilityModule.js?v=20261008ae"
+                "./core/modules/liabilityModule.js?v=20261010da"
 
             );
 
@@ -4166,7 +4198,7 @@ async function start(){
 
                 await import(
 
-                    "./modules/investment/agent/investmentAgent.js?v=20261008ah"
+                    "./modules/investment/agent/investmentAgent.js?v=20261010da"
 
                 );
 
@@ -4306,7 +4338,7 @@ async function start(){
 
                 await import(
 
-                    "./modules/member/api/memberAPI.js?v=20261008ap"
+                    "./modules/member/api/memberAPI.js?v=20261010da"
 
                 );
 
@@ -4350,7 +4382,7 @@ async function start(){
 
                     await import(
 
-                        "./modules/account/api/accountAPI.js?v=20261008aw"
+                        "./modules/account/api/accountAPI.js?v=20261010da"
 
                     );
 
@@ -4420,7 +4452,7 @@ async function start(){
 
                         await import(
 
-                            "./modules/investment/agent/investmentAgent.js?v=20261008ah"
+                            "./modules/investment/agent/investmentAgent.js?v=20261010da"
 
                         );
 
@@ -4554,7 +4586,7 @@ async function start(){
 
             await import(
 
-                "./modules/income/incomeModule.js?v=20261008ae"
+                "./modules/income/incomeModule.js?v=20261010da"
 
             );
 
@@ -4694,6 +4726,36 @@ async function start(){
 
         }
 
+        let dashUnrealizedGains = 0;
+
+        try {
+
+            (
+
+                InvestmentAPI.getPositions() || []
+
+            ).forEach(
+
+                position => {
+
+                    dashUnrealizedGains +=
+
+                        Number(
+
+                            position.unrealizedGainLoss || 0
+
+                        );
+
+                }
+
+            );
+
+        } catch (unrealizedError) {
+
+            dashUnrealizedGains = 0;
+
+        }
+
         // ==================================================
 
         // Direct Cashflow Expense
@@ -4706,7 +4768,7 @@ async function start(){
 
                 await import(
 
-                    "./core/modules/cashflowModule.js?v=20261008ae"
+                    "./core/modules/cashflowModule.js?v=20261010da"
 
                 );
 
@@ -4938,6 +5000,10 @@ async function start(){
 
                 dashRealizedGains,
 
+            unrealizedGains:
+
+                dashUnrealizedGains,
+
             directExpense:
 
                 directCashflowExpense,
@@ -4978,7 +5044,7 @@ async function start(){
 
                     await import(
 
-                        "./modules/account/api/accountAPI.js?v=20261008aw"
+                        "./modules/account/api/accountAPI.js?v=20261010da"
 
                     );
 
@@ -5172,7 +5238,7 @@ async function start(){
 
                 await import(
 
-                    "./modules/account/api/accountAPI.js?v=20261008aw"
+                    "./modules/account/api/accountAPI.js?v=20261010da"
 
                 );
 
