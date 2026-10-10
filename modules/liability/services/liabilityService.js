@@ -10,7 +10,7 @@ Liability Service
 
 import LiabilityRepository from "../repository/liabilityRepository.js?v=20261008ae";
 
-import LiabilitySchema from "../schema/liabilitySchema.js?v=20261009bp";
+import LiabilitySchema from "../schema/liabilitySchema.js?v=20261009by";
 
 import TransactionIntegration from "../../../core/integration/transactionIntegration.js?v=20261009bp";
 
@@ -1581,6 +1581,12 @@ const LiabilityService = {
 
                         "",
 
+                    accountId2:
+
+                        liability.paymentAccountId2 ||
+
+                        "",
+
                     description:
 
                         (
@@ -1779,6 +1785,311 @@ const LiabilityService = {
 
     },
 
+    /*
+     * How many recorded payments actually drew on
+     * a real account (account-less bookings have
+     * nothing to migrate).
+     */
+
+    bookedPaymentCount(
+
+        liabilityId
+
+    ){
+
+        try {
+
+            return (
+
+                TransactionIntegration
+
+                    .getAllTransactions() || []
+
+            ).filter(transaction => {
+
+                const detail =
+
+                    transaction &&
+
+                    transaction.type ===
+
+                        "LOAN_PAYMENT"
+
+                        ? (transaction.businessDetails || {})
+
+                            .liability
+
+                        : null;
+
+                return (
+
+                    detail &&
+
+                    String(detail.liabilityId) ===
+
+                        String(liabilityId) &&
+
+                    (transaction.lines || []).some(
+
+                        line =>
+
+                            line &&
+
+                            line.accountId
+
+                    )
+
+                );
+
+            }).length;
+
+        } catch (countError) {
+
+            return 0;
+
+        }
+
+    },
+
+    /*
+     * Re-book every recorded payment of this
+     * liability onto its current payment
+     * account(s): each payment is revoked (old
+     * account restored, cash-flow rows removed)
+     * and recorded again with the same date,
+     * amount and split on the new account(s).
+     * The outstanding balance and the interest
+     * mirrors are untouched.
+     */
+
+    migratePaymentAccount(
+
+        liabilityId
+
+    ){
+
+        const liability =
+
+            LiabilityRepository.findById(
+
+                liabilityId
+
+            );
+
+        if (!liability){
+
+            return 0;
+
+        }
+
+        const payments = (
+
+            TransactionIntegration
+
+                .getAllTransactions() || []
+
+        ).filter(transaction => {
+
+            const detail =
+
+                transaction &&
+
+                transaction.type ===
+
+                    "LOAN_PAYMENT"
+
+                    ? (transaction.businessDetails || {})
+
+                        .liability
+
+                    : null;
+
+            return (
+
+                detail &&
+
+                String(detail.liabilityId) ===
+
+                    String(liabilityId) &&
+
+                (transaction.lines || []).some(
+
+                    line =>
+
+                        line &&
+
+                        line.accountId
+
+                )
+
+            );
+
+        }).map(transaction => {
+
+            const detail =
+
+                transaction.businessDetails
+
+                    .liability;
+
+            return {
+
+                id:
+
+                    transaction.id,
+
+                date:
+
+                    transaction.date,
+
+                amount:
+
+                    Number(
+
+                        detail.paymentAmount ||
+
+                        0
+
+                    ) ||
+
+                    Math.round(
+
+                        (
+
+                            Number(
+
+                                detail.principalPortion ||
+
+                                0
+
+                            ) +
+
+                            Number(
+
+                                detail.interestPortion ||
+
+                                0
+
+                            )
+
+                        ) * 100
+
+                    ) / 100,
+
+                interestPortion:
+
+                    Number(
+
+                        detail.interestPortion ||
+
+                        0
+
+                    ),
+
+                period:
+
+                    detail.period ||
+
+                    null,
+
+                description:
+
+                    transaction.description ||
+
+                    ""
+
+            };
+
+        });
+
+        if (!payments.length){
+
+            return 0;
+
+        }
+
+        const balanceSnapshot =
+
+            Number(liability.currentBalance || 0);
+
+        payments.forEach(payment => {
+
+            TransactionIntegration
+
+                .removeTransaction(
+
+                    payment.id
+
+                );
+
+        });
+
+        payments.forEach(payment => {
+
+            this.makePayment(
+
+                liabilityId,
+
+                {
+
+                    amount:
+
+                        payment.amount,
+
+                    interestPortion:
+
+                        payment.interestPortion,
+
+                    date:
+
+                        payment.date,
+
+                    accountId:
+
+                        liability.paymentAccountId ||
+
+                        "",
+
+                    accountId2:
+
+                        liability.paymentAccountId2 ||
+
+                        "",
+
+                    description:
+
+                        payment.description,
+
+                    period:
+
+                        payment.period ||
+
+                        undefined
+
+                }
+
+            );
+
+        });
+
+        LiabilityRepository.update(
+
+            liabilityId,
+
+            {
+
+                currentBalance:
+
+                    balanceSnapshot
+
+            }
+
+        );
+
+        return payments.length;
+
+    },
+
     // =====================
 
     // Record Payment
@@ -1870,6 +2181,68 @@ const LiabilityService = {
                         accountId:
 
                             data.accountId,
+
+                        accountSplits:
+
+                            data.accountId &&
+
+                            data.accountId2
+
+                                ? [
+
+                                    {
+
+                                        accountId:
+
+                                            data.accountId,
+
+                                        amount:
+
+                                            Math.round(
+
+                                                amount *
+
+                                                100 /
+
+                                                2
+
+                                            ) / 100
+
+                                    },
+
+                                    {
+
+                                        accountId:
+
+                                            data.accountId2,
+
+                                        amount:
+
+                                            Math.round(
+
+                                                (
+
+                                                    amount -
+
+                                                    Math.round(
+
+                                                        amount *
+
+                                                        100 /
+
+                                                        2
+
+                                                    ) / 100
+
+                                                ) * 100
+
+                                            ) / 100
+
+                                    }
+
+                                ]
+
+                                : null,
 
                         amount,
 
