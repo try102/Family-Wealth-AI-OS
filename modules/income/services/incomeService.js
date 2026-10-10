@@ -76,7 +76,7 @@
 
 import IncomeSchema
 
-    from "../schema/incomeSchema.js?v=20261009cc";
+    from "../schema/incomeSchema.js?v=20261010da";
 
 import IncomeRepository
 
@@ -84,7 +84,7 @@ import IncomeRepository
 
 import TransactionIntegration
 
-    from "../../../core/integration/transactionIntegration.js?v=20261009bp";
+    from "../../../core/integration/transactionIntegration.js?v=20261010da";
 
 
 /*
@@ -547,9 +547,17 @@ const IncomeService = {
 
                     amount;
 
+                // Only realized capital-gain mirrors stay
+                // out of the daily-income caliber. Auto
+                // dividends / interest are ordinary income
+                // under tax rules, so they count as daily
+                // income from 2026-10-10 (option D).
+
                 if(
 
-                    item.autoSource
+                    item.autoSource ===
+
+                    "CAPITAL_GAIN"
 
                 ){
 
