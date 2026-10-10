@@ -34,7 +34,7 @@ import AccountBalanceIntegration
 
 import cashflowAPI
 
-    from "../../modules/cashflow/api/cashflowAPI.js?v=20261008ae";
+    from "../../modules/cashflow/api/cashflowAPI.js?v=20261009bp";
 
 class TransactionIntegrationService {
 
@@ -968,7 +968,7 @@ class TransactionIntegrationService {
 
                         entry =>
 
-                            cashflowAPI.deleteCashflow(
+                            cashflowAPI.deleteCashflowEntry(
 
                                 entry.id
 
