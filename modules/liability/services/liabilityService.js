@@ -564,7 +564,7 @@ const LiabilityService = {
 
         }
 
-        return summarizeSchedule(
+        const summary = summarizeSchedule(
 
             installments,
 
@@ -575,6 +575,303 @@ const LiabilityService = {
             (liability || {}).voidedPeriods || []
 
         );
+
+        /*
+         * Book truth wins over plan math: installments
+         * that were actually recorded keep the splits
+         * they were booked with (even if the rate,
+         * term or method was edited afterwards), and
+         * the summary totals come from the recorded
+         * payments and the real outstanding balance.
+         */
+
+        const bookedByPeriod = new Map();
+
+        let bookedPrincipal = 0;
+
+        let bookedInterest = 0;
+
+        let hasBookings = false;
+
+        try {
+
+            (
+
+                TransactionIntegration
+
+                    .getAllTransactions() || []
+
+            ).forEach(transaction => {
+
+                const detail =
+
+                    transaction &&
+
+                    transaction.type ===
+
+                        "LOAN_PAYMENT"
+
+                        ? (transaction.businessDetails || {})
+
+                            .liability
+
+                        : null;
+
+                if (
+
+                    !detail ||
+
+                    String(detail.liabilityId) !==
+
+                        String(liability.id)
+
+                ){
+
+                    return;
+
+                }
+
+                hasBookings = true;
+
+                bookedPrincipal =
+
+                    Math.round(
+
+                        (
+
+                            bookedPrincipal +
+
+                            Number(
+
+                                detail.principalPortion ||
+
+                                0
+
+                            )
+
+                        ) * 100
+
+                    ) / 100;
+
+                bookedInterest =
+
+                    Math.round(
+
+                        (
+
+                            bookedInterest +
+
+                            Number(
+
+                                detail.interestPortion ||
+
+                                0
+
+                            )
+
+                        ) * 100
+
+                    ) / 100;
+
+                if (detail.period){
+
+                    bookedByPeriod.set(
+
+                        Number(detail.period),
+
+                        {
+
+                            payment:
+
+                                Number(
+
+                                    transaction.amount ||
+
+                                    0
+
+                                ),
+
+                            principalPortion:
+
+                                Number(
+
+                                    detail.principalPortion ||
+
+                                    0
+
+                                ),
+
+                            interestPortion:
+
+                                Number(
+
+                                    detail.interestPortion ||
+
+                                    0
+
+                                )
+
+                        }
+
+                    );
+
+                }
+
+            });
+
+        } catch (bookError) {
+
+        }
+
+        const paidSet = new Set(
+
+            (liability.paidPeriods || []).map(
+
+                period => Number(period)
+
+            )
+
+        );
+
+        const voidedSet = new Set(
+
+            (liability.voidedPeriods || []).map(
+
+                period => Number(period)
+
+            )
+
+        );
+
+        let paidCount = 0;
+
+        let cumulativePrincipal = 0;
+
+        let nextInstallment = null;
+
+        summary.installments.forEach(installment => {
+
+            const booked =
+
+                bookedByPeriod.get(
+
+                    installment.period
+
+                );
+
+            if (booked){
+
+                installment.payment =
+
+                    booked.payment;
+
+                installment.principalPortion =
+
+                    booked.principalPortion;
+
+                installment.interestPortion =
+
+                    booked.interestPortion;
+
+            }
+
+            installment.paid =
+
+                !voidedSet.has(installment.period) &&
+
+                (
+
+                    paidSet.has(installment.period) ||
+
+                    bookedByPeriod.has(
+
+                        installment.period
+
+                    )
+
+                );
+
+            if (installment.paid){
+
+                paidCount += 1;
+
+            } else if (!nextInstallment){
+
+                nextInstallment = installment;
+
+            }
+
+            if (installment.paid){
+
+                cumulativePrincipal =
+
+                    Math.round(
+
+                        (
+
+                            cumulativePrincipal +
+
+                            installment
+
+                                .principalPortion
+
+                        ) * 100
+
+                    ) / 100;
+
+                installment.balanceAfter =
+
+                    Math.max(
+
+                        Math.round(
+
+                            (
+
+                                Number(
+
+                                    liability.principal ||
+
+                                    0
+
+                                ) -
+
+                                cumulativePrincipal
+
+                            ) * 100
+
+                        ) / 100,
+
+                        0
+
+                    );
+
+            }
+
+        });
+
+        summary.paidCount = paidCount;
+
+        summary.nextInstallment = nextInstallment;
+
+        if (hasBookings){
+
+            summary.paidPrincipal = bookedPrincipal;
+
+            summary.paidInterest = bookedInterest;
+
+        }
+
+        summary.remainingBalance =
+
+            Math.round(
+
+                Number(liability.currentBalance || 0) *
+
+                100
+
+            ) / 100;
+
+        return summary;
 
     },
 
@@ -1120,17 +1417,277 @@ const LiabilityService = {
 
             );
 
+        const update = {
+
+            currentBalance:
+
+                newBalance
+
+        };
+
+        /*
+         * A manual repayment on a scheduled loan
+         * settles the earliest unpaid installments
+         * its principal covers: those periods are
+         * remembered exactly like auto-recorded
+         * ones (the schedule sync will not book
+         * them a second time), and the interest
+         * portion gets its Expense Center mirror.
+         * Auto-recorded installments (data.period)
+         * are handled by syncScheduledPayments.
+         */
+
+        if (!data.period && amount > 0){
+
+            try {
+
+                const installments =
+
+                    computeSchedule(liability);
+
+                if (installments.length){
+
+                    const paidSet = new Set(
+
+                        (liability.paidPeriods || []).map(
+
+                            period => Number(period)
+
+                        )
+
+                    );
+
+                    const voidedSet = new Set(
+
+                        (liability.voidedPeriods || []).map(
+
+                            period => Number(period)
+
+                        )
+
+                    );
+
+                    let remainingPrincipal =
+
+                        principalPortion;
+
+                    const settled = [];
+
+                    for (
+
+                        const installment of
+
+                        installments
+
+                    ){
+
+                        if (
+
+                            paidSet.has(
+
+                                installment.period
+
+                            ) ||
+
+                            voidedSet.has(
+
+                                installment.period
+
+                            )
+
+                        ){
+
+                            continue;
+
+                        }
+
+                        if (
+
+                            remainingPrincipal +
+
+                                0.01 <
+
+                            installment
+
+                                .principalPortion
+
+                        ){
+
+                            break;
+
+                        }
+
+                        settled.push(
+
+                            installment.period
+
+                        );
+
+                        remainingPrincipal =
+
+                            Math.round(
+
+                                (
+
+                                    remainingPrincipal -
+
+                                    installment
+
+                                        .principalPortion
+
+                                ) * 100
+
+                            ) / 100;
+
+                    }
+
+                    if (settled.length){
+
+                        update.paidPeriods = [
+
+                            ...(
+
+                                liability.paidPeriods ||
+
+                                []
+
+                            ),
+
+                            ...settled
+
+                        ];
+
+                        const next =
+
+                            installments.find(
+
+                                installment =>
+
+                                    !paidSet.has(
+
+                                        installment.period
+
+                                    ) &&
+
+                                    !voidedSet.has(
+
+                                        installment.period
+
+                                    ) &&
+
+                                    !settled.includes(
+
+                                        installment.period
+
+                                    )
+
+                            );
+
+                        update.monthlyPayment =
+
+                            next ? next.payment : 0;
+
+                        if (interestPortion > 0){
+
+                            ExpenseService
+
+                                .createLinkedExpense({
+
+                                    autoSource:
+
+                                        "LOAN_INTEREST",
+
+                                    liabilityId:
+
+                                        liability.id,
+
+                                    period:
+
+                                        settled[0],
+
+                                    name:
+
+                                        (
+
+                                            "贷款利息 " +
+
+                                            (
+
+                                                liability
+
+                                                    .name ||
+
+                                                ""
+
+                                            ) +
+
+                                            " 第" +
+
+                                            settled[0] +
+
+                                            "期"
+
+                                        ),
+
+                                    category:
+
+                                        "贷款利息",
+
+                                    amount:
+
+                                        interestPortion,
+
+                                    currency:
+
+                                        liability
+
+                                            .currency ||
+
+                                        "USD",
+
+                                    date:
+
+                                        data.date ||
+
+                                        todayText(),
+
+                                    accountId:
+
+                                        data.accountId ||
+
+                                        liability
+
+                                            .paymentAccountId ||
+
+                                        "",
+
+                                    memberId:
+
+                                        liability
+
+                                            .memberId ||
+
+                                        ""
+
+                                });
+
+                        }
+
+                    }
+
+                }
+
+            } catch (settleError) {
+
+            }
+
+        }
+
         return LiabilityRepository.update(
 
             id,
 
-            {
-
-                currentBalance:
-
-                    newBalance
-
-            }
+            update
 
         );
 
