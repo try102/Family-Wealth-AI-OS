@@ -48,7 +48,7 @@ import EventTypes
 
 import TransactionIntegration
 
-    from "../../../core/integration/transactionIntegration.js?v=20261009bp";
+    from "../../../core/integration/transactionIntegration.js?v=20261010da";
 
 import AccountRepository
 
@@ -58,15 +58,15 @@ import PriceOverrideStore
 
     from "./priceOverrideStore.js?v=20261008ae";
 
-import IncomeService from "../../income/services/incomeService.js?v=20261009bm";
+import IncomeService from "../../income/services/incomeService.js?v=20261010dc";
 
 import AccountBalanceIntegration
 
-    from "../../../core/integration/accountBalanceIntegration.js?v=20261009bd";
+    from "../../../core/integration/accountBalanceIntegration.js?v=20261010da";
 
 import cashflowAPI
 
-    from "../../cashflow/api/cashflowAPI.js?v=20261009bq";
+    from "../../cashflow/api/cashflowAPI.js?v=20261010da";
 
 /*
 
@@ -728,6 +728,8 @@ const InvestmentService = {
 
                     autoSource: "DIVIDEND",
 
+                    type: "OrdinaryDividend",
+
                     category: "股息",
 
                     name:
@@ -749,6 +751,8 @@ const InvestmentService = {
                 spec = {
 
                     autoSource: "INTEREST",
+
+                    type: "OrdinaryInterest",
 
                     category: "利息",
 
