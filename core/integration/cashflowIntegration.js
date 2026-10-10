@@ -1011,7 +1011,13 @@ const CashflowIntegration = {
 
                 amount:
 
-                    line.amount,
+                    this.sumCashLines(
+
+                        transaction,
+
+                        line
+
+                    ),
 
                 currency:
 
@@ -1189,7 +1195,13 @@ const CashflowIntegration = {
 
                 amount:
 
-                    line.amount,
+                    this.sumCashLines(
+
+                        transaction,
+
+                        line
+
+                    ),
 
                 currency:
 
@@ -1332,6 +1344,86 @@ const CashflowIntegration = {
     //
 
     // ==================================================
+
+    sumCashLines(
+
+        transaction,
+
+        primaryLine
+
+    ){
+
+        const lines =
+
+            (
+
+                transaction &&
+
+                Array.isArray(transaction.lines)
+
+                    ? transaction.lines
+
+                    : []
+
+            ).filter(
+
+                line =>
+
+                    line &&
+
+                    line.cashEffect === true &&
+
+                    Number.isFinite(
+
+                        Number(line.amount)
+
+                    )
+
+            );
+
+        if (!lines.length){
+
+            return primaryLine
+
+                ? Number(primaryLine.amount || 0)
+
+                : 0;
+
+        }
+
+        const direction =
+
+            primaryLine
+
+                ? primaryLine.direction
+
+                : lines[0].direction;
+
+        return Math.round(
+
+            lines
+
+                .filter(
+
+                    line =>
+
+                        line.direction === direction
+
+                )
+
+                .reduce(
+
+                    (sum, line) =>
+
+                        sum + Number(line.amount || 0),
+
+                    0
+
+                ) * 100
+
+        ) / 100;
+
+    },
 
     getPrimaryCashLine(
 
