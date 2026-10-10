@@ -12,7 +12,7 @@ Liability View
 
 import LiabilityAPI
 
-    from "../api/liabilityAPI.js?v=20261009bw";
+    from "../api/liabilityAPI.js?v=20261009by";
 
 import LiabilityAgent
 
@@ -24,7 +24,7 @@ import AccountAPI
 
 import MemberAPI from "../../member/api/memberAPI.js?v=20261008ap";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bw";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009by";
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
@@ -1856,6 +1856,38 @@ const LiabilityView = {
 
             <br><br>
 
+            <label>
+
+                ${t("liability.payAccount2")}
+
+            </label>
+
+            <br>
+
+            <select
+
+                id="${prefix}-liability-pay-account-2"
+
+            >
+
+                <option value="">${t("liability.payAccount2None")}</option>
+
+                ${
+
+                    this.buildAccountOptions(
+
+                        liability.paymentAccountId2 ||
+
+                        ""
+
+                    )
+
+                }
+
+            </select>
+
+            <br><br>
+
         `;
 
     },
@@ -1904,7 +1936,19 @@ const LiabilityView = {
 
                     `#${prefix}-liability-pay-account`
 
-                ).value
+                ).value,
+
+            paymentAccountId2:
+
+                (
+
+                    form.querySelector(
+
+                        `#${prefix}-liability-pay-account-2`
+
+                    ) || {}
+
+                ).value || ""
 
         };
 
@@ -1932,9 +1976,73 @@ const LiabilityView = {
 
     buildAccountOptions(selectedId = "") {
 
+        let members = [];
+
+        try {
+
+            members =
+
+                MemberAPI.getMembers() || [];
+
+        } catch (memberError) {
+
+        }
+
+        const memberName =
+
+            memberId => {
+
+                const member =
+
+                    members.find(
+
+                        item =>
+
+                            String(item.id) ===
+
+                            String(memberId)
+
+                    );
+
+                return member
+
+                    ? (member.name || member.id)
+
+                    : "";
+
+            };
+
         return this.getAccounts().map(
 
-            account => `
+            account => {
+
+                const owner =
+
+                    memberName(
+
+                        account.memberId ||
+
+                        account.ownerId ||
+
+                        ""
+
+                    );
+
+                const label =
+
+                    (
+
+                        owner
+
+                            ? owner + " · "
+
+                            : ""
+
+                    ) +
+
+                    (account.name || account.id);
+
+                return `
 
                 <option
 
@@ -1958,13 +2066,59 @@ const LiabilityView = {
 
                 >
 
+                    ${label}
+
+                </option>
+
+            `;
+
+            }
+
+        ).join("");
+
+    },
+
+    buildMemberOptions(selectedId = "") {
+
+        let members = [];
+
+        try {
+
+            members =
+
+                MemberAPI.getMembers() || [];
+
+        } catch (memberError) {
+
+        }
+
+        return members.map(
+
+            member => `
+
+                <option
+
+                    value="${member.id}"
+
                     ${
 
-                        account.name ||
+                        String(member.id) ===
 
-                        account.id
+                        String(selectedId)
+
+                        ?
+
+                        "selected"
+
+                        :
+
+                        ""
 
                     }
+
+                >
+
+                    ${member.name || member.id}
 
                 </option>
 
@@ -2204,6 +2358,28 @@ const LiabilityView = {
 
                     </select>
 
+                    <br><br>
+
+                    <label>
+
+                        ${t("liability.payAccount2")}
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="payment-account-2"
+
+                    >
+
+                        <option value="">${t("liability.payAccount2None")}</option>
+
+                        ${this.buildAccountOptions()}
+
+                    </select>
+
                     <span id="payment-new-account-fields" style="display:none">
 
                         <input id="payment-new-account-name" type="text" placeholder="${t("account.namePlaceholder")}">
@@ -2388,7 +2564,21 @@ const LiabilityView = {
 
                         date,
 
-                        accountId
+                        accountId,
+
+                        accountId2:
+
+                            (
+
+                                form.querySelector(
+
+                                    "#payment-account-2"
+
+                                ) || {}
+
+                            ).value ||
+
+                            ""
 
                     }
 
@@ -3531,6 +3721,28 @@ const LiabilityView = {
 
                     <label>
 
+                        ${t("member.owner")}
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="edit-liability-member"
+
+                    >
+
+                        <option value="">${t("member.familyShared")}</option>
+
+                        ${this.buildMemberOptions(liability.memberId || liability.ownerId || "")}
+
+                    </select>
+
+                    <br><br>
+
+                    <label>
+
                         ${t("liability.principal")}
 
                     </label>
@@ -3619,7 +3831,53 @@ const LiabilityView = {
 
                     <br><br>
 
+                                        <label>
+
+                        ${t("liability.balanceClass")}
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="edit-liability-balance-class"
+
+                    >
+
+                        <option value="adjust">${t("liability.balanceClassAdjust")}</option>
+
+                        <option value="payment">${t("liability.balanceClassPayment")}</option>
+
+                    </select>
+
+                    <br><br>
+
                     <label>
+
+                        ${t("liability.interestPortion")}
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="edit-liability-payment-interest"
+
+                        type="number"
+
+                        min="0"
+
+                        step="0.01"
+
+                        value="0"
+
+                    >
+
+                    <br><br>
+
+<label>
 
                         ${t("liability.rate")}
 
@@ -3767,6 +4025,20 @@ const LiabilityView = {
 
                         "OTHER",
 
+                    memberId:
+
+                        (
+
+                            form.querySelector(
+
+                                "#edit-liability-member"
+
+                            ) || {}
+
+                        ).value ||
+
+                        "", 
+
                     principal:
 
                         Number(
@@ -3887,6 +4159,111 @@ const LiabilityView = {
 
                 };
 
+                // Booking on edit is explicit, never
+                // implicit: lowering the balance only
+                // becomes a recorded repayment when
+                // the user classifies it that way.
+
+                const oldBalance =
+
+                    Number(
+
+                        liability.currentBalance ||
+
+                        0
+
+                    );
+
+                const balanceClass =
+
+                    (
+
+                        form.querySelector(
+
+                            "#edit-liability-balance-class"
+
+                        ) || {}
+
+                    ).value ||
+
+                    "adjust";
+
+                const manualBalanceOn =
+
+                    derivedBalance === null ||
+
+                    (
+
+                        (
+
+                            form.querySelector(
+
+                                "#edit-liability-manual-balance"
+
+                            ) || {}
+
+                        ).checked ===
+
+                        true
+
+                    );
+
+                let bookAsPayment = null;
+
+                if (
+
+                    manualBalanceOn &&
+
+                    balanceClass === "payment" &&
+
+                    updated.currentBalance <
+
+                        oldBalance - 0.004
+
+                ){
+
+                    bookAsPayment = {
+
+                        principal:
+
+                            Math.round(
+
+                                (
+
+                                    oldBalance -
+
+                                    updated.currentBalance
+
+                                ) * 100
+
+                            ) / 100,
+
+                        interest:
+
+                            Number(
+
+                                (
+
+                                    form.querySelector(
+
+                                        "#edit-liability-payment-interest"
+
+                                    ) || {}
+
+                                ).value ||
+
+                                0
+
+                            )
+
+                    };
+
+                    updated.currentBalance =
+
+                        oldBalance;
+
+                }
+
                 LiabilityAPI.updateLiability(
 
                     id,
@@ -3894,6 +4271,98 @@ const LiabilityView = {
                     updated
 
                 );
+
+                const paymentAccountChanged =
+
+                    (updated.paymentAccountId || "") !==
+
+                        (liability.paymentAccountId || "") ||
+
+                    (updated.paymentAccountId2 || "") !==
+
+                        (liability.paymentAccountId2 || "");
+
+                if (paymentAccountChanged){
+
+                    const bookedCount =
+
+                        LiabilityAPI.bookedPaymentCount(
+
+                            id
+
+                        );
+
+                    if (
+
+                        bookedCount > 0 &&
+
+                        window.confirm(
+
+                            t(
+
+                                "liability.migrateConfirm",
+
+                                {
+
+                                    count:
+
+                                        bookedCount
+
+                                }
+
+                            )
+
+                        )
+
+                    ){
+
+                        LiabilityAPI
+
+                            .migratePaymentAccount(
+
+                                id
+
+                            );
+
+                    }
+
+                }
+
+                if (bookAsPayment){
+
+                    LiabilityAPI.makePayment(
+
+                        id,
+
+                        {
+
+                            amount:
+
+                                bookAsPayment.principal +
+
+                                bookAsPayment.interest,
+
+                            interestPortion:
+
+                                bookAsPayment.interest,
+
+                            accountId:
+
+                                updated.paymentAccountId ||
+
+                                "",
+
+                            accountId2:
+
+                                updated.paymentAccountId2 ||
+
+                                ""
+
+                        }
+
+                    );
+
+                }
 
                 this.render(
 
