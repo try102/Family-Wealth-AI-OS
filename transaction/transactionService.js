@@ -684,6 +684,8 @@ class TransactionService {
 
             accountId,
 
+            accountSplits,
+
             amount,
 
             currency = "USD",
@@ -695,6 +697,59 @@ class TransactionService {
             source = "BusinessModule"
 
         } = data;
+
+        // A repayment may be split across two
+        // accounts (half each); every share is its
+        // own cash line so each account balance
+        // moves by exactly its share.
+
+        const splitLines =
+
+            Array.isArray(accountSplits)
+
+                ? accountSplits
+
+                    .filter(
+
+                        split =>
+
+                            split &&
+
+                            Number(split.amount) > 0
+
+                    )
+
+                    .map(split => ({
+
+                        accountId:
+
+                            split.accountId || "",
+
+                        type:
+
+                            "EXPENSE",
+
+                        amount:
+
+                            Number(split.amount),
+
+                        direction:
+
+                            "OUT",
+
+                        cashEffect:
+
+                            true,
+
+                        category:
+
+                            "Loan Payment",
+
+                        description
+
+                    }))
+
+                : [];
 
         return this.recordTransaction({
 
@@ -710,35 +765,41 @@ class TransactionService {
 
             source,
 
-            lines: [
+            lines:
 
-                {
+                splitLines.length
 
-                    accountId,
+                    ? splitLines
 
-                    type:
+                    : [
 
-                        "EXPENSE",
+                        {
 
-                    amount,
+                            accountId,
 
-                    direction:
+                            type:
 
-                        "OUT",
+                                "EXPENSE",
 
-                    cashEffect:
+                            amount,
 
-                        true,
+                            direction:
 
-                    category:
+                                "OUT",
 
-                        "Loan Payment",
+                            cashEffect:
 
-                    description
+                                true,
 
-                }
+                            category:
 
-            ],
+                                "Loan Payment",
+
+                            description
+
+                        }
+
+                    ],
 
             businessDetails: {
 
