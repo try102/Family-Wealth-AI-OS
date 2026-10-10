@@ -30,11 +30,11 @@
 
 import AccountBalanceIntegration
 
-    from "./accountBalanceIntegration.js?v=20261009bd";
+    from "./accountBalanceIntegration.js?v=20261010de";
 
 import cashflowAPI
 
-    from "../../modules/cashflow/api/cashflowAPI.js?v=20261009bq";
+    from "../../modules/cashflow/api/cashflowAPI.js?v=20261010da";
 
 class TransactionIntegrationService {
 
