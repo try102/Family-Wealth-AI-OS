@@ -12,21 +12,21 @@ Liability View
 
 import LiabilityAPI
 
-    from "../api/liabilityAPI.js?v=20261009by";
+    from "../api/liabilityAPI.js?v=20261010da";
 
 import LiabilityAgent
 
-    from "../agent/liabilityAgent.js?v=20261008ae";
+    from "../agent/liabilityAgent.js?v=20261010da";
 
 import AccountAPI
 
-    from "../../account/api/accountAPI.js?v=20261008aw";
+    from "../../account/api/accountAPI.js?v=20261010da";
 
-import MemberAPI from "../../member/api/memberAPI.js?v=20261008ap";
+import MemberAPI from "../../member/api/memberAPI.js?v=20261010da";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009cc";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261010db";
 
-import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
+import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261010da";
 
 const LiabilityView = {
 
