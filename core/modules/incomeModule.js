@@ -42,7 +42,7 @@ from "../../modules/income/services/incomeService.js?v=20261010dc";
 
 import incomeView
 
-from "../../modules/income/ui/incomeView.js?v=20261010dc";
+from "../../modules/income/ui/incomeView.js?v=20261010dd";
 
 const IncomeModule = {
 
