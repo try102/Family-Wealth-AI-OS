@@ -18,7 +18,7 @@ import IncomeAgent
 
 import IncomeAPI
 
-    from "./api/incomeAPI.js?v=20261008ae";
+    from "./api/incomeAPI.js?v=20261010da";
 
 import IncomeAI
 
@@ -38,15 +38,15 @@ import IncomeRepository
 
 import IncomeSchema
 
-    from "./schema/incomeSchema.js?v=20261009cc";
+    from "./schema/incomeSchema.js?v=20261010da";
 
 import IncomeService
 
-    from "./services/incomeService.js?v=20261009bm";
+    from "./services/incomeService.js?v=20261010dc";
 
 import IncomeView
 
-    from "./ui/incomeView.js?v=20261009bk";
+    from "./ui/incomeView.js?v=20261010dc";
 
 const IncomeModule = {
 
