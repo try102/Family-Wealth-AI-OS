@@ -10,7 +10,7 @@ Cashflow View
 
 import cashflowAPI
 
-    from "../api/cashflowAPI.js?v=20261009bp";
+    from "../api/cashflowAPI.js?v=20261009bq";
 
 import TransactionIntegration
 
@@ -48,7 +48,7 @@ import TransactionRepository
 
     from "../../../transaction/transactionRepository.js?v=20261008ae";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bo";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bq";
 
 import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
@@ -338,97 +338,13 @@ const cashflowView = {
 
             scopeId
 
-                ? (() => {
+                ? cashflowAPI
 
-                    let income = 0;
+                    .getSummaryForEntries(
 
-                    let expense = 0;
+                        cashflows
 
-                    let investmentIn = 0;
-
-                    let investmentOut = 0;
-
-                    let regularIncome = 0;
-
-                    let regularExpense = 0;
-
-                    cashflows.forEach(
-
-                        item => {
-
-                            const value =
-
-                                annualizeEntry(item);
-
-                            const isInvestment =
-
-                                item.category ===
-
-                                "Investment";
-
-                            if (item.type === "INCOME") {
-
-                                income += value;
-
-                                if (isInvestment) {
-
-                                    investmentIn += value;
-
-                                } else {
-
-                                    regularIncome += value;
-
-                                }
-
-                            }
-
-                            if (item.type === "EXPENSE") {
-
-                                expense += value;
-
-                                if (isInvestment) {
-
-                                    investmentOut += value;
-
-                                } else {
-
-                                    regularExpense += value;
-
-                                }
-
-                            }
-
-                        }
-
-                    );
-
-                    return {
-
-                        income,
-
-                        expense,
-
-                        net: income - expense,
-
-                        investmentIn,
-
-                        investmentOut,
-
-                        investmentNet:
-
-                            investmentIn - investmentOut,
-
-                        regularIncome,
-
-                        regularExpense,
-
-                        regularNet:
-
-                            regularIncome - regularExpense
-
-                    };
-
-                })()
+                    )
 
                 : cashflowAPI
 
@@ -1023,6 +939,36 @@ const cashflowView = {
                                 $${Number(
 
                                     realizedGains ||
+
+                                    0
+
+                                ).toLocaleString()}
+
+                            </div>
+
+                        </div>
+
+                        <div
+
+                            class="dashboard-card"
+
+                        >
+
+                            <h3>
+
+                                ${t("cashflow.loanPrincipal")}
+
+                            </h3>
+
+                            <div
+
+                                class="value"
+
+                            >
+
+                                $${Number(
+
+                                    summary?.loanPrincipalOut ||
 
                                     0
 
