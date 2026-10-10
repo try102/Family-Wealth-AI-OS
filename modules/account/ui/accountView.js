@@ -16,7 +16,7 @@ import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261010da";
 
 import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261010da";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261010db";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261010dc";
 
 const AccountView = {
 
@@ -868,11 +868,19 @@ const AccountView = {
 
                             <option value="Business">${t("account.typeBusiness")}</option>
 
-                            <option value="Investment">${t("account.typeInvestment")}</option>
-
                             <option value="Rental">${t("account.typeRental")}</option>
 
                             <option value="Pension">${t("account.typePension")}</option>
+
+                            <option value="OrdinaryDividend">${t("account.typeOrdinaryDividend")}</option>
+
+                            <option value="QualifiedDividend">${t("account.typeQualifiedDividend")}</option>
+
+                            <option value="OrdinaryInterest">${t("account.typeOrdinaryInterest")}</option>
+
+                            <option value="TaxExemptInterest">${t("account.typeTaxExemptInterest")}</option>
+
+                            <option value="Investment">${t("account.typeInvestment")}</option>
 
                             <option value="Other">${t("account.typeOther")}</option>
 
