@@ -38,6 +38,10 @@ import LiabilityService
 
     from "../../liability/services/liabilityService.js?v=20261009bp";
 
+import TransactionRepository
+
+    from "../../../transaction/transactionRepository.js?v=20261008ae";
+
 // ==================================================
 
 //
@@ -444,11 +448,7 @@ const cashflowService = {
 
     // ==================================================
 
-    summary(){
-
-        const list =
-
-            this.list();
+    summarizeEntries(list = []){
 
         let income = 0;
 
@@ -469,6 +469,52 @@ const cashflowService = {
         let regularIncome = 0;
 
         let regularExpense = 0;
+
+        // Loan payments follow their own caliber:
+
+        // the interest portion is an expense, the
+
+        // principal portion is debt repayment —
+
+        // real cash out (it is inside expense / net
+
+        // below) but not a daily expense.
+
+        let loanInterestOut = 0;
+
+        let loanPrincipalOut = 0;
+
+        const transactionById =
+
+            new Map();
+
+        try {
+
+            (
+
+                TransactionRepository
+
+                    .getTransactions() ||
+
+                []
+
+            ).forEach(
+
+                transaction =>
+
+                    transactionById.set(
+
+                        String(transaction.id),
+
+                        transaction
+
+                    )
+
+            );
+
+        } catch (transactionError) {
+
+        }
 
         list.forEach(
 
@@ -550,9 +596,105 @@ const cashflowService = {
 
                     } else {
 
+                        let principalPart = 0;
+
+                        const transaction =
+
+                            item.transactionId
+
+                                ? transactionById.get(
+
+                                    String(
+
+                                        item.transactionId
+
+                                    )
+
+                                )
+
+                                : null;
+
+                        if(
+
+                            transaction &&
+
+                            transaction.type ===
+
+                                "LOAN_PAYMENT"
+
+                        ){
+
+                            const rawAmount =
+
+                                Math.abs(
+
+                                    Number(item.amount || 0)
+
+                                );
+
+                            const interestRaw =
+
+                                Math.min(
+
+                                    Math.max(
+
+                                        Number(
+
+                                            transaction
+
+                                                .businessDetails
+
+                                                ?.liability
+
+                                                ?.interestPortion ||
+
+                                            0
+
+                                        ),
+
+                                        0
+
+                                    ),
+
+                                    rawAmount
+
+                                );
+
+                            const ratio =
+
+                                rawAmount > 0
+
+                                    ? annualized /
+
+                                        rawAmount
+
+                                    : 0;
+
+                            principalPart =
+
+                                (
+
+                                    rawAmount -
+
+                                    interestRaw
+
+                                ) * ratio;
+
+                            loanPrincipalOut +=
+
+                                principalPart;
+
+                            loanInterestOut +=
+
+                                interestRaw * ratio;
+
+                        }
+
                         regularExpense +=
 
-                            annualized;
+                            annualized -
+
+                            principalPart;
 
                     }
 
@@ -592,9 +734,23 @@ const cashflowService = {
 
                 regularIncome -
 
-                regularExpense
+                regularExpense,
+
+            loanInterestOut,
+
+            loanPrincipalOut
 
         };
+
+    },
+
+    summary(){
+
+        return this.summarizeEntries(
+
+            this.list()
+
+        );
 
     },
 
