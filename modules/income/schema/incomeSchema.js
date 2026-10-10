@@ -36,6 +36,20 @@ const IncomeSchema = {
 
             "其他",
 
+            type:
+
+            data.type ||
+
+            data.category ||
+
+            "Other",
+
+            date:
+
+            data.date ||
+
+            "", 
+
             source:
 
             data.source ||
