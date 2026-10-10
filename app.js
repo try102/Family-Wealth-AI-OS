@@ -3694,7 +3694,7 @@ async function start(){
 
                 await import(
 
-                    "./core/integration/transactionIntegration.js?v=20261008ak"
+                    "./core/integration/transactionIntegration.js?v=20261009bp"
 
                 );
 
@@ -3776,7 +3776,7 @@ async function start(){
 
                     await import(
 
-                        "./modules/cashflow/api/cashflowAPI.js?v=20261008ae"
+                        "./modules/cashflow/api/cashflowAPI.js?v=20261009bp"
 
                     );
 
@@ -4000,9 +4000,13 @@ async function start(){
 
                     await import(
 
-                        "./modules/liability/services/liabilityService.js?v=20261009bo"
+                        "./modules/liability/services/liabilityService.js?v=20261009bp"
 
                     );
+
+                liabilityServiceImport.default
+
+                    .cleanupOrphanPayments();
 
                 liabilityServiceImport.default
 
