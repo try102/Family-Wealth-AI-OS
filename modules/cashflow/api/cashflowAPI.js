@@ -12,7 +12,7 @@ Cashflow API
 
 import cashflowService
 
-    from "../services/cashflowService.js?v=20261009bp";
+    from "../services/cashflowService.js?v=20261009bq";
 
 const cashflowAPI = {
 
@@ -141,6 +141,16 @@ const cashflowAPI = {
     getSummary(){
 
         return cashflowService.summary();
+
+    },
+
+    getSummaryForEntries(entries){
+
+        return cashflowService.summarizeEntries(
+
+            entries || []
+
+        );
 
     },
 
