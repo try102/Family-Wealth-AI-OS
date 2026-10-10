@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009bw";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009by";
 
 const app =
 
@@ -3756,7 +3756,7 @@ async function start(){
 
                 await import(
 
-                    "./core/integration/cashflowIntegration.js?v=20261009be"
+                    "./core/integration/cashflowIntegration.js?v=20261009by"
 
                 );
 
@@ -4042,7 +4042,7 @@ async function start(){
 
                     await import(
 
-                        "./modules/liability/services/liabilityService.js?v=20261009bx"
+                        "./modules/liability/services/liabilityService.js?v=20261009by"
 
                     );
 
