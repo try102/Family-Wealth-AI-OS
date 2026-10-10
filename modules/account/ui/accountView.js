@@ -6,17 +6,17 @@ Account View
 
 */
 
-import AccountAPI from "../api/accountAPI.js?v=20261008aw";
+import AccountAPI from "../api/accountAPI.js?v=20261010da";
 
-import MemberAPI from "../../member/api/memberAPI.js?v=20261008ap";
+import MemberAPI from "../../member/api/memberAPI.js?v=20261010da";
 
-import IncomeAPI from "../../income/api/incomeAPI.js?v=20261008ae";
+import IncomeAPI from "../../income/api/incomeAPI.js?v=20261010da";
 
-import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261008ae";
+import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261010da";
 
-import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261009by";
+import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261010da";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009cc";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261010db";
 
 const AccountView = {
 
