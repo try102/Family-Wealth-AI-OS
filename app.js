@@ -3632,7 +3632,7 @@ async function start(){
 
                 await import(
 
-                    "./modules/investment/services/investmentService.js?v=20261009bl"
+                    "./modules/investment/services/investmentService.js?v=20261009bm"
 
                 );
 
