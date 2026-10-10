@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261010dc";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261010dl";
 
 const app =
 
@@ -2130,7 +2130,7 @@ const module =
 
                             await import(
 
-                                "./core/integration/taxDataIntegration.js?v=20261010dc"
+                                "./core/integration/taxDataIntegration.js?v=20261010dl"
 
                             );
 
@@ -2290,9 +2290,21 @@ const module =
 
                                 fmt(taxData.dividendIncome) +
 
+                                t("taxsum.qualSep") +
+
+                                fmt(taxData.qualifiedDividendIncome) +
+
+                                ")" +
+
                                 t("taxsum.interestSep") +
 
                                 fmt(taxData.interestIncome) +
+
+                                t("taxsum.taxExemptSep") +
+
+                                fmt(taxData.taxExemptInterest) +
+
+                                ")" +
 
                                 "</p>" +
 
