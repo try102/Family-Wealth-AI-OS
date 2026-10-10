@@ -24,7 +24,7 @@ import AccountAPI
 
 import MemberAPI from "../../member/api/memberAPI.js?v=20261008ap";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009br";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bs";
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
@@ -1976,6 +1976,32 @@ const LiabilityView = {
 
         }
 
+        const paymentSchedule =
+
+            LiabilityAPI.getSchedule(
+
+                liability.id
+
+            );
+
+        const nextInstallment =
+
+            paymentSchedule
+
+                ? paymentSchedule
+
+                    .installments
+
+                    .find(
+
+                        installment =>
+
+                            !installment.paid
+
+                    )
+
+                : null;
+
         const accounts =
 
             this.getAccounts();
@@ -2062,7 +2088,7 @@ const LiabilityView = {
 
                         required
 
-                        value="${liability.monthlyPayment || ""}"
+                        value="${nextInstallment ? nextInstallment.payment : (liability.monthlyPayment || "")}"
 
                     >
 
@@ -2086,7 +2112,7 @@ const LiabilityView = {
 
                         step="0.01"
 
-                        value="0"
+                        value="${nextInstallment ? nextInstallment.interestPortion : 0}"
 
                     >
 
@@ -3014,6 +3040,57 @@ const LiabilityView = {
 
             );
 
+        // Current balance is derived, not typed:
+        // principal minus the principal actually
+        // repaid so far. Manual entry stays
+        // available behind an explicit toggle.
+
+        const editSchedule =
+
+            LiabilityAPI.getSchedule(
+
+                liability.id
+
+            );
+
+        const derivedBalance =
+
+            editSchedule
+
+                ? Math.max(
+
+                    Math.round(
+
+                        (
+
+                            Number(
+
+                                liability.principal ||
+
+                                balance
+
+                            ) -
+
+                            Number(
+
+                                editSchedule
+
+                                    .paidPrincipal ||
+
+                                0
+
+                            )
+
+                        ) * 100
+
+                    ) / 100,
+
+                    0
+
+                )
+
+                : null;
+
         formContainer.innerHTML = `
 
             <div
@@ -3152,11 +3229,41 @@ const LiabilityView = {
 
                         value="${
 
-                            balance
+                            derivedBalance !== null
+
+                                ? derivedBalance
+
+                                : balance
 
                         }"
 
+                        ${derivedBalance !== null ? "disabled" : ""}
+
                     >
+
+                    ${derivedBalance !== null ? `
+
+                    <div style="font-size:12px;color:#666;margin-top:4px;">
+
+                        ${t("liability.derivedBalance")}
+
+                    </div>
+
+                    <label style="font-size:13px;">
+
+                        <input
+
+                            type="checkbox"
+
+                            id="edit-liability-manual-balance"
+
+                        >
+
+                        ${t("liability.manualBalance")}
+
+                    </label>
+
+                    ` : ""}
 
                     <br><br>
 
@@ -3236,6 +3343,44 @@ const LiabilityView = {
 
             );
 
+        const manualBalanceToggle =
+
+            formContainer.querySelector(
+
+                "#edit-liability-manual-balance"
+
+            );
+
+        if (manualBalanceToggle){
+
+            manualBalanceToggle.addEventListener(
+
+                "change",
+
+                () => {
+
+                    const balanceInput =
+
+                        formContainer.querySelector(
+
+                            "#edit-liability-balance"
+
+                        );
+
+                    if (balanceInput){
+
+                        balanceInput.disabled =
+
+                            !manualBalanceToggle.checked;
+
+                    }
+
+                }
+
+            );
+
+        }
+
         form.addEventListener(
 
             "submit",
@@ -3286,17 +3431,79 @@ const LiabilityView = {
 
                     currentBalance:
 
-                        Number(
+                        (
 
-                            form.querySelector(
+                            derivedBalance !== null &&
 
-                                "#edit-liability-balance"
+                            !(
+
+                                form.querySelector(
+
+                                    "#edit-liability-manual-balance"
+
+                                ) || {}
+
+                            ).checked
+
+                        )
+
+                            ? Math.max(
+
+                                Math.round(
+
+                                    (
+
+                                        Number(
+
+                                            form.querySelector(
+
+                                                "#edit-liability-principal"
+
+                                            )
+
+                                            .value
+
+                                        ) -
+
+                                        Number(
+
+                                            (
+
+                                                LiabilityAPI
+
+                                                    .getSchedule(
+
+                                                        id
+
+                                                    ) || {}
+
+                                            )
+
+                                                .paidPrincipal ||
+
+                                            0
+
+                                        )
+
+                                    ) * 100
+
+                                ) / 100,
+
+                                0
 
                             )
 
-                            .value
+                            : Number(
 
-                        ),
+                                form.querySelector(
+
+                                    "#edit-liability-balance"
+
+                                )
+
+                                .value
+
+                            ),
 
                     interestRate:
 
