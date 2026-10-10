@@ -30,7 +30,7 @@ import InvestmentAgent from "../../investment/agent/investmentAgent.js?v=2026100
 
 import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261008ah";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bs";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bw";
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
