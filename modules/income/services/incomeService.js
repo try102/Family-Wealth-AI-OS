@@ -84,7 +84,7 @@ import IncomeRepository
 
 import TransactionIntegration
 
-    from "../../../core/integration/transactionIntegration.js?v=20261008ak";
+    from "../../../core/integration/transactionIntegration.js?v=20261009bp";
 
 
 /*
