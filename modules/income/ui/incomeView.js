@@ -562,9 +562,37 @@ const IncomeView = {
 
     buildAccountOptions(selectedId = "") {
 
+        const members = this.getMembers();
+
+        const memberNameOf = (memberId) => {
+
+            const m = (members || []).find(
+
+                x => String(x.id) === String(memberId)
+
+            );
+
+            return m ? (m.name || m.id) : "";
+
+        };
+
         return this.getAccounts().map(
 
-            account => `
+            account => {
+
+                const mName = memberNameOf(
+
+                    account.memberId || account.ownerId || ""
+
+                );
+
+                const label = mName
+
+                    ? mName + " · " + (account.name || account.id)
+
+                    : (account.name || account.id);
+
+                return `
 
                 <option
 
@@ -588,17 +616,13 @@ const IncomeView = {
 
                 >
 
-                    ${
-
-                        account.name ||
-
-                        account.id
-
-                    }
+                    ${label}
 
                 </option>
 
-            `
+            `;
+
+            }
 
         ).join("");
 
@@ -1067,9 +1091,9 @@ const IncomeView = {
         // Prevent cross-account misposting: the account
         // dropdown does not follow the member, so a
         // stale account from the previous member would
-        // silently receive the money. Reset the account
-        // whenever the member changes, forcing an
-        // explicit re-selection.
+        // silently receive the money. When the member
+        // changes, auto-select that member's Checking
+        // account (or their first account).
 
         const memberSelect =
 
@@ -1101,9 +1125,81 @@ const IncomeView = {
 
                 () => {
 
-                    accountSelect.selectedIndex =
+                    try {
 
-                        0;
+                        const newMemberId =
+
+                            memberSelect.value || "";
+
+                        const accounts =
+
+                            this.getAccounts() || [];
+
+                        const memberAccounts =
+
+                            accounts.filter(
+
+                                a =>
+
+                                    String(
+
+                                        a.memberId ||
+
+                                        a.ownerId ||
+
+                                        ""
+
+                                    ) ===
+
+                                    String(newMemberId)
+
+                            );
+
+                        let target =
+
+                            memberAccounts.find(
+
+                                a =>
+
+                                    String(
+
+                                        a.type || ""
+
+                                    ).toLowerCase() ===
+
+                                    "checking" ||
+
+                                    String(
+
+                                        a.accountType || ""
+
+                                    ).toLowerCase() ===
+
+                                    "checking"
+
+                            ) || memberAccounts[0];
+
+                        if (target) {
+
+                            accountSelect.value =
+
+                                target.id;
+
+                        } else {
+
+                            accountSelect.selectedIndex =
+
+                                0;
+
+                        }
+
+                    } catch (e) {
+
+                        accountSelect.selectedIndex =
+
+                            0;
+
+                    }
 
                 }
 
@@ -1638,9 +1734,81 @@ const IncomeView = {
 
                 () => {
 
-                    editAccountSelect.selectedIndex =
+                    try {
 
-                        0;
+                        const newMemberId =
+
+                            editMemberSelect.value || "";
+
+                        const accounts =
+
+                            this.getAccounts() || [];
+
+                        const memberAccounts =
+
+                            accounts.filter(
+
+                                a =>
+
+                                    String(
+
+                                        a.memberId ||
+
+                                        a.ownerId ||
+
+                                        ""
+
+                                    ) ===
+
+                                    String(newMemberId)
+
+                            );
+
+                        let target =
+
+                            memberAccounts.find(
+
+                                a =>
+
+                                    String(
+
+                                        a.type || ""
+
+                                    ).toLowerCase() ===
+
+                                    "checking" ||
+
+                                    String(
+
+                                        a.accountType || ""
+
+                                    ).toLowerCase() ===
+
+                                    "checking"
+
+                            ) || memberAccounts[0];
+
+                        if (target) {
+
+                            editAccountSelect.value =
+
+                                target.id;
+
+                        } else {
+
+                            editAccountSelect.selectedIndex =
+
+                                0;
+
+                        }
+
+                    } catch (e) {
+
+                        editAccountSelect.selectedIndex =
+
+                            0;
+
+                    }
 
                 }
 
