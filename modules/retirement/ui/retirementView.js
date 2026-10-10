@@ -10,7 +10,7 @@ Retirement View
 
 import RetirementAPI from "../api/retirementAPI.js?v=20261010da";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261010db";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261010dc";
 
 import { renderSupportCenter, bindSupportCenter } from "../../support/supportCenter.js?v=20261010da";
 
