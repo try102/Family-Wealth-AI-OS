@@ -335,6 +335,194 @@ const ExpenseService = {
 
     // =====================================================
 
+    // Auto Linked Expense
+
+    //
+
+    // Mirror of a loan installment's interest portion
+
+    // into the Expense Center. The installment's own
+
+    // LOAN_PAYMENT transaction already moved the
+
+    // account and Cash Flow, so this record NEVER
+
+    // creates a second transaction — it only makes
+
+    // the borrowing cost visible in the Expense
+
+    // Center. Keyed by (liabilityId, period).
+
+    // =====================================================
+
+    createLinkedExpense(
+
+        data = {}
+
+    ){
+
+        try {
+
+            if (
+
+                !data.autoSource ||
+
+                !data.liabilityId ||
+
+                !data.period
+
+            ){
+
+                return null;
+
+            }
+
+            const existing =
+
+                (
+
+                    ExpenseRepository.findAll() || []
+
+                ).find(
+
+                    record =>
+
+                        record.autoSource &&
+
+                        String(record.liabilityId) ===
+
+                            String(data.liabilityId) &&
+
+                        Number(record.period) ===
+
+                            Number(data.period)
+
+                );
+
+            if (
+
+                existing
+
+            ){
+
+                return existing;
+
+            }
+
+            const record =
+
+                ExpenseSchema.create({
+
+                    id:
+
+                        `auto_${data.autoSource}_${data.liabilityId}_${data.period}`,
+
+                    name:
+
+                        data.name || "",
+
+                    category:
+
+                        data.category || "其他",
+
+                    amount:
+
+                        Number(data.amount || 0),
+
+                    currency:
+
+                        data.currency || "USD",
+
+                    date:
+
+                        data.date || "",
+
+                    accountId:
+
+                        data.accountId || "",
+
+                    memberId:
+
+                        data.memberId || "",
+
+                    note:
+
+                        data.note || ""
+
+                });
+
+            record.autoSource =
+
+                data.autoSource;
+
+            record.liabilityId =
+
+                data.liabilityId;
+
+            record.period =
+
+                Number(data.period);
+
+            return ExpenseRepository.save(
+
+                record
+
+            );
+
+        } catch (linkedError) {
+
+            return null;
+
+        }
+
+    },
+
+    deleteLinkedExpensesByLiability(
+
+        liabilityId
+
+    ){
+
+        try {
+
+            (
+
+                ExpenseRepository.findAll() || []
+
+            )
+
+                .filter(
+
+                    record =>
+
+                        record.autoSource &&
+
+                        String(record.liabilityId) ===
+
+                            String(liabilityId)
+
+                )
+
+                .forEach(
+
+                    record =>
+
+                        ExpenseRepository.remove(
+
+                            record.id
+
+                        )
+
+                );
+
+        } catch (deleteError) {
+
+        }
+
+    },
+
+    // =====================================================
+
     // Summary
 
     // =====================================================
@@ -347,11 +535,13 @@ const ExpenseService = {
 
         let totalExpense = 0;
 
+        let dailyExpense = 0;
+
         list.forEach(
 
             item => {
 
-                totalExpense +=
+                const amount =
 
                     Number(
 
@@ -360,6 +550,28 @@ const ExpenseService = {
                         0
 
                     );
+
+                totalExpense +=
+
+                    amount;
+
+                // Auto mirrors (e.g. loan interest) stay
+
+                // out of the daily-expense caliber, the
+
+                // same rule as auto income.
+
+                if (
+
+                    !item.autoSource
+
+                ){
+
+                    dailyExpense +=
+
+                        amount;
+
+                }
 
             }
 
@@ -371,7 +583,9 @@ const ExpenseService = {
 
                 list.length,
 
-            totalExpense
+            totalExpense,
+
+            dailyExpense
 
         };
 
