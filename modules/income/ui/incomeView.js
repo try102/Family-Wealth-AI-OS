@@ -14,7 +14,7 @@ import AccountAPI from "../../account/api/accountAPI.js?v=20261010da";
 
 import MemberAPI from "../../member/api/memberAPI.js?v=20261010da";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261010db";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261010dc";
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261010da";
 
@@ -834,37 +834,61 @@ const IncomeView = {
 
                         <option value="Salary">
 
-                            Salary
+                            ${t("account.typeSalary")}
 
                         </option>
 
                         <option value="Business">
 
-                            Business
-
-                        </option>
-
-                        <option value="Investment">
-
-                            Investment
+                            ${t("account.typeBusiness")}
 
                         </option>
 
                         <option value="Rental">
 
-                            Rental
+                            ${t("account.typeRental")}
 
                         </option>
 
                         <option value="Pension">
 
-                            Pension
+                            ${t("account.typePension")}
+
+                        </option>
+
+                        <option value="OrdinaryDividend">
+
+                            ${t("account.typeOrdinaryDividend")}
+
+                        </option>
+
+                        <option value="QualifiedDividend">
+
+                            ${t("account.typeQualifiedDividend")}
+
+                        </option>
+
+                        <option value="OrdinaryInterest">
+
+                            ${t("account.typeOrdinaryInterest")}
+
+                        </option>
+
+                        <option value="TaxExemptInterest">
+
+                            ${t("account.typeTaxExemptInterest")}
+
+                        </option>
+
+                        <option value="Investment">
+
+                            ${t("account.typeInvestment")}
 
                         </option>
 
                         <option value="Other">
 
-                            Other
+                            ${t("account.typeOther")}
 
                         </option>
 
@@ -1344,37 +1368,61 @@ const IncomeView = {
 
                         <option value="Salary">
 
-                            Salary
+                            ${t("account.typeSalary")}
 
                         </option>
 
                         <option value="Business">
 
-                            Business
-
-                        </option>
-
-                        <option value="Investment">
-
-                            Investment
+                            ${t("account.typeBusiness")}
 
                         </option>
 
                         <option value="Rental">
 
-                            Rental
+                            ${t("account.typeRental")}
 
                         </option>
 
                         <option value="Pension">
 
-                            Pension
+                            ${t("account.typePension")}
+
+                        </option>
+
+                        <option value="OrdinaryDividend">
+
+                            ${t("account.typeOrdinaryDividend")}
+
+                        </option>
+
+                        <option value="QualifiedDividend">
+
+                            ${t("account.typeQualifiedDividend")}
+
+                        </option>
+
+                        <option value="OrdinaryInterest">
+
+                            ${t("account.typeOrdinaryInterest")}
+
+                        </option>
+
+                        <option value="TaxExemptInterest">
+
+                            ${t("account.typeTaxExemptInterest")}
+
+                        </option>
+
+                        <option value="Investment">
+
+                            ${t("account.typeInvestment")}
 
                         </option>
 
                         <option value="Other">
 
-                            Other
+                            ${t("account.typeOther")}
 
                         </option>
 
