@@ -138,6 +138,14 @@ const LiabilitySchema = {
 
                 : [],
 
+            voidedPeriods:
+
+            Array.isArray(data.voidedPeriods)
+
+                ? data.voidedPeriods
+
+                : [],
+
             startDate:
 
             data.startDate || "",
