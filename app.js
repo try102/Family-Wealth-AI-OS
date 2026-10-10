@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009bq";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009br";
 
 const app =
 
@@ -697,6 +697,16 @@ function renderDashboard(
                     </div>
 
                 </div>
+
+                ${(cashFlow.loanPrincipalOut || 0) > 0 ? `
+
+                <p style="color:#666;font-size:13px;margin:4px 0 14px;">
+
+                    ${t("cashflow.livingOutflowNote", { expense: formatCurrency(cashFlow.expense || 0), principal: formatCurrency(cashFlow.loanPrincipalOut || 0), total: formatCurrency((cashFlow.expense || 0) + (cashFlow.loanPrincipalOut || 0)) })}
+
+                </p>
+
+                ` : ""}
 
             </section>
 
