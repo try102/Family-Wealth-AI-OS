@@ -24,7 +24,7 @@ import InvestmentAPI from "../modules/investment/api/investmentAPI.js?v=20261008
 
 import LiabilityAPI from "../modules/liability/api/liabilityAPI.js?v=20261009bo";
 
-import cashflowAPI from "../modules/cashflow/api/cashflowAPI.js?v=20261008ae";
+import cashflowAPI from "../modules/cashflow/api/cashflowAPI.js?v=20261009bp";
 
 import TaxDataIntegration from "../core/integration/taxDataIntegration.js?v=20261009bn";
 
