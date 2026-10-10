@@ -12,7 +12,7 @@ Cashflow API
 
 import cashflowService
 
-    from "../services/cashflowService.js?v=20261009be";
+    from "../services/cashflowService.js?v=20261009bp";
 
 const cashflowAPI = {
 
@@ -105,6 +105,26 @@ const cashflowAPI = {
     ){
 
         return cashflowService.delete(
+
+            id
+
+        );
+
+    },
+
+    // Entry-only removal for internal cascades
+
+    // (TransactionIntegration already reverses the
+
+    // balance and removes the transaction itself).
+
+    deleteCashflowEntry(
+
+        id
+
+    ){
+
+        return cashflowService.deleteEntry(
 
             id
 
