@@ -8,13 +8,13 @@ Liability Module Definition
 
 */
 
-import LiabilityAPI from "../../modules/liability/api/liabilityAPI.js?v=20261008ae";
+import LiabilityAPI from "../../modules/liability/api/liabilityAPI.js?v=20261009bo";
 
 import LiabilityAgent from "../../modules/liability/agent/liabilityAgent.js?v=20261008ae";
 
 import LiabilityAI from "../../modules/liability/ai/liabilityAI.js?v=20261008ae";
 
-import LiabilityView from "../../modules/liability/ui/liabilityView.js?v=20261008ae";
+import LiabilityView from "../../modules/liability/ui/liabilityView.js?v=20261009bo";
 
 const LiabilityModule = {
 
