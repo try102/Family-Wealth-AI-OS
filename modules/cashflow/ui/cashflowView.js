@@ -48,7 +48,7 @@ import TransactionRepository
 
     from "../../../transaction/transactionRepository.js?v=20261008ae";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009by";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bz";
 
 import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
@@ -65,6 +65,289 @@ const cashflowView = {
     name:
 
         "Cashflow View V7",
+
+    // Grouped list rows: cash inflows first, then
+    // outflows, each with a subtotal, and a final net
+    // total. Totals reuse the same summary the cards
+    // use, so the list always ties to the Dashboard.
+
+    groupedListHtml(
+
+        cashflows,
+
+        summary
+
+    ){
+
+        const money =
+
+            value =>
+
+                "$" +
+
+                Number(value || 0)
+
+                    .toLocaleString();
+
+        const rowFor =
+
+            item => `
+
+                                                <tr
+
+                                                    data-id="${item.id}"
+
+                                                >
+
+                                                    <td>
+
+                                                        ${
+
+                                                            item.type ||
+
+                                                            ""
+
+                                                        }
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        ${
+
+                                                            item.category ||
+
+                                                            "Other"
+
+                                                        }
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        ${
+
+                                                            item.description ||
+
+                                                            ""
+
+                                                        }
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        $${Number(
+
+                                                            item.amount ||
+
+                                                            0
+
+                                                        ).toLocaleString()}
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        ${
+
+                                                            item.frequency ||
+
+                                                            "YEARLY"
+
+                                                        }
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        $${Number(
+
+                                                            item.annualizedAmount ??
+
+                                                            item.amount ??
+
+                                                            0
+
+                                                        ).toLocaleString()}
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <button
+
+                                                            type="button"
+
+                                                            class="edit-cashflow-button"
+
+                                                            data-id="${item.id}"
+
+                                                        >
+
+                                                            ${t("common.edit")}
+
+                                                        </button>
+
+                                                        <button
+
+                                                            type="button"
+
+                                                            class="delete-cashflow-button"
+
+                                                            data-id="${item.id}"
+
+                                                        >
+
+                                                            ${t("common.delete")}
+
+                                                        </button>
+
+                                                    </td>
+
+                                                </tr>
+
+                                                `;
+
+        const groupHead =
+
+            label => `
+
+                <tr>
+
+                    <td colspan="7" style="font-weight:700;background:rgba(127,127,127,0.14);">
+
+                        ${label}
+
+                    </td>
+
+                </tr>`;
+
+        const subtotalFor =
+
+            (
+
+                label,
+
+                total,
+
+                breakdown
+
+            ) => `
+
+                <tr>
+
+                    <td colspan="3" style="text-align:right;font-weight:700;">
+
+                        ${label}
+
+                    </td>
+
+                    <td style="font-weight:700;">
+
+                        ${money(total)}
+
+                    </td>
+
+                    <td colspan="3" style="opacity:0.75;">
+
+                        ${breakdown}
+
+                    </td>
+
+                </tr>`;
+
+        const inflows =
+
+            (cashflows || []).filter(
+
+                item => item.type === "INCOME"
+
+            );
+
+        const outflows =
+
+            (cashflows || []).filter(
+
+                item => item.type !== "INCOME"
+
+            );
+
+        const s = summary || {};
+
+        const inflowTotal =
+
+            Math.round(
+
+                (
+
+                    Number(s.regularIncome || 0) +
+
+                    Number(s.investmentIn || 0)
+
+                ) * 100
+
+            ) / 100;
+
+        const outflowTotal =
+
+            Math.round(
+
+                (
+
+                    Number(s.regularExpense || 0) +
+
+                    Number(s.investmentOut || 0) +
+
+                    Number(s.loanPrincipalOut || 0)
+
+                ) * 100
+
+            ) / 100;
+
+        return (
+
+            groupHead(t("cashflow.inflowGroup")) +
+
+            inflows.map(rowFor).join("") +
+
+            subtotalFor(
+
+                t("cashflow.inflowSubtotal"),
+
+                inflowTotal,
+
+                `${t("cashflow.dailyIncome")} ${money(s.regularIncome)} · ${t("cashflow.investIn")} ${money(s.investmentIn)}`
+
+            ) +
+
+            groupHead(t("cashflow.outflowGroup")) +
+
+            outflows.map(rowFor).join("") +
+
+            subtotalFor(
+
+                t("cashflow.outflowSubtotal"),
+
+                outflowTotal,
+
+                `${t("cashflow.dailyExpense")} ${money(s.regularExpense)} · ${t("cashflow.investOut")} ${money(s.investmentOut)} · ${t("cashflow.loanPrincipal")} ${money(s.loanPrincipalOut)}`
+
+            ) +
+
+            subtotalFor(
+
+                t("cashflow.combinedNet"),
+
+                Number(s.net || 0),
+
+                ""
+
+            )
+
+        );
+
+    },
 
     // ==================================================
 
@@ -336,19 +619,13 @@ const cashflowView = {
 
         const summary =
 
-            scopeId
+            cashflowAPI
 
-                ? cashflowAPI
+                .getSummaryForEntries(
 
-                    .getSummaryForEntries(
+                    cashflows
 
-                        cashflows
-
-                    )
-
-                : cashflowAPI
-
-                    .getSummary();
+                );
 
         // Cash across ALL accounts (checking,
 
@@ -1172,135 +1449,7 @@ const cashflowView = {
 
                                     <tbody>
 
-                                        ${
-
-                                            cashflows
-
-                                            .map(
-
-                                                item => `
-
-                                                <tr
-
-                                                    data-id="${item.id}"
-
-                                                >
-
-                                                    <td>
-
-                                                        ${
-
-                                                            item.type ||
-
-                                                            ""
-
-                                                        }
-
-                                                    </td>
-
-                                                    <td>
-
-                                                        ${
-
-                                                            item.category ||
-
-                                                            "Other"
-
-                                                        }
-
-                                                    </td>
-
-                                                    <td>
-
-                                                        ${
-
-                                                            item.description ||
-
-                                                            ""
-
-                                                        }
-
-                                                    </td>
-
-                                                    <td>
-
-                                                        $${Number(
-
-                                                            item.amount ||
-
-                                                            0
-
-                                                        ).toLocaleString()}
-
-                                                    </td>
-
-                                                    <td>
-
-                                                        ${
-
-                                                            item.frequency ||
-
-                                                            "YEARLY"
-
-                                                        }
-
-                                                    </td>
-
-                                                    <td>
-
-                                                        $${Number(
-
-                                                            item.annualizedAmount ??
-
-                                                            item.amount ??
-
-                                                            0
-
-                                                        ).toLocaleString()}
-
-                                                    </td>
-
-                                                    <td>
-
-                                                        <button
-
-                                                            type="button"
-
-                                                            class="edit-cashflow-button"
-
-                                                            data-id="${item.id}"
-
-                                                        >
-
-                                                            ${t("common.edit")}
-
-                                                        </button>
-
-                                                        <button
-
-                                                            type="button"
-
-                                                            class="delete-cashflow-button"
-
-                                                            data-id="${item.id}"
-
-                                                        >
-
-                                                            ${t("common.delete")}
-
-                                                        </button>
-
-                                                    </td>
-
-                                                </tr>
-
-                                                `
-
-                                            )
-
-                                            .join("")
-
-                                        }
+                                        ${this.groupedListHtml(cashflows, summary)}
 
                                     </tbody>
 
