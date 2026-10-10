@@ -205,6 +205,7 @@ const MemberService = {
         const empty = () => ({
             income: 0,
             expense: 0,
+            loanPrincipalPaid: 0,
             accountsValue: 0,
             investmentsValue: 0,
             assetsValue: 0,
@@ -251,10 +252,12 @@ const MemberService = {
             bucketFor(record).income += num(record.amount ?? record.value);
         });
         expenses.forEach(record => {
-            // Auto mirrors (e.g. loan interest mirrored
-            // from loan payments) stay out of the
-            // member expense caliber, same as income.
-            if (record.autoSource) {
+            // Loan interest mirrors DO count as member
+            // expense (interest is the expense part of
+            // a payment; the principal is tracked
+            // separately below). Other auto mirrors
+            // stay out, same as income.
+            if (record.autoSource && record.autoSource !== "LOAN_INTEREST") {
                 return;
             }
             bucketFor(record).expense += num(record.amount);
@@ -280,6 +283,29 @@ const MemberService = {
             bucketFor(record).liabilitiesValue += num(record.currentBalance);
         });
 
+        // Loan principal repaid is real cash out but
+        // not an expense: track it per member so the
+        // scoped net cash flow can reflect the full
+        // payment (principal + interest).
+        try {
+            const liabilityMember = {};
+            liabilities.forEach(record => {
+                liabilityMember[record.id] = resolve(record);
+            });
+            (TransactionRepository.getTransactions() || []).forEach(transaction => {
+                if (!transaction || transaction.type !== "LOAN_PAYMENT") return;
+                const details = transaction.businessDetails?.liability || {};
+                const principal = num(details.principalPortion);
+                if (!principal) return;
+                const cashLine = (transaction.lines || []).find(line => line && line.cashEffect);
+                bucketFor({
+                    memberId: liabilityMember[details.liabilityId] || "",
+                    accountId: cashLine ? cashLine.accountId : ""
+                }).loanPrincipalPaid += principal;
+            });
+        } catch (loanError) {
+        }
+
         const finish = bucket => ({
             ...bucket,
             netFlow: bucket.income - bucket.expense,
@@ -304,6 +330,7 @@ const MemberService = {
         [...memberStats, unassignedStats].forEach(stat => {
             familyRaw.income += stat.income;
             familyRaw.expense += stat.expense;
+            familyRaw.loanPrincipalPaid += stat.loanPrincipalPaid || 0;
             familyRaw.accountsValue += stat.accountsValue;
             familyRaw.investmentsValue += stat.investmentsValue;
             familyRaw.assetsValue += stat.assetsValue;
