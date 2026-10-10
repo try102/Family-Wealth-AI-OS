@@ -60,7 +60,7 @@ import ExpenseRepository
 
 import TransactionIntegration
 
-    from "../../../core/integration/transactionIntegration.js?v=20261008ak";
+    from "../../../core/integration/transactionIntegration.js?v=20261009bp";
 
 
 /*
@@ -472,6 +472,58 @@ const ExpenseService = {
         } catch (linkedError) {
 
             return null;
+
+        }
+
+    },
+
+    deleteLinkedExpense(
+
+        liabilityId,
+
+        period
+
+    ){
+
+        try {
+
+            const record =
+
+                (
+
+                    ExpenseRepository.findAll() || []
+
+                ).find(
+
+                    item =>
+
+                        item.autoSource &&
+
+                        String(item.liabilityId) ===
+
+                            String(liabilityId) &&
+
+                        Number(item.period) ===
+
+                            Number(period)
+
+                );
+
+            if (
+
+                record
+
+            ){
+
+                ExpenseRepository.remove(
+
+                    record.id
+
+                );
+
+            }
+
+        } catch (deleteError) {
 
         }
 
