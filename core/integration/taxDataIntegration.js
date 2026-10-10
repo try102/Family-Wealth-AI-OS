@@ -28,7 +28,7 @@ import IncomeRepository from "../../modules/income/repository/incomeRepository.j
 
 import TransactionRepository from "../../transaction/transactionRepository.js?v=20261008ae";
 
-import InvestmentRepository from "../../modules/investment/repository/investmentRepository.js?v=20261008ae";
+import InvestmentRepository from "../../modules/investment/repository/investmentRepository.js?v=20261010da";
 
 // FIFO replay of all trades: for each SELL in the
 
@@ -282,6 +282,10 @@ const TaxDataIntegration = {
 
         let wageIncome = 0;
 
+        let qualifiedDividendIncome = 0;
+
+        let taxExemptInterest = 0;
+
         try {
 
             (
@@ -313,6 +317,63 @@ const TaxDataIntegration = {
                     income.autoSource
 
                 ) {
+
+                    return;
+
+                }
+
+                // Option D (2026-10-10): qualified dividends
+                // are taxed at preferential rates, so they
+                // leave the ordinary bucket; tax-exempt
+                // interest is not taxable at all.
+
+                const incomeType =
+
+                    income.type || "";
+
+                if (
+
+                    incomeType ===
+
+                    "TaxExemptInterest"
+
+                ) {
+
+                    taxExemptInterest +=
+
+                        Number(
+
+                            income.value ??
+
+                            income.amount ??
+
+                            0
+
+                        );
+
+                    return;
+
+                }
+
+                if (
+
+                    incomeType ===
+
+                    "QualifiedDividend"
+
+                ) {
+
+                    qualifiedDividendIncome +=
+
+                        Number(
+
+                            income.value ??
+
+                            income.amount ??
+
+                            0
+
+                        );
 
                     return;
 
@@ -546,6 +607,8 @@ const TaxDataIntegration = {
 
             wageIncome +
 
+            qualifiedDividendIncome +
+
             dividendIncome +
 
             interestIncome +
@@ -595,6 +658,10 @@ const TaxDataIntegration = {
                 targetYear,
 
             wageIncome,
+
+            qualifiedDividendIncome,
+
+            taxExemptInterest,
 
             dividendIncome,
 
