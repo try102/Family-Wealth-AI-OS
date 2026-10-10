@@ -651,6 +651,12 @@ const LiabilityService = {
 
                         {
 
+                            date:
+
+                                transaction.date ||
+
+                                "",
+
                             payment:
 
                                 Number(
@@ -1031,9 +1037,11 @@ const LiabilityService = {
 
                         date:
 
-                            planRow
+                            bookedRow &&
 
-                                ? planRow.date
+                            bookedRow.date
+
+                                ? bookedRow.date
 
                                 : dateOf(period),
 
