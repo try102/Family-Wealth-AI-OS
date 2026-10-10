@@ -48,7 +48,7 @@ import EventTypes
 
 import TransactionIntegration
 
-    from "../../../core/integration/transactionIntegration.js?v=20261008ak";
+    from "../../../core/integration/transactionIntegration.js?v=20261009bp";
 
 import AccountRepository
 
@@ -66,7 +66,7 @@ import AccountBalanceIntegration
 
 import cashflowAPI
 
-    from "../../cashflow/api/cashflowAPI.js?v=20261008ae";
+    from "../../cashflow/api/cashflowAPI.js?v=20261009bp";
 
 /*
 
