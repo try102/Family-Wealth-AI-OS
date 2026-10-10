@@ -12,7 +12,7 @@ Liability View
 
 import LiabilityAPI
 
-    from "../api/liabilityAPI.js?v=20261009bo";
+    from "../api/liabilityAPI.js?v=20261009bw";
 
 import LiabilityAgent
 
@@ -24,7 +24,7 @@ import AccountAPI
 
 import MemberAPI from "../../member/api/memberAPI.js?v=20261008ap";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bs";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bw";
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
@@ -433,6 +433,18 @@ const LiabilityView = {
                     >
 
                         ${t("liability.add")}
+
+                    </button>
+
+                    <button
+
+                        id="compare-liability-button"
+
+                        type="button"
+
+                    >
+
+                        📊 ${t("liability.compare")}
 
                     </button>
 
@@ -1063,6 +1075,36 @@ const LiabilityView = {
         // Add
 
         // ==================================================
+
+        const compareButton =
+
+            container.querySelector(
+
+                "#compare-liability-button"
+
+            );
+
+        if (compareButton){
+
+            compareButton.addEventListener(
+
+                "click",
+
+                () => {
+
+                    this.showCompare(
+
+                        container,
+
+                        onBack
+
+                    );
+
+                }
+
+            );
+
+        }
 
         const addButton =
 
@@ -2539,6 +2581,316 @@ const LiabilityView = {
     // Create Form
 
     // ==================================================
+
+    // ==================================================
+
+    // Repayment Method Comparison (trial only)
+
+    // ==================================================
+
+    showCompare(
+
+        container,
+
+        onBack
+
+    ){
+
+        const formContainer =
+
+            container.querySelector(
+
+                "#liability-form-container"
+
+            );
+
+        if (!formContainer){
+
+            return;
+
+        }
+
+        const money =
+
+            value =>
+
+                "$" +
+
+                Number(value || 0)
+
+                    .toLocaleString(
+
+                        "en-US",
+
+                        {
+
+                            maximumFractionDigits: 2
+
+                        }
+
+                    );
+
+        formContainer.innerHTML = `
+
+            <div
+
+                class="liability-form"
+
+                style="
+
+                    margin-top:20px;
+
+                    padding:20px;
+
+                    border:1px solid #ddd;
+
+                    border-radius:10px;
+
+                "
+
+            >
+
+                <h3>
+
+                    📊 ${t("liability.compare")}
+
+                </h3>
+
+                <p style="color:#666;font-size:13px;">
+
+                    ${t("liability.compareNote")}
+
+                </p>
+
+                <label>
+
+                    ${t("liability.principal")}
+
+                </label>
+
+                <br>
+
+                <input
+
+                    id="compare-principal"
+
+                    type="number"
+
+                    min="0"
+
+                    step="0.01"
+
+                    value="1000000"
+
+                >
+
+                <br><br>
+
+                <label>
+
+                    ${t("liability.rate")}
+
+                </label>
+
+                <br>
+
+                <input
+
+                    id="compare-rate"
+
+                    type="number"
+
+                    min="0"
+
+                    step="0.01"
+
+                    value="5"
+
+                >
+
+                <br><br>
+
+                <label>
+
+                    ${t("liability.termMonths")}
+
+                </label>
+
+                <br>
+
+                <input
+
+                    id="compare-term"
+
+                    type="number"
+
+                    min="1"
+
+                    step="1"
+
+                    value="240"
+
+                >
+
+                <br><br>
+
+                <button
+
+                    id="compare-run-button"
+
+                    type="button"
+
+                >
+
+                    ${t("liability.compare")}
+
+                </button>
+
+                <div id="compare-results"></div>
+
+            </div>
+
+        `;
+
+        const run = () => {
+
+            const rows =
+
+                LiabilityAPI.compareMethods({
+
+                    principal:
+
+                        Number(
+
+                            formContainer
+
+                                .querySelector(
+
+                                    "#compare-principal"
+
+                                ).value
+
+                        ),
+
+                    interestRate:
+
+                        Number(
+
+                            formContainer
+
+                                .querySelector(
+
+                                    "#compare-rate"
+
+                                ).value
+
+                        ),
+
+                    termMonths:
+
+                        Number(
+
+                            formContainer
+
+                                .querySelector(
+
+                                    "#compare-term"
+
+                                ).value
+
+                        )
+
+                });
+
+            const results =
+
+                formContainer.querySelector(
+
+                    "#compare-results"
+
+                );
+
+            if (!rows.length){
+
+                results.innerHTML = "";
+
+                return;
+
+            }
+
+            results.innerHTML = `
+
+                <div style="overflow-x:auto;margin-top:16px;">
+
+                    <table style="width:100%;border-collapse:collapse;">
+
+                        <thead>
+
+                            <tr>
+
+                                <th style="padding:8px;border-bottom:1px solid #ddd;text-align:left;">${t("liability.method")}</th>
+
+                                <th style="padding:8px;border-bottom:1px solid #ddd;text-align:left;">${t("liability.firstPayment")}</th>
+
+                                <th style="padding:8px;border-bottom:1px solid #ddd;text-align:left;">${t("liability.lastPayment")}</th>
+
+                                <th style="padding:8px;border-bottom:1px solid #ddd;text-align:left;">${t("liability.totalInterest")}</th>
+
+                                <th style="padding:8px;border-bottom:1px solid #ddd;text-align:left;">${t("liability.totalPaid")}</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            ${rows.map(row => `
+
+                                <tr>
+
+                                    <td style="padding:8px;border-bottom:1px solid #eee;">${this.methodLabel(row.method)}</td>
+
+                                    <td style="padding:8px;border-bottom:1px solid #eee;">${money(row.firstPayment)}</td>
+
+                                    <td style="padding:8px;border-bottom:1px solid #eee;">${money(row.lastPayment)}</td>
+
+                                    <td style="padding:8px;border-bottom:1px solid #eee;">${money(row.totalInterest)}</td>
+
+                                    <td style="padding:8px;border-bottom:1px solid #eee;">${money(row.totalPaid)}</td>
+
+                                </tr>
+
+                            `).join("")}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            `;
+
+        };
+
+        formContainer
+
+            .querySelector(
+
+                "#compare-run-button"
+
+            )
+
+            .addEventListener(
+
+                "click",
+
+                run
+
+            );
+
+        run();
+
+    },
 
     showCreateForm(
 
