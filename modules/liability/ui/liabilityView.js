@@ -12,7 +12,7 @@ Liability View
 
 import LiabilityAPI
 
-    from "../api/liabilityAPI.js?v=20261008ae";
+    from "../api/liabilityAPI.js?v=20261009bo";
 
 import LiabilityAgent
 
@@ -24,7 +24,7 @@ import AccountAPI
 
 import MemberAPI from "../../member/api/memberAPI.js?v=20261008ap";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bk";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bo";
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
@@ -47,6 +47,22 @@ const LiabilityView = {
         onBack
 
     ){
+
+        // Record any scheduled installments whose
+
+        // repayment date has arrived before showing
+
+        // the list (idempotent).
+
+        try {
+
+            LiabilityAPI
+
+                .syncAllScheduledPayments();
+
+        } catch (syncError) {
+
+        }
 
         const liabilities =
 
@@ -656,6 +672,22 @@ const LiabilityView = {
 
                                                             100;
 
+                                                        const schedule =
+
+                                                            item.repaymentMethod
+
+                                                                ? LiabilityAPI.getSchedule(item.id)
+
+                                                                : null;
+
+                                                        const scheduleLine =
+
+                                                            schedule
+
+                                                                ? `<div style="font-size:12px;color:#666;margin-top:4px;">${this.methodLabel(item.repaymentMethod)} · ${t("liability.progress", { paid: schedule.paidCount, total: schedule.totalPeriods })}${schedule.nextInstallment ? " · " + t("liability.nextPayment", { date: schedule.nextInstallment.date, amount: "$" + schedule.nextInstallment.payment.toLocaleString("en-US", { maximumFractionDigits: 2 }) }) : ""}</div>`
+
+                                                                : "";
+
                                                         return `
 
                                                             <tr
@@ -686,6 +718,8 @@ const LiabilityView = {
 
                                                                     }
 
+                                                                    ${scheduleLine}
+
                                                                 </td>
 
                                                                 <td
@@ -700,9 +734,11 @@ const LiabilityView = {
 
                                                                     ${
 
-                                                                        item.category ||
+                                                                        this.categoryLabel(
 
-                                                                        "Other"
+                                                                            item.category
+
+                                                                        )
 
                                                                     }
 
@@ -821,6 +857,36 @@ const LiabilityView = {
                                                                         ${t("liability.pay")}
 
                                                                     </button>
+
+                                                                    ${
+
+                                                                        item.repaymentMethod
+
+                                                                            ? `
+
+                                                                    <button
+
+                                                                        type="button"
+
+                                                                        class="schedule-liability-button"
+
+                                                                        data-id="${
+
+                                                                            item.id
+
+                                                                        }"
+
+                                                                    >
+
+                                                                        ${t("liability.schedule")}
+
+                                                                    </button>
+
+                                                                            `
+
+                                                                            : ""
+
+                                                                    }
 
                                                                     <button
 
@@ -1153,6 +1219,652 @@ const LiabilityView = {
                 }
 
             );
+
+        // ==================================================
+
+        // Repayment Schedule
+
+        // ==================================================
+
+        container
+
+            .querySelectorAll(
+
+                ".schedule-liability-button"
+
+            )
+
+            .forEach(
+
+                button => {
+
+                    button.addEventListener(
+
+                        "click",
+
+                        () => {
+
+                            this.showSchedule(
+
+                                container,
+
+                                button.dataset.id,
+
+                                onBack
+
+                            );
+
+                        }
+
+                    );
+
+                }
+
+            );
+
+    },
+
+    // ==================================================
+
+    // Repayment Schedule View
+
+    // ==================================================
+
+    showSchedule(
+
+        container,
+
+        id,
+
+        onBack
+
+    ){
+
+        const formContainer =
+
+            container.querySelector(
+
+                "#liability-form-container"
+
+            );
+
+        if(!formContainer){
+
+            return;
+
+        }
+
+        const liability =
+
+            LiabilityAPI
+
+                .getLiabilities()
+
+                .find(
+
+                    item =>
+
+                        String(item.id) ===
+
+                        String(id)
+
+                );
+
+        const schedule =
+
+            LiabilityAPI.getSchedule(
+
+                id
+
+            );
+
+        if(!liability || !schedule){
+
+            formContainer.innerHTML = "";
+
+            return;
+
+        }
+
+        const money =
+
+            value =>
+
+                "$" +
+
+                Number(value || 0)
+
+                    .toLocaleString(
+
+                        "en-US",
+
+                        {
+
+                            maximumFractionDigits: 2
+
+                        }
+
+                    );
+
+        const rows =
+
+            schedule.installments
+
+                .map(
+
+                    installment => `
+
+                        <tr>
+
+                            <td style="padding:8px;border-bottom:1px solid #eee;">${installment.period}</td>
+
+                            <td style="padding:8px;border-bottom:1px solid #eee;">${installment.date}</td>
+
+                            <td style="padding:8px;border-bottom:1px solid #eee;">${money(installment.principalPortion)}</td>
+
+                            <td style="padding:8px;border-bottom:1px solid #eee;">${money(installment.interestPortion)}</td>
+
+                            <td style="padding:8px;border-bottom:1px solid #eee;">${money(installment.payment)}</td>
+
+                            <td style="padding:8px;border-bottom:1px solid #eee;">${money(installment.balanceAfter)}</td>
+
+                            <td style="padding:8px;border-bottom:1px solid #eee;">${installment.paid ? t("liability.paidStatus") : t("liability.dueStatus")}</td>
+
+                        </tr>
+
+                    `
+
+                )
+
+                .join("");
+
+        formContainer.innerHTML = `
+
+            <div
+
+                style="
+
+                    margin-top:20px;
+
+                    padding:20px;
+
+                    border:1px solid #ddd;
+
+                    border-radius:10px;
+
+                "
+
+            >
+
+                <h3>
+
+                    ${t("liability.schedule")} — ${liability.name || ""}
+
+                </h3>
+
+                <p>
+
+                    ${this.methodLabel(liability.repaymentMethod)} · ${t("liability.progress", { paid: schedule.paidCount, total: schedule.totalPeriods })} · ${t("liability.paidPrincipal")}: ${money(schedule.paidPrincipal)} · ${t("liability.paidInterest")}: ${money(schedule.paidInterest)} · ${t("liability.remaining")}: ${money(schedule.remainingBalance)}
+
+                </p>
+
+                <div style="overflow-x:auto;">
+
+                    <table style="width:100%;border-collapse:collapse;">
+
+                        <thead>
+
+                            <tr>
+
+                                <th style="padding:8px;border-bottom:1px solid #ddd;text-align:left;">${t("liability.period")}</th>
+
+                                <th style="padding:8px;border-bottom:1px solid #ddd;text-align:left;">${t("liability.date")}</th>
+
+                                <th style="padding:8px;border-bottom:1px solid #ddd;text-align:left;">${t("liability.principalPart")}</th>
+
+                                <th style="padding:8px;border-bottom:1px solid #ddd;text-align:left;">${t("liability.interestPart")}</th>
+
+                                <th style="padding:8px;border-bottom:1px solid #ddd;text-align:left;">${t("liability.installment")}</th>
+
+                                <th style="padding:8px;border-bottom:1px solid #ddd;text-align:left;">${t("liability.remaining")}</th>
+
+                                <th style="padding:8px;border-bottom:1px solid #ddd;text-align:left;">${t("liability.status")}</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            ${rows}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <br>
+
+                <button
+
+                    type="button"
+
+                    id="close-schedule-button"
+
+                >
+
+                    ${t("common.close")}
+
+                </button>
+
+            </div>
+
+        `;
+
+        const closeButton =
+
+            formContainer.querySelector(
+
+                "#close-schedule-button"
+
+            );
+
+        if(closeButton){
+
+            closeButton.addEventListener(
+
+                "click",
+
+                () => {
+
+                    formContainer.innerHTML =
+
+                        "";
+
+                }
+
+            );
+
+        }
+
+        formContainer.scrollIntoView({
+
+            behavior: "smooth"
+
+        });
+
+    },
+
+    // ==================================================
+
+    // Schedule Labels
+
+    // ==================================================
+
+    categoryLabel(
+
+        category
+
+    ){
+
+        const code =
+
+            String(category || "");
+
+        if (
+
+            LiabilityAPI
+
+                .getCategoryOptions()
+
+                .includes(code)
+
+        ){
+
+            return t(
+
+                "liability.cat." + code
+
+            );
+
+        }
+
+        return code || "Other";
+
+    },
+
+    methodLabel(
+
+        method
+
+    ){
+
+        const code =
+
+            String(method || "");
+
+        if (!code){
+
+            return "";
+
+        }
+
+        return t(
+
+            "liability.method." + code
+
+        );
+
+    },
+
+    buildCategoryOptions(
+
+        selected = ""
+
+    ){
+
+        const known =
+
+            LiabilityAPI
+
+                .getCategoryOptions();
+
+        let options =
+
+            known
+
+                .map(
+
+                    code => `
+
+                        <option
+
+                            value="${code}"
+
+                            ${
+
+                                code === selected
+
+                                    ? "selected"
+
+                                    : ""
+
+                            }
+
+                        >${t("liability.cat." + code)}</option>
+
+                    `
+
+                )
+
+                .join("");
+
+        if (
+
+            selected &&
+
+            !known.includes(selected)
+
+        ){
+
+            options += `
+
+                <option
+
+                    value="${selected}"
+
+                    selected
+
+                >${selected}</option>
+
+            `;
+
+        }
+
+        return options;
+
+    },
+
+    buildMethodOptions(
+
+        selected = ""
+
+    ){
+
+        const none = `
+
+            <option
+
+                value=""
+
+                ${
+
+                    !selected
+
+                        ? "selected"
+
+                        : ""
+
+                }
+
+            >${t("liability.methodNone")}</option>
+
+        `;
+
+        return none +
+
+            LiabilityAPI
+
+                .getMethodOptions()
+
+                .map(
+
+                    code => `
+
+                        <option
+
+                            value="${code}"
+
+                            ${
+
+                                code === selected
+
+                                    ? "selected"
+
+                                    : ""
+
+                            }
+
+                        >${t("liability.method." + code)}</option>
+
+                    `
+
+                )
+
+                .join("");
+
+    },
+
+    scheduleFieldsHtml(
+
+        prefix,
+
+        liability = {}
+
+    ){
+
+        return `
+
+            <label>
+
+                ${t("liability.method")}
+
+            </label>
+
+            <br>
+
+            <select
+
+                id="${prefix}-liability-method"
+
+            >
+
+                ${
+
+                    this.buildMethodOptions(
+
+                        liability.repaymentMethod ||
+
+                        ""
+
+                    )
+
+                }
+
+            </select>
+
+            <br><br>
+
+            <label>
+
+                ${t("liability.termMonths")}
+
+            </label>
+
+            <br>
+
+            <input
+
+                id="${prefix}-liability-term"
+
+                type="number"
+
+                min="0"
+
+                step="1"
+
+                value="${
+
+                    liability.termMonths ||
+
+                    ""
+
+                }"
+
+            >
+
+            <br><br>
+
+            <label>
+
+                ${t("liability.firstPaymentDate")}
+
+            </label>
+
+            <br>
+
+            <input
+
+                id="${prefix}-liability-first-date"
+
+                type="date"
+
+                value="${
+
+                    liability.firstPaymentDate ||
+
+                    ""
+
+                }"
+
+            >
+
+            <br><br>
+
+            <label>
+
+                ${t("liability.paymentAccount")}
+
+            </label>
+
+            <br>
+
+            <select
+
+                id="${prefix}-liability-pay-account"
+
+            >
+
+                <option value="">${t("liability.paymentAccountNone")}</option>
+
+                ${
+
+                    this.buildAccountOptions(
+
+                        liability.paymentAccountId ||
+
+                        ""
+
+                    )
+
+                }
+
+            </select>
+
+            <br><br>
+
+        `;
+
+    },
+
+    readScheduleFields(
+
+        form,
+
+        prefix
+
+    ){
+
+        return {
+
+            repaymentMethod:
+
+                form.querySelector(
+
+                    `#${prefix}-liability-method`
+
+                ).value,
+
+            termMonths:
+
+                Number(
+
+                    form.querySelector(
+
+                        `#${prefix}-liability-term`
+
+                    ).value || 0
+
+                ),
+
+            firstPaymentDate:
+
+                form.querySelector(
+
+                    `#${prefix}-liability-first-date`
+
+                ).value,
+
+            paymentAccountId:
+
+                form.querySelector(
+
+                    `#${prefix}-liability-pay-account`
+
+                ).value
+
+        };
 
     },
 
@@ -1902,21 +2614,29 @@ const LiabilityView = {
 
                     <br>
 
-                    <input
+                    <select
 
                         id="liability-category"
 
-                        type="text"
-
-                        value="Other"
-
                     >
+
+                        ${
+
+                            this.buildCategoryOptions(
+
+                                "OTHER"
+
+                            )
+
+                        }
+
+                    </select>
 
                     <br><br>
 
                     <label>
 
-                        ${t("liability.currentBalance")}
+                        ${t("liability.principal")}
 
                     </label>
 
@@ -1961,6 +2681,18 @@ const LiabilityView = {
                     >
 
                     <br><br>
+
+                    ${
+
+                        this.scheduleFieldsHtml(
+
+                            "create",
+
+                            {}
+
+                        )
+
+                    }
 
                     <label>
 
@@ -2072,11 +2804,9 @@ const LiabilityView = {
 
                     )
 
-                    .value
+                    .value ||
 
-                    .trim() ||
-
-                    "Other";
+                    "OTHER";
 
                 const balance =
 
@@ -2116,6 +2846,10 @@ const LiabilityView = {
 
                         category,
 
+                    principal:
+
+                        balance,
+
                     currentBalance:
 
                         balance,
@@ -2123,6 +2857,14 @@ const LiabilityView = {
                     interestRate:
 
                         rate,
+
+                    ...this.readScheduleFields(
+
+                        form,
+
+                        "create"
+
+                    ),
 
                     memberId:
 
@@ -2336,17 +3078,51 @@ const LiabilityView = {
 
                     <br>
 
-                    <input
+                    <select
 
                         id="edit-liability-category"
 
-                        type="text"
+                    >
+
+                        ${
+
+                            this.buildCategoryOptions(
+
+                                liability.category ||
+
+                                "OTHER"
+
+                            )
+
+                        }
+
+                    </select>
+
+                    <br><br>
+
+                    <label>
+
+                        ${t("liability.principal")}
+
+                    </label>
+
+                    <br>
+
+                    <input
+
+                        id="edit-liability-principal"
+
+                        type="number"
+
+                        min="0"
+
+                        step="0.01"
 
                         value="${
 
-                            liability.category ||
+                            liability.principal ||
 
-                            "Other"
+                            balance
 
                         }"
 
@@ -2411,6 +3187,18 @@ const LiabilityView = {
                     >
 
                     <br><br>
+
+                    ${
+
+                        this.scheduleFieldsHtml(
+
+                            "edit",
+
+                            liability
+
+                        )
+
+                    }
 
                     <button
 
@@ -2478,11 +3266,23 @@ const LiabilityView = {
 
                         )
 
-                        .value
+                        .value ||
 
-                        .trim() ||
+                        "OTHER",
 
-                        "Other",
+                    principal:
+
+                        Number(
+
+                            form.querySelector(
+
+                                "#edit-liability-principal"
+
+                            )
+
+                            .value
+
+                        ),
 
                     currentBalance:
 
@@ -2511,6 +3311,14 @@ const LiabilityView = {
                             .value
 
                         ),
+
+                    ...this.readScheduleFields(
+
+                        form,
+
+                        "edit"
+
+                    ),
 
                     status:
 
