@@ -10,7 +10,7 @@ Cashflow Module Definition
 
 import cashflowAPI
 
-    from "../../modules/cashflow/api/cashflowAPI.js?v=20261008ae";
+    from "../../modules/cashflow/api/cashflowAPI.js?v=20261009bp";
 
 import cashflowAgent
 
