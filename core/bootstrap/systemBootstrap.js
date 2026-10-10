@@ -176,7 +176,7 @@ import TransactionIntegration
 
 import CashflowIntegration
 
-    from "../integration/cashflowIntegration.js?v=20261009be";
+    from "../integration/cashflowIntegration.js?v=20261009by";
 
 // ==================================================
 
