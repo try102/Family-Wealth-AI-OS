@@ -36,7 +36,7 @@ import TransactionIntegration
 
 import LiabilityService
 
-    from "../../liability/services/liabilityService.js?v=20261009bu";
+    from "../../liability/services/liabilityService.js?v=20261009bv";
 
 import TransactionRepository
 
