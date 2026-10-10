@@ -48,7 +48,7 @@ import TransactionRepository
 
     from "../../../transaction/transactionRepository.js?v=20261008ae";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bq";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009br";
 
 import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
 
@@ -1009,6 +1009,16 @@ const cashflowView = {
                         </div>
 
                     </div>
+
+                    ${(summary?.loanPrincipalOut || 0) > 0 ? `
+
+                    <p style="color:#666;font-size:13px;margin:10px 0 0;">
+
+                        ${t("cashflow.livingOutflowNote", { expense: "$" + Number(summary?.regularExpense || 0).toLocaleString(), principal: "$" + Number(summary?.loanPrincipalOut || 0).toLocaleString(), total: "$" + Number((summary?.regularExpense || 0) + (summary?.loanPrincipalOut || 0)).toLocaleString() })}
+
+                    </p>
+
+                    ` : ""}
 
                 </section>
 
