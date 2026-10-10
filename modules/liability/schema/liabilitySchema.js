@@ -130,6 +130,12 @@ const LiabilitySchema = {
 
             "",
 
+            paymentAccountId2:
+
+            data.paymentAccountId2 ||
+
+            "",
+
             paidPeriods:
 
             Array.isArray(data.paidPeriods)
