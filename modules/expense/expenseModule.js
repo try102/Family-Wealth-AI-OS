@@ -16,7 +16,7 @@ import ExpenseAgent
 
 import ExpenseAPI
 
-    from "./api/expenseAPI.js?v=20261008ae";
+    from "./api/expenseAPI.js?v=20261010da";
 
 import ExpenseRepository
 
@@ -28,11 +28,11 @@ import ExpenseSchema
 
 import ExpenseService
 
-    from "./services/expenseService.js?v=20261009bp";
+    from "./services/expenseService.js?v=20261010da";
 
 import ExpenseView
 
-    from "./ui/expenseView.js?v=20261008ae";
+    from "./ui/expenseView.js?v=20261010dd";
 
 const ExpenseModule = {
 
