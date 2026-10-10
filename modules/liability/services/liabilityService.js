@@ -22,7 +22,9 @@ import {
 
     summarizeSchedule,
 
-    todayText
+    todayText,
+
+    addMonths
 
 } from "./repaymentSchedule.js?v=20261009bp";
 
@@ -783,55 +785,188 @@ const LiabilityService = {
 
         );
 
-        const voidedSet = new Set(
+        booked.byPeriod.forEach(
 
-            (liability.voidedPeriods || []).map(
+            (value, period) =>
 
-                period => Number(period)
-
-            )
+                paidSet.add(period)
 
         );
 
-        const isPaid =
+        (
 
-            row =>
+            liability.voidedPeriods || []
 
-                !voidedSet.has(row.period) &&
+        ).forEach(
 
-                (
+            period =>
 
-                    paidSet.has(row.period) ||
+                paidSet.delete(
 
-                    booked.byPeriod.has(row.period)
+                    Number(period)
+
+                )
+
+        );
+
+        // Nothing recorded yet: the raw plan is
+        // already anchored on the opening balance.
+
+        if (!paidSet.size){
+
+            return plan;
+
+        }
+
+        // The installment calendar is monthly and
+        // independent of the repayment method, so
+        // period numbers and dates stay stable
+        // even for methods (lump sum) whose raw
+        // plan has a single row.
+
+        const totalPeriods = Math.max(
+
+            Number(liability.termMonths || 0),
+
+            plan.length,
+
+            Math.max(...paidSet)
+
+        );
+
+        const firstDate =
+
+            liability.firstPaymentDate ||
+
+            plan[0].date;
+
+        const dateOf =
+
+            period =>
+
+                addMonths(
+
+                    firstDate,
+
+                    period - 1
 
                 );
 
         const paidRows =
 
-            plan.filter(isPaid);
+            [...paidSet]
 
-        const unpaidRows =
+                .filter(period => period >= 1)
 
-            plan.filter(
+                .sort((a, b) => a - b)
 
-                row => !isPaid(row)
+                .map(period => {
 
-            );
+                    const bookedRow =
 
-        if (
+                        booked.byPeriod.get(period);
 
-            !unpaidRows.length ||
+                    const planRow =
 
-            !paidRows.length &&
+                        plan.find(
 
-            Number(liability.currentBalance || 0) ===
+                            row =>
 
-                Number(liability.principal || 0)
+                                row.period === period
+
+                        );
+
+                    return {
+
+                        period,
+
+                        date:
+
+                            planRow
+
+                                ? planRow.date
+
+                                : dateOf(period),
+
+                        payment:
+
+                            bookedRow
+
+                                ? bookedRow.payment
+
+                                : planRow
+
+                                    ? planRow.payment
+
+                                    : 0,
+
+                        principalPortion:
+
+                            bookedRow
+
+                                ? bookedRow
+
+                                    .principalPortion
+
+                                : planRow
+
+                                    ? planRow
+
+                                        .principalPortion
+
+                                    : 0,
+
+                        interestPortion:
+
+                            bookedRow
+
+                                ? bookedRow
+
+                                    .interestPortion
+
+                                : planRow
+
+                                    ? planRow
+
+                                        .interestPortion
+
+                                    : 0,
+
+                        balanceAfter:
+
+                            planRow
+
+                                ? planRow.balanceAfter
+
+                                : 0
+
+                    };
+
+                });
+
+        const unpaidPeriods = [];
+
+        for (
+
+            let period = 1;
+
+            period <= totalPeriods;
+
+            period++
 
         ){
 
-            return plan;
+            if (!paidSet.has(period)){
+
+                unpaidPeriods.push(period);
+
+            }
+
+        }
+
+        if (!unpaidPeriods.length){
+
+            return paidRows;
 
         }
 
@@ -859,11 +994,11 @@ const LiabilityService = {
 
                 termMonths:
 
-                    unpaidRows.length,
+                    unpaidPeriods.length,
 
                 firstPaymentDate:
 
-                    unpaidRows[0].date
+                    dateOf(unpaidPeriods[0])
 
             });
 
@@ -873,23 +1008,68 @@ const LiabilityService = {
 
         }
 
-        future.forEach((row, index) => {
+        let futureRows;
 
-            row.period =
+        if (
 
-                unpaidRows[index].period;
+            future.length === 1 &&
 
-            row.date =
+            unpaidPeriods.length > 1
 
-                unpaidRows[index].date;
+        ){
 
-        });
+            // Lump sum: one balloon payment on
+            // the last unpaid period, interest
+            // accrued on the current balance over
+            // the remaining term.
+
+            const balloon =
+
+                future[future.length - 1];
+
+            balloon.period =
+
+                unpaidPeriods[
+
+                    unpaidPeriods.length - 1
+
+                ];
+
+            balloon.date =
+
+                dateOf(balloon.period);
+
+            futureRows = [balloon];
+
+        } else {
+
+            futureRows =
+
+                future.map((row, index) => {
+
+                    row.period =
+
+                        unpaidPeriods[index];
+
+                    row.date =
+
+                        dateOf(
+
+                            unpaidPeriods[index]
+
+                        );
+
+                    return row;
+
+                });
+
+        }
 
         return [
 
             ...paidRows,
 
-            ...future
+            ...futureRows
 
         ].sort(
 
@@ -898,6 +1078,12 @@ const LiabilityService = {
         );
 
     },
+
+    // =====================
+
+    // Repayment Schedule
+
+    // =====================
 
     getSchedule(
 
