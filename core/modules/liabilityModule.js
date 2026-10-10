@@ -14,7 +14,7 @@ import LiabilityAgent from "../../modules/liability/agent/liabilityAgent.js?v=20
 
 import LiabilityAI from "../../modules/liability/ai/liabilityAI.js?v=20261008ae";
 
-import LiabilityView from "../../modules/liability/ui/liabilityView.js?v=20261009bo";
+import LiabilityView from "../../modules/liability/ui/liabilityView.js?v=20261009bs";
 
 const LiabilityModule = {
 
