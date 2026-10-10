@@ -16,7 +16,7 @@ import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261008ae";
 
 import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261009by";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009cb";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009cc";
 
 const AccountView = {
 
@@ -76,7 +76,7 @@ const AccountView = {
 
                         >
 
-                            ${t("account.editBalance")}
+                            ${t("account.deposit")}
 
                         </button>
 
@@ -774,7 +774,7 @@ const AccountView = {
 
                 <h3>
 
-                    ${t("account.editBalance")} — ${account.name || account.id}
+                    ${t("account.deposit")} — ${account.name || account.id}
 
                 </h3>
 
@@ -794,7 +794,7 @@ const AccountView = {
 
                     <label>
 
-                        ${t("account.newBalance")}
+                        ${t("account.depositAmount")}
 
                     </label>
 
@@ -802,17 +802,25 @@ const AccountView = {
 
                     <input
 
-                        id="edit-balance-value"
+                        id="deposit-amount"
 
                         type="number"
 
-                        step="0.01"
+                        min="0"
 
-                        value="${currentBalance}"
+                        step="0.01"
 
                         required
 
                     >
+
+                    <br><br>
+
+                    <label>
+
+                        ${t("account.depositAfter")}：<span id="deposit-after-value">$${currentBalance.toLocaleString()}</span>
+
+                    </label>
 
                     <br><br>
 
@@ -826,21 +834,53 @@ const AccountView = {
 
                     <select
 
-                        id="edit-balance-kind"
+                        id="deposit-kind"
 
                     >
 
-                        <option value="adjust">${t("account.kindAdjust")}</option>
-
                         <option value="income">${t("account.kindIncome")}</option>
 
-                        <option value="expense">${t("account.kindExpense")}</option>
-
                         <option value="liability">${t("account.kindLiability")}</option>
+
+                        <option value="adjust">${t("account.kindAdjust")}</option>
 
                     </select>
 
                     <br><br>
+
+                    <div id="deposit-type-row">
+
+                        <label>
+
+                            ${t("account.incomeNature")}
+
+                        </label>
+
+                        <br>
+
+                        <select
+
+                            id="deposit-income-type"
+
+                        >
+
+                            <option value="Salary">${t("account.typeSalary")}</option>
+
+                            <option value="Business">${t("account.typeBusiness")}</option>
+
+                            <option value="Investment">${t("account.typeInvestment")}</option>
+
+                            <option value="Rental">${t("account.typeRental")}</option>
+
+                            <option value="Pension">${t("account.typePension")}</option>
+
+                            <option value="Other">${t("account.typeOther")}</option>
+
+                        </select>
+
+                        <br><br>
+
+                    </div>
 
                     <button
 
@@ -878,6 +918,94 @@ const AccountView = {
 
             );
 
+        const amountInput =
+
+            form.querySelector(
+
+                "#deposit-amount"
+
+            );
+
+        const afterValue =
+
+            form.querySelector(
+
+                "#deposit-after-value"
+
+            );
+
+        const kindSelect =
+
+            form.querySelector(
+
+                "#deposit-kind"
+
+            );
+
+        const typeRow =
+
+            form.querySelector(
+
+                "#deposit-type-row"
+
+            );
+
+        const refreshDepositPreview =
+
+            () => {
+
+                const amount =
+
+                    Number(amountInput.value || 0);
+
+                afterValue.textContent =
+
+                    "$" +
+
+                    (
+
+                        currentBalance +
+
+                        (
+
+                            Number.isFinite(amount)
+
+                                ? amount
+
+                                : 0
+
+                        )
+
+                    ).toLocaleString();
+
+                typeRow.style.display =
+
+                    kindSelect.value === "income"
+
+                        ? ""
+
+                        : "none";
+
+            };
+
+        amountInput.addEventListener(
+
+            "input",
+
+            refreshDepositPreview
+
+        );
+
+        kindSelect.addEventListener(
+
+            "change",
+
+            refreshDepositPreview
+
+        );
+
+        refreshDepositPreview();
+
         form.addEventListener(
 
             "submit",
@@ -886,29 +1014,24 @@ const AccountView = {
 
                 event.preventDefault();
 
-                const newBalance =
+                // A deposit is a money event, never a
+                // typed balance: the amount is booked
+                // under the chosen classification and
+                // the balance follows from the books.
 
-                    Number(
+                const amount =
 
-                        form.querySelector(
+                    Number(amountInput.value || 0);
 
-                            "#edit-balance-value"
+                if (!(amount > 0)) {
 
-                        ).value || 0
+                    return;
 
-                    );
+                }
 
                 const kind =
 
-                    form.querySelector(
-
-                        "#edit-balance-kind"
-
-                    ).value;
-
-                const delta =
-
-                    newBalance - currentBalance;
+                    kindSelect.value;
 
                 const owner =
 
@@ -924,19 +1047,17 @@ const AccountView = {
 
                 try {
 
-                    if (
+                    if (kind === "income") {
 
-                        kind === "income" &&
+                        const incomeType =
 
-                        delta > 0
+                            form.querySelector(
 
-                    ) {
+                                "#deposit-income-type"
 
-                        // The income chain credits the
+                            ).value ||
 
-                        // account itself; no manual
-
-                        // anchor on top of it.
+                            "Other";
 
                         IncomeAPI.createIncome({
 
@@ -944,51 +1065,31 @@ const AccountView = {
 
                                 t("account.balanceIncomeName"),
 
-                            amount: delta,
+                            type:
+
+                                incomeType,
+
+                            category:
+
+                                t(
+
+                                    "account.type" +
+
+                                    incomeType
+
+                                ),
+
+                            amount,
 
                             date: today,
 
                             accountId: account.id,
 
-                            memberId: owner,
-
-                            category: "其他收入"
+                            memberId: owner
 
                         });
 
-                    } else if (
-
-                        kind === "expense" &&
-
-                        delta < 0
-
-                    ) {
-
-                        ExpenseAPI.createExpense({
-
-                            name:
-
-                                t("account.balanceExpenseName"),
-
-                            amount: Math.abs(delta),
-
-                            date: today,
-
-                            accountId: account.id,
-
-                            memberId: owner,
-
-                            category: "其他支出"
-
-                        });
-
-                    } else if (
-
-                        kind === "liability" &&
-
-                        delta > 0
-
-                    ) {
+                    } else if (kind === "liability") {
 
                         LiabilityAPI.createLiability({
 
@@ -996,7 +1097,7 @@ const AccountView = {
 
                                 t("account.balanceLiabilityName"),
 
-                            currentBalance: delta,
+                            currentBalance: amount,
 
                             memberId: owner
 
@@ -1006,7 +1107,9 @@ const AccountView = {
 
                             ...account,
 
-                            balance: newBalance
+                            balance:
+
+                                currentBalance + amount
 
                         });
 
@@ -1016,7 +1119,9 @@ const AccountView = {
 
                             ...account,
 
-                            balance: newBalance
+                            balance:
+
+                                currentBalance + amount
 
                         });
 
