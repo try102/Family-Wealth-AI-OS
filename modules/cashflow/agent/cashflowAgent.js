@@ -10,7 +10,7 @@ Cashflow Agent
 
 import cashflowAPI
 
-from "../api/cashflowAPI.js?v=20261008ae";
+from "../api/cashflowAPI.js?v=20261009bp";
 
 const cashflowAgent = {
 
