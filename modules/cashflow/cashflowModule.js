@@ -10,7 +10,7 @@ Cashflow Module Definition
 
 import cashflowAPI
 
-    from "./api/cashflowAPI.js?v=20261009bp";
+    from "./api/cashflowAPI.js?v=20261009bq";
 
 import cashflowAgent
 
@@ -22,7 +22,7 @@ import cashflowAI
 
 import cashflowView
 
-    from "./ui/cashflowView.js?v=20261009bi";
+    from "./ui/cashflowView.js?v=20261009bq";
 
 const cashflowModule = {
 
