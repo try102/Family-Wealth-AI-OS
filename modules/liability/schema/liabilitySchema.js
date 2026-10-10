@@ -104,6 +104,40 @@ const LiabilitySchema = {
 
             "Monthly",
 
+            repaymentMethod:
+
+            data.repaymentMethod ||
+
+            "",
+
+            termMonths:
+
+            Number(
+
+                data.termMonths || 0
+
+            ),
+
+            firstPaymentDate:
+
+            data.firstPaymentDate ||
+
+            "",
+
+            paymentAccountId:
+
+            data.paymentAccountId ||
+
+            "",
+
+            paidPeriods:
+
+            Array.isArray(data.paidPeriods)
+
+                ? data.paidPeriods
+
+                : [],
+
             startDate:
 
             data.startDate || "",
