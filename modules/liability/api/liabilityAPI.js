@@ -8,7 +8,7 @@ Liability API
 
 */
 
-import LiabilityService from "../services/liabilityService.js?v=20261009bo";
+import LiabilityService from "../services/liabilityService.js?v=20261009bp";
 
 import {
 
@@ -16,7 +16,7 @@ import {
 
     REPAYMENT_METHODS
 
-} from "../services/repaymentSchedule.js?v=20261009bo";
+} from "../services/repaymentSchedule.js?v=20261009bp";
 
 const LiabilityAPI = {
 
