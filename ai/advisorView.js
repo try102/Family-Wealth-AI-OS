@@ -32,7 +32,7 @@ import { computeAdvisorModels } from "./advisorModels.js?v=20261008ae";
 
 import RetirementAPI from "../modules/retirement/api/retirementAPI.js?v=20261008ae";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../core/i18n/i18n.js?v=20261009cb";
+import { t, getLanguage, setLanguage, languageOptions } from "../core/i18n/i18n.js?v=20261009cc";
 
 const ADVISOR_TEXT_KEYS = {
     "GOOD": "advisor.health.good",
