@@ -689,7 +689,35 @@ const LiabilityService = {
 
                                     0
 
-                                ),
+                                ) ||
+
+                                Math.round(
+
+                                    (
+
+                                        Number(
+
+                                            detail
+
+                                                .principalPortion ||
+
+                                            0
+
+                                        ) +
+
+                                        Number(
+
+                                            detail
+
+                                                .interestPortion ||
+
+                                            0
+
+                                        )
+
+                                    ) * 100
+
+                                ) / 100,
 
                             principalPortion:
 
