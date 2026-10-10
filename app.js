@@ -3618,6 +3618,32 @@ async function start(){
 
             SystemManager.status();
 
+        // Backfill the Income Center mirrors for
+
+        // historical realized gains / dividends /
+
+        // interest (the live hook covers new trades;
+
+        // this is idempotent).
+
+        try {
+
+            const investmentServiceModule =
+
+                await import(
+
+                    "./modules/investment/services/investmentService.js?v=20261009bl"
+
+                );
+
+            investmentServiceModule.default
+
+                .syncAllAutoIncome();
+
+        } catch (autoIncomeError) {
+
+        }
+
         // ==================================================
 
         // Transaction → Cashflow Bridge
