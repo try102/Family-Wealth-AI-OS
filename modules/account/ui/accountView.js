@@ -16,6 +16,10 @@ import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261010da";
 
 import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261010da";
 
+import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261010dg";
+
+import AssetAPI from "../../asset/api/assetAPI.js?v=20261010da";
+
 import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261010dc";
 
 const AccountView = {
@@ -372,6 +376,22 @@ const AccountView = {
 
             }
 
+            <hr>
+
+            <button
+
+                id="account-diagnostic-button"
+
+                type="button"
+
+                style="margin-top:10px;font-size:12px;color:#666;"
+
+            >
+
+                📋 导出诊断数据
+
+            </button>
+
             </div>
 
         </div>
@@ -409,6 +429,236 @@ const AccountView = {
                     ) {
 
                         onBack();
+
+                    }
+
+                }
+
+            );
+
+        }
+
+        // ==================================================
+
+        // Diagnostic Export
+
+        // ==================================================
+
+        const diagnosticButton =
+
+            container.querySelector(
+
+                "#account-diagnostic-button"
+
+            );
+
+        if (diagnosticButton) {
+
+            diagnosticButton.addEventListener(
+
+                "click",
+
+                () => {
+
+                    try {
+
+                        const data = {
+
+                            exportedAt:
+
+                                new Date().toISOString(),
+
+                            accounts:
+
+                                (
+
+                                    AccountAPI.getAll() ||
+
+                                    []
+
+                                ).map(a => ({
+
+                                    id: a.id,
+
+                                    name: a.name,
+
+                                    type: a.type,
+
+                                    accountType:
+
+                                        a.accountType,
+
+                                    memberId:
+
+                                        a.memberId ||
+
+                                        a.ownerId,
+
+                                    balance: a.balance,
+
+                                    openingBalance:
+
+                                        a.openingBalance,
+
+                                    basisValue:
+
+                                        a.basisValue,
+
+                                    mirrorBasisValue:
+
+                                        a.mirrorBasisValue,
+
+                                })),
+
+                        };
+
+                        // Investment trades
+
+                        try {
+
+                            data.investmentTrades =
+
+                                (
+
+                                    InvestmentAPI.getTrades() ||
+
+                                    []
+
+                                ).map(t => ({
+
+                                    id: t.id,
+
+                                    action: t.action,
+
+                                    symbol: t.symbol,
+
+                                    amount: t.amount,
+
+                                    quantity:
+
+                                        t.quantity,
+
+                                    price: t.price,
+
+                                    memberId:
+
+                                        t.memberId,
+
+                                    accountId:
+
+                                        t.accountId,
+
+                                    tradeDate:
+
+                                        t.tradeDate,
+
+                                }));
+
+                        } catch (e) {}
+
+                        // Paired assets (for Investment/Checking)
+
+                        try {
+
+                            data.assets =
+
+                                (
+
+                                    AssetAPI.getAll() ||
+
+                                    []
+
+                                ).map(a => ({
+
+                                    id: a.id,
+
+                                    name: a.name,
+
+                                    category: a.category,
+
+                                    type: a.type,
+
+                                    memberId:
+
+                                        a.memberId,
+
+                                    amount: a.amount,
+
+                                    currentValue:
+
+                                        a.currentValue,
+
+                                    basisValue:
+
+                                        a.basisValue,
+
+                                }));
+
+                        } catch (e) {}
+
+                        const blob =
+
+                            new Blob(
+
+                                [
+
+                                    JSON.stringify(
+
+                                        data,
+
+                                        null,
+
+                                        2
+
+                                    )
+
+                                ],
+
+                                {
+
+                                    type:
+
+                                        "application/json"
+
+                                }
+
+                            );
+
+                        const url =
+
+                            URL.createObjectURL(blob);
+
+                        const a =
+
+                            document.createElement("a");
+
+                        a.href = url;
+
+                        a.download =
+
+                            "diagnostic-" +
+
+                            Date.now() +
+
+                            ".json";
+
+                        document.body.appendChild(a);
+
+                        a.click();
+
+                        document.body.removeChild(a);
+
+                        URL.revokeObjectURL(url);
+
+                    } catch (err) {
+
+                        alert(
+
+                            "导出失败: " +
+
+                            err.message
+
+                        );
 
                     }
 
