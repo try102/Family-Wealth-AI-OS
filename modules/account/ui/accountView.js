@@ -556,6 +556,48 @@ const AccountView = {
 
                         } catch (e) {}
 
+                        // Income records (to trace the $100k)
+
+                        try {
+
+                            data.incomes =
+
+                                (
+
+                                    IncomeAPI.getAll() ||
+
+                                    []
+
+                                ).map(i => ({
+
+                                    id: i.id,
+
+                                    name: i.name,
+
+                                    amount:
+
+                                        i.amount ||
+
+                                        i.value,
+
+                                    memberId:
+
+                                        i.memberId,
+
+                                    accountId:
+
+                                        i.accountId,
+
+                                    date:
+
+                                        i.date ||
+
+                                        i.createdAt,
+
+                                }));
+
+                        } catch (e) {}
+
                         // Paired assets (for Investment/Checking)
 
                         try {
