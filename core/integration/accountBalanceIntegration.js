@@ -80,6 +80,122 @@ const AccountBalanceIntegration = {
 
         try {
 
+            // Repair wrongly-linked investment trades.
+
+            // If a trade's accountId points to an account
+
+            // whose member does NOT match the trade's
+
+            // member, the linkage is wrong (e.g. Hu's GOOL
+
+            // trades pointing at Jia's Investment account).
+
+            // Clear the accountId so member-based fallback
+
+            // computes the effect correctly.
+
+            try {
+
+                const allTrades =
+
+                    InvestmentRepository.getTrades() ||
+
+                    [];
+
+                let linkageFixed = false;
+
+                allTrades.forEach(trade => {
+
+                    const tradeAcctId =
+
+                        trade.accountId || "";
+
+                    if (!tradeAcctId) {
+
+                        return;
+
+                    }
+
+                    const tradeMember =
+
+                        trade.memberId ||
+
+                        trade.ownerId ||
+
+                        "";
+
+                    if (!tradeMember) {
+
+                        return;
+
+                    }
+
+                    let linkedAccount = null;
+
+                    try {
+
+                        const allAccts =
+
+                            AccountRepository.getAll() ||
+
+                            [];
+
+                        linkedAccount =
+
+                            allAccts.find(
+
+                                a =>
+
+                                    String(a.id) ===
+
+                                    String(tradeAcctId)
+
+                            ) || null;
+
+                    } catch (e) {}
+
+                    if (
+
+                        linkedAccount &&
+
+                        !AccountBalanceIntegration.sameMemberId(
+
+                            tradeMember,
+
+                            linkedAccount.memberId ||
+
+                                linkedAccount.ownerId ||
+
+                                ""
+
+                        )
+
+                    ) {
+
+                        trade.accountId = "";
+
+                        linkageFixed = true;
+
+                    }
+
+                });
+
+                if (linkageFixed) {
+
+                    allTrades.forEach(t => {
+
+                        try {
+
+                            InvestmentRepository.saveTrade(t);
+
+                        } catch (e) {}
+
+                    });
+
+                }
+
+            } catch (linkageError) {}
+
             const txs =
 
                 Array.isArray(transactions)
@@ -2276,16 +2392,14 @@ const AccountBalanceIntegration = {
 
                             0;
 
-                        // Fallback for Investment accounts:
-                        // if no transaction effects were found
-                        // by account ID (orphaned trades from
-                        // an old save that wiped the linkage),
-                        // settle by member instead so buys and
-                        // sells are never silently dropped.
+                        // For Investment accounts, settle by member
+                        // from the trade repository. Trades are
+                        // the source of truth; accountId linkage
+                        // can be wrong (e.g. Hu's GOOL trades
+                        // pointing at Jia's account), polluting
+                        // the accountId-based effect.
 
                         if (
-
-                            effect === 0 &&
 
                             kind === "investment"
 
@@ -2744,6 +2858,62 @@ const AccountBalanceIntegration = {
                             }
 
                         } else {
+
+                            // If the account's openingBalance is
+
+                            // stale (differs from the mirrored
+
+                            // basis), sync it. This happens when
+
+                            // an old bug anchored openingBalance
+
+                            // to a wrong value (e.g. 205400)
+
+                            // but the user later re-saved the
+
+                            // correct basis (200000).
+
+                            const mirroredBasis =
+
+                                account.mirrorBasisValue !==
+
+                                    undefined &&
+
+                                account.mirrorBasisValue !==
+
+                                    null
+
+                                    ? Number(
+
+                                        account.mirrorBasisValue
+
+                                    )
+
+                                    : undefined;
+
+                            if (
+
+                                mirroredBasis !== undefined &&
+
+                                Number.isFinite(
+
+                                    mirroredBasis
+
+                                ) &&
+
+                                Number(
+
+                                    account.openingBalance
+
+                                ) !== mirroredBasis
+
+                            ) {
+
+                                account.openingBalance =
+
+                                    mirroredBasis;
+
+                            }
 
                             if (
 
