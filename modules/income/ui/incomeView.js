@@ -1064,6 +1064,53 @@ const IncomeView = {
 
         );
 
+        // Prevent cross-account misposting: the account
+        // dropdown does not follow the member, so a
+        // stale account from the previous member would
+        // silently receive the money. Reset the account
+        // whenever the member changes, forcing an
+        // explicit re-selection.
+
+        const memberSelect =
+
+            form.querySelector(
+
+                "#income-member"
+
+            );
+
+        const accountSelect =
+
+            form.querySelector(
+
+                "#income-account"
+
+            );
+
+        if (
+
+            memberSelect &&
+
+            accountSelect
+
+        ) {
+
+            memberSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    accountSelect.selectedIndex =
+
+                        0;
+
+                }
+
+            );
+
+        }
+
         form.addEventListener(
 
             "submit",
@@ -1556,6 +1603,50 @@ const IncomeView = {
                 "#income-edit-form"
 
             );
+
+        // Same cross-account guard as the create form:
+        // changing the member resets the account, so a
+        // stale account cannot silently receive money.
+
+        const editMemberSelect =
+
+            form.querySelector(
+
+                "#edit-income-member"
+
+            );
+
+        const editAccountSelect =
+
+            form.querySelector(
+
+                "#edit-income-account"
+
+            );
+
+        if (
+
+            editMemberSelect &&
+
+            editAccountSelect
+
+        ) {
+
+            editMemberSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    editAccountSelect.selectedIndex =
+
+                        0;
+
+                }
+
+            );
+
+        }
 
         form.addEventListener(
 
