@@ -62,7 +62,7 @@ import IncomeService from "../../income/services/incomeService.js?v=20261010dc";
 
 import AccountBalanceIntegration
 
-    from "../../../core/integration/accountBalanceIntegration.js?v=20261010df";
+    from "../../../core/integration/accountBalanceIntegration.js?v=20261010dg";
 
 import cashflowAPI
 
