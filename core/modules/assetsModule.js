@@ -38,11 +38,11 @@ from "../../modules/asset/schema/assetSchema.js?v=20261008ae";
 
 import assetService
 
-from "../../modules/asset/services/assetService.js?v=20261008ae";
+from "../../modules/asset/services/assetService.js?v=20261010da";
 
 import assetView
 
-from "../../modules/asset/ui/assetView.js?v=20261009bd";
+from "../../modules/asset/ui/assetView.js?v=20261010df";
 
 const AssetsModule = {
 
