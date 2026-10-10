@@ -8,7 +8,15 @@ Liability API
 
 */
 
-import LiabilityService from "../services/liabilityService.js?v=20261008ae";
+import LiabilityService from "../services/liabilityService.js?v=20261009bo";
+
+import {
+
+    LIABILITY_CATEGORIES,
+
+    REPAYMENT_METHODS
+
+} from "../services/repaymentSchedule.js?v=20261009bo";
 
 const LiabilityAPI = {
 
@@ -145,6 +153,62 @@ const LiabilityAPI = {
             data
 
         );
+
+    },
+
+    // =====================
+
+    // Repayment Schedule
+
+    // =====================
+
+    getSchedule(
+
+        id
+
+    ){
+
+        const liability =
+
+            this.getLiability(
+
+                id
+
+            );
+
+        if (!liability){
+
+            return null;
+
+        }
+
+        return LiabilityService
+
+        .getSchedule(
+
+            liability
+
+        );
+
+    },
+
+    syncAllScheduledPayments(){
+
+        return LiabilityService
+
+        .syncAllScheduledPayments();
+
+    },
+
+    getCategoryOptions(){
+
+        return LIABILITY_CATEGORIES;
+
+    },
+
+    getMethodOptions(){
+
+        return REPAYMENT_METHODS;
 
     },
 
