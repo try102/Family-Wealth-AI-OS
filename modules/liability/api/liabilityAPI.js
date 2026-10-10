@@ -8,7 +8,7 @@ Liability API
 
 */
 
-import LiabilityService from "../services/liabilityService.js?v=20261009bv";
+import LiabilityService from "../services/liabilityService.js?v=20261009bw";
 
 import {
 
@@ -187,6 +187,22 @@ const LiabilityAPI = {
         .getSchedule(
 
             liability
+
+        );
+
+    },
+
+    compareMethods(
+
+        input
+
+    ){
+
+        return LiabilityService
+
+        .compareMethods(
+
+            input
 
         );
 
