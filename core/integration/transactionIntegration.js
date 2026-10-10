@@ -34,7 +34,7 @@ import AccountBalanceIntegration
 
 import cashflowAPI
 
-    from "../../modules/cashflow/api/cashflowAPI.js?v=20261009bp";
+    from "../../modules/cashflow/api/cashflowAPI.js?v=20261009bq";
 
 class TransactionIntegrationService {
 
