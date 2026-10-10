@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009bo";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261009bq";
 
 const app =
 
@@ -545,6 +545,38 @@ function renderDashboard(
                             ${formatCurrency(
 
                                 cashFlow.realizedGains ||
+
+                                0
+
+                            )}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Loan Principal Repaid -->
+
+                    <div
+
+                        class="dashboard-card"
+
+                    >
+
+                        <h3>
+
+                            ${t("dash.loanPrincipal")}
+
+                        </h3>
+
+                        <div
+
+                            class="value"
+
+                        >
+
+                            ${formatCurrency(
+
+                                cashFlow.loanPrincipalOut ||
 
                                 0
 
@@ -3776,7 +3808,7 @@ async function start(){
 
                     await import(
 
-                        "./modules/cashflow/api/cashflowAPI.js?v=20261009bp"
+                        "./modules/cashflow/api/cashflowAPI.js?v=20261009bq"
 
                     );
 
@@ -4598,6 +4630,8 @@ async function start(){
 
         let dashInvestmentNet = 0;
 
+        let dashLoanPrincipal = 0;
+
         let dashRealizedGains = 0;
 
         try {
@@ -4705,6 +4739,16 @@ async function start(){
                     Number(
 
                         cashflowSummary?.investmentNet ||
+
+                        0
+
+                    );
+
+                dashLoanPrincipal =
+
+                    Number(
+
+                        cashflowSummary?.loanPrincipalOut ||
 
                         0
 
@@ -4836,7 +4880,9 @@ async function start(){
 
                 incomeTotal -
 
-                dashRegularExpense +
+                dashRegularExpense -
+
+                dashLoanPrincipal +
 
                 dashInvestmentNet,
 
@@ -4844,13 +4890,19 @@ async function start(){
 
                 incomeTotal -
 
-                dashRegularExpense +
+                dashRegularExpense -
+
+                dashLoanPrincipal +
 
                 dashInvestmentNet,
 
             investmentNet:
 
                 dashInvestmentNet,
+
+            loanPrincipalOut:
+
+                dashLoanPrincipal,
 
             realizedGains:
 
@@ -5014,11 +5066,23 @@ async function start(){
 
                     scopedRealizedGains;
 
+                cashFlowData.loanPrincipalOut =
+
+                    Number(
+
+                        dashScopeBucket.loanPrincipalPaid ||
+
+                        0
+
+                    );
+
                 cashFlowData.net =
 
                     dashScopeBucket.netFlow +
 
-                    scopedInvestmentNet;
+                    scopedInvestmentNet -
+
+                    cashFlowData.loanPrincipalOut;
 
                 cashFlowData.netCashFlow =
 
