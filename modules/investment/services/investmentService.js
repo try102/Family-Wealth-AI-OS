@@ -66,7 +66,7 @@ import AccountBalanceIntegration
 
 import cashflowAPI
 
-    from "../../cashflow/api/cashflowAPI.js?v=20261009bp";
+    from "../../cashflow/api/cashflowAPI.js?v=20261009bq";
 
 /*
 
