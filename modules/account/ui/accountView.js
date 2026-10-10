@@ -14,9 +14,9 @@ import IncomeAPI from "../../income/api/incomeAPI.js?v=20261008ae";
 
 import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261008ae";
 
-import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261008ae";
+import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261009bo";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bk";
+import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n/i18n.js?v=20261009bo";
 
 const AccountView = {
 
