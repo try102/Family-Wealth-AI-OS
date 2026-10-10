@@ -30,6 +30,14 @@ import cashflowRepository
 
     from "../repository/cashflowRepository.js?v=20261008ae";
 
+import TransactionIntegration
+
+    from "../../../core/integration/transactionIntegration.js?v=20261009bp";
+
+import LiabilityService
+
+    from "../../liability/services/liabilityService.js?v=20261009bp";
+
 // ==================================================
 
 //
@@ -273,6 +281,146 @@ const cashflowService = {
     // ==================================================
 
     delete(
+
+        id
+
+    ){
+
+        /*
+
+         * Deleting a cash-flow entry that came from a
+
+         * Transaction must revoke the Transaction
+
+         * itself, not just this row: the Transaction
+
+         * is what moved the account balance, so
+
+         * removing only the row would leave the
+
+         * account (and Dashboard) still deducted.
+
+         * removeTransaction reverses the balance
+
+         * effect and removes every entry of that
+
+         * Transaction; a loan payment also restores
+
+         * the liability side. Entries without a live
+
+         * Transaction are removed directly.
+
+         */
+
+        let entry = null;
+
+        try {
+
+            entry =
+
+                cashflowRepository.findById(
+
+                    id
+
+                );
+
+        } catch (lookupError) {
+
+        }
+
+        const transactionId =
+
+            entry
+
+                ? entry.transactionId
+
+                : null;
+
+        if (transactionId){
+
+            let transaction = null;
+
+            try {
+
+                transaction =
+
+                    (
+
+                        TransactionIntegration
+
+                            .getAllTransactions() ||
+
+                        []
+
+                    ).find(
+
+                        item =>
+
+                            String(item.id) ===
+
+                            String(transactionId)
+
+                    ) || null;
+
+            } catch (transactionError) {
+
+            }
+
+            if (transaction){
+
+                TransactionIntegration
+
+                    .removeTransaction(
+
+                        transactionId
+
+                    );
+
+                if (
+
+                    transaction.type ===
+
+                    "LOAN_PAYMENT"
+
+                ){
+
+                    try {
+
+                        LiabilityService
+
+                            .handleLoanPaymentRemoved(
+
+                                transaction
+
+                            );
+
+                    } catch (liabilityError) {
+
+                    }
+
+                }
+
+                return true;
+
+            }
+
+        }
+
+        return cashflowRepository.remove(
+
+            id
+
+        );
+
+    },
+
+    // Entry-only removal: used by internal cascades
+
+    // where the Transaction is already being revoked
+
+    // by TransactionIntegration (no re-entry).
+
+    deleteEntry(
 
         id
 
