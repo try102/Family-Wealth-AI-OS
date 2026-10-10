@@ -736,6 +736,155 @@ const LiabilityService = {
     },
 
     /*
+     * Read-only comparison of every repayment
+     * method for the same loan terms. Pure trial
+     * calculation: creates no records and books
+     * nothing.
+     */
+
+    compareMethods(
+
+        input = {}
+
+    ){
+
+        const principal =
+
+            Number(input.principal || 0);
+
+        const termMonths =
+
+            Number(input.termMonths || 0);
+
+        if (
+
+            !(principal > 0) ||
+
+            !(termMonths > 0)
+
+        ){
+
+            return [];
+
+        }
+
+        const methods = [
+
+            "EQUAL_INSTALLMENT",
+
+            "EQUAL_PRINCIPAL",
+
+            "INTEREST_ONLY",
+
+            "LUMP_SUM"
+
+        ];
+
+        const round2 =
+
+            value =>
+
+                Math.round(value * 100) / 100;
+
+        return methods.map(method => {
+
+            const rows =
+
+                computeSchedule({
+
+                    principal,
+
+                    interestRate:
+
+                        Number(
+
+                            input.interestRate || 0
+
+                        ),
+
+                    repaymentMethod:
+
+                        method,
+
+                    termMonths,
+
+                    firstPaymentDate:
+
+                        "2026-01-01"
+
+                });
+
+            const totalInterest =
+
+                round2(
+
+                    rows.reduce(
+
+                        (sum, row) =>
+
+                            sum +
+
+                            row.interestPortion,
+
+                        0
+
+                    )
+
+                );
+
+            const totalPaid =
+
+                round2(
+
+                    rows.reduce(
+
+                        (sum, row) =>
+
+                            sum + row.payment,
+
+                        0
+
+                    )
+
+                );
+
+            return {
+
+                method,
+
+                periods:
+
+                    rows.length,
+
+                firstPayment:
+
+                    rows.length
+
+                        ? rows[0].payment
+
+                        : 0,
+
+                lastPayment:
+
+                    rows.length
+
+                        ? rows[rows.length - 1]
+
+                            .payment
+
+                        : 0,
+
+                totalInterest,
+
+                totalPaid
+
+            };
+
+        });
+
+    },
+
+    /*
      * The schedule the rest of the system works
      * with: installments already recorded keep
      * their place, and the unpaid remainder is
