@@ -1394,7 +1394,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/account/ui/accountView.js?v=20261010dc"
+                            "./modules/account/ui/accountView.js?v=20261010dh"
 
                         );
 
