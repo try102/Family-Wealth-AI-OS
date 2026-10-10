@@ -22,7 +22,7 @@ import AssetAPI from "../modules/asset/api/assetAPI.js?v=20261008ae";
 
 import InvestmentAPI from "../modules/investment/api/investmentAPI.js?v=20261008ah";
 
-import LiabilityAPI from "../modules/liability/api/liabilityAPI.js?v=20261008ae";
+import LiabilityAPI from "../modules/liability/api/liabilityAPI.js?v=20261009bo";
 
 import cashflowAPI from "../modules/cashflow/api/cashflowAPI.js?v=20261008ae";
 
@@ -32,7 +32,7 @@ import { computeAdvisorModels } from "./advisorModels.js?v=20261008ae";
 
 import RetirementAPI from "../modules/retirement/api/retirementAPI.js?v=20261008ae";
 
-import { t, getLanguage, setLanguage, languageOptions } from "../core/i18n/i18n.js?v=20261009bk";
+import { t, getLanguage, setLanguage, languageOptions } from "../core/i18n/i18n.js?v=20261009bo";
 
 const ADVISOR_TEXT_KEYS = {
     "GOOD": "advisor.health.good",
