@@ -480,9 +480,37 @@ const ExpenseView = {
 
     buildAccountOptions(selectedId = "") {
 
+        const members = this.getMembers();
+
+        const memberNameOf = (memberId) => {
+
+            const m = (members || []).find(
+
+                x => String(x.id) === String(memberId)
+
+            );
+
+            return m ? (m.name || m.id) : "";
+
+        };
+
         return this.getAccounts().map(
 
-            account => `
+            account => {
+
+                const mName = memberNameOf(
+
+                    account.memberId || account.ownerId || ""
+
+                );
+
+                const label = mName
+
+                    ? mName + " · " + (account.name || account.id)
+
+                    : (account.name || account.id);
+
+                return `
 
                 <option
 
@@ -506,17 +534,13 @@ const ExpenseView = {
 
                 >
 
-                    ${
-
-                        account.name ||
-
-                        account.id
-
-                    }
+                    ${label}
 
                 </option>
 
-            `
+            `;
+
+            }
 
         ).join("");
 
@@ -984,9 +1008,81 @@ const ExpenseView = {
 
                 () => {
 
-                    expenseAccountSelect.selectedIndex =
+                    try {
 
-                        0;
+                        const newMemberId =
+
+                            expenseMemberSelect.value || "";
+
+                        const accounts =
+
+                            this.getAccounts() || [];
+
+                        const memberAccounts =
+
+                            accounts.filter(
+
+                                a =>
+
+                                    String(
+
+                                        a.memberId ||
+
+                                        a.ownerId ||
+
+                                        ""
+
+                                    ) ===
+
+                                    String(newMemberId)
+
+                            );
+
+                        let target =
+
+                            memberAccounts.find(
+
+                                a =>
+
+                                    String(
+
+                                        a.type || ""
+
+                                    ).toLowerCase() ===
+
+                                    "checking" ||
+
+                                    String(
+
+                                        a.accountType || ""
+
+                                    ).toLowerCase() ===
+
+                                    "checking"
+
+                            ) || memberAccounts[0];
+
+                        if (target) {
+
+                            expenseAccountSelect.value =
+
+                                target.id;
+
+                        } else {
+
+                            expenseAccountSelect.selectedIndex =
+
+                                0;
+
+                        }
+
+                    } catch (e) {
+
+                        expenseAccountSelect.selectedIndex =
+
+                            0;
+
+                    }
 
                 }
 
@@ -1459,9 +1555,81 @@ const ExpenseView = {
 
                 () => {
 
-                    editExpenseAccountSelect.selectedIndex =
+                    try {
 
-                        0;
+                        const newMemberId =
+
+                            editExpenseMemberSelect.value || "";
+
+                        const accounts =
+
+                            this.getAccounts() || [];
+
+                        const memberAccounts =
+
+                            accounts.filter(
+
+                                a =>
+
+                                    String(
+
+                                        a.memberId ||
+
+                                        a.ownerId ||
+
+                                        ""
+
+                                    ) ===
+
+                                    String(newMemberId)
+
+                            );
+
+                        let target =
+
+                            memberAccounts.find(
+
+                                a =>
+
+                                    String(
+
+                                        a.type || ""
+
+                                    ).toLowerCase() ===
+
+                                    "checking" ||
+
+                                    String(
+
+                                        a.accountType || ""
+
+                                    ).toLowerCase() ===
+
+                                    "checking"
+
+                            ) || memberAccounts[0];
+
+                        if (target) {
+
+                            editExpenseAccountSelect.value =
+
+                                target.id;
+
+                        } else {
+
+                            editExpenseAccountSelect.selectedIndex =
+
+                                0;
+
+                        }
+
+                    } catch (e) {
+
+                        editExpenseAccountSelect.selectedIndex =
+
+                            0;
+
+                    }
 
                 }
 
