@@ -542,56 +542,24 @@ const LiabilityService = {
 
     // =====================
 
-    getSchedule(
+    /*
+     * Every loan payment actually on the books for
+     * one liability, keyed by schedule period.
+     */
 
-        liability,
+    bookedPayments(
 
-        today = todayText()
+        liabilityId
 
     ){
 
-        const installments =
+        const byPeriod = new Map();
 
-            computeSchedule(
+        let principal = 0;
 
-                liability || {}
+        let interest = 0;
 
-            );
-
-        if (!installments.length){
-
-            return null;
-
-        }
-
-        const summary = summarizeSchedule(
-
-            installments,
-
-            today,
-
-            (liability || {}).paidPeriods || [],
-
-            (liability || {}).voidedPeriods || []
-
-        );
-
-        /*
-         * Book truth wins over plan math: installments
-         * that were actually recorded keep the splits
-         * they were booked with (even if the rate,
-         * term or method was edited afterwards), and
-         * the summary totals come from the recorded
-         * payments and the real outstanding balance.
-         */
-
-        const bookedByPeriod = new Map();
-
-        let bookedPrincipal = 0;
-
-        let bookedInterest = 0;
-
-        let hasBookings = false;
+        let has = false;
 
         try {
 
@@ -623,7 +591,7 @@ const LiabilityService = {
 
                     String(detail.liabilityId) !==
 
-                        String(liability.id)
+                        String(liabilityId)
 
                 ){
 
@@ -631,15 +599,15 @@ const LiabilityService = {
 
                 }
 
-                hasBookings = true;
+                has = true;
 
-                bookedPrincipal =
+                principal =
 
                     Math.round(
 
                         (
 
-                            bookedPrincipal +
+                            principal +
 
                             Number(
 
@@ -653,13 +621,13 @@ const LiabilityService = {
 
                     ) / 100;
 
-                bookedInterest =
+                interest =
 
                     Math.round(
 
                         (
 
-                            bookedInterest +
+                            interest +
 
                             Number(
 
@@ -675,7 +643,7 @@ const LiabilityService = {
 
                 if (detail.period){
 
-                    bookedByPeriod.set(
+                    byPeriod.set(
 
                         Number(detail.period),
 
@@ -750,6 +718,241 @@ const LiabilityService = {
         } catch (bookError) {
 
         }
+
+        return {
+
+            byPeriod,
+
+            principal,
+
+            interest,
+
+            has
+
+        };
+
+    },
+
+    /*
+     * The schedule the rest of the system works
+     * with: installments already recorded keep
+     * their place, and the unpaid remainder is
+     * re-planned from the CURRENT outstanding
+     * balance over the REMAINING periods. Editing
+     * the method, rate or term therefore changes
+     * only the future — never rewrites history,
+     * and never rewinds the plan to the original
+     * principal.
+     */
+
+    planInstallments(
+
+        liability
+
+    ){
+
+        const plan =
+
+            computeSchedule(
+
+                liability || {}
+
+            );
+
+        if (!plan.length){
+
+            return plan;
+
+        }
+
+        const booked =
+
+            this.bookedPayments(
+
+                liability.id
+
+            );
+
+        const paidSet = new Set(
+
+            (liability.paidPeriods || []).map(
+
+                period => Number(period)
+
+            )
+
+        );
+
+        const voidedSet = new Set(
+
+            (liability.voidedPeriods || []).map(
+
+                period => Number(period)
+
+            )
+
+        );
+
+        const isPaid =
+
+            row =>
+
+                !voidedSet.has(row.period) &&
+
+                (
+
+                    paidSet.has(row.period) ||
+
+                    booked.byPeriod.has(row.period)
+
+                );
+
+        const paidRows =
+
+            plan.filter(isPaid);
+
+        const unpaidRows =
+
+            plan.filter(
+
+                row => !isPaid(row)
+
+            );
+
+        if (
+
+            !unpaidRows.length ||
+
+            !paidRows.length &&
+
+            Number(liability.currentBalance || 0) ===
+
+                Number(liability.principal || 0)
+
+        ){
+
+            return plan;
+
+        }
+
+        const future =
+
+            computeSchedule({
+
+                principal:
+
+                    Number(
+
+                        liability.currentBalance ||
+
+                        0
+
+                    ),
+
+                interestRate:
+
+                    liability.interestRate,
+
+                repaymentMethod:
+
+                    liability.repaymentMethod,
+
+                termMonths:
+
+                    unpaidRows.length,
+
+                firstPaymentDate:
+
+                    unpaidRows[0].date
+
+            });
+
+        if (!future.length){
+
+            return paidRows;
+
+        }
+
+        future.forEach((row, index) => {
+
+            row.period =
+
+                unpaidRows[index].period;
+
+            row.date =
+
+                unpaidRows[index].date;
+
+        });
+
+        return [
+
+            ...paidRows,
+
+            ...future
+
+        ].sort(
+
+            (a, b) => a.period - b.period
+
+        );
+
+    },
+
+    getSchedule(
+
+        liability,
+
+        today = todayText()
+
+    ){
+
+        const installments =
+
+            this.planInstallments(
+
+                liability || {}
+
+            );
+
+        if (!installments.length){
+
+            return null;
+
+        }
+
+        const summary = summarizeSchedule(
+
+            installments,
+
+            today,
+
+            (liability || {}).paidPeriods || [],
+
+            (liability || {}).voidedPeriods || []
+
+        );
+
+        /*
+         * Book truth wins over plan math: installments
+         * that were actually recorded keep the splits
+         * they were booked with (even if the rate,
+         * term or method was edited afterwards), and
+         * the summary totals come from the recorded
+         * payments and the real outstanding balance.
+         */
+
+        const booked =
+
+            this.bookedPayments(
+
+                liability.id
+
+            );
+
+        const bookedByPeriod =
+
+            booked.byPeriod;
 
         const paidSet = new Set(
 
@@ -881,11 +1084,11 @@ const LiabilityService = {
 
         summary.nextInstallment = nextInstallment;
 
-        if (hasBookings){
+        if (booked.has){
 
-            summary.paidPrincipal = bookedPrincipal;
+            summary.paidPrincipal = booked.principal;
 
-            summary.paidInterest = bookedInterest;
+            summary.paidInterest = booked.interest;
 
         }
 
@@ -945,7 +1148,7 @@ const LiabilityService = {
 
         const installments =
 
-            computeSchedule(liability);
+            this.planInstallments(liability);
 
         if (!installments.length){
 
@@ -1471,7 +1674,7 @@ const LiabilityService = {
 
                 const installments =
 
-                    computeSchedule(liability);
+                    this.planInstallments(liability);
 
                 if (installments.length){
 
