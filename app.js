@@ -16,7 +16,7 @@ Liability Interest Integration
 
 */
 
-import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261010dl";
+import { t, getLanguage, setLanguage, languageOptions } from "./core/i18n/i18n.js?v=20261010dm";
 
 const app =
 
@@ -2130,7 +2130,7 @@ const module =
 
                             await import(
 
-                                "./core/integration/taxDataIntegration.js?v=20261010dl"
+                                "./core/integration/taxDataIntegration.js?v=20261010dm"
 
                             );
 
@@ -2356,6 +2356,231 @@ const module =
 
                                 "</p>";
 
+                            // --- Form 1040 federal tax estimate ---
+
+                            let form1040HTML = "";
+
+                            try {
+
+                                const form1040Module =
+
+                                    await import(
+
+                                        "./core/tax/form1040.js?v=20261010dm"
+
+                                    );
+
+                                const Form1040 =
+
+                                    form1040Module.default;
+
+                                let filingStatus =
+
+                                    "married_joint";
+
+                                try {
+
+                                    filingStatus =
+
+                                        localStorage.getItem(
+
+                                            "fw_filing_status"
+
+                                        ) || "married_joint";
+
+                                } catch (e) {}
+
+                                const f1040 =
+
+                                    Form1040.compute(
+
+                                        taxData,
+
+                                        filingStatus
+
+                                    );
+
+                                form1040HTML =
+
+                                    "<hr><h4>" +
+
+                                    t("form1040.title") +
+
+                                    "</h4>" +
+
+                                    "<p>" +
+
+                                    t("form1040.filingStatus") +
+
+                                    "<select id=\"filing-status-select\">" +
+
+                                    "<option value=\"single\"" +
+
+                                    (filingStatus === "single"
+
+                                        ? " selected"
+
+                                        : "") +
+
+                                    ">" +
+
+                                    t("form1040.single") +
+
+                                    "</option>" +
+
+                                    "<option value=\"married_joint\"" +
+
+                                    (filingStatus ===
+
+                                    "married_joint"
+
+                                        ? " selected"
+
+                                        : "") +
+
+                                    ">" +
+
+                                    t("form1040.mfj") +
+
+                                    "</option>" +
+
+                                    "<option value=\"married_separate\"" +
+
+                                    (filingStatus ===
+
+                                    "married_separate"
+
+                                        ? " selected"
+
+                                        : "") +
+
+                                    ">" +
+
+                                    t("form1040.mfs") +
+
+                                    "</option>" +
+
+                                    "<option value=\"head_of_household\"" +
+
+                                    (filingStatus ===
+
+                                    "head_of_household"
+
+                                        ? " selected"
+
+                                        : "") +
+
+                                    ">" +
+
+                                    t("form1040.hoh") +
+
+                                    "</option>" +
+
+                                    "</select></p>" +
+
+                                    "<p>" +
+
+                                    t("form1040.totalIncome") +
+
+                                    fmt(f1040.totalIncome) +
+
+                                    "</p>" +
+
+                                    "<p>" +
+
+                                    t("form1040.agi") +
+
+                                    fmt(f1040.agi) +
+
+                                    "</p>" +
+
+                                    "<p>" +
+
+                                    t("form1040.deduction") +
+
+                                    fmt(f1040.standardDeduction) +
+
+                                    "</p>" +
+
+                                    "<p>" +
+
+                                    t("form1040.taxable") +
+
+                                    fmt(f1040.taxableIncome) +
+
+                                    "</p>" +
+
+                                    "<p>" +
+
+                                    t("form1040.taxOrdinary") +
+
+                                    fmt(f1040.taxOrdinary) +
+
+                                    "</p>" +
+
+                                    "<p>" +
+
+                                    t("form1040.taxPref") +
+
+                                    fmt(f1040.taxPreferential) +
+
+                                    "</p>" +
+
+                                    (f1040.niit > 0
+
+                                        ? "<p>" +
+
+                                          t("form1040.niit") +
+
+                                          fmt(f1040.niit) +
+
+                                          "</p>"
+
+                                        : "") +
+
+                                    "<p><strong>" +
+
+                                    t("form1040.totalTax") +
+
+                                    fmt(f1040.totalTax) +
+
+                                    "</strong></p>" +
+
+                                    "<p>" +
+
+                                    t("form1040.paid") +
+
+                                    fmt(f1040.taxPaid) +
+
+                                    "　" +
+
+                                    t("form1040.due") +
+
+                                    fmt(f1040.balanceDue) +
+
+                                    "</p>" +
+
+                                    "<p style=\"font-size:12px;color:#666;\">" +
+
+                                    t("form1040.note") +
+
+                                    "</p>";
+
+                            } catch (form1040Error) {
+
+                                console.warn(
+
+                                    "Form 1040 unavailable:",
+
+                                    form1040Error.message
+
+                                );
+
+                            }
+
+                            // Append 1040 section to the panel
+                            panel.innerHTML += form1040HTML;
+
                             const taxForm =
 
                                 document
@@ -2383,6 +2608,50 @@ const module =
                                         taxForm
 
                                     );
+
+                                // Wire filing status selector.
+
+                                try {
+
+                                    const statusSelect =
+
+                                        panel.querySelector(
+
+                                            "#filing-status-select"
+
+                                        );
+
+                                    if (statusSelect) {
+
+                                        statusSelect.addEventListener(
+
+                                            "change",
+
+                                            () => {
+
+                                                try {
+
+                                                    localStorage.setItem(
+
+                                                        "fw_filing_status",
+
+                                                        statusSelect.value
+
+                                                    );
+
+                                                } catch (e) {}
+
+                                                // Re-render to recalc.
+
+                                                window.location.reload();
+
+                                            }
+
+                                        );
+
+                                    }
+
+                                } catch (e) {}
 
                                 return true;
 
