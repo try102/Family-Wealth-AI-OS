@@ -11,7 +11,7 @@ import IncomeAPI from "../../income/api/incomeAPI.js?v=20261008ae";
 import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261008ae";
 import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261008ah";
 import AssetAPI from "../../asset/api/assetAPI.js?v=20261008ae";
-import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261008ae";
+import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261009bo";
 
 import IncomeRepository from "../../income/repository/incomeRepository.js?v=20261008ae";
 
@@ -251,6 +251,12 @@ const MemberService = {
             bucketFor(record).income += num(record.amount ?? record.value);
         });
         expenses.forEach(record => {
+            // Auto mirrors (e.g. loan interest mirrored
+            // from loan payments) stay out of the
+            // member expense caliber, same as income.
+            if (record.autoSource) {
+                return;
+            }
             bucketFor(record).expense += num(record.amount);
         });
         investments.forEach(record => {
