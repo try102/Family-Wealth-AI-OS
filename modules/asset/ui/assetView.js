@@ -2534,15 +2534,56 @@ const AssetView = {
 
                     currentValue:
 
-                        Number(
+                        (() => {
 
-                            form.querySelector(
+                            const typed =
 
-                                "#edit-asset-value"
+                                Number(
 
-                            ).value
+                                    form.querySelector(
 
-                        ),
+                                        "#edit-asset-value"
+
+                                    ).value
+
+                                );
+
+                            const label =
+
+                                `${form.querySelector("#edit-asset-name").value} ${form.querySelector("#edit-asset-category").value} ${asset.type || ""}`.toLowerCase();
+
+                            const accountLike =
+
+                                label.includes("invest") ||
+
+                                label.includes("check") ||
+
+                                label.includes("saving") ||
+
+                                label.includes("broker") ||
+
+                                label.includes("cash");
+
+                            // Account-like assets: the typed
+                            // number is the OPENING basis only.
+                            // Do NOT overwrite currentValue
+                            // with it — that would wipe the
+                            // live transaction effects on the
+                            // next pairing pass. The pairing
+                            // recomputes currentValue as
+                            // basis + effects.
+
+                            return accountLike
+
+                                ? Number(
+
+                                    asset.currentValue || 0
+
+                                )
+
+                                : typed;
+
+                        })(),
 
                     // Account-like assets (deposit /
 
