@@ -2270,11 +2270,130 @@ const AccountBalanceIntegration = {
 
                         // both sides together.
 
-                        const effect =
+                        let effect =
 
                             effects.get(accountKey) ||
 
                             0;
+
+                        // Fallback for Investment accounts:
+                        // if no transaction effects were found
+                        // by account ID (orphaned trades from
+                        // an old save that wiped the linkage),
+                        // settle by member instead so buys and
+                        // sells are never silently dropped.
+
+                        if (
+
+                            effect === 0 &&
+
+                            kind === "investment"
+
+                        ) {
+
+                            try {
+
+                                const memberTrades =
+
+                                    (
+
+                                        InvestmentRepository
+
+                                            .getTrades() ||
+
+                                        []
+
+                                    ).filter(
+
+                                        trade =>
+
+                                            AccountBalanceIntegration
+
+                                                .sameMemberId(
+
+                                                    trade.memberId ||
+
+                                                        trade.ownerId ||
+
+                                                        "",
+
+                                                    owner
+
+                                                )
+
+                                    );
+
+                                let memberEffect = 0;
+
+                                memberTrades.forEach(
+
+                                    trade => {
+
+                                        const action =
+
+                                            String(
+
+                                                trade.action || ""
+
+                                            ).toUpperCase();
+
+                                        const amt =
+
+                                            Number(
+
+                                                trade.amount || 0
+
+                                            );
+
+                                        if (
+
+                                            !Number.isFinite(amt) ||
+
+                                            amt === 0
+
+                                        ) {
+
+                                            return;
+
+                                        }
+
+                                        if (
+
+                                            action === "BUY"
+
+                                        ) {
+
+                                            memberEffect -=
+
+                                                Math.abs(amt);
+
+                                        } else if (
+
+                                            action === "SELL"
+
+                                        ) {
+
+                                            memberEffect +=
+
+                                                Math.abs(amt);
+
+                                        }
+
+                                    }
+
+                                );
+
+                                if (memberEffect !== 0) {
+
+                                    effect = memberEffect;
+
+                                }
+
+                            } catch (fallbackError) {
+
+                            }
+
+                        }
 
                         const manualWins =
 
