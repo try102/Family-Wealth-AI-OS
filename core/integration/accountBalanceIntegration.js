@@ -2546,6 +2546,28 @@ const AccountBalanceIntegration = {
 
                         } else if (manualWins || assetEdited) {
 
+                            // For account-like assets (those
+                            // with a basisValue), the asset's
+                            // currentValue must NEVER be
+                            // trusted as manual truth — it is
+                            // derived as basis + effects. A
+                            // stale or wiped currentValue here
+                            // (e.g. from an old save that
+                            // overwrote it with the typed
+                            // basis) would pin the balance and
+                            // hide live transaction effects.
+                            // Re-derive from basis + effect.
+
+                            const pairBasis =
+
+                                pair.basisValue !== undefined &&
+
+                                pair.basisValue !== null
+
+                                    ? Number(pair.basisValue)
+
+                                    : undefined;
+
                             const truth =
 
                                 manualWins
@@ -2556,11 +2578,15 @@ const AccountBalanceIntegration = {
 
                                     )
 
-                                    : Number(
+                                    : pairBasis !== undefined
 
-                                        pair.currentValue || 0
+                                        ? pairBasis + effect
 
-                                    );
+                                        : Number(
+
+                                            pair.currentValue || 0
+
+                                        );
 
                             account.openingBalance =
 
