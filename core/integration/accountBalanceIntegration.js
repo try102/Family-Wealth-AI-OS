@@ -24,7 +24,7 @@ import InvestmentRepository from "../../modules/investment/repository/investment
 
 import AssetRepository from "../../modules/asset/repository/assetRepository.js?v=20261008ae";
 
-import cashflowAPI from "../../modules/cashflow/api/cashflowAPI.js?v=20261008ae";
+import cashflowAPI from "../../modules/cashflow/api/cashflowAPI.js?v=20261009bp";
 
 import MemberRepository from "../../modules/member/repository/memberRepository.js?v=20261008ae";
 
