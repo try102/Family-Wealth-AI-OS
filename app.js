@@ -2184,7 +2184,7 @@ const module =
 
                         const tryInsertTaxPanel =
 
-                            () => {
+                            async () => {
 
                                 const incomeInput =
 
