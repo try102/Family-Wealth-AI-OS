@@ -18,7 +18,7 @@ import investmentAI
 
 import investmentAPI
 
-    from "../../modules/investment/api/investmentAPI.js?v=20261012c";
+    from "../../modules/investment/api/investmentAPI.js?v=20261012d";
 
 import investmentAnalysisEngine
 
