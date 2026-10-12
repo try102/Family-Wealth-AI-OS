@@ -191,8 +191,7 @@ export const MarketDataService = {
 
     // Returns: { SYMBOL: { price, usdPrice, currency, name, changePct, fetchedAt } }
     // price = quote-currency price, usdPrice = converted to USD when needed.
-    async fetchQuotes(symbols) {
-        const list = (Array.isArray(symbols) ? symbols : [symbols])
+    async fetchQuotes(symbols) {        const list = (Array.isArray(symbols) ? symbols : [symbols])
             .map(s => String(s || "").trim().toUpperCase())
             .filter(Boolean);
         if (!list.length) {
@@ -256,5 +255,55 @@ export const MarketDataService = {
             };
         });
         return out;
+    },
+
+    // Fetch historical daily closes via Tencent qfq (forward-adjusted).
+    // Returns: [{ date, close }] or [] on failure. Pure frontend via script tag.
+    async fetchHistoricalCloses(symbol) {
+        const sym = String(symbol || "").trim().toUpperCase();
+        if (!sym) {
+            return [];
+        }
+        const code = toTencentCode(sym);
+        if (!code) {
+            return [];
+        }
+        // qfq_ prefix = forward-adjusted historical K-line
+        const qfqCode = "qfq_" + code;
+        try {
+            await loadScript(TENCENT_BASE + qfqCode);
+            const raw = readGlobal(qfqCode);
+            clearGlobal(qfqCode);
+            if (!raw || typeof raw !== "string") {
+                return [];
+            }
+            // Format: "date,open,close,high,low,volume\n..."
+            // Actually qfq returns: date, open, close, high, low, volume separated
+            const lines = raw.trim().split("\n");
+            const closes = [];
+            for (const line of lines) {
+                const parts = line.trim().split(",");
+                if (parts.length >= 3) {
+                    const date = parts[0].trim();
+                    const close = parseFloat(parts[2]);
+                    if (date && !isNaN(close) && close > 0) {
+                        closes.push({ date, close });
+                    }
+                }
+            }
+            return closes;
+        } catch (error) {
+            return [];
+        }
+    },
+
+    // Simple moving average of closes
+    sma(closes, period) {
+        if (!closes || closes.length < period) {
+            return 0;
+        }
+        const slice = closes.slice(-period);
+        const sum = slice.reduce((s, c) => s + c.close, 0);
+        return sum / period;
     }
 };
