@@ -18,6 +18,10 @@ import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261010da";
 
+import { CurrencyUI } from "../../core/services/currencyUI.js?v=20261012o";
+
+import { FxService } from "../../core/services/fxService.js?v=20261012n";
+
 const ExpenseView = {
 
     name: "Expense View V7",
@@ -81,6 +85,8 @@ const ExpenseView = {
                             summary.totalExpense || 0
 
                         ).toLocaleString()}
+
+                        <span id="expense-converted-total"></span>
 
                     </p>
 
@@ -455,6 +461,101 @@ const ExpenseView = {
             }
 
         );
+
+        // ==========================================
+        // Multi-currency converted total (async)
+        // ==========================================
+        (async () => {
+
+            try {
+
+                const span =
+
+                    container.querySelector(
+
+                        "#expense-converted-total"
+
+                    );
+
+                if (!span) {
+
+                    return;
+
+                }
+
+                const result =
+
+                    await CurrencyUI.convertRecordsToDisplay(
+
+                        expenses,
+
+                        "amount"
+
+                    );
+
+                const symbol =
+
+                    FxService.getCurrencySymbol(
+
+                        result.displayCurrency
+
+                    );
+
+                const formatted =
+
+                    result.total.toLocaleString(undefined, {
+
+                        minimumFractionDigits: 2,
+
+                        maximumFractionDigits: 2
+
+                    });
+
+                let html =
+
+                    ` <small>≈ ${symbol}${formatted} (${result.displayCurrency})</small>`;
+
+                const currencies =
+
+                    Object.keys(result.breakdown || {});
+
+                if (currencies.length > 1) {
+
+                    const parts = currencies.map(c => {
+
+                        const cSymbol =
+
+                            FxService.getCurrencySymbol(c);
+
+                        const cTotal =
+
+                            Number(
+
+                                result.breakdown[c] || 0
+
+                            ).toLocaleString(undefined, {
+
+                                minimumFractionDigits: 2,
+
+                                maximumFractionDigits: 2
+
+                            });
+
+                        return `${c}: ${cSymbol}${cTotal}`;
+
+                    });
+
+                    html +=
+
+                        `<br><small>${parts.join(" · ")}</small>`;
+
+                }
+
+                span.innerHTML = html;
+
+            } catch (e) {}
+
+        })();
 
     },
 
