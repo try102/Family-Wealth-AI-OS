@@ -264,6 +264,16 @@ export const MarketDataService = {
         if (!sym) {
             return [];
         }
+        // US stocks: prefer Yahoo Finance (no key, reliable JSON).
+        // A/HK stocks: use Tencent qfq.
+        const isUS = /^[A-Za-z][A-Za-z.\-^]*$/.test(sym);
+        if (isUS) {
+            const yahoo = await this.fetchYahooHistorical(sym);
+            if (yahoo && yahoo.length) {
+                return yahoo;
+            }
+            // Fall through to Tencent on Yahoo failure
+        }
         const code = toTencentCode(sym);
         if (!code) {
             return [];
@@ -277,8 +287,6 @@ export const MarketDataService = {
             if (!raw || typeof raw !== "string") {
                 return [];
             }
-            // Format: "date,open,close,high,low,volume\n..."
-            // Actually qfq returns: date, open, close, high, low, volume separated
             const lines = raw.trim().split("\n");
             const closes = [];
             for (const line of lines) {
@@ -292,6 +300,56 @@ export const MarketDataService = {
                 }
             }
             return closes;
+        } catch (error) {
+            return [];
+        }
+    },
+
+    // Yahoo Finance chart API: free, no key, JSON.
+    // Returns [{ date: "YYYY-MM-DD", close }] or [].
+    async fetchYahooHistorical(symbol) {
+        const sym = String(symbol || "").trim().toUpperCase();
+        if (!sym || typeof fetch === "undefined") {
+            return [];
+        }
+        try {
+            const url =
+                "https://query1.finance.yahoo.com/v8/finance/chart/" +
+                encodeURIComponent(sym) +
+                "?interval=1d&range=1y";
+            const resp = await fetch(url, {
+                headers: { "User-Agent": "Mozilla/5.0" }
+            });
+            if (!resp || !resp.ok) {
+                return [];
+            }
+            const data = await resp.json();
+            const result =
+                data && data.chart && data.chart.result &&
+                data.chart.result[0];
+            if (!result) {
+                return [];
+            }
+            const timestamps = result.timestamp || [];
+            const closes =
+                (result.indicators &&
+                    result.indicators.quote &&
+                    result.indicators.quote[0] &&
+                    result.indicators.quote[0].close) || [];
+            const out = [];
+            for (let i = 0; i < timestamps.length; i++) {
+                const close = closes[i];
+                if (close == null || isNaN(close) || close <= 0) {
+                    continue;
+                }
+                const d = new Date(timestamps[i] * 1000);
+                const date =
+                    d.getFullYear() + "-" +
+                    String(d.getMonth() + 1).padStart(2, "0") + "-" +
+                    String(d.getDate()).padStart(2, "0");
+                out.push({ date, close });
+            }
+            return out;
         } catch (error) {
             return [];
         }
