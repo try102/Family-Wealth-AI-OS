@@ -155,6 +155,9 @@ const DICTIONARY = {
 
         adviceTitle: "决策建议",
         holdingAnalysis: "持仓分析",
+        marketNews: "财经新闻",
+        loadingNews: "正在加载新闻…",
+        newsForSymbol: "相关新闻",
         loadingTechnical: "正在加载技术面数据…",
         techTrend: "技术趋势",
         trendUp: "上升趋势",
@@ -439,6 +442,9 @@ const DICTIONARY = {
 
         adviceTitle: "決策建議",
         holdingAnalysis: "持倉分析",
+        marketNews: "財經新聞",
+        loadingNews: "正在加載新聞…",
+        newsForSymbol: "相關新聞",
         loadingTechnical: "正在加載技術面數據…",
         techTrend: "技術趨勢",
         trendUp: "上升趨勢",
@@ -717,6 +723,9 @@ const DICTIONARY = {
 
         adviceTitle: "Decision Advice",
         holdingAnalysis: "Holding Analysis",
+        marketNews: "Market News",
+        loadingNews: "Loading news…",
+        newsForSymbol: "Related News",
         loadingTechnical: "Loading technical data…",
         techTrend: "Technical Trend",
         trendUp: "Uptrend",
@@ -995,6 +1004,9 @@ const DICTIONARY = {
 
         adviceTitle: "意思決定アドバイス",
         holdingAnalysis: "保有分析",
+        marketNews: "市場ニュース",
+        loadingNews: "ニュースを読み込み中…",
+        newsForSymbol: "関連ニュース",
         loadingTechnical: "テクニカルデータを読み込み中…",
         techTrend: "テクニカルトレンド",
         trendUp: "上昇トレンド",
