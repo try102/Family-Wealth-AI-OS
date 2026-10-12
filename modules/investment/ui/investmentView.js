@@ -18,15 +18,15 @@ Delete Investment
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js?v=20261008ah";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261012a";
 
-import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261008ae";
+import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261010da";
 
-import InvestmentAgent from "../agent/investmentAgent.js?v=20261008ah";
+import InvestmentAgent from "../agent/investmentAgent.js?v=20261010da";
 
-import AccountAPI from "../../account/api/accountAPI.js?v=20261008aw";
+import AccountAPI from "../../account/api/accountAPI.js?v=20261010da";
 
-import MemberAPI from "../../member/api/memberAPI.js?v=20261008ap";
+import MemberAPI from "../../member/api/memberAPI.js?v=20261010da";
 
 import {
 
@@ -38,7 +38,7 @@ import {
 
     t
 
-} from "../i18n/investmentLocales.js?v=20261008ah";
+} from "../i18n/investmentLocales.js?v=20261012a";
 
 const InvestmentView = {
 
@@ -915,6 +915,30 @@ const InvestmentView = {
                         ${t("priceImportFetch")}
 
                     </button>
+
+                    <br>
+
+                    <button
+
+                        type="button"
+
+                        id="price-market-refresh"
+
+                        style="margin-top:8px;"
+
+                    >
+
+                        ${t("priceMarketRefresh")}
+
+                    </button>
+
+                    <span
+
+                        id="price-market-msg"
+
+                        style="margin-left:8px;"
+
+                    ></span>
 
                     <p
 
@@ -2073,6 +2097,100 @@ const InvestmentView = {
                                 t("priceFailed");
 
                         }
+
+                    }
+
+                }
+
+            );
+
+        }
+
+        // ==========================================
+
+        // Real-time market quote refresh (Sina API)
+
+        // ==========================================
+
+        const marketRefreshButton =
+
+            container.querySelector(
+
+                "#price-market-refresh"
+
+            );
+
+        if (marketRefreshButton) {
+
+            marketRefreshButton.addEventListener(
+
+                "click",
+
+                async () => {
+
+                    const msg =
+
+                        container.querySelector(
+
+                            "#price-market-msg"
+
+                        );
+
+                    marketRefreshButton.disabled = true;
+
+                    if (msg) {
+
+                        msg.textContent =
+
+                            t("priceMarketLoading");
+
+                    }
+
+                    try {
+
+                        const result =
+
+                            await InvestmentAPI.refreshMarketPrices();
+
+                        const okCount =
+
+                            (result.applied || []).length;
+
+                        const failCount =
+
+                            (result.failed || []).length;
+
+                        if (msg) {
+
+                            msg.textContent =
+
+                                t("priceMarketDone")
+                                    .replace("{ok}", okCount)
+                                    .replace("{fail}", failCount);
+
+                        }
+
+                        this.render(
+
+                            container,
+
+                            onBack
+
+                        );
+
+                    } catch (error) {
+
+                        if (msg) {
+
+                            msg.textContent =
+
+                                t("priceFailed");
+
+                        }
+
+                    } finally {
+
+                        marketRefreshButton.disabled = false;
 
                     }
 
