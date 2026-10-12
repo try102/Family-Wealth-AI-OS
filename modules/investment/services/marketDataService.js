@@ -363,5 +363,38 @@ export const MarketDataService = {
         const slice = closes.slice(-period);
         const sum = slice.reduce((s, c) => s + c.close, 0);
         return sum / period;
+    },
+
+    // Yahoo Finance news via search API: free, no key.
+    // Returns [{ title, link, publisher, publishedAt }] or [].
+    async fetchNews(query, count = 5) {
+        const q = String(query || "").trim();
+        if (!q || typeof fetch === "undefined") {
+            return [];
+        }
+        try {
+            const url =
+                "https://query1.finance.yahoo.com/v1/finance/search?q=" +
+                encodeURIComponent(q) +
+                "&newsCount=" + Math.min(Math.max(count, 1), 10);
+            const resp = await fetch(url, {
+                headers: { "User-Agent": "Mozilla/5.0" }
+            });
+            if (!resp || !resp.ok) {
+                return [];
+            }
+            const data = await resp.json();
+            const news = (data && data.news) || [];
+            return news.map(item => ({
+                title: item.title || "",
+                link: item.link || "",
+                publisher: item.publisher || "",
+                publishedAt: item.providerPublishTime
+                    ? new Date(item.providerPublishTime * 1000)
+                    : null
+            })).filter(n => n.title && n.link);
+        } catch (error) {
+            return [];
+        }
     }
 };
