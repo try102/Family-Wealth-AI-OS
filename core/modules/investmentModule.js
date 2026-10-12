@@ -10,15 +10,15 @@ Investment Module
 
 import investmentAgent
 
-    from "../../modules/investment/agent/investmentAgent.js?v=20261008ah";
+    from "../../modules/investment/agent/investmentAgent.js?v=20261010da";
 
 import investmentAI
 
-    from "../../modules/investment/ai/investmentAI.js?v=20261008ae";
+    from "../../modules/investment/ai/investmentAI.js?v=20261010da";
 
 import investmentAPI
 
-    from "../../modules/investment/api/investmentAPI.js?v=20261008ah";
+    from "../../modules/investment/api/investmentAPI.js?v=20261012a";
 
 import investmentAnalysisEngine
 
