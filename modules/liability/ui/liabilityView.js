@@ -28,6 +28,8 @@ import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261010da";
 
+import { CurrencyUI } from "../../core/services/currencyUI.js?v=20261012o";
+
 const LiabilityView = {
 
     name:
@@ -261,6 +263,16 @@ const LiabilityView = {
                                     }
 
                                 )}
+
+                                <br>
+
+                                <span
+
+                                    id="liability-converted-total"
+
+                                    style="font-size:0.8em;color:#888;"
+
+                                ></span>
 
                             </div>
 
@@ -1303,6 +1315,117 @@ const LiabilityView = {
                 }
 
             );
+
+        // ==========================================
+        // Multi-currency converted total (async)
+        // ==========================================
+        (async () => {
+
+            const totalSpan =
+
+                container.querySelector(
+
+                    "#liability-converted-total"
+
+                );
+
+            if (!totalSpan) {
+
+                return;
+
+            }
+
+            try {
+
+                const records =
+
+                    LiabilityAPI.getLiabilities() || [];
+
+                // Use currentBalance, fallback to balance
+                const normalized =
+
+                    records.map(r => ({
+
+                        ...r,
+
+                        currentBalance:
+
+                            Number(
+
+                                r.currentBalance ??
+
+                                r.balance ??
+
+                                0
+
+                            )
+
+                    }));
+
+                const result =
+
+                    await CurrencyUI
+
+                        .convertRecordsToDisplay(
+
+                            normalized,
+
+                            "currentBalance"
+
+                        );
+
+                const symbol =
+
+                    result.displayCurrency === "USD" ? "$" :
+
+                    result.displayCurrency === "CNY" ? "¥" :
+
+                    result.displayCurrency === "EUR" ? "€" :
+
+                    result.displayCurrency === "HKD" ? "HK$" :
+
+                    result.displayCurrency === "JPY" ? "¥" :
+
+                    result.displayCurrency === "GBP" ? "£" : "";
+
+                let text =
+
+                    `≈ ${symbol}${Number(result.total || 0).toLocaleString(
+
+                        "en-US",
+
+                        { maximumFractionDigits: 0 }
+
+                    )} (${result.displayCurrency})`;
+
+                // Show breakdown if multiple currencies
+                const currencies =
+
+                    Object.keys(result.breakdown || {});
+
+                if (currencies.length > 1) {
+
+                    const parts =
+
+                        currencies.map(c =>
+
+                            `${c}: ${Number(result.breakdown[c] || 0).toLocaleString("en-US", { maximumFractionDigits: 0 })}`
+
+                        );
+
+                    text += `<br><small>${parts.join(" · ")}</small>`;
+
+                }
+
+                totalSpan.innerHTML = text;
+
+            } catch (e) {
+
+                // Silently skip on error
+
+            }
+
+        })();
 
     },
 
