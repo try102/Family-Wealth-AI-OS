@@ -165,6 +165,9 @@ const DICTIONARY = {
         priceImportApply: "应用导入",
 
         priceImportFetch: "从接口拉取",
+        priceMarketRefresh: "刷新实时行情",
+        priceMarketLoading: "正在拉取行情…",
+        priceMarketDone: "行情已更新：成功 {ok} 个，失败 {fail} 个",
 
         priceImportUrl: "接口地址（返回 代码:价格 的 JSON）",
 
@@ -411,6 +414,9 @@ const DICTIONARY = {
         priceImportApply: "套用匯入",
 
         priceImportFetch: "從介面拉取",
+        priceMarketRefresh: "重新整理即時行情",
+        priceMarketLoading: "正在取得行情…",
+        priceMarketDone: "行情已更新：成功 {ok} 個，失敗 {fail} 個",
 
         priceImportUrl: "介面地址（回傳 代碼:價格 的 JSON）",
 
@@ -651,6 +657,9 @@ const DICTIONARY = {
         priceImportApply: "Apply import",
 
         priceImportFetch: "Fetch from API",
+        priceMarketRefresh: "Refresh live quotes",
+        priceMarketLoading: "Fetching quotes…",
+        priceMarketDone: "Quotes updated: {ok} ok, {fail} failed",
 
         priceImportUrl: "API URL (returns JSON of symbol: price)",
 
@@ -891,6 +900,9 @@ const DICTIONARY = {
         priceImportApply: "インポートを適用",
 
         priceImportFetch: "APIから取得",
+        priceMarketRefresh: "リアルタイム相場を更新",
+        priceMarketLoading: "相場取得中…",
+        priceMarketDone: "更新完了：成功 {ok} 件、失敗 {fail} 件",
 
         priceImportUrl: "APIアドレス（コード:価格 のJSONを返す）",
 
