@@ -2160,16 +2160,6 @@ const InvestmentView = {
 
                             (result.failed || []).length;
 
-                        if (msg) {
-
-                            msg.textContent =
-
-                                t("priceMarketDone")
-                                    .replace("{ok}", okCount)
-                                    .replace("{fail}", failCount);
-
-                        }
-
                         this.render(
 
                             container,
@@ -2177,6 +2167,24 @@ const InvestmentView = {
                             onBack
 
                         );
+
+                        const doneMsg =
+
+                            container.querySelector(
+
+                                "#price-market-msg"
+
+                            );
+
+                        if (doneMsg) {
+
+                            doneMsg.textContent =
+
+                                t("priceMarketDone")
+                                    .replace("{ok}", okCount)
+                                    .replace("{fail}", failCount);
+
+                        }
 
                     } catch (error) {
 
