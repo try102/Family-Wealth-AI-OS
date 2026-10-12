@@ -1324,6 +1324,59 @@ const InvestmentAgent = {
 
         };
 
+    },
+
+    // =====================================================
+    // Technical analysis: MA trend signals from historical
+    // closes. Returns per-symbol { ma20, ma50, trend, signal }.
+    // trend: "up" (price > MA20 > MA50), "down" (price < MA20
+    // < MA50), "mixed" otherwise, "nodata" if unavailable.
+    // =====================================================
+    async getTechnicalAnalysis(symbols) {
+        const list = (Array.isArray(symbols) ? symbols : [symbols])
+            .map(s => String(s || "").trim().toUpperCase())
+            .filter(Boolean);
+        const out = {};
+        // Dynamic import to avoid circular deps
+        let MarketDataService = null;
+        try {
+            const mod = await import(
+                "../services/marketDataService.js"
+            );
+            MarketDataService = mod.MarketDataService;
+        } catch (e) {
+            list.forEach(s => { out[s] = { trend: "nodata" }; });
+            return out;
+        }
+        for (const sym of list) {
+            try {
+                const closes =
+                    await MarketDataService.fetchHistoricalCloses(sym);
+                if (!closes || closes.length < 50) {
+                    out[sym] = { trend: "nodata", dataPoints: closes.length };
+                    continue;
+                }
+                const ma20 = MarketDataService.sma(closes, 20);
+                const ma50 = MarketDataService.sma(closes, 50);
+                const price = closes[closes.length - 1].close;
+                let trend = "mixed";
+                if (price > ma20 && ma20 > ma50) {
+                    trend = "up";
+                } else if (price < ma20 && ma20 < ma50) {
+                    trend = "down";
+                }
+                out[sym] = {
+                    trend,
+                    price,
+                    ma20,
+                    ma50,
+                    dataPoints: closes.length
+                };
+            } catch (e) {
+                out[sym] = { trend: "nodata" };
+            }
+        }
+        return out;
     }
 
 };
