@@ -10,7 +10,7 @@ Investment Module
 
 import investmentAgent
 
-    from "../../modules/investment/agent/investmentAgent.js?v=20261012k";
+    from "../../modules/investment/agent/investmentAgent.js?v=20261012l";
 
 import investmentAI
 
@@ -34,7 +34,7 @@ import investmentEvents
 
 import marketDataService
 
-    from "../../modules/investment/data/marketDataService.js?v=20261012k";
+    from "../../modules/investment/data/marketDataService.js?v=20261012l";
 
 import portfolioEngine
 
