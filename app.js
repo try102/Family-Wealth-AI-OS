@@ -1304,7 +1304,7 @@ function renderDashboard(
 
                         await import(
 
-                            "./modules/investment/ui/investmentView.js?v=20261010da"
+                            "./modules/investment/ui/investmentView.js?v=20261012a"
 
                         );
 
@@ -3987,7 +3987,7 @@ async function start(){
 
                 await import(
 
-                    "./modules/investment/services/investmentService.js?v=20261010dc"
+                    "./modules/investment/services/investmentService.js?v=20261012a"
 
                 );
 
@@ -4417,7 +4417,7 @@ async function start(){
 
             await import(
 
-                "./modules/investment/api/investmentAPI.js?v=20261010da"
+                "./modules/investment/api/investmentAPI.js?v=20261012a"
 
             );
 
