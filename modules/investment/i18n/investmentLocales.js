@@ -228,6 +228,7 @@ const DICTIONARY = {
 
         unrealized: "未实现盈亏",
         holdingGainLoss: "持仓盈亏",
+        closedPosition: "已清仓",
 
         formAddTitle: "新增投资",
 
@@ -497,6 +498,7 @@ const DICTIONARY = {
 
         unrealized: "未實現盈虧",
         holdingGainLoss: "持倉盈虧",
+        closedPosition: "已清倉",
 
         formAddTitle: "新增投資",
 
@@ -760,6 +762,7 @@ const DICTIONARY = {
 
         unrealized: "Unrealized Gain/Loss",
         holdingGainLoss: "Holding P&L",
+        closedPosition: "Closed",
 
         formAddTitle: "Add Investment",
 
@@ -1023,6 +1026,7 @@ const DICTIONARY = {
 
         unrealized: "未実現損益",
         holdingGainLoss: "保有損益",
+        closedPosition: "決済済み",
 
         formAddTitle: "投資を追加",
 
