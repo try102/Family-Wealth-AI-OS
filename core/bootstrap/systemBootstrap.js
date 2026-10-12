@@ -72,7 +72,7 @@ import Advisor
 
 import InvestmentAgent
 
-    from "../../modules/investment/agent/investmentAgent.js?v=20261008ah";
+    from "../../modules/investment/agent/investmentAgent.js?v=20261012k";
 
 // ==================================================
 
@@ -90,19 +90,19 @@ import TaxFacade
 
 import LiabilityModule
 
-    from "../modules/liabilityModule.js?v=20261008ae";
+    from "../modules/liabilityModule.js?v=20261010da";
 
 import IncomeModule
 
-    from "../modules/incomeModule.js?v=20261008ae";
+    from "../modules/incomeModule.js?v=20261010da";
 
 import CashflowModule
 
-    from "../modules/cashflowModule.js?v=20261008ae";
+    from "../modules/cashflowModule.js?v=20261010da";
 
 import AssetsModule
 
-    from "../modules/assetsModule.js?v=20261008ah";
+    from "../modules/assetsModule.js?v=20261010da";
 
 // ==================================================
 
@@ -116,7 +116,7 @@ import AssetsModule
 
 import AccountModule
 
-    from "../../account/accountModule.js?v=20261008ae";
+    from "../../account/accountModule.js?v=20261010da";
 
 // ==================================================
 
@@ -144,7 +144,7 @@ import AccountIntegration
 
 import TransactionModule
 
-    from "../../transaction/transactionModule.js?v=20261008ae";
+    from "../../transaction/transactionModule.js?v=20261010da";
 
 // ==================================================
 
@@ -158,7 +158,7 @@ import TransactionModule
 
 import TransactionIntegration
 
-    from "../integration/transactionIntegration.js?v=20261009bp";
+    from "../integration/transactionIntegration.js?v=20261010da";
 
 // ==================================================
 
@@ -176,7 +176,7 @@ import TransactionIntegration
 
 import CashflowIntegration
 
-    from "../integration/cashflowIntegration.js?v=20261009by";
+    from "../integration/cashflowIntegration.js?v=20261010da";
 
 // ==================================================
 
