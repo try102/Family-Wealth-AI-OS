@@ -38,7 +38,7 @@ import {
 
     t
 
-} from "../i18n/investmentLocales.js?v=20261012f";
+} from "../i18n/investmentLocales.js?v=20261012g";
 
 const InvestmentView = {
 
@@ -717,7 +717,19 @@ const InvestmentView = {
 
                             <option value="1y" ${this.tradeTimeRange === "1y" ? "selected" : ""}>${t("range1Y")}</option>
 
+                            <option value="custom" ${this.tradeTimeRange === "custom" ? "selected" : ""}>${t("rangeCustom")}</option>
+
                         </select>
+
+                        <span id="custom-date-range" style="${this.tradeTimeRange === "custom" ? "" : "display:none;"}">
+
+                            <input type="date" id="trade-start-date" value="${this.tradeStartDate || ""}" style="width:130px;">
+
+                            ~
+
+                            <input type="date" id="trade-end-date" value="${this.tradeEndDate || ""}" style="width:130px;">
+
+                        </span>
 
                     </label>
 
@@ -739,11 +751,27 @@ const InvestmentView = {
 
                             else if (range === "1y") cutoff.setFullYear(now.getFullYear() - 1);
 
+                            const customStart = this.tradeStartDate ? new Date(this.tradeStartDate) : null;
+
+                            const customEnd = this.tradeEndDate ? new Date(this.tradeEndDate) : null;
+
+                            if (customEnd) customEnd.setHours(23, 59, 59, 999);
+
                             const inRange = trade => {
 
                                 if (range === "all") return true;
 
                                 const d = new Date(trade.tradeDate || trade.date || 0);
+
+                                if (range === "custom") {
+
+                                    if (customStart && d < customStart) return false;
+
+                                    if (customEnd && d > customEnd) return false;
+
+                                    return true;
+
+                                }
 
                                 return d >= cutoff;
 
@@ -1520,9 +1548,39 @@ const InvestmentView = {
 
                         <li>${t("portfolioValue")}：$${Number(performance.value || 0).toLocaleString()}</li>
 
-                        <li>${t("totalGainLoss")}：$${Number(performance.gain || 0).toLocaleString()}</li>
+                        ${
 
-                        <li>${t("totalReturn")}：${Number(performance.returnRate || 0)}%</li>
+                            (() => {
+
+                                const unrealized = Number(performance.gain || 0);
+
+                                let realized = 0;
+
+                                try {
+
+                                    realized = Number(InvestmentAgent.getRealizedGains(scopeMemberId).total || 0);
+
+                                } catch (e) {}
+
+                                const total = unrealized + realized;
+
+                                const totalReturn = performance.cost ? (total / Number(performance.cost) * 100) : 0;
+
+                                return `
+
+                        <li>${t("holdingGainLoss")}：$${unrealized.toLocaleString()}</li>
+
+                        <li>${t("realizedGainLoss")}：$${realized.toLocaleString()}</li>
+
+                        <li>${t("totalGainLoss")}：$${total.toLocaleString()}</li>
+
+                        <li>${t("totalReturn")}：${totalReturn.toFixed(2)}%</li>
+
+                                `;
+
+                            })()
+
+                        }
 
                     </ul>
 
@@ -2592,6 +2650,72 @@ const InvestmentView = {
                     );
 
                 }
+
+            );
+
+        }
+
+        const startDateInput =
+
+            container.querySelector(
+
+                "#trade-start-date"
+
+            );
+
+        const endDateInput =
+
+            container.querySelector(
+
+                "#trade-end-date"
+
+            );
+
+        const onCustomDateChange = () => {
+
+            if (startDateInput) {
+
+                this.tradeStartDate = startDateInput.value || "";
+
+            }
+
+            if (endDateInput) {
+
+                this.tradeEndDate = endDateInput.value || "";
+
+            }
+
+            this.tradeTimeRange = "custom";
+
+            this.render(
+
+                container,
+
+                onBack
+
+            );
+
+        };
+
+        if (startDateInput) {
+
+            startDateInput.addEventListener(
+
+                "change",
+
+                onCustomDateChange
+
+            );
+
+        }
+
+        if (endDateInput) {
+
+            endDateInput.addEventListener(
+
+                "change",
+
+                onCustomDateChange
 
             );
 
