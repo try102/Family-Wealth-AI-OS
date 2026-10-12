@@ -18,7 +18,7 @@ Delete Investment
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js?v=20261012c";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261012d";
 
 import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261010da";
 
