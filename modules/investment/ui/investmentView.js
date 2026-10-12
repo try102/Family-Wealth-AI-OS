@@ -22,7 +22,7 @@ import InvestmentAPI from "../api/investmentAPI.js?v=20261012f";
 
 import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261010da";
 
-import InvestmentAgent from "../agent/investmentAgent.js?v=20261010da";
+import InvestmentAgent from "../agent/investmentAgent.js?v=20261012k";
 
 import AccountAPI from "../../account/api/accountAPI.js?v=20261010da";
 
@@ -1607,6 +1607,22 @@ const InvestmentView = {
 
                     <h3>
 
+                        ${t("holdingAnalysis")}
+
+                    </h3>
+
+                    <div id="technical-analysis-container">
+
+                        <p>${t("loadingTechnical")}</p>
+
+                    </div>
+
+                </section>
+
+                <section>
+
+                    <h3>
+
                         ${t("adviceTitle")}
 
                     </h3>
@@ -2779,6 +2795,170 @@ const InvestmentView = {
 
         }
 
+        // ==========================================
+        // Technical analysis (async)
+        // ==========================================
+        const techContainer =
+
+            container.querySelector(
+
+                "#technical-analysis-container"
+
+            );
+
+        if (techContainer) {
+
+            const symbols =
+
+                (decision.holdings || [])
+
+                    .map(h => String(h.symbol || "").toUpperCase())
+
+                    .filter(Boolean);
+
+            if (symbols.length) {
+
+                InvestmentAgent
+
+                    .getTechnicalAnalysis(symbols)
+
+                    .then(techData => {
+
+                        const ratingStore =
+
+                            this.getRatingStore();
+
+                        techContainer.innerHTML =
+
+                            symbols.map(sym => {
+
+                                const tech = techData[sym] || {};
+
+                                const trend = tech.trend || "nodata";
+
+                                const trendKey = {
+
+                                    up: "trendUp",
+
+                                    down: "trendDown",
+
+                                    mixed: "trendMixed",
+
+                                    nodata: "trendNoData"
+
+                                }[trend] || "trendNoData";
+
+                                const saved =
+
+                                    ratingStore[sym] || {};
+
+                                return `
+
+                    <div style="border:1px solid #ddd;padding:10px;margin:8px 0;">
+
+                        <h4>${sym}</h4>
+
+                        <p>${t("techTrend")}: ${t(trendKey)}
+
+                            ${tech.ma20 ? `(MA20: $${tech.ma20.toFixed(2)}, MA50: $${tech.ma50.toFixed(2)})` : ""}
+
+                        </p>
+
+                        <div>
+
+                            <label>${t("analystRating")}:
+
+                                <select data-symbol="${sym}" class="rating-select">
+
+                                    <option value="">--</option>
+
+                                    <option value="buy" ${saved.rating === "buy" ? "selected" : ""}>${t("ratingBuy")}</option>
+
+                                    <option value="hold" ${saved.rating === "hold" ? "selected" : ""}>${t("ratingHold")}</option>
+
+                                    <option value="sell" ${saved.rating === "sell" ? "selected" : ""}>${t("ratingSell")}</option>
+
+                                </select>
+
+                            </label>
+
+                            <label>${t("targetPrice")}:
+
+                                <input type="number" step="0.01" data-symbol="${sym}" class="target-input"
+
+                                    value="${saved.targetPrice || ""}" style="width:100px;">
+
+                            </label>
+
+                            <button type="button" data-symbol="${sym}" class="save-rating-btn">${t("saveRating")}</button>
+
+                        </div>
+
+                    </div>`;
+
+                            }).join("");
+
+                        // Wire up save buttons
+                        techContainer.querySelectorAll(
+
+                            ".save-rating-btn"
+
+                        ).forEach(btn => {
+
+                            btn.addEventListener("click", () => {
+
+                                const s = btn.getAttribute("data-symbol");
+
+                                const sel = techContainer.querySelector(
+
+                                    `.rating-select[data-symbol="${s}"]`
+
+                                );
+
+                                const inp = techContainer.querySelector(
+
+                                    `.target-input[data-symbol="${s}"]`
+
+                                );
+
+                                const store = this.getRatingStore();
+
+                                store[s] = {
+
+                                    rating: sel ? sel.value : "",
+
+                                    targetPrice: inp ? parseFloat(inp.value) || 0 : 0,
+
+                                    updatedAt: Date.now()
+
+                                };
+
+                                this.saveRatingStore(store);
+
+                            });
+
+                        });
+
+                    })
+
+                    .catch(() => {
+
+                        techContainer.innerHTML =
+
+                            `<p>${t("trendNoData")}</p>`;
+
+                    });
+
+            } else {
+
+                techContainer.innerHTML =
+
+                    `<p>${t("noHoldings")}</p>`;
+
+            }
+
+        }
+
     },
 
     // ==========================================
@@ -2786,6 +2966,41 @@ const InvestmentView = {
     // Accounts
 
     // ==========================================
+
+    // Manual analyst ratings, stored per symbol in localStorage
+    getRatingStore() {
+
+        try {
+
+            const raw =
+
+                localStorage.getItem("fw_analyst_ratings_v1");
+
+            return raw ? JSON.parse(raw) : {};
+
+        } catch (e) {
+
+            return {};
+
+        }
+
+    },
+
+    saveRatingStore(store) {
+
+        try {
+
+            localStorage.setItem(
+
+                "fw_analyst_ratings_v1",
+
+                JSON.stringify(store || {})
+
+            );
+
+        } catch (e) {}
+
+    },
 
     getAccounts() {
 
