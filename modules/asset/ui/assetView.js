@@ -34,6 +34,8 @@ import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261010da";
 
+import { CurrencyUI } from "../../core/services/currencyUI.js?v=20261012o";
+
 const AssetView = {
 
     // ==========================================
@@ -589,6 +591,8 @@ const AssetView = {
                         totalValue + syncTotal
 
                     ).toLocaleString()}
+
+                    <span id="asset-converted-total"></span>
 
                 </p>
 
@@ -1253,6 +1257,101 @@ const AssetView = {
             }
 
         );
+
+        // ==========================================
+        // Multi-currency converted total (async)
+        // ==========================================
+        (async () => {
+
+            try {
+
+                const span =
+
+                    container.querySelector(
+
+                        "#asset-converted-total"
+
+                    );
+
+                if (!span) {
+
+                    return;
+
+                }
+
+                // Include synced investment holdings as USD so the
+                // converted figure matches the displayed combined total.
+                const records = assets.concat([
+
+                    {
+
+                        currentValue: syncTotal,
+
+                        currency: "USD",
+
+                        fxRateToUSD: 1
+
+                    }
+
+                ]);
+
+                const result =
+
+                    await CurrencyUI.convertRecordsToDisplay(
+
+                        records,
+
+                        "currentValue"
+
+                    );
+
+                const formatted =
+
+                    CurrencyUI.format(
+
+                        result.total,
+
+                        result.displayCurrency
+
+                    );
+
+                let text =
+
+                    `≈ ${formatted} (${result.displayCurrency})`;
+
+                const currencies =
+
+                    Object.keys(result.breakdown || {});
+
+                if (currencies.length > 1) {
+
+                    const parts = currencies.map(
+
+                        c =>
+
+                            `${c} ${CurrencyUI.format(
+
+                                result.breakdown[c],
+
+                                c
+
+                            )}`
+
+                    );
+
+                    text += ` — ${parts.join(" · ")}`;
+
+                }
+
+                span.textContent = text;
+
+            } catch (e) {
+
+                // Leave the span empty on FX failure.
+
+            }
+
+        })();
 
     },
 
