@@ -58,6 +58,10 @@ import PriceOverrideStore
 
     from "./priceOverrideStore.js?v=20261008ae";
 
+import { MarketDataService }
+
+    from "./marketDataService.js?v=20261012a";
+
 import IncomeService from "../../income/services/incomeService.js?v=20261010dc";
 
 import AccountBalanceIntegration
@@ -2728,6 +2732,36 @@ const InvestmentService = {
 
         return PriceOverrideStore.all();
 
+    },
+
+    // Fetch real-time quotes for all held symbols and apply them as
+    // market-source price overrides. Returns { applied, failed, quotes }.
+    async refreshMarketPrices(){
+
+        const symbols =
+            this.getPositions()
+                .map(p => String(p.symbol || "").trim().toUpperCase())
+                .filter(Boolean);
+
+        if (!symbols.length) {
+            return { applied: [], failed: [], quotes: {} };
+        }
+
+        const quotes = await MarketDataService.fetchQuotes(symbols);
+
+        const priceMap = {};
+        Object.entries(quotes).forEach(([sym, q]) => {
+            if (q && q.usdPrice > 0) {
+                priceMap[sym] = q.usdPrice;
+            }
+        });
+
+        const applied = this.importPrices(priceMap, "market");
+
+        const appliedSyms = new Set(applied.map(a => String(a.symbol || "").toUpperCase()));
+        const failed = symbols.filter(s => !appliedSyms.has(s));
+
+        return { applied, failed, quotes };
     },
 
     // =====================================================
