@@ -1566,6 +1566,8 @@ const InvestmentView = {
 
                         （${t("totalReturn")} ${fmtPct(decision.totalReturnRate)}）
 
+                        <br><span id="investment-converted-total" style="color:#666;"></span>
+
                     </p>
 
                     <p>
@@ -3211,6 +3213,79 @@ const InvestmentView = {
                 });
 
         }
+
+        // ==========================================
+        // Investment converted total (async)
+        // ==========================================
+        (async () => {
+
+            try {
+
+                const span =
+
+                    container.querySelector(
+
+                        "#investment-converted-total"
+
+                    );
+
+                if (!span) return;
+
+                const displayCurrency =
+
+                    this.displayCurrency || "USD";
+
+                if (displayCurrency === "USD") {
+
+                    span.textContent = "";
+
+                    return;
+
+                }
+
+                const mod = await import(
+
+                    "../../core/services/fxService.js?v=20261012n"
+
+                );
+
+                const rates =
+
+                    await mod.FxService.getRates();
+
+                const totalValue =
+
+                    Number(decision.totalValue || 0);
+
+                const converted =
+
+                    mod.FxService.convert(
+
+                        totalValue,
+
+                        "USD",
+
+                        displayCurrency,
+
+                        rates
+
+                    );
+
+                const symbol =
+
+                    mod.FxService.getCurrencySymbol(
+
+                        displayCurrency
+
+                    );
+
+                span.textContent =
+
+                    `≈ ${symbol}${converted.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} (${displayCurrency})`;
+
+            } catch (e) {}
+
+        })();
 
     },
 
