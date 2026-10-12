@@ -336,6 +336,8 @@ function renderDashboard(
 
                             )}
 
+                            <br><span id="dash-assets-converted" style="font-size:0.7em;color:#666;"></span>
+
                         </div>
 
                     </div>
@@ -366,6 +368,8 @@ function renderDashboard(
 
                             )}
 
+                            <br><span id="dash-liabilities-converted" style="font-size:0.7em;color:#666;"></span>
+
                         </div>
 
                     </div>
@@ -395,6 +399,8 @@ function renderDashboard(
                                 result.netWorth
 
                             )}
+
+                            <br><span id="dash-networth-converted" style="font-size:0.7em;color:#666;"></span>
 
                         </div>
 
@@ -5774,6 +5780,126 @@ async function start(){
             dashInvestments
 
         );
+
+        // ==========================================
+        // Dashboard multi-currency conversion (async)
+        // ==========================================
+        (async () => {
+
+            try {
+
+                const displayCurrency =
+
+                    (() => {
+
+                        try {
+
+                            return localStorage.getItem("fw_display_currency_v1") || "USD";
+
+                        } catch (e) {
+
+                            return "USD";
+
+                        }
+
+                    })();
+
+                if (displayCurrency === "USD") return;
+
+                const fxMod = await import(
+
+                    "./modules/core/services/fxService.js?v=20261012p"
+
+                );
+
+                const rates =
+
+                    await fxMod.FxService.getRates();
+
+                const convertUSD =
+
+                    (usdAmount) =>
+
+                        fxMod.FxService.convert(
+
+                            usdAmount,
+
+                            "USD",
+
+                            displayCurrency,
+
+                            rates
+
+                        );
+
+                const symbol =
+
+                    fxMod.FxService.getCurrencySymbol(
+
+                        displayCurrency
+
+                    );
+
+                const fmt =
+
+                    (n) =>
+
+                        n.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+                // Assets
+                const assetsSpan =
+
+                    document.querySelector("#dash-assets-converted");
+
+                if (assetsSpan && result.totalAssets) {
+
+                    const converted =
+
+                        convertUSD(Number(result.totalAssets || 0));
+
+                    assetsSpan.textContent =
+
+                        `≈ ${symbol}${fmt(converted)} (${displayCurrency})`;
+
+                }
+
+                // Liabilities
+                const liabSpan =
+
+                    document.querySelector("#dash-liabilities-converted");
+
+                if (liabSpan && result.totalLiabilities) {
+
+                    const converted =
+
+                        convertUSD(Number(result.totalLiabilities || 0));
+
+                    liabSpan.textContent =
+
+                        `≈ ${symbol}${fmt(converted)} (${displayCurrency})`;
+
+                }
+
+                // Net Worth
+                const nwSpan =
+
+                    document.querySelector("#dash-networth-converted");
+
+                if (nwSpan && result.netWorth !== undefined) {
+
+                    const converted =
+
+                        convertUSD(Number(result.netWorth || 0));
+
+                    nwSpan.textContent =
+
+                        `≈ ${symbol}${fmt(converted)} (${displayCurrency})`;
+
+                }
+
+            } catch (e) {}
+
+        })();
 
         // After a Tax-page language switch the app
 
