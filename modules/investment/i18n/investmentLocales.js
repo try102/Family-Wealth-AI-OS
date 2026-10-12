@@ -111,6 +111,7 @@ const DICTIONARY = {
         range3M: "近3个月",
         range6M: "近6个月",
         range1Y: "近1年",
+        rangeCustom: "自定义",
         colDate: "日期",
         colAction: "方向",
         colTradeQty: "数量",
@@ -226,6 +227,7 @@ const DICTIONARY = {
         posCost: "成本",
 
         unrealized: "未实现盈亏",
+        holdingGainLoss: "持仓盈亏",
 
         formAddTitle: "新增投资",
 
@@ -378,6 +380,7 @@ const DICTIONARY = {
         range3M: "近3個月",
         range6M: "近6個月",
         range1Y: "近1年",
+        rangeCustom: "自定義",
         colDate: "日期",
         colAction: "方向",
         colTradeQty: "數量",
@@ -493,6 +496,7 @@ const DICTIONARY = {
         posCost: "成本",
 
         unrealized: "未實現盈虧",
+        holdingGainLoss: "持倉盈虧",
 
         formAddTitle: "新增投資",
 
@@ -639,6 +643,7 @@ const DICTIONARY = {
         range3M: "Last 3M",
         range6M: "Last 6M",
         range1Y: "Last 1Y",
+        rangeCustom: "Custom",
         colDate: "Date",
         colAction: "Action",
         colTradeQty: "Qty",
@@ -754,6 +759,7 @@ const DICTIONARY = {
         posCost: "Cost",
 
         unrealized: "Unrealized Gain/Loss",
+        holdingGainLoss: "Holding P&L",
 
         formAddTitle: "Add Investment",
 
@@ -900,6 +906,7 @@ const DICTIONARY = {
         range3M: "3ヶ月",
         range6M: "6ヶ月",
         range1Y: "1年",
+        rangeCustom: "カスタム",
         colDate: "日付",
         colAction: "方向",
         colTradeQty: "数量",
@@ -1015,6 +1022,7 @@ const DICTIONARY = {
         posCost: "コスト",
 
         unrealized: "未実現損益",
+        holdingGainLoss: "保有損益",
 
         formAddTitle: "投資を追加",
 
