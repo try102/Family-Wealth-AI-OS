@@ -1030,7 +1030,38 @@ const InvestmentView = {
 
                             const closedBlocks = closedSymbols.map(s => renderSymbolBlock(s, true)).join("");
 
-                            return openBlocks + closedBlocks;
+                            // Period realized P&L: sum of FIFO gains from sells in the filtered range
+                            const periodRealized = [...symbols, ...closedSymbols].reduce((sum, sym) => {
+
+                                let details = [];
+
+                                try {
+
+                                    details = InvestmentAPI.getSymbolTradeDetails(sym) || [];
+
+                                } catch (e) {}
+
+                                return sum + details.filter(inRange).reduce((s, t) => {
+
+                                    const action = String(t.action || "").toUpperCase();
+
+                                    return action === "SELL" ? s + Number(t.fifoGain || 0) : s;
+
+                                }, 0);
+
+                            }, 0);
+
+                            const periodLabel = range === "all" ? t("rangeAll") : (
+
+                                range === "custom" ? `${this.tradeStartDate || ""} ~ ${this.tradeEndDate || ""}` :
+
+                                { "1m": t("range1M"), "3m": t("range3M"), "6m": t("range6M"), "1y": t("range1Y") }[range] || ""
+
+                            );
+
+                            const periodSummary = `<p><strong>${t("periodRealizedGainLoss")} (${periodLabel})：$${periodRealized.toLocaleString()}</strong></p>`;
+
+                            return periodSummary + openBlocks + closedBlocks;
                         })()
 
                     }
