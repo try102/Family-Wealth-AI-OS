@@ -38,7 +38,7 @@ import {
 
     t
 
-} from "../i18n/investmentLocales.js?v=20261012a";
+} from "../i18n/investmentLocales.js?v=20261012e";
 
 const InvestmentView = {
 
@@ -610,6 +610,8 @@ const InvestmentView = {
 
                             <th style="padding:6px;border:1px solid #ccc;">${t("colAvgCost")}</th>
 
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colTotalCost")}</th>
+
                             <th style="padding:6px;border:1px solid #ccc;">${t("colPrice")}</th>
 
                             <th style="padding:6px;border:1px solid #ccc;">${t("colMarketValue")}</th>
@@ -637,6 +639,8 @@ const InvestmentView = {
                             <td style="padding:6px;border:1px solid #ccc;">${holding.quantity}</td>
 
                             <td style="padding:6px;border:1px solid #ccc;">$${Number(holding.averageCost || 0).toFixed(2)}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">$${Number((holding.quantity || 0) * (holding.averageCost || 0)).toLocaleString()}</td>
 
                             <td style="padding:6px;border:1px solid #ccc;">$${Number(holding.currentPrice || 0).toFixed(2)}</td>
 
@@ -956,123 +960,141 @@ const InvestmentView = {
 
                     </h3>
 
-                    <ul>
+                    ${
+
+                        positions.length === 0
+
+                        ?
+
+                        `<p>${t("noHoldings")}</p>`
+
+                        :
+
+                        `
+
+                    <table style="border-collapse:collapse;">
+
+                        <tr>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colSymbol")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colQty")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colAvgCost")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colTotalCost")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colPrice")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colMarketValue")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("unrealized")}</th>
+
+                        </tr>
 
                         ${
 
-                            positions.length === 0
-
-                            ?
-
-                            `<li>${t("noHoldings")}</li>`
-
-                            :
-
                             positions.map(
 
-                                position => `
+                                position => {
 
-                                    <li>
+                                    const sym = position.symbol || position.name || "";
 
-                                        <strong>
+                                    const qty = Number(position.quantity || 0);
 
-                                            ${position.symbol || position.name || ""}
+                                    const avgCost = Number(position.averageCost || (qty ? (position.costBasis || 0) / qty : 0));
 
-                                        </strong>
+                                    const totalCost = Number(position.costBasis || qty * avgCost);
 
-                                        ${position.name || ""}
+                                    const entry =
 
-                                        -
+                                        priceOverrides[String(sym).toUpperCase()];
 
-                                        ${Number(position.quantity || 0)} ${t("sharesUnit")}
+                                    const sourceLabel = entry
 
-                                        -
+                                        ? `(${t("priceSource")}: ${entry.source === "manual" ? t("priceManual") : t("priceImported")})`
 
-                                        ${t("posCost")} $${Number(position.costBasis || 0).toLocaleString()}
+                                        : "";
 
-                                        -
+                                    return `
 
-                                        ${t("colMarketValue")} $${Number(position.marketValue || 0).toLocaleString()}
+                        <tr>
 
-                                        -
+                            <td style="padding:6px;border:1px solid #ccc;"><strong>${sym}</strong><br><small>${position.name || ""}</small></td>
 
-                                        ${t("unrealized")} $${Number(position.unrealizedGainLoss || 0).toLocaleString()}
+                            <td style="padding:6px;border:1px solid #ccc;">${qty}</td>
 
-                                        -
+                            <td style="padding:6px;border:1px solid #ccc;">$${avgCost.toFixed(2)}</td>
 
-                                        ${t("holdingBalance")} ${Number(position.quantity || 0)} ${t("sharesUnit")} / $${Number(position.marketValue || 0).toLocaleString()}
+                            <td style="padding:6px;border:1px solid #ccc;">$${totalCost.toLocaleString()}</td>
 
-                                        ${positionTradeLines(position.symbol)}
+                            <td style="padding:6px;border:1px solid #ccc;">
 
-                                        <br>
+                                <input
 
-                                        <label>
+                                    type="number"
 
-                                            ${t("priceCurrent")}
+                                    step="0.01"
 
-                                        </label>
+                                    min="0"
 
-                                        <input
+                                    class="price-input"
 
-                                            type="number"
+                                    data-symbol="${sym}"
 
-                                            step="0.01"
+                                    value="${Number(position.currentPrice || 0)}"
 
-                                            min="0"
+                                    style="width:80px;"
 
-                                            class="price-input"
+                                >
 
-                                            data-symbol="${position.symbol || position.name || ""}"
+                                <button
 
-                                            value="${Number(position.currentPrice || 0)}"
+                                    type="button"
 
-                                        >
+                                    class="update-price-button"
 
-                                        <button
+                                    data-symbol="${sym}"
 
-                                            type="button"
+                                >
 
-                                            class="update-price-button"
+                                    ${t("priceUpdate")}
 
-                                            data-symbol="${position.symbol || position.name || ""}"
+                                </button>
 
-                                        >
+                                <br><small>${sourceLabel}</small>
 
-                                            ${t("priceUpdate")}
+                            </td>
 
-                                        </button>
+                            <td style="padding:6px;border:1px solid #ccc;">$${Number(position.marketValue || 0).toLocaleString()}</td>
 
-                                        ${
+                            <td style="padding:6px;border:1px solid #ccc;">$${Number(position.unrealizedGainLoss || 0).toLocaleString()}</td>
 
-                                            (() => {
+                        </tr>
 
-                                                const entry =
+                        <tr>
 
-                                                    priceOverrides[
+                            <td colspan="7" style="padding:6px;border:1px solid #ccc;background:#f9f9f9;">
 
-                                                        String(position.symbol || position.name || "").toUpperCase()
+                                ${positionTradeLines(position.symbol)}
 
-                                                    ];
+                            </td>
 
-                                                return entry
+                        </tr>
 
-                                                    ? `(${t("priceSource")}: ${entry.source === "manual" ? t("priceManual") : t("priceImported")})`
+                                    `;
 
-                                                    : "";
-
-                                            })()
-
-                                        }
-
-                                    </li>
-
-                                `
+                                }
 
                             ).join("")
 
                         }
 
-                    </ul>
+                    </table>
+
+                        `
+
+                    }
 
                 </section>
 
