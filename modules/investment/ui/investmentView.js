@@ -1623,6 +1623,22 @@ const InvestmentView = {
 
                     <h3>
 
+                        ${t("marketNews")}
+
+                    </h3>
+
+                    <div id="market-news-container">
+
+                        <p>${t("loadingNews")}</p>
+
+                    </div>
+
+                </section>
+
+                <section>
+
+                    <h3>
+
                         ${t("adviceTitle")}
 
                     </h3>
@@ -2956,6 +2972,114 @@ const InvestmentView = {
                     `<p>${t("noHoldings")}</p>`;
 
             }
+
+        }
+
+        // ==========================================
+        // Market news (async)
+        // ==========================================
+        const newsContainer =
+
+            container.querySelector(
+
+                "#market-news-container"
+
+            );
+
+        if (newsContainer) {
+
+            const symbols =
+
+                (decision.holdings || [])
+
+                    .map(h => String(h.symbol || "").toUpperCase())
+
+                    .filter(Boolean);
+
+            // Dynamic import MarketDataService
+            import("../services/marketDataService.js?v=20261012m")
+
+                .then(async mod => {
+
+                    const MDS = mod.MarketDataService;
+
+                    let html = "";
+
+                    // Per-symbol news
+                    for (const sym of symbols) {
+
+                        try {
+
+                            const news =
+
+                                await MDS.fetchNews(sym, 3);
+
+                            if (news.length) {
+
+                                html += `<h4>${sym} ${t("newsForSymbol")}</h4><ul>`;
+
+                                news.forEach(n => {
+
+                                    const dateStr = n.publishedAt
+
+                                        ? n.publishedAt.toLocaleDateString()
+
+                                        : "";
+
+                                    html += `<li><a href="${n.link}" target="_blank" rel="noopener">${n.title}</a> <small>(${n.publisher}${dateStr ? " · " + dateStr : ""})</small></li>`;
+
+                                });
+
+                                html += `</ul>`;
+
+                            }
+
+                        } catch (e) {}
+
+                    }
+
+                    // General market news
+                    try {
+
+                        const marketNews =
+
+                            await MDS.fetchNews("stock market today", 5);
+
+                        if (marketNews.length) {
+
+                            html += `<h4>${t("marketNews")}</h4><ul>`;
+
+                            marketNews.forEach(n => {
+
+                                const dateStr = n.publishedAt
+
+                                    ? n.publishedAt.toLocaleDateString()
+
+                                    : "";
+
+                                html += `<li><a href="${n.link}" target="_blank" rel="noopener">${n.title}</a> <small>(${n.publisher}${dateStr ? " · " + dateStr : ""})</small></li>`;
+
+                            });
+
+                            html += `</ul>`;
+
+                        }
+
+                    } catch (e) {}
+
+                    newsContainer.innerHTML =
+
+                        html || `<p>${t("trendNoData")}</p>`;
+
+                })
+
+                .catch(() => {
+
+                    newsContainer.innerHTML =
+
+                        `<p>${t("trendNoData")}</p>`;
+
+                });
 
         }
 
