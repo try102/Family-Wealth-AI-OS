@@ -2742,13 +2742,13 @@ const InvestmentService = {
     // market-source price overrides. Returns { applied, failed, quotes }.
     // =====================================================
     // One-time symbol fix (2026-10-12, user approved):
-    // APPL -> AAPL, GOOL -> GOOGL in stored trades,
-    // positions, investments and price overrides.
+    // APPL -> AAPL, GOOL -> GOOG (Alphabet Class C).
+    // v2 also fixes GOOGL -> GOOG in case v1 already ran.
     // Runs once, guarded by localStorage flag.
     // =====================================================
     migrateLegacySymbols(){
 
-        const FLAG = "fw_symbol_fix_v1";
+        const FLAG = "fw_symbol_fix_v2";
 
         try {
             if (
@@ -2761,7 +2761,9 @@ const InvestmentService = {
 
         const SYMBOL_MAP = {
             "APPL": "AAPL",
-            "GOOL": "GOOGL"
+            "GOOL": "GOOG",
+            // In case v1 migration already ran GOOL -> GOOGL.
+            "GOOGL": "GOOG"
         };
 
         let changed = 0;
