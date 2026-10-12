@@ -901,9 +901,14 @@ const InvestmentView = {
 
                             const symbols = [...new Set(positions.map(p => String(p.symbol || "").toUpperCase()).filter(Boolean))];
 
-                            if (!symbols.length) return `<p>${t("noHoldings")}</p>`;
+                            // Closed positions: symbols with trades but no current holding
+                            const allTradeSymbols = [...new Set(trades.map(t => String(t.symbol || "").toUpperCase()).filter(Boolean))];
 
-                            return symbols.map(sym => {
+                            const closedSymbols = allTradeSymbols.filter(s => !symbols.includes(s));
+
+                            if (!symbols.length && !closedSymbols.length) return `<p>${t("noHoldings")}</p>`;
+
+                            const renderSymbolBlock = (sym, isClosed) => {
 
                                 let details = [];
 
@@ -917,9 +922,24 @@ const InvestmentView = {
 
                                 if (!filtered.length) return "";
 
+                                // Total realized gain for this symbol (all sells)
+                                const totalRealized = details.reduce((sum, t) => {
+
+                                    const action = String(t.action || "").toUpperCase();
+
+                                    return action === "SELL" ? sum + Number(t.fifoGain || 0) : sum;
+
+                                }, 0);
+
+                                const closedLabel = isClosed ? ` <small style="color:#888;">(${t("closedPosition")})</small>` : "";
+
+                                const realizedLine = isClosed ? `<p><small>${t("realizedGainLoss")}: $${totalRealized.toLocaleString()}</small></p>` : "";
+
                                 return `
 
-                    <h4>${sym}</h4>
+                    <h4>${sym}${closedLabel}</h4>
+
+                    ${realizedLine}
 
                     <table style="border-collapse:collapse;">
 
@@ -1003,8 +1023,14 @@ const InvestmentView = {
 
                     </table>`;
 
-                            }).join("");
+                            };
 
+                            // Current holdings first, then closed positions
+                            const openBlocks = symbols.map(s => renderSymbolBlock(s, false)).join("");
+
+                            const closedBlocks = closedSymbols.map(s => renderSymbolBlock(s, true)).join("");
+
+                            return openBlocks + closedBlocks;
                         })()
 
                     }
