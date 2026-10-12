@@ -22,7 +22,7 @@ import InvestmentAPI from "../api/investmentAPI.js?v=20261012f";
 
 import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261010da";
 
-import InvestmentAgent from "../agent/investmentAgent.js?v=20261012k";
+import InvestmentAgent from "../agent/investmentAgent.js?v=20261012l";
 
 import AccountAPI from "../../account/api/accountAPI.js?v=20261010da";
 
