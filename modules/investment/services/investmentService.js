@@ -62,6 +62,10 @@ import { MarketDataService }
 
     from "./marketDataService.js?v=20261012a";
 
+import DataService
+
+    from "../../../core/database/dataService.js?v=20261008ae";
+
 import IncomeService from "../../income/services/incomeService.js?v=20261010dc";
 
 import AccountBalanceIntegration
@@ -2736,7 +2740,105 @@ const InvestmentService = {
 
     // Fetch real-time quotes for all held symbols and apply them as
     // market-source price overrides. Returns { applied, failed, quotes }.
+    // =====================================================
+    // One-time symbol fix (2026-10-12, user approved):
+    // APPL -> AAPL, GOOL -> GOOGL in stored trades,
+    // positions, investments and price overrides.
+    // Runs once, guarded by localStorage flag.
+    // =====================================================
+    migrateLegacySymbols(){
+
+        const FLAG = "fw_symbol_fix_v1";
+
+        try {
+            if (
+                typeof localStorage !== "undefined" &&
+                localStorage.getItem(FLAG) === "done"
+            ) {
+                return { migrated: false };
+            }
+        } catch (e) {}
+
+        const SYMBOL_MAP = {
+            "APPL": "AAPL",
+            "GOOL": "GOOGL"
+        };
+
+        let changed = 0;
+
+        const fixSymbol = sym => {
+            const s = String(sym || "").trim().toUpperCase();
+            return SYMBOL_MAP[s] || null;
+        };
+
+        // family_trades / family_positions / family_investments
+        ["family_trades", "family_positions", "family_investments"].forEach(key => {
+            let arr = [];
+            try {
+                arr = DataService.load(key) || [];
+            } catch (e) {
+                arr = [];
+            }
+            if (!Array.isArray(arr)) {
+                return;
+            }
+            let dirty = false;
+            arr.forEach(item => {
+                if (!item) {
+                    return;
+                }
+                const fixed = fixSymbol(item.symbol);
+                if (fixed && item.symbol !== fixed) {
+                    item.symbol = fixed;
+                    dirty = true;
+                    changed++;
+                }
+            });
+            if (dirty) {
+                try {
+                    DataService.save(key, arr);
+                } catch (e) {}
+            }
+        });
+
+        // fw_price_overrides_v1 (object keyed by symbol)
+        try {
+            const overrides = DataService.load("fw_price_overrides_v1") || {};
+            let dirty = false;
+            Object.keys(overrides).forEach(k => {
+                const fixed = fixSymbol(k);
+                if (fixed && fixed !== k && overrides[k] !== undefined) {
+                    // Don't overwrite an existing correct entry.
+                    if (overrides[fixed] === undefined) {
+                        overrides[fixed] = overrides[k];
+                    }
+                    delete overrides[k];
+                    dirty = true;
+                    changed++;
+                }
+            });
+            if (dirty) {
+                DataService.save("fw_price_overrides_v1", overrides);
+            }
+        } catch (e) {}
+
+        try {
+            if (typeof localStorage !== "undefined") {
+                localStorage.setItem(FLAG, "done");
+            }
+        } catch (e) {}
+
+        return { migrated: true, changed };
+
+    },
+
     async refreshMarketPrices(){
+
+        // Fix legacy tickers before fetching, so quotes
+        // resolve against the corrected symbols.
+        try {
+            this.migrateLegacySymbols();
+        } catch (e) {}
 
         const symbols =
             this.getPositions()
