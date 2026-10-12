@@ -72,7 +72,7 @@ import Advisor
 
 import InvestmentAgent
 
-    from "../../modules/investment/agent/investmentAgent.js?v=20261012k";
+    from "../../modules/investment/agent/investmentAgent.js?v=20261012l";
 
 // ==================================================
 
