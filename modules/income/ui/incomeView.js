@@ -82,6 +82,8 @@ const IncomeView = {
 
                         ).toLocaleString()}
 
+                        <span id="income-converted-total" style="margin-left:12px;color:#666;"></span>
+
                     </p>
 
                     <p>
@@ -471,6 +473,93 @@ const IncomeView = {
             }
 
         );
+
+        // ==========================================
+        // Converted total (async)
+        // ==========================================
+        (async () => {
+
+            try {
+
+                const span =
+
+                    container.querySelector(
+
+                        "#income-converted-total"
+
+                    );
+
+                if (!span) return;
+
+                const mod = await import(
+
+                    "../../core/services/currencyUI.js?v=20261012o"
+
+                );
+
+                const records =
+
+                    IncomeAgent.getAllIncomes ?
+
+                    IncomeAgent.getAllIncomes() :
+
+                    [];
+
+                const result =
+
+                    await mod.CurrencyUI.convertRecordsToDisplay(
+
+                        records,
+
+                        "amount"
+
+                    );
+
+                const { FxService } = await import(
+
+                    "../../core/services/fxService.js?v=20261012n"
+
+                );
+
+                const symbol =
+
+                    FxService.getCurrencySymbol(
+
+                        result.displayCurrency
+
+                    );
+
+                let text =
+
+                    `≈ ${symbol}${result.total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} (${result.displayCurrency})`;
+
+                const currencies =
+
+                    Object.keys(result.breakdown);
+
+                if (currencies.length > 1) {
+
+                    const parts =
+
+                        currencies.map(c => {
+
+                            const s =
+
+                                FxService.getCurrencySymbol(c);
+
+                            return `${c} ${s}${result.breakdown[c].toLocaleString()}`;
+
+                        });
+
+                    text += ` [${parts.join(", ")}]`;
+
+                }
+
+                span.textContent = text;
+
+            } catch (e) {}
+
+        })();
 
     },
 
