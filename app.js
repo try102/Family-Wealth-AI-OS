@@ -3987,7 +3987,7 @@ async function start(){
 
                 await import(
 
-                    "./modules/investment/services/investmentService.js?v=20261012a"
+                    "./modules/investment/services/investmentService.js?v=20261012c"
 
                 );
 
@@ -4417,7 +4417,7 @@ async function start(){
 
             await import(
 
-                "./modules/investment/api/investmentAPI.js?v=20261012a"
+                "./modules/investment/api/investmentAPI.js?v=20261012c"
 
             );
 
