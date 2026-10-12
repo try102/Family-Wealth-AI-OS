@@ -18,7 +18,7 @@ Delete Investment
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js?v=20261012d";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261012f";
 
 import { wireInlineCreate, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261010da";
 
@@ -38,7 +38,7 @@ import {
 
     t
 
-} from "../i18n/investmentLocales.js?v=20261012e";
+} from "../i18n/investmentLocales.js?v=20261012f";
 
 const InvestmentView = {
 
@@ -547,411 +547,6 @@ const InvestmentView = {
                 </button>
 
                 <hr>
-
-                <section>
-
-                    <h3>
-
-                        ${t("overview")}
-
-                    </h3>
-
-                    <p>
-
-                        ${t("portfolioValue")}：$${Number(decision.totalValue || 0).toLocaleString()}
-
-                        ｜ ${t("totalCost")}：$${Number(decision.totalCost || 0).toLocaleString()}
-
-                        ｜ ${t("totalGainLoss")}：$${Number(decision.totalGainLoss || 0).toLocaleString()}
-
-                        （${t("totalReturn")} ${fmtPct(decision.totalReturnRate)}）
-
-                    </p>
-
-                    <p>
-
-                        ${t("holdingsCount")}：${decision.holdings.length}
-
-                        ｜ ${t("riskWarnings")}：${decision.warnings.length}
-
-                        ｜ ${t("realizedGainLoss")}：$${Number(InvestmentAgent.getRealizedGains(scopeMemberId).total || 0).toLocaleString()}
-
-                    </p>
-
-                </section>
-
-                <section>
-
-                    <h3>
-
-                        ${t("decisionTable")}
-
-                    </h3>
-
-                    ${
-
-                        decision.holdings.length === 0
-
-                        ?
-
-                        `<p>${t("noHoldings")}</p>`
-
-                        :
-
-                        `
-
-                    <table style="border-collapse:collapse;">
-
-                        <tr>
-
-                            <th style="padding:6px;border:1px solid #ccc;">${t("colSymbol")}</th>
-
-                            <th style="padding:6px;border:1px solid #ccc;">${t("colQty")}</th>
-
-                            <th style="padding:6px;border:1px solid #ccc;">${t("colAvgCost")}</th>
-
-                            <th style="padding:6px;border:1px solid #ccc;">${t("colTotalCost")}</th>
-
-                            <th style="padding:6px;border:1px solid #ccc;">${t("colPrice")}</th>
-
-                            <th style="padding:6px;border:1px solid #ccc;">${t("colMarketValue")}</th>
-
-                            <th style="padding:6px;border:1px solid #ccc;">${t("colWeight")}</th>
-
-                            <th style="padding:6px;border:1px solid #ccc;">${t("colGainLoss")}</th>
-
-                            <th style="padding:6px;border:1px solid #ccc;">${t("colReturn")}</th>
-
-                            <th style="padding:6px;border:1px solid #ccc;">${t("colDecision")}</th>
-
-                        </tr>
-
-                        ${
-
-                            decision.holdings.map(
-
-                                holding => `
-
-                        <tr>
-
-                            <td style="padding:6px;border:1px solid #ccc;">${holding.symbol}</td>
-
-                            <td style="padding:6px;border:1px solid #ccc;">${holding.quantity}</td>
-
-                            <td style="padding:6px;border:1px solid #ccc;">$${Number(holding.averageCost || 0).toFixed(2)}</td>
-
-                            <td style="padding:6px;border:1px solid #ccc;">$${Number((holding.quantity || 0) * (holding.averageCost || 0)).toLocaleString()}</td>
-
-                            <td style="padding:6px;border:1px solid #ccc;">$${Number(holding.currentPrice || 0).toFixed(2)}</td>
-
-                            <td style="padding:6px;border:1px solid #ccc;">$${Number(holding.marketValue || 0).toLocaleString()}</td>
-
-                            <td style="padding:6px;border:1px solid #ccc;">${fmtPct(holding.weight)}</td>
-
-                            <td style="padding:6px;border:1px solid #ccc;">$${Number(holding.gainLoss || 0).toLocaleString()}</td>
-
-                            <td style="padding:6px;border:1px solid #ccc;">${fmtPct(holding.returnRate)}</td>
-
-                            <td style="padding:6px;border:1px solid #ccc;">${t("signal" + holding.signalCode)}<br><small>${signalReason(holding)}</small></td>
-
-                        </tr>
-
-                                `
-
-                            ).join("")
-
-                        }
-
-                    </table>
-
-                        `
-
-                    }
-
-                </section>
-
-                <section>
-
-                    <h3>
-
-                        ${t("adviceTitle")}
-
-                    </h3>
-
-                    <ul>
-
-                        ${
-
-                            adviceItems.length === 0
-
-                            ?
-
-                            `<li>${t("adviceNone")}</li>`
-
-                            :
-
-                            adviceItems.map(
-
-                                item => `<li>${item}</li>`
-
-                            ).join("")
-
-                        }
-
-                    </ul>
-
-                    <p>
-
-                        <small>${t("disclaimer")}</small>
-
-                    </p>
-
-                </section>
-
-                <hr>
-
-                <section>
-
-                    <h3>
-
-                        ${t("portfolioValue")}
-
-                    </h3>
-
-                    <p>
-
-                        $${Number(
-
-                            portfolio.totalValue || 0
-
-                        ).toLocaleString()}
-
-                    </p>
-
-                </section>
-
-                <section>
-
-                    <h3>
-
-                        ${t("allocation")}
-
-                    </h3>
-
-                    <ul>
-
-                        ${
-
-                            Object.keys(
-
-                                portfolio.allocation ||
-
-                                {}
-
-                            ).length === 0
-
-                            ?
-
-                            `<li>${t("allocEmpty")}</li>`
-
-                            :
-
-                            Object.entries(
-
-                                portfolio.allocation
-
-                            ).map(
-
-                                ([type, item]) => `
-
-                                    <li>
-
-                                        ${typeLabel(type)}：$${Number(item.value || 0).toLocaleString()}（${Number(item.ratio || 0)}%）
-
-                                    </li>
-
-                                `
-
-                            ).join("")
-
-                        }
-
-                    </ul>
-
-                </section>
-
-                <section>
-
-                    <h3>
-
-                        ${t("performanceLabel")}
-
-                    </h3>
-
-                    <ul>
-
-                        <li>${t("totalCost")}：$${Number(performance.cost || 0).toLocaleString()}</li>
-
-                        <li>${t("portfolioValue")}：$${Number(performance.value || 0).toLocaleString()}</li>
-
-                        <li>${t("totalGainLoss")}：$${Number(performance.gain || 0).toLocaleString()}</li>
-
-                        <li>${t("totalReturn")}：${Number(performance.returnRate || 0)}%</li>
-
-                    </ul>
-
-                </section>
-
-                <section>
-
-                    <h3>
-
-                        ${t("riskLabel")}
-
-                    </h3>
-
-                    <ul>
-
-                        ${
-
-                            (risk.concentration || []).length === 0
-
-                            ?
-
-                            `<li>${t("riskNone")}</li>`
-
-                            :
-
-                            risk.concentration.map(
-
-                                item => `
-
-                                    <li>
-
-                                        ${item.symbol || ""} — ${t("colWeight")} ${Number(item.ratio || 0)}%（${item.level === "HIGH" ? t("riskHighLevel") : item.level || ""}）
-
-                                    </li>
-
-                                `
-
-                            ).join("")
-
-                        }
-
-                    </ul>
-
-                </section>
-
-                <section>
-
-                    <h3>
-
-                        ${t("priceImportTitle")}
-
-                    </h3>
-
-                    <p>
-
-                        ${t("priceImportHint")}
-
-                    </p>
-
-                    <input
-
-                        type="file"
-
-                        id="price-import-file"
-
-                        accept=".csv,.json,.txt"
-
-                    >
-
-                    <br>
-
-                    <textarea
-
-                        id="price-import-text"
-
-                        rows="3"
-
-                        cols="40"
-
-                        placeholder="AAPL,190.5"
-
-                    ></textarea>
-
-                    <br>
-
-                    <button
-
-                        type="button"
-
-                        id="price-import-apply"
-
-                    >
-
-                        ${t("priceImportApply")}
-
-                    </button>
-
-                    <br>
-
-                    <input
-
-                        type="text"
-
-                        id="price-import-url"
-
-                        size="40"
-
-                        placeholder="${t("priceImportUrl")}"
-
-                    >
-
-                    <button
-
-                        type="button"
-
-                        id="price-import-fetch"
-
-                    >
-
-                        ${t("priceImportFetch")}
-
-                    </button>
-
-                    <br>
-
-                    <button
-
-                        type="button"
-
-                        id="price-market-refresh"
-
-                        style="margin-top:8px;"
-
-                    >
-
-                        ${t("priceMarketRefresh")}
-
-                    </button>
-
-                    <span
-
-                        id="price-market-msg"
-
-                        style="margin-left:8px;"
-
-                    ></span>
-
-                    <p
-
-                        id="price-import-msg"
-
-                    ></p>
-
-                </section>
-
                 <section>
 
                     <h3>
@@ -1097,6 +692,287 @@ const InvestmentView = {
                     }
 
                 </section>
+
+                <section>
+
+                    <h3>
+
+                        ${t("tradeDetails")}
+
+                    </h3>
+
+                    <label>
+
+                        ${t("timeRange")}:
+
+                        <select id="trade-time-range">
+
+                            <option value="all" ${this.tradeTimeRange === "all" ? "selected" : ""}>${t("rangeAll")}</option>
+
+                            <option value="1m" ${this.tradeTimeRange === "1m" ? "selected" : ""}>${t("range1M")}</option>
+
+                            <option value="3m" ${this.tradeTimeRange === "3m" ? "selected" : ""}>${t("range3M")}</option>
+
+                            <option value="6m" ${this.tradeTimeRange === "6m" ? "selected" : ""}>${t("range6M")}</option>
+
+                            <option value="1y" ${this.tradeTimeRange === "1y" ? "selected" : ""}>${t("range1Y")}</option>
+
+                        </select>
+
+                    </label>
+
+                    ${
+
+                        (() => {
+
+                            const range = this.tradeTimeRange || "all";
+
+                            const now = new Date();
+
+                            const cutoff = new Date(now);
+
+                            if (range === "1m") cutoff.setMonth(now.getMonth() - 1);
+
+                            else if (range === "3m") cutoff.setMonth(now.getMonth() - 3);
+
+                            else if (range === "6m") cutoff.setMonth(now.getMonth() - 6);
+
+                            else if (range === "1y") cutoff.setFullYear(now.getFullYear() - 1);
+
+                            const inRange = trade => {
+
+                                if (range === "all") return true;
+
+                                const d = new Date(trade.tradeDate || trade.date || 0);
+
+                                return d >= cutoff;
+
+                            };
+
+                            const symbols = [...new Set(positions.map(p => String(p.symbol || "").toUpperCase()).filter(Boolean))];
+
+                            if (!symbols.length) return `<p>${t("noHoldings")}</p>`;
+
+                            return symbols.map(sym => {
+
+                                let details = [];
+
+                                try {
+
+                                    details = InvestmentAPI.getSymbolTradeDetails(sym) || [];
+
+                                } catch (e) { details = []; }
+
+                                const filtered = details.filter(inRange);
+
+                                if (!filtered.length) return "";
+
+                                return `
+
+                    <h4>${sym}</h4>
+
+                    <table style="border-collapse:collapse;">
+
+                        <tr>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colDate")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colAction")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colTradeQty")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colTradePrice")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colAmount")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colRealizedGain")}</th>
+
+                        </tr>
+
+                        ${filtered.map(trade => {
+
+                            const action = String(trade.action || "").toUpperCase();
+
+                            const isSell = action === "SELL";
+
+                            const qty = Number(trade.quantity || 0);
+
+                            const price = Number(trade.price || 0);
+
+                            const amount = Number(trade.amount || qty * price);
+
+                            const actionLabel = isSell ? t("sellLabel") : t("buyLabel");
+
+                            const gain = isSell ? Number(trade.fifoGain || 0) : 0;
+
+                            let fifoHtml = "";
+
+                            if (isSell && trade.fifoLots && trade.fifoLots.length) {
+
+                                fifoHtml = `
+
+                        <tr>
+
+                            <td colspan="6" style="padding:6px;border:1px solid #ccc;background:#f9f9f9;">
+
+                                <small><strong>${t("fifoDetail")}:</strong><br>
+
+                                ${trade.fifoLots.map((lot, idx) =>
+
+                                    `${t("fifoLot")}${idx + 1}: ${lot.quantity}股 @ $${Number(lot.unitCost).toFixed(2)} → $${Number(lot.sellPrice).toFixed(2)}, ${t("colRealizedGain")} $${Number(lot.gain).toFixed(2)}`
+
+                                ).join("<br>")}
+
+                                </small>
+
+                            </td>
+
+                        </tr>`;
+
+                            }
+
+                            return `
+
+                        <tr>
+
+                            <td style="padding:6px;border:1px solid #ccc;">${trade.tradeDate || trade.date || ""}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">${actionLabel}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">${qty}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">$${price.toFixed(2)}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">$${amount.toLocaleString()}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">${isSell ? "$" + gain.toFixed(2) : "-"}</td>
+
+                        </tr>${fifoHtml}`;
+
+                        }).join("")}
+
+                    </table>`;
+
+                            }).join("");
+
+                        })()
+
+                    }
+
+                </section>
+
+
+
+                <section>
+
+                    <h3>
+
+                        ${t("priceImportTitle")}
+
+                    </h3>
+
+                    <p>
+
+                        ${t("priceImportHint")}
+
+                    </p>
+
+                    <input
+
+                        type="file"
+
+                        id="price-import-file"
+
+                        accept=".csv,.json,.txt"
+
+                    >
+
+                    <br>
+
+                    <textarea
+
+                        id="price-import-text"
+
+                        rows="3"
+
+                        cols="40"
+
+                        placeholder="AAPL,190.5"
+
+                    ></textarea>
+
+                    <br>
+
+                    <button
+
+                        type="button"
+
+                        id="price-import-apply"
+
+                    >
+
+                        ${t("priceImportApply")}
+
+                    </button>
+
+                    <br>
+
+                    <input
+
+                        type="text"
+
+                        id="price-import-url"
+
+                        size="40"
+
+                        placeholder="${t("priceImportUrl")}"
+
+                    >
+
+                    <button
+
+                        type="button"
+
+                        id="price-import-fetch"
+
+                    >
+
+                        ${t("priceImportFetch")}
+
+                    </button>
+
+                    <br>
+
+                    <button
+
+                        type="button"
+
+                        id="price-market-refresh"
+
+                        style="margin-top:8px;"
+
+                    >
+
+                        ${t("priceMarketRefresh")}
+
+                    </button>
+
+                    <span
+
+                        id="price-market-msg"
+
+                        style="margin-left:8px;"
+
+                    ></span>
+
+                    <p
+
+                        id="price-import-msg"
+
+                    ></p>
+
+                </section>
+
 
                 <hr>
 
@@ -1397,6 +1273,300 @@ const InvestmentView = {
                     }
 
                 </ul>
+
+                <section>
+
+                    <h3>
+
+                        ${t("overview")}
+
+                    </h3>
+
+                    <p>
+
+                        ${t("portfolioValue")}：$${Number(decision.totalValue || 0).toLocaleString()}
+
+                        ｜ ${t("totalCost")}：$${Number(decision.totalCost || 0).toLocaleString()}
+
+                        ｜ ${t("totalGainLoss")}：$${Number(decision.totalGainLoss || 0).toLocaleString()}
+
+                        （${t("totalReturn")} ${fmtPct(decision.totalReturnRate)}）
+
+                    </p>
+
+                    <p>
+
+                        ${t("holdingsCount")}：${decision.holdings.length}
+
+                        ｜ ${t("riskWarnings")}：${decision.warnings.length}
+
+                        ｜ ${t("realizedGainLoss")}：$${Number(InvestmentAgent.getRealizedGains(scopeMemberId).total || 0).toLocaleString()}
+
+                    </p>
+
+                </section>
+
+                <section>
+
+                    <h3>
+
+                        ${t("decisionTable")}
+
+                    </h3>
+
+                    ${
+
+                        decision.holdings.length === 0
+
+                        ?
+
+                        `<p>${t("noHoldings")}</p>`
+
+                        :
+
+                        `
+
+                    <table style="border-collapse:collapse;">
+
+                        <tr>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colSymbol")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colQty")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colAvgCost")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colTotalCost")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colPrice")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colMarketValue")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colWeight")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colGainLoss")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colReturn")}</th>
+
+                            <th style="padding:6px;border:1px solid #ccc;">${t("colDecision")}</th>
+
+                        </tr>
+
+                        ${
+
+                            decision.holdings.map(
+
+                                holding => `
+
+                        <tr>
+
+                            <td style="padding:6px;border:1px solid #ccc;">${holding.symbol}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">${holding.quantity}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">$${Number(holding.averageCost || 0).toFixed(2)}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">$${Number((holding.quantity || 0) * (holding.averageCost || 0)).toLocaleString()}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">$${Number(holding.currentPrice || 0).toFixed(2)}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">$${Number(holding.marketValue || 0).toLocaleString()}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">${fmtPct(holding.weight)}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">$${Number(holding.gainLoss || 0).toLocaleString()}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">${fmtPct(holding.returnRate)}</td>
+
+                            <td style="padding:6px;border:1px solid #ccc;">${t("signal" + holding.signalCode)}<br><small>${signalReason(holding)}</small></td>
+
+                        </tr>
+
+                                `
+
+                            ).join("")
+
+                        }
+
+                    </table>
+
+                        `
+
+                    }
+
+                </section>
+
+                <section>
+
+                    <h3>
+
+                        ${t("adviceTitle")}
+
+                    </h3>
+
+                    <ul>
+
+                        ${
+
+                            adviceItems.length === 0
+
+                            ?
+
+                            `<li>${t("adviceNone")}</li>`
+
+                            :
+
+                            adviceItems.map(
+
+                                item => `<li>${item}</li>`
+
+                            ).join("")
+
+                        }
+
+                    </ul>
+
+                    <p>
+
+                        <small>${t("disclaimer")}</small>
+
+                    </p>
+
+                </section>
+
+                <hr>
+
+                <section>
+
+                    <h3>
+
+                        ${t("portfolioValue")}
+
+                    </h3>
+
+                    <p>
+
+                        $${Number(
+
+                            portfolio.totalValue || 0
+
+                        ).toLocaleString()}
+
+                    </p>
+
+                </section>
+
+                <section>
+
+                    <h3>
+
+                        ${t("allocation")}
+
+                    </h3>
+
+                    <ul>
+
+                        ${
+
+                            Object.keys(
+
+                                portfolio.allocation ||
+
+                                {}
+
+                            ).length === 0
+
+                            ?
+
+                            `<li>${t("allocEmpty")}</li>`
+
+                            :
+
+                            Object.entries(
+
+                                portfolio.allocation
+
+                            ).map(
+
+                                ([type, item]) => `
+
+                                    <li>
+
+                                        ${typeLabel(type)}：$${Number(item.value || 0).toLocaleString()}（${Number(item.ratio || 0)}%）
+
+                                    </li>
+
+                                `
+
+                            ).join("")
+
+                        }
+
+                    </ul>
+
+                </section>
+
+                <section>
+
+                    <h3>
+
+                        ${t("performanceLabel")}
+
+                    </h3>
+
+                    <ul>
+
+                        <li>${t("totalCost")}：$${Number(performance.cost || 0).toLocaleString()}</li>
+
+                        <li>${t("portfolioValue")}：$${Number(performance.value || 0).toLocaleString()}</li>
+
+                        <li>${t("totalGainLoss")}：$${Number(performance.gain || 0).toLocaleString()}</li>
+
+                        <li>${t("totalReturn")}：${Number(performance.returnRate || 0)}%</li>
+
+                    </ul>
+
+                </section>
+
+                <section>
+
+                    <h3>
+
+                        ${t("riskLabel")}
+
+                    </h3>
+
+                    <ul>
+
+                        ${
+
+                            (risk.concentration || []).length === 0
+
+                            ?
+
+                            `<li>${t("riskNone")}</li>`
+
+                            :
+
+                            risk.concentration.map(
+
+                                item => `
+
+                                    <li>
+
+                                        ${item.symbol || ""} — ${t("colWeight")} ${Number(item.ratio || 0)}%（${item.level === "HIGH" ? t("riskHighLevel") : item.level || ""}）
+
+                                    </li>
+
+                                `
+
+                            ).join("")
+
+                        }
+
+                    </ul>
+
+                </section>
 
             </div>
 
@@ -2389,6 +2559,43 @@ const InvestmentView = {
             }
 
         );
+
+        // ==========================================
+        // Trade time range filter
+        // ==========================================
+        const timeRangeSelect =
+
+            container.querySelector(
+
+                "#trade-time-range"
+
+            );
+
+        if (timeRangeSelect) {
+
+            timeRangeSelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    this.tradeTimeRange =
+
+                        timeRangeSelect.value || "all";
+
+                    this.render(
+
+                        container,
+
+                        onBack
+
+                    );
+
+                }
+
+            );
+
+        }
 
     },
 
