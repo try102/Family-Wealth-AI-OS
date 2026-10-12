@@ -6,13 +6,13 @@ Investment Agent
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js?v=20261008ah";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261012a";
 
 import RiskEngine from "../risk/riskEngine.js?v=20261008ae";
 
-import AccountAPI from "../../account/api/accountAPI.js?v=20261008aw";
+import AccountAPI from "../../account/api/accountAPI.js?v=20261010da";
 
-import MemberAPI from "../../member/api/memberAPI.js?v=20261008ap";
+import MemberAPI from "../../member/api/memberAPI.js?v=20261010da";
 
 import PriceOverrideStore from "../services/priceOverrideStore.js?v=20261008ae";
 
