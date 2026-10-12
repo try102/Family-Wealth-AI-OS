@@ -42,7 +42,7 @@ import AssetAPI
 
 import InvestmentAPI
 
-    from "../../investment/api/investmentAPI.js?v=20261010da";
+    from "../../investment/api/investmentAPI.js?v=20261012a";
 
 import TransactionRepository
 
