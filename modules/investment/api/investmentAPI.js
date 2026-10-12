@@ -8,7 +8,7 @@ Investment API
 
 import InvestmentService
 
-from "../services/investmentService.js?v=20261010dc";
+from "../services/investmentService.js?v=20261012a";
 
 import PortfolioEngine
 
@@ -360,6 +360,14 @@ const InvestmentAPI = {
         return InvestmentService
 
         .getPriceOverrides();
+
+    },
+
+    refreshMarketPrices(){
+
+        return InvestmentService
+
+        .refreshMarketPrices();
 
     },
 
