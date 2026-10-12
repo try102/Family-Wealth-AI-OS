@@ -146,6 +146,8 @@ function replayFifoTrades(
 
     const gainByTradeId = {};
 
+    const sellLotDetails = {};
+
     let lastPrice = 0;
 
     let hasBuys = false;
@@ -236,6 +238,8 @@ function replayFifoTrades(
 
                     let consumedCost = 0;
 
+                    const lotBreakdown = [];
+
                     while (
 
                         remaining > 0 &&
@@ -258,9 +262,29 @@ function replayFifoTrades(
 
                             );
 
+                        const lotCost = take * lot.unitCost;
+
+                        const lotProceeds = take * price;
+
+                        lotBreakdown.push({
+
+                            quantity: take,
+
+                            unitCost: lot.unitCost,
+
+                            sellPrice: price,
+
+                            cost: lotCost,
+
+                            proceeds: lotProceeds,
+
+                            gain: lotProceeds - lotCost
+
+                        });
+
                         consumedCost +=
 
-                            take * lot.unitCost;
+                            lotCost;
 
                         lot.quantity -=
 
@@ -281,6 +305,8 @@ function replayFifoTrades(
                     gainByTradeId[trade.id] =
 
                         amount - consumedCost;
+
+                    sellLotDetails[trade.id] = lotBreakdown;
 
                 }
 
@@ -320,7 +346,9 @@ function replayFifoTrades(
 
         hasBuys,
 
-        gainByTradeId
+        gainByTradeId,
+
+        sellLotDetails
 
     };
 
@@ -929,6 +957,43 @@ const InvestmentService = {
         return InvestmentRepository
 
             .getTrades();
+
+    },
+
+    // =====================================================
+    // Trades of one symbol with FIFO lot breakdown for sells.
+    // Returns [{...trade, fifoLots: [{quantity, unitCost,
+    // sellPrice, cost, proceeds, gain}] | null, fifoGain}].
+    // =====================================================
+    getSymbolTradeDetails(symbol){
+
+        const key = String(symbol || "").toUpperCase();
+
+        const trades = (this.getTrades() || [])
+            .filter(
+                t =>
+                    String(t.symbol || "").toUpperCase() === key
+            )
+            .slice()
+            .sort((a, b) => {
+                const da = String(a.tradeDate || a.date || "");
+                const db = String(b.tradeDate || b.date || "");
+                if (da < db) return -1;
+                if (da > db) return 1;
+                return 0;
+            });
+
+        const fifo = replayFifoTrades(key, trades);
+
+        return trades.map(t => {
+            const action = String(t.action || "").toUpperCase();
+            const isSell = action === "SELL";
+            return {
+                ...t,
+                fifoLots: isSell ? (fifo.sellLotDetails[t.id] || []) : null,
+                fifoGain: isSell ? (fifo.gainByTradeId[t.id] || 0) : 0
+            };
+        });
 
     },
 
