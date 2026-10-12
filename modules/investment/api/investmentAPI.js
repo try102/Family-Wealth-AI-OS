@@ -8,7 +8,7 @@ Investment API
 
 import InvestmentService
 
-from "../services/investmentService.js?v=20261012d";
+from "../services/investmentService.js?v=20261012f";
 
 import PortfolioEngine
 
@@ -292,6 +292,14 @@ const InvestmentAPI = {
         return InvestmentService
 
         .getTrades();
+
+    },
+
+    getSymbolTradeDetails(symbol){
+
+        return InvestmentService
+
+        .getSymbolTradeDetails(symbol);
 
     },
 
