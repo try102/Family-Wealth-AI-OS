@@ -103,6 +103,7 @@ const DICTIONARY = {
         colQty: "数量",
 
         colAvgCost: "单位成本",
+        colTotalCost: "总成本",
 
         colPrice: "现价",
 
@@ -352,6 +353,7 @@ const DICTIONARY = {
         colQty: "數量",
 
         colAvgCost: "單位成本",
+        colTotalCost: "總成本",
 
         colPrice: "現價",
 
@@ -595,6 +597,7 @@ const DICTIONARY = {
         colQty: "Qty",
 
         colAvgCost: "Avg Cost",
+        colTotalCost: "Total Cost",
 
         colPrice: "Price",
 
@@ -838,6 +841,7 @@ const DICTIONARY = {
         colQty: "数量",
 
         colAvgCost: "平均コスト",
+        colTotalCost: "総コスト",
 
         colPrice: "現在価格",
 
