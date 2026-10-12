@@ -18,13 +18,13 @@ import RetirementRepository from "../repository/retirementRepository.js?v=202610
 
 import RetirementEngine from "../../../core/retirement/retirementEngine.js?v=20261008ae";
 
-import AccountAPI from "../../account/api/accountAPI.js?v=20261008aw";
+import AccountAPI from "../../account/api/accountAPI.js?v=20261010da";
 
 import AssetAPI from "../../asset/api/assetAPI.js?v=20261008ae";
 
-import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261008ah";
+import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261012a";
 
-import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261009by";
+import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261010da";
 
 import ExpenseRepository from "../../expense/repository/expenseRepository.js?v=20261008ae";
 
