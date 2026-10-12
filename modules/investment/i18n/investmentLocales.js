@@ -154,6 +154,19 @@ const DICTIONARY = {
         reasonSmall: "小仓位，继续观察",
 
         adviceTitle: "决策建议",
+        holdingAnalysis: "持仓分析",
+        loadingTechnical: "正在加载技术面数据…",
+        techTrend: "技术趋势",
+        trendUp: "上升趋势",
+        trendDown: "下降趋势",
+        trendMixed: "震荡",
+        trendNoData: "暂无数据",
+        analystRating: "机构评级",
+        targetPrice: "目标价",
+        ratingBuy: "买入",
+        ratingHold: "持有",
+        ratingSell: "卖出",
+        saveRating: "保存",
 
         adviceNone: "当前无特别建议，保持现有策略",
 
@@ -425,6 +438,19 @@ const DICTIONARY = {
         reasonSmall: "小倉位，繼續觀察",
 
         adviceTitle: "決策建議",
+        holdingAnalysis: "持倉分析",
+        loadingTechnical: "正在加載技術面數據…",
+        techTrend: "技術趨勢",
+        trendUp: "上升趨勢",
+        trendDown: "下降趨勢",
+        trendMixed: "震盪",
+        trendNoData: "暫無數據",
+        analystRating: "機構評級",
+        targetPrice: "目標價",
+        ratingBuy: "買入",
+        ratingHold: "持有",
+        ratingSell: "賣出",
+        saveRating: "保存",
 
         adviceNone: "目前無特別建議，保持現有策略",
 
@@ -690,6 +716,19 @@ const DICTIONARY = {
         reasonSmall: "Small position — keep observing",
 
         adviceTitle: "Decision Advice",
+        holdingAnalysis: "Holding Analysis",
+        loadingTechnical: "Loading technical data…",
+        techTrend: "Technical Trend",
+        trendUp: "Uptrend",
+        trendDown: "Downtrend",
+        trendMixed: "Mixed",
+        trendNoData: "No data",
+        analystRating: "Analyst Rating",
+        targetPrice: "Target Price",
+        ratingBuy: "Buy",
+        ratingHold: "Hold",
+        ratingSell: "Sell",
+        saveRating: "Save",
 
         adviceNone: "No special actions — maintain current strategy",
 
@@ -955,6 +994,19 @@ const DICTIONARY = {
         reasonSmall: "小口のため様子見",
 
         adviceTitle: "意思決定アドバイス",
+        holdingAnalysis: "保有分析",
+        loadingTechnical: "テクニカルデータを読み込み中…",
+        techTrend: "テクニカルトレンド",
+        trendUp: "上昇トレンド",
+        trendDown: "下降トレンド",
+        trendMixed: "もみ合い",
+        trendNoData: "データなし",
+        analystRating: "アナリスト評価",
+        targetPrice: "目標価格",
+        ratingBuy: "買い",
+        ratingHold: "保有",
+        ratingSell: "売り",
+        saveRating: "保存",
 
         adviceNone: "特別な対応は不要、現戦略を維持",
 
