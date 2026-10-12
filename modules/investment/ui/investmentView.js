@@ -38,7 +38,7 @@ import {
 
     t
 
-} from "../i18n/investmentLocales.js?v=20261012g";
+} from "../i18n/investmentLocales.js?v=20261012n";
 
 const InvestmentView = {
 
@@ -55,6 +55,23 @@ const InvestmentView = {
         onBack
 
     ){
+
+        // Init display currency from localStorage
+        if (!this.displayCurrency) {
+
+            try {
+
+                this.displayCurrency =
+
+                    localStorage.getItem("fw_display_currency_v1") || "USD";
+
+            } catch (e) {
+
+                this.displayCurrency = "USD";
+
+            }
+
+        }
 
         const investments =
 
@@ -491,6 +508,56 @@ const InvestmentView = {
                                 >
 
                                     ${item.label}
+
+                                </option>
+
+                            `
+
+                        ).join("")
+
+                    }
+
+                </select>
+
+                <label style="margin-left:12px;">
+
+                    ${t("displayCurrency")}:
+
+                </label>
+
+                <select
+
+                    id="inv-display-currency"
+
+                >
+
+                    ${
+
+                        ["USD", "CNY", "EUR", "HKD", "JPY", "GBP"].map(
+
+                            c => `
+
+                                <option
+
+                                    value="${c}"
+
+                                    ${
+
+                                        (this.displayCurrency || "USD") === c
+
+                                        ?
+
+                                        "selected"
+
+                                        :
+
+                                        ""
+
+                                    }
+
+                                >
+
+                                    ${c}
 
                                 </option>
 
@@ -1859,6 +1926,68 @@ const InvestmentView = {
                         languageSelect.value
 
                     );
+
+                    this.render(
+
+                        container,
+
+                        onBack
+
+                    );
+
+                }
+
+            );
+
+        }
+
+        // ==========================================
+        // Display Currency Switch
+        // ==========================================
+        const displayCurrencySelect =
+
+            container.querySelector(
+
+                "#inv-display-currency"
+
+            );
+
+        if (displayCurrencySelect) {
+
+            // Init from localStorage
+            try {
+
+                this.displayCurrency =
+
+                    localStorage.getItem("fw_display_currency_v1") || "USD";
+
+            } catch (e) {
+
+                this.displayCurrency = "USD";
+
+            }
+
+            displayCurrencySelect.addEventListener(
+
+                "change",
+
+                () => {
+
+                    this.displayCurrency =
+
+                        displayCurrencySelect.value || "USD";
+
+                    try {
+
+                        localStorage.setItem(
+
+                            "fw_display_currency_v1",
+
+                            this.displayCurrency
+
+                        );
+
+                    } catch (e) {}
 
                     this.render(
 
@@ -3456,6 +3585,36 @@ const InvestmentView = {
 
                     <label>
 
+                        ${t("currency")}
+
+                    </label>
+
+                    <br>
+
+                    <select
+
+                        id="trade-currency"
+
+                    >
+
+                        <option value="USD">USD</option>
+
+                        <option value="CNY">CNY</option>
+
+                        <option value="EUR">EUR</option>
+
+                        <option value="HKD">HKD</option>
+
+                        <option value="JPY">JPY</option>
+
+                        <option value="GBP">GBP</option>
+
+                    </select>
+
+                    <br><br>
+
+                    <label>
+
                         ${t("dateLabel")}
 
                     </label>
@@ -3644,7 +3803,7 @@ const InvestmentView = {
 
             "submit",
 
-            event => {
+            async event => {
 
                 event.preventDefault();
 
@@ -3856,7 +4015,47 @@ const InvestmentView = {
 
                     currency:
 
-                    "USD"
+                    form.querySelector(
+
+                        "#trade-currency"
+
+                    )?.value || "USD",
+
+                    fxRateToUSD:
+
+                    await (async () => {
+
+                        try {
+
+                            const mod = await import(
+
+                                "../../core/services/fxService.js?v=20261012n"
+
+                            );
+
+                            const rates =
+
+                                await mod.FxService.getRates();
+
+                            const cur =
+
+                                form.querySelector(
+
+                                    "#trade-currency"
+
+                                )?.value || "USD";
+
+                            return mod.FxService.toUsdRate(cur, rates);
+
+                        } catch (e) {
+
+                            return 1;
+
+                        }
+
+                    })(),
+
+                    fxRateDate: new Date().toISOString().slice(0, 10)
 
                 });
 
