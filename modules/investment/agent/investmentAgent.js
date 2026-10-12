@@ -6,7 +6,7 @@ Investment Agent
 
 */
 
-import InvestmentAPI from "../api/investmentAPI.js?v=20261012d";
+import InvestmentAPI from "../api/investmentAPI.js?v=20261012f";
 
 import RiskEngine from "../risk/riskEngine.js?v=20261008ae";
 
