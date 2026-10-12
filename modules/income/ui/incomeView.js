@@ -942,6 +942,28 @@ const IncomeView = {
 
                     >
 
+                    <select
+
+                        id="income-currency"
+
+                        style="margin-left:8px;"
+
+                    >
+
+                        <option value="USD">USD</option>
+
+                        <option value="CNY">CNY</option>
+
+                        <option value="EUR">EUR</option>
+
+                        <option value="HKD">HKD</option>
+
+                        <option value="JPY">JPY</option>
+
+                        <option value="GBP">GBP</option>
+
+                    </select>
+
                     <br><br>
 
                     <label>
@@ -1211,7 +1233,7 @@ const IncomeView = {
 
             "submit",
 
-            event => {
+            async event => {
 
                 event.preventDefault();
 
@@ -1317,7 +1339,51 @@ const IncomeView = {
 
                     accountId,
 
-                    memberId
+                    memberId,
+
+                    currency:
+
+                    form.querySelector(
+
+                        "#income-currency"
+
+                    )?.value || "USD",
+
+                    fxRateToUSD:
+
+                    await (async () => {
+
+                        try {
+
+                            const mod = await import(
+
+                                "../../core/services/fxService.js?v=20261012n"
+
+                            );
+
+                            const rates =
+
+                                await mod.FxService.getRates();
+
+                            const cur =
+
+                                form.querySelector(
+
+                                    "#income-currency"
+
+                                )?.value || "USD";
+
+                            return mod.FxService.toUsdRate(cur, rates);
+
+                        } catch (e) {
+
+                            return 1;
+
+                        }
+
+                    })(),
+
+                    fxRateDate: new Date().toISOString().slice(0, 10)
 
                 });
 
