@@ -20,7 +20,7 @@ import AccountAPI from "../modules/account/api/accountAPI.js?v=20261010da";
 
 import AssetAPI from "../modules/asset/api/assetAPI.js?v=20261008ae";
 
-import InvestmentAPI from "../modules/investment/api/investmentAPI.js?v=20261012c";
+import InvestmentAPI from "../modules/investment/api/investmentAPI.js?v=20261012d";
 
 import LiabilityAPI from "../modules/liability/api/liabilityAPI.js?v=20261010da";
 
