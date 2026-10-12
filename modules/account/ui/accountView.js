@@ -16,7 +16,7 @@ import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261010da";
 
 import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261010da";
 
-import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261010dg";
+import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261012a";
 
 import AssetAPI from "../../asset/api/assetAPI.js?v=20261010da";
 
