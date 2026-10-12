@@ -809,6 +809,27 @@ const ExpenseView = {
                         required
 
                     >
+                    <select
+
+                        id="expense-amount-currency"
+
+                        style="margin-left:8px;"
+
+                    >
+
+                        <option value="USD">USD</option>
+
+                        <option value="CNY">CNY</option>
+
+                        <option value="EUR">EUR</option>
+
+                        <option value="HKD">HKD</option>
+
+                        <option value="JPY">JPY</option>
+
+                        <option value="GBP">GBP</option>
+
+                    </select>
 
                     <br><br>
 
@@ -1094,7 +1115,7 @@ const ExpenseView = {
 
             "submit",
 
-            event => {
+            async event => {
 
                 event.preventDefault();
 
@@ -1214,7 +1235,51 @@ const ExpenseView = {
 
                     accountId,
 
-                    memberId
+                    memberId,
+
+                    currency:
+
+                    form.querySelector(
+
+                        "#expense-currency"
+
+                    )?.value || "USD",
+
+                    fxRateToUSD:
+
+                    await (async () => {
+
+                        try {
+
+                            const mod = await import(
+
+                                "../../core/services/fxService.js?v=20261012n"
+
+                            );
+
+                            const rates =
+
+                                await mod.FxService.getRates();
+
+                            const cur =
+
+                                form.querySelector(
+
+                                    "#expense-currency"
+
+                                )?.value || "USD";
+
+                            return mod.FxService.toUsdRate(cur, rates);
+
+                        } catch (e) {
+
+                            return 1;
+
+                        }
+
+                    })(),
+
+                    fxRateDate: new Date().toISOString().slice(0, 10)
 
                 });
 
@@ -1411,6 +1476,27 @@ const ExpenseView = {
                         value="${currentAmount}"
 
                     >
+                    <select
+
+                        id="edit-expense-amount-currency"
+
+                        style="margin-left:8px;"
+
+                    >
+
+                        <option value="USD">USD</option>
+
+                        <option value="CNY">CNY</option>
+
+                        <option value="EUR">EUR</option>
+
+                        <option value="HKD">HKD</option>
+
+                        <option value="JPY">JPY</option>
+
+                        <option value="GBP">GBP</option>
+
+                    </select>
 
                     <br><br>
 
