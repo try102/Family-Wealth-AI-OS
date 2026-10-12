@@ -697,6 +697,128 @@ const InvestmentView = {
 
                     <h3>
 
+                        ${t("portfolioValue")}
+
+                    </h3>
+
+                    <p>
+
+                        $${Number(
+
+                            portfolio.totalValue || 0
+
+                        ).toLocaleString()}
+
+                    </p>
+
+                </section>
+
+                <section>
+
+                    <h3>
+
+                        ${t("allocation")}
+
+                    </h3>
+
+                    <ul>
+
+                        ${
+
+                            Object.keys(
+
+                                portfolio.allocation ||
+
+                                {}
+
+                            ).length === 0
+
+                            ?
+
+                            `<li>${t("allocEmpty")}</li>`
+
+                            :
+
+                            Object.entries(
+
+                                portfolio.allocation
+
+                            ).map(
+
+                                ([type, item]) => `
+
+                                    <li>
+
+                                        ${typeLabel(type)}：$${Number(item.value || 0).toLocaleString()}（${Number(item.ratio || 0)}%）
+
+                                    </li>
+
+                                `
+
+                            ).join("")
+
+                        }
+
+                    </ul>
+
+                </section>
+
+                <section>
+
+                    <h3>
+
+                        ${t("performanceLabel")}
+
+                    </h3>
+
+                    <ul>
+
+                        <li>${t("totalCost")}：$${Number(performance.cost || 0).toLocaleString()}</li>
+
+                        <li>${t("portfolioValue")}：$${Number(performance.value || 0).toLocaleString()}</li>
+
+                        ${
+
+                            (() => {
+
+                                const unrealized = Number(performance.gain || 0);
+
+                                let realized = 0;
+
+                                try {
+
+                                    realized = Number(InvestmentAgent.getRealizedGains(scopeMemberId).total || 0);
+
+                                } catch (e) {}
+
+                                const total = unrealized + realized;
+
+                                const totalReturn = performance.cost ? (total / Number(performance.cost) * 100) : 0;
+
+                                return `
+
+                        <li>${t("holdingGainLoss")}：$${unrealized.toLocaleString()}</li>
+
+                        <li>${t("realizedGainLoss")}：$${realized.toLocaleString()}</li>
+
+                        <li>${t("totalGainLoss")}：$${total.toLocaleString()}</li>
+
+                        <li>${t("totalReturn")}：${totalReturn.toFixed(2)}%</li>
+
+                                `;
+
+                            })()
+
+                        }
+
+                    </ul>
+
+                </section>
+
+                <section>
+
+                    <h3>
+
                         ${t("tradeDetails")}
 
                     </h3>
@@ -1464,127 +1586,6 @@ const InvestmentView = {
 
                 <hr>
 
-                <section>
-
-                    <h3>
-
-                        ${t("portfolioValue")}
-
-                    </h3>
-
-                    <p>
-
-                        $${Number(
-
-                            portfolio.totalValue || 0
-
-                        ).toLocaleString()}
-
-                    </p>
-
-                </section>
-
-                <section>
-
-                    <h3>
-
-                        ${t("allocation")}
-
-                    </h3>
-
-                    <ul>
-
-                        ${
-
-                            Object.keys(
-
-                                portfolio.allocation ||
-
-                                {}
-
-                            ).length === 0
-
-                            ?
-
-                            `<li>${t("allocEmpty")}</li>`
-
-                            :
-
-                            Object.entries(
-
-                                portfolio.allocation
-
-                            ).map(
-
-                                ([type, item]) => `
-
-                                    <li>
-
-                                        ${typeLabel(type)}：$${Number(item.value || 0).toLocaleString()}（${Number(item.ratio || 0)}%）
-
-                                    </li>
-
-                                `
-
-                            ).join("")
-
-                        }
-
-                    </ul>
-
-                </section>
-
-                <section>
-
-                    <h3>
-
-                        ${t("performanceLabel")}
-
-                    </h3>
-
-                    <ul>
-
-                        <li>${t("totalCost")}：$${Number(performance.cost || 0).toLocaleString()}</li>
-
-                        <li>${t("portfolioValue")}：$${Number(performance.value || 0).toLocaleString()}</li>
-
-                        ${
-
-                            (() => {
-
-                                const unrealized = Number(performance.gain || 0);
-
-                                let realized = 0;
-
-                                try {
-
-                                    realized = Number(InvestmentAgent.getRealizedGains(scopeMemberId).total || 0);
-
-                                } catch (e) {}
-
-                                const total = unrealized + realized;
-
-                                const totalReturn = performance.cost ? (total / Number(performance.cost) * 100) : 0;
-
-                                return `
-
-                        <li>${t("holdingGainLoss")}：$${unrealized.toLocaleString()}</li>
-
-                        <li>${t("realizedGainLoss")}：$${realized.toLocaleString()}</li>
-
-                        <li>${t("totalGainLoss")}：$${total.toLocaleString()}</li>
-
-                        <li>${t("totalReturn")}：${totalReturn.toFixed(2)}%</li>
-
-                                `;
-
-                            })()
-
-                        }
-
-                    </ul>
-
-                </section>
 
                 <section>
 
