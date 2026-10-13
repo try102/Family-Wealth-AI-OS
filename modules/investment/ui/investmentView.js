@@ -3284,7 +3284,7 @@ const InvestmentView = {
 
                 span.textContent =
 
-                    `≈ ${symbol}${converted.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} (${displayCurrency})`;
+                    `${symbol}${converted.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} (${displayCurrency})`;
 
             } catch (e) {}
 
