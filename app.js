@@ -5808,7 +5808,7 @@ async function start(){
 
                 const fxMod = await import(
 
-                    "./modules/core/services/fxService.js?v=20261012p"
+                    "./modules/core/services/fxService.js?v=20261012q"
 
                 );
 
@@ -5857,9 +5857,13 @@ async function start(){
 
                         convertUSD(Number(result.totalAssets || 0));
 
-                    assetsSpan.textContent =
+                    if (converted !== null) {
 
-                        `≈ ${symbol}${fmt(converted)} (${displayCurrency})`;
+                        assetsSpan.textContent =
+
+                            `≈ ${symbol}${fmt(converted)} (${displayCurrency})`;
+
+                    }
 
                 }
 
@@ -5874,9 +5878,13 @@ async function start(){
 
                         convertUSD(Number(result.totalLiabilities || 0));
 
-                    liabSpan.textContent =
+                    if (converted !== null) {
 
-                        `≈ ${symbol}${fmt(converted)} (${displayCurrency})`;
+                        liabSpan.textContent =
+
+                            `≈ ${symbol}${fmt(converted)} (${displayCurrency})`;
+
+                    }
 
                 }
 
@@ -5891,9 +5899,13 @@ async function start(){
 
                         convertUSD(Number(result.netWorth || 0));
 
-                    nwSpan.textContent =
+                    if (converted !== null) {
 
-                        `≈ ${symbol}${fmt(converted)} (${displayCurrency})`;
+                        nwSpan.textContent =
+
+                            `≈ ${symbol}${fmt(converted)} (${displayCurrency})`;
+
+                    }
 
                 }
 
