@@ -92,11 +92,15 @@ export const CurrencyUI = {
 
     // Convert a list of records to display currency total.
     // Each record: { amount, currency, fxRateToUSD }
-    // Returns { total, displayCurrency, breakdown: { USD: x, CNY: y, ... } }
+    // Returns { total, displayCurrency, breakdown: { USD: x, CNY: y, ... }, rates, ok }
+    // ok is false if FX rates failed to load
     async convertRecordsToDisplay(records, amountField = "amount") {
         const displayCurrency = this.getDisplayCurrency();
         const rates = await FxService.getRates();
 
+        // Check if we have the display currency rate
+        const hasRate = displayCurrency === "USD" || (rates && rates[displayCurrency]);
+        
         let totalUSD = 0;
         const breakdown = {};
 
@@ -114,8 +118,9 @@ export const CurrencyUI = {
             if (fxRate > 0) {
                 usdAmount = amount * fxRate;
             } else {
-                // Fallback: use current rate
-                usdAmount = FxService.convert(amount, currency, "USD", rates);
+                // Fallback: use current rate (may return null)
+                const converted = FxService.convert(amount, currency, "USD", rates);
+                usdAmount = converted !== null ? converted : 0;
             }
             totalUSD += usdAmount;
         });
@@ -123,6 +128,12 @@ export const CurrencyUI = {
         // Convert USD total to display currency
         const total = FxService.convert(totalUSD, "USD", displayCurrency, rates);
 
-        return { total, displayCurrency, breakdown, rates };
+        return { 
+            total: total !== null ? total : 0, 
+            displayCurrency, 
+            breakdown, 
+            rates,
+            ok: hasRate && total !== null
+        };
     }
 };
