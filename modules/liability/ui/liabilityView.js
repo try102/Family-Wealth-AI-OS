@@ -1393,7 +1393,7 @@ const LiabilityView = {
 
                 let text =
 
-                    `≈ ${symbol}${Number(result.total || 0).toLocaleString(
+                    `${symbol}${Number(result.total || 0).toLocaleString(
 
                         "en-US",
 
