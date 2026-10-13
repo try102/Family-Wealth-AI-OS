@@ -122,16 +122,19 @@ export const FxService = {
 
     // Convert amount from one currency to another using rates
     // rates = output of getRates()
+    // Returns null if conversion is not possible (missing rate)
     convert(amount, fromCurrency, toCurrency, rates) {
         const from = String(fromCurrency || "USD").toUpperCase();
         const to = String(toCurrency || "USD").toUpperCase();
         const amt = Number(amount || 0);
         if (from === to) return amt;
-        if (!rates) return amt;
+        if (!rates) return null;
 
         // Convert to USD first, then to target
-        const fromRate = rates[from] || 1;  // units per USD
-        const toRate = rates[to] || 1;
+        // Must have explicit rates for both currencies, no silent 1:1 fallback
+        const fromRate = rates[from];
+        const toRate = rates[to];
+        if (!fromRate || !toRate) return null;
 
         const usdAmount = amt / fromRate;
         return usdAmount * toRate;
