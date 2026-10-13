@@ -3245,7 +3245,7 @@ const InvestmentView = {
 
                 const mod = await import(
 
-                    "../../core/services/fxService.js?v=20261012q"
+                    "../../core/services/fxService.js?v=20261012t"
 
                 );
 
@@ -4107,7 +4107,7 @@ const InvestmentView = {
 
                             const mod = await import(
 
-                                "../../core/services/fxService.js?v=20261012q"
+                                "../../core/services/fxService.js?v=20261012t"
 
                             );
 
