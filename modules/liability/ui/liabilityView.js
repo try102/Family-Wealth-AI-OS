@@ -28,7 +28,7 @@ import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261010da";
 
-import { CurrencyUI } from "../../core/services/currencyUI.js?v=20261012o";
+import { CurrencyUI } from "../../core/services/currencyUI.js?v=20261012q";
 
 const LiabilityView = {
 
@@ -1373,6 +1373,9 @@ const LiabilityView = {
                             "currentBalance"
 
                         );
+
+                // If FX rates failed, don\'t show misleading conversion
+                if (!result.ok) return;
 
                 const symbol =
 
@@ -3617,7 +3620,7 @@ const LiabilityView = {
 
                                 const mod = await import(
 
-                                    "../../core/services/fxService.js?v=20261012n"
+                                    "../../core/services/fxService.js?v=20261012q"
 
                                 );
 
