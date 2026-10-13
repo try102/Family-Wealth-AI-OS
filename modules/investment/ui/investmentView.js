@@ -3245,7 +3245,7 @@ const InvestmentView = {
 
                 const mod = await import(
 
-                    "../../core/services/fxService.js?v=20261012n"
+                    "../../core/services/fxService.js?v=20261012q"
 
                 );
 
@@ -3270,6 +3270,9 @@ const InvestmentView = {
                         rates
 
                     );
+
+                // If FX rates failed, don't show misleading conversion
+                if (converted === null) return;
 
                 const symbol =
 
@@ -4104,7 +4107,7 @@ const InvestmentView = {
 
                             const mod = await import(
 
-                                "../../core/services/fxService.js?v=20261012n"
+                                "../../core/services/fxService.js?v=20261012q"
 
                             );
 
