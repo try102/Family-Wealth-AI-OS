@@ -5861,7 +5861,7 @@ async function start(){
 
                         assetsSpan.textContent =
 
-                            `≈ ${symbol}${fmt(converted)} (${displayCurrency})`;
+                            `${symbol}${fmt(converted)} (${displayCurrency})`;
 
                     }
 
@@ -5882,7 +5882,7 @@ async function start(){
 
                         liabSpan.textContent =
 
-                            `≈ ${symbol}${fmt(converted)} (${displayCurrency})`;
+                            `${symbol}${fmt(converted)} (${displayCurrency})`;
 
                     }
 
@@ -5903,7 +5903,7 @@ async function start(){
 
                         nwSpan.textContent =
 
-                            `≈ ${symbol}${fmt(converted)} (${displayCurrency})`;
+                            `${symbol}${fmt(converted)} (${displayCurrency})`;
 
                     }
 
