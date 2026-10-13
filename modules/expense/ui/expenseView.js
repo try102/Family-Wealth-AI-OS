@@ -20,7 +20,7 @@ import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../co
 
 import { CurrencyUI } from "../../core/services/currencyUI.js?v=20261012q";
 
-import { FxService } from "../../core/services/fxService.js?v=20261012q";
+import { FxService } from "../../core/services/fxService.js?v=20261012t";
 
 const ExpenseView = {
 
@@ -1357,7 +1357,7 @@ const ExpenseView = {
 
                             const mod = await import(
 
-                                "../../core/services/fxService.js?v=20261012q"
+                                "../../core/services/fxService.js?v=20261012t"
 
                             );
 
