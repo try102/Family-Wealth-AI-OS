@@ -1320,7 +1320,7 @@ const AssetView = {
 
                 let text =
 
-                    `≈ ${formatted} (${result.displayCurrency})`;
+                    `${formatted} (${result.displayCurrency})`;
 
                 const currencies =
 
