@@ -18,9 +18,9 @@ import { t, getLanguage, setLanguage, languageOptions } from "../../../core/i18n
 
 import { wireInlineCreate, resolveMemberId, resolveAccountId } from "../../../core/utils/inlineCreate.js?v=20261010da";
 
-import { CurrencyUI } from "../../core/services/currencyUI.js?v=20261012o";
+import { CurrencyUI } from "../../core/services/currencyUI.js?v=20261012q";
 
-import { FxService } from "../../core/services/fxService.js?v=20261012n";
+import { FxService } from "../../core/services/fxService.js?v=20261012q";
 
 const ExpenseView = {
 
@@ -492,6 +492,9 @@ const ExpenseView = {
                         "amount"
 
                     );
+
+                // If FX rates failed, don\'t show misleading conversion
+                if (!result.ok) return;
 
                 const symbol =
 
@@ -1354,7 +1357,7 @@ const ExpenseView = {
 
                             const mod = await import(
 
-                                "../../core/services/fxService.js?v=20261012n"
+                                "../../core/services/fxService.js?v=20261012q"
 
                             );
 
