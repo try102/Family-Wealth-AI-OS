@@ -516,7 +516,7 @@ const ExpenseView = {
 
                 let html =
 
-                    ` <small>≈ ${symbol}${formatted} (${result.displayCurrency})</small>`;
+                    ` <small>${symbol}${formatted} (${result.displayCurrency})</small>`;
 
                 const currencies =
 
