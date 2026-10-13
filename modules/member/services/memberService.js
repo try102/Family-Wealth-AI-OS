@@ -6,12 +6,12 @@ Member Service
 投资按投资记录的账户归属统计（持仓本身按代码汇总，不分成员）。
 */
 import MemberRepository from "../repository/memberRepository.js?v=20261008ae";
-import AccountAPI from "../../account/api/accountAPI.js?v=20261010da";
-import IncomeAPI from "../../income/api/incomeAPI.js?v=20261010da";
-import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261010da";
-import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261012f";
+import AccountAPI from "../../account/api/accountAPI.js?v=20261008aw";
+import IncomeAPI from "../../income/api/incomeAPI.js?v=20261008ae";
+import ExpenseAPI from "../../expense/api/expenseAPI.js?v=20261008ae";
+import InvestmentAPI from "../../investment/api/investmentAPI.js?v=20261008ah";
 import AssetAPI from "../../asset/api/assetAPI.js?v=20261008ae";
-import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261010da";
+import LiabilityAPI from "../../liability/api/liabilityAPI.js?v=20261009by";
 
 import IncomeRepository from "../../income/repository/incomeRepository.js?v=20261008ae";
 
@@ -238,15 +238,15 @@ const MemberService = {
 
         });
         incomes.forEach(record => {
-            // Only realized capital-gain mirrors stay
+            // Auto investment income (gains / dividends
 
-            // out of the daily-income caliber. Auto
+            // / interest mirrored from transactions)
 
-            // dividends / interest are ordinary income
+            // lives in the Income Center but stays out
 
-            // under tax rules (option D, 2026-10-10).
+            // of the daily-income caliber.
 
-            if (record.autoSource === "CAPITAL_GAIN") {
+            if (record.autoSource) {
                 return;
             }
             bucketFor(record).income += num(record.amount ?? record.value);
@@ -325,6 +325,47 @@ const MemberService = {
             ...finish(buckets[member.id])
         }));
         const unassignedStats = finish(unassigned);
+
+        // Family common split: default 50/50, customizable via localStorage
+        // Key: fw_family_split_v1 = { memberId: ratio, ... }, ratios sum to 1
+        // When a member is viewed individually, their share of unassigned is added
+        try {
+            const splitKey = "fw_family_split_v1";
+            let split = null;
+            try {
+                const raw = localStorage.getItem(splitKey);
+                if (raw) split = JSON.parse(raw);
+            } catch (e) {}
+            
+            // Default: equal split among all members
+            if (!split || typeof split !== "object") {
+                split = {};
+                const equalShare = members.length > 0 ? 1 / members.length : 0;
+                members.forEach(m => { split[m.id] = equalShare; });
+            }
+
+            // Add unassigned share to each member's stats (for individual view)
+            // We store it as a separate field so the UI can choose to include it
+            memberStats.forEach(stat => {
+                const ratio = Number(split[stat.member.id] || 0);
+                if (ratio > 0 && ratio <= 1) {
+                    stat.sharedAssetsValue = (unassignedStats.accountsValue || 0) * ratio +
+                                            (unassignedStats.investmentsValue || 0) * ratio +
+                                            (unassignedStats.assetsValue || 0) * ratio;
+                    stat.sharedLiabilitiesValue = (unassignedStats.liabilitiesValue || 0) * ratio;
+                    // Combined view (member's own + shared)
+                    stat.combinedTotalAssets = stat.totalAssets + stat.sharedAssetsValue;
+                    stat.combinedNetWorth = stat.netWorth + stat.sharedAssetsValue - stat.sharedLiabilitiesValue;
+                } else {
+                    stat.sharedAssetsValue = 0;
+                    stat.sharedLiabilitiesValue = 0;
+                    stat.combinedTotalAssets = stat.totalAssets;
+                    stat.combinedNetWorth = stat.netWorth;
+                }
+            });
+        } catch (e) {
+            // If split fails, keep original stats
+        }
 
         const familyRaw = empty();
         [...memberStats, unassignedStats].forEach(stat => {
