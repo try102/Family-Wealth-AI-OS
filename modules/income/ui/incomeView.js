@@ -493,7 +493,7 @@ const IncomeView = {
 
                 const mod = await import(
 
-                    "../../core/services/currencyUI.js?v=20261012o"
+                    "../../core/services/currencyUI.js?v=20261012q"
 
                 );
 
@@ -515,9 +515,12 @@ const IncomeView = {
 
                     );
 
+                // If FX rates failed, don't show misleading conversion
+                if (!result.ok) return;
+
                 const { FxService } = await import(
 
-                    "../../core/services/fxService.js?v=20261012n"
+                    "../../core/services/fxService.js?v=20261012q"
 
                 );
 
@@ -1446,7 +1449,7 @@ const IncomeView = {
 
                             const mod = await import(
 
-                                "../../core/services/fxService.js?v=20261012n"
+                                "../../core/services/fxService.js?v=20261012q"
 
                             );
 
