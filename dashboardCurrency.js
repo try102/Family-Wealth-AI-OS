@@ -9,9 +9,13 @@ without modifying the large app.js.
 
 (function() {
     function init() {
-        // Find dashboard h2
+        // Find dashboard h2 - retry if not found
         const h2 = document.querySelector("section.dashboard h2");
-        if (!h2 || document.querySelector("#dash-display-currency")) {
+        if (!h2) {
+            setTimeout(init, 500);
+            return;
+        }
+        if (document.querySelector("#dash-display-currency")) {
             return;
         }
 
@@ -62,23 +66,21 @@ without modifying the large app.js.
             const symbol = fxMod.FxService.getCurrencySymbol(displayCurrency);
             const fmt = (n) => n.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-            // Find dashboard cards and add conversion
+            // Find dashboard cards and replace with converted values
             // Total Assets
             const assetsCard = Array.from(document.querySelectorAll("section.dashboard .dashboard-card h3"))
                 .find(h => h.textContent.includes("总资产") || h.textContent.includes("Total Assets"));
             if (assetsCard) {
                 const valueDiv = assetsCard.parentElement.querySelector(".value");
-                if (valueDiv && !valueDiv.querySelector(".dash-conv")) {
+                if (valueDiv && !valueDiv.dataset.converted) {
                     const text = valueDiv.textContent.replace(/[^0-9.-]/g, "");
                     const num = parseFloat(text);
                     if (!isNaN(num)) {
                         const converted = convertUSD(num);
                         if (converted !== null) {
-                            const span = document.createElement("span");
-                            span.className = "dash-conv";
-                            span.style.cssText = "font-size:0.7em;color:#666;display:block;";
-                            span.textContent = `${symbol}${fmt(converted)} (${displayCurrency})`;
-                            valueDiv.appendChild(span);
+                            valueDiv.dataset.converted = "1";
+                            valueDiv.dataset.original = valueDiv.innerHTML;
+                            valueDiv.innerHTML = `${symbol}${fmt(converted)} <small style="color:#888;">(${displayCurrency})</small>`;
                         }
                     }
                 }
@@ -89,17 +91,15 @@ without modifying the large app.js.
                 .find(h => h.textContent.includes("总负债") || h.textContent.includes("Total Liabilities"));
             if (liabCard) {
                 const valueDiv = liabCard.parentElement.querySelector(".value");
-                if (valueDiv && !valueDiv.querySelector(".dash-conv")) {
+                if (valueDiv && !valueDiv.dataset.converted) {
                     const text = valueDiv.textContent.replace(/[^0-9.-]/g, "");
                     const num = parseFloat(text);
                     if (!isNaN(num)) {
                         const converted = convertUSD(num);
                         if (converted !== null) {
-                            const span = document.createElement("span");
-                            span.className = "dash-conv";
-                            span.style.cssText = "font-size:0.7em;color:#666;display:block;";
-                            span.textContent = `${symbol}${fmt(converted)} (${displayCurrency})`;
-                            valueDiv.appendChild(span);
+                            valueDiv.dataset.converted = "1";
+                            valueDiv.dataset.original = valueDiv.innerHTML;
+                            valueDiv.innerHTML = `${symbol}${fmt(converted)} <small style="color:#888;">(${displayCurrency})</small>`;
                         }
                     }
                 }
@@ -110,17 +110,15 @@ without modifying the large app.js.
                 .find(h => h.textContent.includes("净资产") || h.textContent.includes("Net Worth"));
             if (nwCard) {
                 const valueDiv = nwCard.parentElement.querySelector(".value");
-                if (valueDiv && !valueDiv.querySelector(".dash-conv")) {
+                if (valueDiv && !valueDiv.dataset.converted) {
                     const text = valueDiv.textContent.replace(/[^0-9.-]/g, "");
                     const num = parseFloat(text);
                     if (!isNaN(num)) {
                         const converted = convertUSD(num);
                         if (converted !== null) {
-                            const span = document.createElement("span");
-                            span.className = "dash-conv";
-                            span.style.cssText = "font-size:0.7em;color:#666;display:block;";
-                            span.textContent = `${symbol}${fmt(converted)} (${displayCurrency})`;
-                            valueDiv.appendChild(span);
+                            valueDiv.dataset.converted = "1";
+                            valueDiv.dataset.original = valueDiv.innerHTML;
+                            valueDiv.innerHTML = `${symbol}${fmt(converted)} <small style="color:#888;">(${displayCurrency})</small>`;
                         }
                     }
                 }
