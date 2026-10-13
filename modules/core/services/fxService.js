@@ -109,7 +109,27 @@ export const FxService = {
             if (gbpusd > 0) rates.GBP = 1 / gbpusd;
 
         } catch (e) {
-            // Return cached or USD-only on failure
+            // Tencent failed, try fallback API
+        }
+
+        // Fallback: open.er-api.com (CORS-friendly, no key)
+        // Only if Tencent didn't give us CNY (the most important one)
+        if (!rates.CNY) {
+            try {
+                const resp = await fetch("https://open.er-api.com/v6/latest/USD");
+                const data = await resp.json();
+                if (data && data.rates) {
+                    // data.rates is { CNY: 7.2, EUR: 0.92, ... } = units per USD
+                    // This matches our format directly!
+                    ["CNY", "EUR", "HKD", "JPY", "GBP"].forEach(cur => {
+                        if (data.rates[cur] > 0 && !rates[cur]) {
+                            rates[cur] = data.rates[cur];
+                        }
+                    });
+                }
+            } catch (e) {
+                // Fallback also failed
+            }
         }
 
         if (Object.keys(rates).length > 1) {
