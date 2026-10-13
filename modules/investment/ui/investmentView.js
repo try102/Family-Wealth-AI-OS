@@ -519,55 +519,7 @@ const InvestmentView = {
 
                 </select>
 
-                <label style="margin-left:12px;">
-
-                    ${t("displayCurrency")}:
-
-                </label>
-
-                <select
-
-                    id="inv-display-currency"
-
-                >
-
-                    ${
-
-                        ["USD", "CNY", "EUR", "HKD", "JPY", "GBP"].map(
-
-                            c => `
-
-                                <option
-
-                                    value="${c}"
-
-                                    ${
-
-                                        (this.displayCurrency || "USD") === c
-
-                                        ?
-
-                                        "selected"
-
-                                        :
-
-                                        ""
-
-                                    }
-
-                                >
-
-                                    ${c}
-
-                                </option>
-
-                            `
-
-                        ).join("")
-
-                    }
-
-                </select>
+                
 
                 <br><br>
 
@@ -840,9 +792,39 @@ const InvestmentView = {
 
                     <ul>
 
-                        <li>${t("totalCost")}：$${Number(performance.cost || 0).toLocaleString()}</li>
+                        <li>${t("totalCost")}：$${Number(performance.cost || 0).toLocaleString()}
+                            ${(() => {
+                                try {
+                                    const byCur = {};
+                                    (positions || []).forEach(p => {
+                                        const cur = p.currency || "USD";
+                                        const cost = Number(p.costBasis || 0);
+                                        byCur[cur] = (byCur[cur] || 0) + cost;
+                                    });
+                                    const keys = Object.keys(byCur);
+                                    if (keys.length <= 1) return "";
+                                    const sym = {USD:"$",CNY:"¥",EUR:"€",HKD:"HK$",JPY:"¥",GBP:"£"};
+                                    return `<br><small style="color:#666;">` + keys.map(k => `${k} ${(sym[k]||k+" ")}${byCur[k].toLocaleString()}`).join(" · ") + `</small>`;
+                                } catch(e) { return ""; }
+                            })()}
+                        </li>
 
-                        <li>${t("portfolioValue")}：$${Number(performance.value || 0).toLocaleString()}</li>
+                        <li>${t("portfolioValue")}：$${Number(performance.value || 0).toLocaleString()}
+                            ${(() => {
+                                try {
+                                    const byCur = {};
+                                    (positions || []).forEach(p => {
+                                        const cur = p.currency || "USD";
+                                        const val = Number(p.marketValue || 0);
+                                        byCur[cur] = (byCur[cur] || 0) + val;
+                                    });
+                                    const keys = Object.keys(byCur);
+                                    if (keys.length <= 1) return "";
+                                    const sym = {USD:"$",CNY:"¥",EUR:"€",HKD:"HK$",JPY:"¥",GBP:"£"};
+                                    return `<br><small style="color:#666;">` + keys.map(k => `${k} ${(sym[k]||k+" ")}${byCur[k].toLocaleString()}`).join(" · ") + `</small>`;
+                                } catch(e) { return ""; }
+                            })()}
+                        </li>
 
                         ${
 
@@ -1946,64 +1928,7 @@ const InvestmentView = {
         // ==========================================
         // Display Currency Switch
         // ==========================================
-        const displayCurrencySelect =
-
-            container.querySelector(
-
-                "#inv-display-currency"
-
-            );
-
-        if (displayCurrencySelect) {
-
-            // Init from localStorage
-            try {
-
-                this.displayCurrency =
-
-                    localStorage.getItem("fw_display_currency_v1") || "USD";
-
-            } catch (e) {
-
-                this.displayCurrency = "USD";
-
-            }
-
-            displayCurrencySelect.addEventListener(
-
-                "change",
-
-                () => {
-
-                    this.displayCurrency =
-
-                        displayCurrencySelect.value || "USD";
-
-                    try {
-
-                        localStorage.setItem(
-
-                            "fw_display_currency_v1",
-
-                            this.displayCurrency
-
-                        );
-
-                    } catch (e) {}
-
-                    this.render(
-
-                        container,
-
-                        onBack
-
-                    );
-
-                }
-
-            );
-
-        }
+        
 
         // ==========================================
 
