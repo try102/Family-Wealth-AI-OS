@@ -534,7 +534,7 @@ const IncomeView = {
 
                 let text =
 
-                    `≈ ${symbol}${result.total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} (${result.displayCurrency})`;
+                    `${symbol}${result.total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} (${result.displayCurrency})`;
 
                 const currencies =
 
