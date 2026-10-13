@@ -46,6 +46,7 @@ without modifying the large app.js.
     }
 
     // Dashboard conversion: fetch FX rates and show converted totals
+    // Idempotent: safe to run multiple times
     async function doConversion() {
         try {
             let displayCurrency = "USD";
@@ -66,63 +67,52 @@ without modifying the large app.js.
             const symbol = fxMod.FxService.getCurrencySymbol(displayCurrency);
             const fmt = (n) => n.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-            // Find dashboard cards and replace with converted values
-            // Total Assets
-            const assetsCard = Array.from(document.querySelectorAll("section.dashboard .dashboard-card h3"))
-                .find(h => h.textContent.includes("总资产") || h.textContent.includes("Total Assets"));
-            if (assetsCard) {
-                const valueDiv = assetsCard.parentElement.querySelector(".value");
-                if (valueDiv && !valueDiv.dataset.converted) {
-                    const text = valueDiv.textContent.replace(/[^0-9.-]/g, "");
-                    const num = parseFloat(text);
-                    if (!isNaN(num)) {
-                        const converted = convertUSD(num);
-                        if (converted !== null) {
-                            valueDiv.dataset.converted = "1";
-                            valueDiv.dataset.original = valueDiv.innerHTML;
-                            valueDiv.innerHTML = `${symbol}${fmt(converted)} <small style="color:#888;">(${displayCurrency})</small>`;
-                        }
-                    }
+            function convertCard(cardTitle) {
+                const card = Array.from(document.querySelectorAll("section.dashboard .dashboard-card h3"))
+                    .find(h => h.textContent.includes(cardTitle));
+                if (!card) return;
+                const valueDiv = card.parentElement.querySelector(".value");
+                if (!valueDiv) return;
+
+                // Get original USD value (stored on first run, or parse fresh)
+                let usdValue;
+                if (valueDiv.dataset.usdValue) {
+                    usdValue = parseFloat(valueDiv.dataset.usdValue);
+                } else {
+                    // Parse only the original text (before any conversion)
+                    // Remove any existing conversion span first
+                    const clone = valueDiv.cloneNode(true);
+                    const existing = clone.querySelector(".dash-conv-replaced");
+                    if (existing) existing.remove();
+                    const text = clone.textContent.replace(/[^0-9.-]/g, "");
+                    usdValue = parseFloat(text);
+                    if (isNaN(usdValue)) return;
+                    valueDiv.dataset.usdValue = usdValue;
                 }
+
+                const converted = convertUSD(usdValue);
+                if (converted === null || isNaN(converted)) return;
+
+                // Sanity check: converted value should be within reasonable bounds
+                // (USD 5M -> CNY should be ~33M, not quadrillions)
+                if (converted > usdValue * 1000 || converted < usdValue / 1000) {
+                    console.warn("FX conversion sanity check failed, skipping");
+                    return;
+                }
+
+                valueDiv.innerHTML = `${symbol}${fmt(converted)} <small style="color:#888;">(${displayCurrency})</small>`;
             }
 
-            // Total Liabilities
-            const liabCard = Array.from(document.querySelectorAll("section.dashboard .dashboard-card h3"))
-                .find(h => h.textContent.includes("总负债") || h.textContent.includes("Total Liabilities"));
-            if (liabCard) {
-                const valueDiv = liabCard.parentElement.querySelector(".value");
-                if (valueDiv && !valueDiv.dataset.converted) {
-                    const text = valueDiv.textContent.replace(/[^0-9.-]/g, "");
-                    const num = parseFloat(text);
-                    if (!isNaN(num)) {
-                        const converted = convertUSD(num);
-                        if (converted !== null) {
-                            valueDiv.dataset.converted = "1";
-                            valueDiv.dataset.original = valueDiv.innerHTML;
-                            valueDiv.innerHTML = `${symbol}${fmt(converted)} <small style="color:#888;">(${displayCurrency})</small>`;
-                        }
-                    }
-                }
-            }
-
-            // Net Worth
-            const nwCard = Array.from(document.querySelectorAll("section.dashboard .dashboard-card h3"))
-                .find(h => h.textContent.includes("净资产") || h.textContent.includes("Net Worth"));
-            if (nwCard) {
-                const valueDiv = nwCard.parentElement.querySelector(".value");
-                if (valueDiv && !valueDiv.dataset.converted) {
-                    const text = valueDiv.textContent.replace(/[^0-9.-]/g, "");
-                    const num = parseFloat(text);
-                    if (!isNaN(num)) {
-                        const converted = convertUSD(num);
-                        if (converted !== null) {
-                            valueDiv.dataset.converted = "1";
-                            valueDiv.dataset.original = valueDiv.innerHTML;
-                            valueDiv.innerHTML = `${symbol}${fmt(converted)} <small style="color:#888;">(${displayCurrency})</small>`;
-                        }
-                    }
-                }
-            }
+            convertCard("总资产");
+            convertCard("Total Assets");
+            convertCard("总负债");
+            convertCard("Total Liabilities");
+            convertCard("净资产");
+            convertCard("Net Worth");
+            convertCard("收入");
+            convertCard("Income");
+            convertCard("日常支出");
+            convertCard("Expenses");
         } catch (e) {
             console.warn("Dashboard FX conversion failed:", e);
         }
