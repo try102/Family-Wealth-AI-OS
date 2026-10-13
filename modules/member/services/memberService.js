@@ -328,7 +328,9 @@ const MemberService = {
 
         // Family common split: default 50/50, customizable via localStorage
         // Key: fw_family_split_v1 = { memberId: ratio, ... }, ratios sum to 1
-        // When a member is viewed individually, their share of unassigned is added
+        // Per Johnson 2026-10-12: when viewing a single member, their share of
+        // family-common is INCLUDED in the main totalAssets/netWorth fields.
+        // The breakdown is preserved in own* and shared* fields.
         try {
             const splitKey = "fw_family_split_v1";
             let split = null;
@@ -344,23 +346,25 @@ const MemberService = {
                 members.forEach(m => { split[m.id] = equalShare; });
             }
 
-            // Add unassigned share to each member's stats (for individual view)
-            // We store it as a separate field so the UI can choose to include it
             memberStats.forEach(stat => {
                 const ratio = Number(split[stat.member.id] || 0);
+                // Preserve own-only values
+                stat.ownTotalAssets = stat.totalAssets;
+                stat.ownNetWorth = stat.netWorth;
+                stat.ownLiabilitiesValue = stat.liabilitiesValue;
+                
                 if (ratio > 0 && ratio <= 1) {
                     stat.sharedAssetsValue = (unassignedStats.accountsValue || 0) * ratio +
                                             (unassignedStats.investmentsValue || 0) * ratio +
                                             (unassignedStats.assetsValue || 0) * ratio;
                     stat.sharedLiabilitiesValue = (unassignedStats.liabilitiesValue || 0) * ratio;
-                    // Combined view (member's own + shared)
-                    stat.combinedTotalAssets = stat.totalAssets + stat.sharedAssetsValue;
-                    stat.combinedNetWorth = stat.netWorth + stat.sharedAssetsValue - stat.sharedLiabilitiesValue;
+                    // INCLUDE shared in main fields (Johnson 2026-10-12)
+                    stat.totalAssets = stat.ownTotalAssets + stat.sharedAssetsValue;
+                    stat.liabilitiesValue = stat.ownLiabilitiesValue + stat.sharedLiabilitiesValue;
+                    stat.netWorth = stat.totalAssets - stat.liabilitiesValue;
                 } else {
                     stat.sharedAssetsValue = 0;
                     stat.sharedLiabilitiesValue = 0;
-                    stat.combinedTotalAssets = stat.totalAssets;
-                    stat.combinedNetWorth = stat.netWorth;
                 }
             });
         } catch (e) {
